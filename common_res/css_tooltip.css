@@ -1,0 +1,111 @@
+.s7 {opacity:0.90;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=90);-moz-opacity:0.90}
+.s11 {color:#DDDDDD;line-height:16px}
+
+.ttip {position:absolute;top:0px;left:0px;display:none;opacity:0.90;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=90);-moz-opacity:0.90;text-align:left;z-index:5}
+
+.b3_tl {background:url(border4_tl.gif) no-repeat top left}
+.b3_t {background:url(border4_t.gif) repeat-x top left}
+.b3_tr {background:url(border4_tr.gif) no-repeat top right}
+.b3_l {background:url(border4_l.gif) repeat-y top left}
+.b3_c {background:url(border4_c.gif) repeat top left}
+.b3_r {background:url(border4_r.gif) repeat-y top right}
+.b3_bl {background:url(border4_bl.gif) no-repeat bottom left}
+.b3_b {background:url(border4_b.gif) repeat-x bottom left}
+.b3_br {background:url(border4_br.gif) no-repeat bottom right}
+.b3s {width:4px;height:4px}
+
+.ttipsp {width:150px;line-height:0px;font-size:0px}
+.ttipn {white-space:nowrap;padding:2px;font-weight:bold}
+.ttipcpr {font-size:8px;font-weight:normal;line-height:8px;font-family:small fonts;letter-spacing:3px;color:gray;margin:8px auto 3px auto;display:block;text-align:center}
+.ttipeditby {color:gray;margin:16px auto 3px auto;display:block;text-align:center}
+
+#ttipeditlink {color:#444;text-align:center;font-size:11px;font-family:PMingliU;line-height:1.5em}
+
+.ttipcontent .spacer {line-height:50px;padding:5px;color:#eee}
+
+#atlasoline_iTTc {color:#DDDDDD}
+#atlasoline_iTTc .clearfix {clear:both;height:0;line-height:0;font-size:0}
+#atlasoline_iTTc .q,#atlasoline_iTTc .q a{color:#ffd100!important;}
+#atlasoline_iTTc .q0,#atlasoline_iTTc .q0 a{color:#9d9d9d!important;}
+#atlasoline_iTTc .q1,#atlasoline_iTTc .q1 a{color:#fff!important;}
+#atlasoline_iTTc .q2,#atlasoline_iTTc .q2 a{color:#1eff00!important;}
+#atlasoline_iTTc .q3,#atlasoline_iTTc .q3 a{color:#0070dd!important;}
+#atlasoline_iTTc .q4,#atlasoline_iTTc .q4 a{color:#a335ee!important;}
+#atlasoline_iTTc .q5,#atlasoline_iTTc .q5 a{color:#ff8000!important;}
+#atlasoline_iTTc .q6,#atlasoline_iTTc .q6 a{color:#e5cc80!important;}
+#atlasoline_iTTc .q7,#atlasoline_iTTc .q7 a{color:#e5cc80!important;}
+#atlasoline_iTTc .q8,#atlasoline_iTTc .q8 a{color:#ffff98!important;}
+#atlasoline_iTTc .q9,#atlasoline_iTTc .q9 a{color:#71d5ff!important;}
+#atlasoline_iTTc .q10,#atlasoline_iTTc .q10 a{color:#f00!important;}
+#atlasoline_iTTc .r1{color:#FF8040!important;}
+#atlasoline_iTTc .r2{color:#FF0!important;}
+#atlasoline_iTTc .r3{color:#40BF40!important;}
+#atlasoline_iTTc .r4{color:#808080!important;}
+#atlasoline_iTTc .c1,#atlasoline_iTTc .c1 a{color:#C69B6D!important;}
+#atlasoline_iTTc .c2,#atlasoline_iTTc .c2 a{color:#F48CBA!important;}
+#atlasoline_iTTc .c3,#atlasoline_iTTc .c3 a{color:#AAD372!important;}
+#atlasoline_iTTc .c4,#atlasoline_iTTc .c4 a{color:#FFF468!important;}
+#atlasoline_iTTc .c5,#atlasoline_iTTc .c5 a{color:#FFF!important;}
+#atlasoline_iTTc .c6,#atlasoline_iTTc .c6 a{color:#C41E3B!important;}
+#atlasoline_iTTc .c7,#atlasoline_iTTc .c7 a{color:#2359FF!important;}
+#atlasoline_iTTc .c8,#atlasoline_iTTc .c8 a{color:#68CCEF!important;}
+#atlasoline_iTTc .c9,#atlasoline_iTTc .c9 a{color:#9382C9!important;}
+#atlasoline_iTTc .c11,#atlasoline_iTTc .c11 a{color:#FF7C0A!important;}
+#atlasoline_iTTc .tooltip {visibility:hidden;z-index:100000001;  width:300px;text-align:left}
+#atlasoline_iTTc .tooltip h2{padding: 5px 0 ;margin:0; font-size:14px;}
+#atlasoline_iTTc .tooltip a{text-decoration:none;}
+#atlasoline_iTTc .tooltip a:hover{text-decoration:underline;}
+#atlasoline_iTTc .tooltip table{border-spacing:0;border-collapse:collapse;}
+#atlasoline_iTTc .tooltip td,#atlasoline_iTTc .tooltip th{background:url(http://img.db.178.com/wow/icons/tooltip.png);font-family:Verdana,#atlasoline_iTTc sans-serif;font-size:12px;line-height:17px;color:white;*background:url(http://img.db.178.com/wow/icons/tooltip.gif);}
+#atlasoline_iTTc .tooltip th{padding:3px;vertical-align:top;}
+#atlasoline_iTTc .tooltip td{padding:8px 4px 1px 9px;vertical-align:top;}
+#atlasoline_iTTc .tooltip b{font-size:14px;line-height:19px;font-weight:normal;}
+#atlasoline_iTTc .tooltip div.indent{padding-left:.6em;}
+#atlasoline_iTTc .tooltip td th,#atlasoline_iTTc .tooltip td td{background:none;}
+#atlasoline_iTTc .tooltip td th{padding:0 0 0 4em;text-align:right;font-weight:normal;}
+#atlasoline_iTTc .tooltip td td{padding:0;}
+#atlasoline_iTTc .tooltip p{position:absolute;left:-44px;top:-1px;width:44px;height:44px;background:4px 4px no-repeat;margin:0;padding:0;}
+#atlasoline_iTTc .tooltip p div{width:44px;height:44px;background-image:url(http://db.178.com/wow/icons/icon_border_medium.gif);}
+#atlasoline_iTTc .tooltip table.shrink b{font-size:12px;line-height:15px;}
+#atlasoline_iTTc .tooltip table.shrink td,#atlasoline_iTTc .tooltip table.shrink th{font-size:10px;line-height:14px;}
+#atlasoline_iTTc .socket-meta{padding-left:26px;background:url(http://img.db.178.com/wow/icons/socket_meta.gif) no-repeat left center;}
+#atlasoline_iTTc .socket-red{padding-left:26px;background:url(http://img.db.178.com/wow/icons/socket_red.gif) no-repeat left center;}
+#atlasoline_iTTc .socket-yellow{padding-left:26px;background:url(http://img.db.178.com/wow/icons/socket_yellow.gif) no-repeat left center;}
+#atlasoline_iTTc .socket-blue{padding-left:26px;background:url(http://img.db.178.com/wow/icons/socket_blue.gif) no-repeat left center;}
+#atlasoline_iTTc .itemID {color:#999;font-size:1em;font-style:italic;padding:5px 0px 0 10px;}
+
+#atlasoline_iTTc .money_g{ color:white;background:no-repeat right center;padding:0 15px 0 3px;background-image:url(http://img.db.178.com/wow/icons/money_gold.gif); }
+#atlasoline_iTTc .money_s{ color:white;background:no-repeat right center;padding:0 15px 0 3px;background-image:url(http://img.db.178.com/wow/icons/money_silver.gif); }
+#atlasoline_iTTc .money_c{ color:white;background:no-repeat right center;padding:0 15px 0 3px;background-image:url(http://img.db.178.com/wow/icons/money_copper.gif); }
+
+#atlasoline_iTTc .hearthstone-attack,
+#atlasoline_iTTc .hearthstone-health,
+#atlasoline_iTTc .hearthstone-cost,
+#atlasoline_iTTc .hearthstone-damage,
+#atlasoline_iTTc .hearthstone-durability {
+padding-right: 19px;
+color: white;
+}
+#atlasoline_iTTc .hearthstone-attack {
+padding-right: 19px;
+background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat right 0;
+}
+#atlasoline_iTTc .hearthstone-health {
+padding-right: 19px;
+background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat right -16px;
+}
+#atlasoline_iTTc .hearthstone-cost {
+padding-right: 19px;
+background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat right -32px;
+}
+#atlasoline_iTTc .hearthstone-damage {
+padding-right: 19px;
+background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat right -48px;
+}
+#atlasoline_iTTc .hearthstone-durability {
+padding-right: 19px;
+background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat right -64px;
+}
+
+
+body .ui-tooltip {position: static;}

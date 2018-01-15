@@ -1,0 +1,16 @@
+.b5t, .b5b, .b5l, .b5r, .b5tl, .b5tr, .b5bl, .b5br {line-height:0px;font-size:0px;padding:0px}
+.b5t {background:url(bg5t.png) repeat-x;height:8px}
+.b5b {background:url(bg5b.png) repeat-x;height:8px}
+.b5l {background:url(bg5l.png) repeat-y;width:8px}
+.b5r {background:url(bg5r.png) repeat-y;width:8px}
+.b5tl {background:url(bg5tl.png) no-repeat;width:8px;height:8px}
+.b5tr {background:url(bg5tr.png) no-repeat;width:8px;height:8px}
+.b5bl {background:url(bg5bl.png) no-repeat;width:8px;height:8px}
+.b5br {background:url(bg5br.png) no-repeat;width:8px;height:8px}
+.b5bg {background:url(bg5bg.png) top center}
+
+.tilbg1l {background:url(tilbg1_l.png) left -4px no-repeat}
+.tilbg1r {background:url(tilbg_r.png) right -4px no-repeat}
+.tilbg1l .dot1 {background:url(dot1.png) 2px 50% no-repeat;text-indent:26px}
+.tilbg1l .dot2 {background:url(dot2.png) 2px 50% no-repeat;text-indent:26px}
+.tilbg1l .dot3 {background:url(dot3.png) 2px 50% no-repeat;text-indent:26px}

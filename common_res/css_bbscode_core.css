@@ -1,0 +1,62 @@
+.ubbcode .skyblue {color:skyblue}
+.ubbcode .royalblue {color:royalblue}
+.ubbcode .darkblue {color:darkblue}
+.ubbcode .orangered {color:orangered}
+.ubbcode .crimson {color:crimson}
+.ubbcode .firebrick {color:firebrick}
+.ubbcode .darkred {color:darkred}
+.ubbcode .limegreen {color:limegreen}
+.ubbcode .seagreen {color:seagreen}
+.ubbcode .teal {color:teal}
+.ubbcode .deeppink {color:deeppink}
+.ubbcode .tomato {color:tomato}
+.ubbcode .coral {color:coral}
+.ubbcode .purple {color:purple}
+.ubbcode .indigo {color:indigo}
+.ubbcode .burlywood {color:burlywood}
+.ubbcode .sandybrown {color:sandybrown}
+.ubbcode .sienna {color:sienna}
+.ubbcode .chocolate {color:chocolate}
+.ubbcode .orange {color:#A06700}
+.ubbcode .orange:hover {color:#EF9C00}
+.ubbcode .green {color:#3D9F0E}
+.ubbcode .green:hover {color:#6ED73A}
+.ubbcode .gray {color:#555}
+.ubbcode .gray:hover {color:#666}
+.ubbcode .red {color:#D00}
+.ubbcode .red:hover {color:#E55}
+.ubbcode .blue {color:#06B}
+.ubbcode .blue:hover {color:#39E}
+.ubbcode .silver {color:#888}
+.ubbcode .silver:hover {color:#AAA}
+
+.ubbcode .textfield {margin:0.3em;padding:0.3em;color:#222;line-height:1.2em;font-size:1em;font-family:Lucida Console, Courier New;background:#EEE;border:1px solid #DDD;height:20em;overflow:auto;white-space:nowrap}
+.ubbcode .quote {background:#E8E8E8;border:1px solid #888;margin:0.3em 0.3em 0.3em 0.5em;padding:0.5em}
+.ubbcode .dice {background:#e1c8a7;border:1px solid #b9986e;margin:0.3em 0.3em 0.3em 0.5em;padding:0.5em;color:#6b2d25}
+.ubbcode .lessernuke {background:#F9CAB5;border:1px solid #B63F32;margin:0.3em 0.3em 0.3em 0.5em;padding:0.5em}
+.ubbcode .subtitle {font-size:1.1em;font-weight:bold;border-bottom:1px solid #aaa;clear:both;margin-bottom:0}
+.ubbcode .urltip {position:absolute;margin-top:-1em;font-size:9px;line-height:9px;text-decoration:none;display:none;background:#ffffe1;border:1px solid #444;padding:1px}
+.ubbcode .video {border:5px solid #551200;margin:0.3em 0.3em 0.3em 0.5em;}
+.ubbcode .left {float:left}
+.ubbcode .right {float:right}
+
+.ubbcode .headline, .ubbcode .headline table {border-collapse:collapse;border-spacing:0;width:100%;height:250px}
+.ubbcode .headline table {height:auto}
+.ubbcode .headline td {padding:0;vertical-align:top}
+.ubbcode .headline .headlinemask {display:block;color:#eee;border:0;width:100%;height:100%;font-size:20px;line-height:1.5em;font-family:"Microsoft Yahei", simhei, Arial, sans-serif;font-weight:bold;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://img4.ngacn.cc/ngabbs/nga_classic/headlinemask.png',sizingMethod='crop')}
+.ubbcode .headline .headlinemask[class] {filter:none;background:url(headlinemask.png) top left no-repeat}
+
+.ubbcode .headline .headlinemask2[class] {height:100%;background:url(hm2.png) top left repeat-x}
+.ubbcode .headline .headlinemask5[class] {height:100%;background:url(hm5.png) bottom left repeat-x}
+.ubbcode .headline .headlinemask1[class] {height:100%;background:url(hm1.png) top left no-repeat}
+.ubbcode .headline .headlinemask3[class] {height:100%;background:url(hm3.png) top right no-repeat}
+.ubbcode .headline .headlinemask4[class] {height:100%;background:url(hm4.png) bottom right no-repeat}
+.ubbcode .headline .headlinemask6[class] {height:100%;background:url(hm6.png) bottom left no-repeat}
+
+.ubbcode .headline .headlinemask a , .ubbcode .headline .headlinemask .hltxt {position:relative;display:block;color:#eee}
+.ubbcode .headline .leftblock {overflow:auto}
+.ubbcode .headline .headlineelm {line-height:24px;padding:2px 2px 2px 18px;background:url(tri.gif) 4px 3px no-repeat}
+.ubbcode .headline .headlinesel {border-collapse:collapse;border-spacing:0;width:100%;height:10px;border-left:1px #aaa solid}
+.ubbcode .headline .headlinesel td {border-right:1px solid #aaa}
+.ubbcode .headline .row1 .b1, .ubbcode .headline .row2 .b1 {background-color:#fff5d7}
+.ubbcode .headline .row1 .b2, .ubbcode .headline .row2 .b1 {background-color:#fff8e5}

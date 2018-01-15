@@ -1,0 +1,18 @@
+body {font-size:10pt;font-family:arial, Microsoft Yahei, simsun;line-height:1.5em;color:#122}
+h1 {background:#748c96;color:#fff;font-size:1.3em;padding:0.2em;margin:0}
+h1 a {color:#fff}
+h2 {background:#ccdbe2;font-size:1.1em;padding:0.2em;margin:0;text-align:right;color:#444}
+h3 {font-size:1em;padding:0.2em;margin:0;font-weight:normal;background:#f0f3f5}
+.replytil {font-weight:bold;border-top:1px solid silver}
+.thread {padding-bottom:0.75em}
+.page_nav form {display:inline}
+.threadsub, .threadsub a {color:silver}
+.threadsub {font-size:0.9em}
+.numeric {font-size:0.8em}
+h4 {border-bottom:1px solid #ddd;color:#444;padding:0.1em;margin:0;font-weight:normal}
+.subbg {background:#f3f3f3}
+.threadcontent {padding-left:0.5em;margin:0.3em 0.3em 0.3em 0.5em;border:1px solid #ccdbe2}
+
+.catenew p {display:none}
+.clear {font-size:0px;line-height:0px;height:0px;clear:both}
+.x {display:none}

@@ -1,0 +1,77 @@
+.floay_box ul,.floay_box dl,.floay_box dt,.floay_box dd,.floay_box p{
+	margin:0;
+	padding:0;
+}
+.floay_box a{
+	text-decoration: none;
+	color: #9ebfcc;
+}
+.floay_box a:hover{
+	color: #0098ee;
+}
+.floay_box .clear{
+	zoom:1;
+}
+.floay_box .clear:after{
+	display: block;
+	content: "";
+	height:0;
+	overflow: hidden;
+	visibility: visible;
+	clear:both;
+}
+.floay_box {
+	width:290px;
+	height:450px;
+	font-family: "Microsoft YaHei";
+	font-size: 12px;
+	color: #9ebfcc;
+	background:url(http://vgdb.ptbus.com/assets/cr/images/bg-floay.jpg) no-repeat;
+}
+.floay_box .tit{
+	width:100%;
+	text-align: center;
+	background:rgba(0,0,0,.12);
+}
+.floay_box .pk{
+	font-size: 18px;
+	line-height: 40px;
+}
+.floay_box .box_1{
+	width:255px;
+	margin-top:10px;
+	margin-left:20px;
+}
+.floay_box .box_1 dt,.floay_box .box_1 dd{
+	display: block;
+	float:left;
+}
+.floay_box .box_1 dd{
+	line-height: 25px;
+	padding-top:5px;
+	padding-left:20px;
+}
+.floay_box .subtit{
+	width:245px;
+	height:30px;
+	font-size: 14px;
+	line-height: 30px;
+	margin-top:10px;
+	margin-left: 10px;
+	padding-left:10px;
+	background:url(../images/bg-tit.png) no-repeat;
+}
+.floay_box .imgs li{
+	display: block;
+	float: left;
+	width:66px;
+	margin-top:5px;
+	margin-left:15px;
+}
+.floay_box .imgs li:hover,dt img:hover{
+	background: url(http://static.ptbus.com/templet/631389/db/images/card_hover.png) 1px 1px no-repeat;
+}
+.floay_box .semore{
+	line-height: 30px;
+	font-size: 12px;
+}

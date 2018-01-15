@@ -1,0 +1,43 @@
+.invertColor #m_pbtntop .descrip,
+.invertColor #m_nav .nav,
+.invertColor #m_nav .bbsinfo,
+.invertColor #m_threads caption .moderator {color:#ddd;text-shadow: 0px 1px 3px #000,1px 1px 0 #000;}
+
+.invertColor #m_nav .nav a,
+.invertColor #m_nav .bbsinfo a,
+.invertColor #m_threads caption .moderator a {text-shadow: 0px 1px 3px #000,1px 1px 0 #000;color:#eee}
+
+.invertColor #m_nav .urltip a {color:#eee}
+
+.invertColor #m_nav .nav a:hover,
+.invertColor #m_nav .bbsinfo a:hover,
+.invertColor #m_nav .urltip a:hover,
+.invertColor #m_threads caption .moderator a:hover {color:#fff}
+
+.invertColor #m_nav .urltip {color:#ddd;border:1px solid #eee;background:#222}
+
+
+.invertColor #m_nav .bbsinfo .gray {color:silver}
+
+/*.haveCustomBackground .bbstitle_img, .haveCustomBackground .bbstitle_v2 {background:none}*/
+.haveCustomBackground #bbstitle1 {display:none}
+.haveCustomBackground #mainmenu {margin-bottom:92px}
+.notLoadImg #mainmenu {margin-bottom:-40px}
+.invertColor #m_posts caption h2 {background:none;text-shadow:1px 1px 0 #ffe,0px 0px 3px #ffe,0px 2px 5px #ffe;}
+.haveCustomBackground .nav {margin:auto}
+.haveCustomBackground #m_pbtntop .page_margin {margin-left:auto}
+
+.bti_mask1 {height:190px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://img4.ngacn.cc/ngabbs/nga_classic/mask1_v2.png',sizingMethod='scale');}
+.bti_mask2 {height:190px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://img4.ngacn.cc/ngabbs/nga_classic/mask2_v2.png',sizingMethod='scale');}
+.bti_mask1[class] {filter:none;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABICAYAAAA3Qp8tAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABESURBVHjalJBBDgAQDATHKv9/qS9wI6QlLpOZS5MtvTcJSAKWrfSQd/Ngb5SJI4uAGmX9Tu+KRWb7hGOW9410BQIYAwAwXQR6qaXWKwAAAABJRU5ErkJggg==')}
+.bti_mask2[class] {filter:none;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/P//PwMTAwODGkCAAQAYLAMn19xlOwAAAABJRU5ErkJggg==') bottom left repeat-x}
+
+.bti_c {margin-bottom:-168px;padding-top:30px;text-align:right}
+.bti_shadow {margin: auto auto auto 40px;width:271px;height:138px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://img4.ngacn.cc/ngabbs/nga_classic/logoshadow5.png')}
+.bti_shadow[class] {background:url(logoshadow5.png) no-repeat;filter:none}
+.bti_shadow .img {width:271px;height:138px;background:url(bbslogo5.png) no-repeat}
+/*
+.bti_c {margin-bottom:-167px;padding-top:110px;text-align:left}
+.bti_shadow {margin: auto auto auto 10px;width:451px;height:57px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://img4.ngacn.cc/ngabbs/nga_classic/logoshadow6.png')}
+.bti_shadow[class] {background:url(logoshadow6.png) no-repeat;filter:none}
+*/

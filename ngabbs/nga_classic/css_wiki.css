@@ -1,0 +1,555 @@
+.qfw {font-size:12px;line-height: 1.8em; color:#4f4f4f;}
+
+/* general styles */
+
+.qfw a {
+	margin-left:2px;
+	margin-right:2px;
+	text-decoration: none;
+	color: #1D2A63;
+	background: none;
+}
+.qfw a:visited {
+	color: #314396;
+}
+.qfw a:active {
+	color: #314396;
+}
+.qfw a:hover {
+	text-decoration: underline;
+	color:#314396
+}
+.qfw a.stub {
+	color: #AFB5B9;
+}
+.qfw a.new {
+	color: #AFB5B9;
+}
+.qfw a.new:visited {
+	color: #CBD3D7;
+}
+
+.qfw img {
+	border: none;
+	vertical-align: middle;
+}
+.qfw p {
+	margin: .4em 0 .5em 0;
+	line-height: 1.5em;
+}
+.qfw p img {
+	margin: 0;
+}
+
+.qfw hr {
+	height: 1px;
+	color: #aaa;
+	background-color: #aaa;
+	border: 0;
+	margin: .2em 0 .2em 0;
+}
+
+.qfw h1, .qfw h2, .qfw h3, .qfw h4, .qfw h5, .qfw h6 {
+	display:block;
+	color: black;
+	background: none;
+	font-weight: normal;
+	margin: 0;
+	padding: .5em 0 .17em 0;
+	border-bottom: 1px solid #aaa;
+	font-weight: bold;
+}
+.qfw h1 { font-size: 188%; }
+.qfw h2 { font-size: 150%; }
+.qfw h3, .qfw h4, .qfw h5, .qfw h6 {
+	border-bottom: none;
+}
+.qfw h3 { font-size: 132%; }
+.qfw h4 { font-size: 116%; }
+.qfw h5 { font-size: 100%; }
+.qfw h6 { font-size: 80%;  }
+
+.qfw ul {
+	line-height: 1.5em;
+	list-style-type: square;
+	margin: .3em 0 0 1.5em;
+	padding: 0;
+	list-style-image: url(bullet.gif);
+}
+.qfw ol {
+	line-height: 1.5em;
+	margin: .3em 0 0 3.2em;
+	padding: 0;
+	list-style-image: none;
+}
+.qfw li {
+	margin-bottom: .1em;
+}
+.qfw dt {
+	font-weight: bold;
+	margin-bottom: .1em;
+}
+.qfw dl {
+	margin-top: .2em;
+	margin-bottom: .5em;
+}
+.qfw dd {
+	line-height: 1.5em;
+	margin-left: 2em;
+	margin-bottom: .1em;
+}
+
+.qfw fieldset {
+	border: 1px solid #2f6fab;
+	margin: 1em 0 1em 0;
+	padding: 0 1em 1em;
+	line-height: 1.5em;
+}
+.qfw legend {
+	background: white;
+	padding: .5em;
+	font-size: 95%;
+}
+.qfw form {
+	border: none;
+	margin: 0;
+}
+
+.qfw textarea {
+	width: 100%;
+	padding: .1em;
+}
+
+.qfw input.historysubmit {
+	padding: 0 .3em .3em .3em !important;
+	font-size: 94%;
+	cursor: pointer;
+	height: 1.7em !important;
+	margin-left: 1.6em;
+}
+.qfw select {
+	vertical-align: top;
+}
+.qfw abbr, acronym, .qfw .explain {
+	border-bottom: 1px dotted black;
+	color: black;
+	background: none;
+	cursor: help;
+}
+.qfw q {
+	font-family: Times, "Times New Roman", serif;
+	font-style: italic;
+}
+/* disabled for now
+.qfw blockquote {
+	font-family: Times, "Times New Roman", serif;
+	font-style: italic;
+}*/
+.qfw code {
+	background-color: #f9f9f9;
+}
+.qfw pre {
+	padding: 1em;
+	border: 1px dashed #2f6fab;
+	color: black;
+	background-color: #f9f9f9;
+	line-height: 1.1em;
+}
+
+/*
+** the main content area
+*/
+
+.qfw #siteSub {
+	display: none;
+}
+
+.qfw #jump-to-nav {
+	display: none;
+}
+
+.qfw #contentSub, .qfw #contentSub2 {
+	font-size: 84%;
+	line-height: 1.2em;
+	margin: 0 0 1.4em 1em;
+	color: #7d7d7d;
+	width: auto;
+}
+.qfw span.subpages {
+	display: block;
+}
+
+/* Some space under the headers in the content area */
+.qfw h1, .qfw h2 {
+	margin-bottom: .6em;
+}
+.qfw h3, .qfw h4, .qfw h5 {
+	margin-bottom: .3em;
+}
+.qfw .firstHeading {
+	margin-bottom: .1em;
+}
+
+/* emulate center */
+.qfw .center {
+	width: 100%;
+	text-align: center;
+}
+*.center * {
+	margin-left: auto;
+	margin-right: auto;
+}
+/* small for tables and similar */
+.qfw .small, .qfw .small * {
+	font-size: 94%;
+}
+.qfw table.small {
+	font-size: 100%;
+}
+
+/*
+** content styles
+*/
+
+.qfw #toc,
+.qfw .toc,
+.qfw .mw-warning {
+	border: 1px solid #aaa;
+	background-color: #f9f9f9;
+	padding: 5px;
+	font-size: 95%;
+}
+.qfw #toc h2,
+.qfw .toc h2 {
+	display: inline;
+	border: none;
+	padding: 0;
+	font-size: 100%;
+	font-weight: bold;
+}
+.qfw #toc #toctitle,
+.qfw .toc #toctitle,
+.qfw #toc .toctitle,
+.qfw .toc .toctitle {
+	text-align: center;
+}
+.qfw #toc ul,
+.qfw .toc ul {
+	list-style-type: none;
+	list-style-image: none;
+	margin-left: 0;
+	padding-left: 0;
+	text-align: left;
+}
+.qfw #toc ul ul,
+.qfw .toc ul ul {
+	margin: 0 0 0 2em;
+}
+.qfw #toc .toctoggle,
+.qfw .toc .toctoggle {
+	font-size: 94%;
+}
+
+.qfw .mw-warning {
+	margin-left: 50px;
+	margin-right: 50px;
+	text-align: center;
+}
+
+/* images */
+.qfw div.floatright, table.floatright {
+	clear: right;
+	float: right;
+	position: relative;
+	margin: 0 0 .5em .5em;
+	border: 0;
+/*
+	border: .5em solid white;
+	border-width: .5em 0 .8em 1.4em;
+*/
+}
+.qfw div.floatright p { font-style: italic; }
+.qfw div.floatleft, .qfw table.floatleft {
+	float: left;
+	position: relative;
+	margin: 0 .5em .5em 0;
+	border: 0;
+/*
+	margin: .3em .5em .5em 0;
+	border: .5em solid white;
+	border-width: .5em 1.4em .8em 0;
+*/
+}
+.qfw div.floatleft p { font-style: italic; }
+/* thumbnails */
+.qfw div.thumb {
+	margin-bottom: .5em;
+	border-style: solid;
+	border-color: white;
+	width: auto;
+}
+.qfw div.thumb div {
+	border: 1px solid #ccc;
+	padding: 3px !important;
+	background-color: #f9f9f9;
+	font-size: 94%;
+	text-align: center;
+	overflow: hidden;
+}
+.qfw div.thumb div a img {
+	border: 1px solid #ccc;
+}
+.qfw div.thumb div div.thumbcaption {
+	border: none;
+	text-align: left;
+	line-height: 1.4em;
+	padding: .3em 0 .1em 0;
+}
+.qfw div.magnify {
+	float: right;
+	border: none !important;
+	background: none !important;
+}
+.qfw div.magnify a,.qfw div.magnify img {
+	display: block;
+	border: none !important;
+	background: none !important;
+}
+.qfw div.tright {
+	clear: right;
+	float: right;
+	border-width: .5em 0 .8em 1.4em;
+}
+.qfw div.tleft {
+	float: left;
+	margin-right: .5em;
+	border-width: .5em 1.4em .8em 0;
+}
+
+.qfw .hiddenStructure {
+	display: none;
+	speak: none;
+}
+.qfw img.tex {
+	vertical-align: middle;
+}
+.qfw span.texhtml {
+	font-family: serif;
+}
+
+
+
+/* more IE fixes */
+/* float/negative margin brokenness */
+
+* html div.editsection { font-size: smaller; }
+.qfw #pagehistory li.selected { position: relative; }
+
+.qfw .redirectText {
+	font-size: 150%;
+	margin: 5px;
+}
+
+.qfw .printfooter {
+	border:1px solid #AAA;
+	background:#f9f9f9;
+	width:95%;
+	margin:25px -90% 5px 0;
+	padding:3px;
+}
+
+.qfw div.editsection { font-size:90%; padding-top:0.5em;margin-bottom:-0.5em}
+
+.qfw .printfooter a {
+	font-size:9px
+}
+
+.qfw .not-patrolled {
+	background-color: #ffa;
+}
+.qfw div.patrollink {
+	font-size: 75%;
+	text-align: right;
+}
+.qfw span.newpage,.qfw span.minor,.qfw span.searchmatch {
+	font-weight: bold;
+}
+.qfw span.unpatrolled {
+	font-weight: bold;
+	color: red;
+}
+
+.qfw span.searchmatch {
+	color: red;
+}
+.qfw .sharedUploadNotice {
+	font-style: italic;
+}
+
+.qfw span.updatedmarker {
+	color: black;
+	background-color: #0f0;
+}
+.qfw span.newpageletter {
+	font-weight: bold;
+	color: black;
+	background-color: yellow;
+}
+.qfw span.minoreditletter {
+	color: black;
+	background-color: #c5ffe6;
+}
+
+.qfw table.gallery {
+	border: 1px solid #ccc;
+	margin: 2px;
+	padding: 2px;
+	background-color: white;
+}
+
+.qfw table.gallery tr {
+	vertical-align: top;
+}
+
+.qfw table.gallery td {
+	vertical-align: top;
+	background-color: #f9f9f9;
+	border: solid 2px white;
+}
+
+.qfw div.gallerybox {
+	margin: 2px;
+	width:  150px;
+}
+
+.qfw div.gallerybox div.thumb {
+	text-align: center;
+	border: 1px solid #ccc;
+	margin: 2px;
+}
+
+.qfw div.gallerytext {
+	font-size: 94%;
+	padding: 2px 4px;
+}
+
+.qfw span.comment {
+	font-style: italic;
+}
+
+.qfw span.changedby {
+	font-size: 95%;
+}
+
+.qfw .previewnote {
+	text-indent: 3em;
+	color: #c00;
+	border-bottom: 1px solid #aaa;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}
+
+.qfw .previewnote p {
+	margin: 0;
+	padding: 0;
+}
+
+.qfw .editExternally {
+	border: 1px solid gray;
+	background-color: #ffffff;
+	padding: 3px;
+	margin-top: 0.5em;
+	float: left;
+	font-size: small;
+	text-align: center;
+}
+.qfw .editExternallyHelp {
+	font-style: italic;
+	color: gray;
+}
+
+.qfw li span.deleted, .qfw span.history-deleted {
+	text-decoration: line-through;
+	color: #888;
+	font-style: italic;
+}
+
+.qfw .toggle {
+	margin-left: 2em;
+	text-indent: -2em;
+}
+
+/* Classes for EXIF data display */
+.qfw table.mw_metadata {
+	font-size: 0.8em;
+	margin-left: 0.5em;
+	margin-bottom: 0.5em;
+	width: 300px;
+}
+
+.qfw table.mw_metadata caption {
+	font-weight: bold;
+}
+
+.qfw table.mw_metadata th {
+	font-weight: normal;
+}
+
+.qfw table.mw_metadata td {
+	padding: 0.1em;
+}
+
+.qfw table.mw_metadata {
+	border: none;
+	border-collapse: collapse;
+}
+
+.qfw table.mw_metadata td, table.mw_metadata th {
+	text-align: center;
+	border: 1px solid #aaaaaa;
+	padding-left: 0.1em;
+	padding-right: 0.1em;
+}
+
+.qfw table.mw_metadata th {
+	background-color: #f9f9f9;
+}
+
+.qfw table.mw_metadata td {
+	background-color: #fcfcfc;
+}
+
+.qfw table.collapsed tr.collapsable {
+	display: none;
+}
+
+/* Classes for article validation */
+
+.qfw table.revisionform_default {
+	border: 1px solid #000000;
+}
+
+.qfw table.revisionform_focus {
+	border: 1px solid #000000;
+	background-color:#00BBFF;
+}
+
+.qfw tr.revision_tr_default {
+	background-color:#EEEEEE;
+}
+
+.qfw tr.revision_tr_first {
+	background-color:#DDDDDD;
+}
+
+.qfw p.revision_saved {
+	color: green;
+	font-weight:bold;
+}
+
+.qfw #mw_trackbacks {
+	border: solid 1px #bbbbff;
+	background-color: #eeeeff;
+	padding: 0.2em;
+}
+
