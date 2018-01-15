@@ -1,0 +1,1 @@
+# nga_static_res
