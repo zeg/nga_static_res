@@ -6,7 +6,6 @@ document.title = x+' # '+document.title.replace(/.+? # /,'')
 commonui.crossDomainCall.setCallBack('iframeReadShow', function(){
 iframeRead.show()
 })//fe
-
 var iframeRead = {
 
 f:null,
@@ -29,6 +28,7 @@ toUrl:null,
 clickSound:null,
 aInit:null,
 
+//initGoUrl:null,
 
 go:function(u){
 var s = this
@@ -96,10 +96,12 @@ document.body.addEventListener('click',function(e){
 		s.hide()
 	},
 	true)
+//if(this.initGoUrl)
+//	this.go(this.initGoUrl)
 },//fe
 
 initB : function(){
-var p = /^(?:http:\/\/[^\/]+?)?(\/(?:read|nuke)\.php)/;
+var p = /^(?:https?:\/\/[^\/]+?)?(\/(?:read|nuke)\.php)/;
 commonui.aE(window,'bodyInit',function(){
 	document.body.addEventListener('click',function(e){
 		//console.log('click '+e.timeStamp)
@@ -110,7 +112,7 @@ commonui.aE(window,'bodyInit',function(){
 		//console.log('h.__mousedowntime '+h.__mousedowntime)
 		if(h.href.match(p))
 			return
-		h.target='parent'
+		h.target='_parent'
 		},
 		true)
 	})
@@ -118,30 +120,64 @@ commonui.aE(window,'bodyInit',function(){
 
 //---------------------------
 calcPopSize:function(){
-var p = __NUKE.position.get(), z=p.cw-this.mSize-this.pMW, y=0
+var z=__SETTING.currentClientWidth-this.mSize-this.pMW, y=0
 if(z<0)z=0
 if( __SETTING.bit & 4){//<= 10 inch
-	y = p.cw
+	y = __SETTING.currentClientWidth
 	}
 else{
-	y = Math.floor(p.cw*0.6)
+	y = Math.floor(__SETTING.currentClientWidth*0.6)
 	if(y<900)y=900
-	if(y>p.cw)y = Math.floor(p.cw*0.9)
+	if(y>__SETTING.currentClientWidth)y = Math.floor(p.cw*0.9)
 	}
 this.hSize = z, this.sSize = y
 },//fe
 
 //---------------------------
 initOnLoad:function(){
-var $=_$, s= this, l = location
-
-s.calcPopSize()
-
-s.f = $('/iframe').$0('style',{width:s.sSize+'px',height:'100%',border:'none',direction:'rtl',display:'none'},
+//if(l.hash && l.hash.charAt(1)=='/')
+	//s.go(l.hash.substr(1))
+this.f = _$('/iframe','style','width:'+this.sSize+'px;height:100%;border:none;direction:rtl;display:none',
 	'frameborder','no',
 	'border',0,
-	'src','/nuke/iframeRead.html'
+	'src',''
 	)
+this.o._.add(this.f)
+this.initA()
+
+},//fe
+
+//body开始时加载
+init:function(){
+this.trans = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',1)
+if(Event.prototype.preventDefault && Event.prototype.stopPropagation && Element.prototype.addEventListener && this.trans){}
+else
+	return
+
+var w=window, p = __SETTING.currentClientWidth, c=w.commonui, $=_$, s=this
+
+if(commonui.checkIfInIframe()){
+	try{
+		window.parent.iframeReadSetWindowTitle(document.title)
+		window.parent.iframeReadShow()
+		}
+	catch(x){
+		commonui.crossDomainCall(1, '*', "iframeReadSetWindowTitle", null, document.title)
+		commonui.crossDomainCall(1, '*', "iframeReadShow", null, null)
+		}
+	s.off=true
+	s.initB()
+	return
+	}
+
+if(p<1650 || location.pathname=='/read.php')
+	s.mSize=p
+else{
+	s.mSize=1650
+	s.pMW = commonui.addMmcMargin(p-s.mSize)
+	}
+
+s.calcPopSize()
 
 s.c = $('/div').$0(
 	'style',"position:fixed;top:0px;right:"+s.pMW+"px;width:"+s.hSize+"px;bottom:0px;overflow:hidden;zIndex:6;opacity:0.50;background:#000",
@@ -154,48 +190,10 @@ s.c = $('/div').$0(
 
 s.o = $('/div').$0(
 	'style',"position:fixed;top:0px;right:"+s.pMW+"px;width:"+s.hSize+"px;bottom:0px;borderLeft:"+s.border+"px solid "+__COLOR.border0+";background:"+__COLOR.bg0+";overflow:hidden;direction:rtl;zIndex:5"+(s.trans?(";"+s.trans[0]+":width 0.5s linear 0s,0.5s"):''),
-	 s.f
 	 )
 
-document.body.appendChild(s.o)
-document.body.appendChild(s.c)
-
-if(l.hash && l.hash.charAt(1)=='/')
-	s.go(l.hash.substr(1))
-
-s.initA()
-
-},//fe
-
-//body开始时加载
-init:function(){
-this.trans = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',1)
-if(Event.prototype.preventDefault && Event.prototype.stopPropagation && Element.prototype.addEventListener && this.trans){}
-else
-	return
-
-var w=window, p = w.__NUKE.position.get(), x, n=w.__NUKE, c=w.commonui, d=w.document, s=this, pMW=0
-
-if(commonui.checkIfInIframe()){
-	try{
-		window.parent.iframeReadSetWindowTitle(document.title)
-		window.parent.iframeReadShow()
-		}
-	catch(x){
-		commonui.crossDomainCall(1, '*', "iframeReadSetWindowTitle", null, document.title)
-		commonui.crossDomainCall(1, '*', "iframeReadShow", null, null)
-		}
-	this.off=true
-	this.initB()
-	return
-	}
-
-if(p.cw<1650 || location.pathname=='/read.php')
-	s.mSize=p.cw
-else{
-	s.mSize=1650
-	s.pMW = commonui.addMmcMargin(p.cw-this.mSize)
-	}
+document.body.insertBefore(s.o,document.body.firstChild)
+document.body.insertBefore(s.c,document.body.firstChild)
 
 c.aE(w,'DOMContentLoaded',function(){
 	s.initOnLoad()
@@ -223,23 +221,34 @@ this.toStat = 1
 this.action(u)
 },//fe
 
+actionTimeout1:null,
+actionTimeout2:null,
 action:function(u){
 
 this.toUrl = u
+
 if(this.actTimout)
 	return
 var s = this, l = location
-setTimeout(function(){
+if(s.actionTimeout1)
+	clearTimeout(s.actionTimeout1)
+if(s.actionTimeout2)
+	clearTimeout(s.actionTimeout2)
+
+s.actionTimeout1 = setTimeout(function(){
 	if(s.stat!=s.toStat){
 		if(s.toStat==1){
 			s.stat = 1
 			s.o.style.width=s.sSize+'px'
 			s.c.style.display='none'
 			if(s.toUrl && s.toUrl!=s.f.src)
-				setTimeout(function(){
+				s.actionTimeout2 = setTimeout(function(){
 					s.f.style.display=''
-					try{s.f.contentWindow.location.assign( s.toUrl )
-						s.f.contentWindow.focus()}catch(er){}
+					try{
+						s.f.contentWindow.location.assign( s.toUrl )
+						s.f.contentWindow.focus()
+						//l.assign(l.href.replace(/#.+$/,'')+'#do:ifr:'+s.toUrl.replace(/https?:\/\/[^\/]+/,''))
+					}catch(er){}
 					},550)
 			}
 		else{
@@ -251,8 +260,11 @@ setTimeout(function(){
 	else if(s.toUrl && s.toUrl!=s.f.src){
 		s.f.style.display=''
 
-		try{s.f.contentWindow.location.assign( s.toUrl )
-			s.f.contentWindow.focus()}catch(er){}
+		try{
+			s.f.contentWindow.location.assign( s.toUrl )
+			s.f.contentWindow.focus()
+			//l.assign(l.href.replace(/#.+$/,'')+'#do:ifr:'+s.toUrl.replace(/https?:\/\/[^\/]+/,''))
+			}catch(er){}
 		}
 		
 	s.actTimout=null

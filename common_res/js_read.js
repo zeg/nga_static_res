@@ -89,6 +89,7 @@ else{
 m.correctNode = m.i==0?true:false
 m.atItem = m.atItem?commonui.atItems._CREATE(m.atItem) : null//此贴所含有的道具(obj) .length .id(i)获取第i个道具的id  .count(i)获取第i个的数量  .i(id)返回特定id的index .info(i)获取第i个道具的info
 m.recommendO = _$('/span','className','white','title',(m.__GP.ubMod ? m.score+'支持 '+m.score_2+'反对' : ''),'innerHTML',m.recommend ? m.recommend :'')
+
 this.data[ m.i ] = m
 
 
@@ -114,8 +115,7 @@ if(!a.cLength)
 if (a.contentC.innerHTML && a.contentC.innerHTML.substr(0,24).indexOf('lessernuke')>-1)
 	a.cLength=0;
 
-var lite=a.vsmall ? 1:0,// &1小屏幕 / &2显示头像 / &4显示签名
-
+var lite=(a.vsmall ? 1:0),// &1小屏幕 / &2显示头像 / &4显示签名
 good = $('/span','className','small_colored_text_btn block_txt_c2 stxt')._.add(
 	$('/span','className','urltip nobr','style','fontSize:1.2em;marginTop:-1.8em;color:'+__COLOR.txt2),
 	$('/a','className','white','href','javascript:void(0)','title','支持',__TXT('good'),'onclick',function(){commonui.postScoreAdd(this,a)}),
@@ -123,12 +123,11 @@ good = $('/span','className','small_colored_text_btn block_txt_c2 stxt')._.add(
 	$('/a','className','white','href','javascript:void(0)','title','反对',__TXT('bad'),'onclick',function(){commonui.postScoreAdd(this,a,1)})
 	)
 	
-
 if(!a.comment){
 	if(a.i==0 && a.small || a.subjectC.innerHTML=='')
 		a.subjectC.innerHTML='&nbsp;'
 	var x = a.subjectC.parentNode
-	x.removeChild(a.subjectC)
+	//x.removeChild(a.subjectC)
 	if(x.firstElementChild.nodeName=='BR')
 		x.removeChild(x.firstElementChild)
 	x.insertBefore(
@@ -219,10 +218,12 @@ if(a.type || a.tmBit1){
 		}
 */
 	}
-	
+
 if (a.comment){//comment
+	var posterinfo =  $(a.uInfoC.cloneNode(),'innerHTML',this.posterInfo.main(lite, a.i, a.fid, a.tid, a.pid, a.cLength, a.pAid, a.type, a.stid, a.comment),'style','display:block')
 	a.pInfoC.style.display='none'
-	a.uInfoC.innerHTML =  this.posterInfo.main(lite, a.i, a.fid, a.tid, a.pid, a.cLength, a.pAid, a.type, a.stid, a.comment)
+	a.uInfoC.parentNode.replaceChild(posterinfo,a.uInfoC)
+	a.uInfoC = posterinfo
 	return w.ubbcode.bbsCode({
 		i:a.i,
 		c:a.contentC,
@@ -294,7 +295,8 @@ w.ubbcode.bbsCode({
 	callBack: a.type & 4096 ? function(a){commonui.autoTranslate.main(a.c,a.fId)} : null,
 	isLesser:isLesser,
 	isNukePost:(a.type & 2048) ? 1 : ((a.punUsers && a.punUsers[a.pAid]) ? 2 : 0),
-	txt:a.txt!==undefined?a.txt:undefined
+	txt:a.txt!==undefined?a.txt:undefined,
+	callBack:function(ar){if(ar.i<2)setTimeout(function(){ngaAds.bbs_ads8_load_new_load(ar.i)},1000)}
 	})
 
 a.cLength = 0;
@@ -317,7 +319,6 @@ if(uI.active>=0){
 		}
 	}
 
-var posterinfo =  this.posterInfo.main(lite, a.i, a.fid, a.tid, a.pid, a.cLength, a.pAid, a.type, a.stid, a.comment)
 
 //commonui.dispUserInfo(lite,pos,avatar,honor,regdate,lastlogin,lesser,ip,level,mute,medal,postNum,rvrc,repu,aid,fid,money,site,ifRemark,$('postauthor'+pos).innerHTML)
 a.contentC.parentNode.className+=' pc'+uI.memberid
@@ -325,23 +326,24 @@ a.contentC.parentNode.className+=' pc'+uI.memberid
 if(a.atItem && a.atItem.sp && a.atItem.sp[0])
 	a.contentC.parentNode.style.color = a.atItem.sp[0]
 
-a.uInfoC.innerHTML = ''
+var posterinfo =  $(a.uInfoC.cloneNode(),'innerHTML',this.posterInfo.main(lite, a.i, a.fid, a.tid, a.pid, a.cLength, a.pAid, a.type, a.stid, a.comment),'style','display:block')
+
 if(lite & 1){
-	var xx = $('/div'), x=a.uInfoC.parentNode.style
+	var x=a.uInfoC.parentNode.style
 	x.display='none'
-	xx.innerHTML=posterinfo
-	xx.className='posterInfoLine'
-	a.pC.insertBefore(xx,a.pC.getElementsByTagName('div')[1])
+	posterinfo.className='posterInfoLine'
+	a.pC.insertBefore(posterinfo,a.pC.getElementsByTagName('div')[1])
 	/*if(x.backgroundImage){
 		xx.style.backgroundImage = x.backgroundImage
 		xx.style.backgroundPosition = x.backgroundPosition
 		xx.style.backgroundRepeat = x.backgroundRepeat
 		}*/
-	var xx = xx.parentNode
+	var xx = posterinfo.parentNode
 	}
 else{
-	a.uInfoC.innerHTML = posterinfo
 	var xx = a.uInfoC.parentNode
+	xx.replaceChild(posterinfo,a.uInfoC)
+	a.uInfoC = posterinfo
 	if(window.__CURRENT_UID==a.pAid && (window.__GP.ubMod || window.__GP.rvrc>10) && window.File && window.FileReader && window.FileList){
 		var pbg = commonui.userCache.get("customPosterBackgroundFile")
 		if(pbg){
@@ -1311,7 +1313,7 @@ if(x.max_select>1)
 for (var k in x){
 	if(k|0){
 		var y = x['_'+k].split(',')//单项人数, 单项投注量, 总人数
-		x[k]=[x[k], y[0]|0, y[1]|0]
+		x[k]=[x[k], y[0]|0, y[1]|0]//标题, 单项人数, 单项投注量
 		if(y[2]>usum)
 			usum = y[2]|0
 		sum += y[0]|0
@@ -1320,7 +1322,7 @@ for (var k in x){
 		}
 	}
 
-
+console.log(x)
 
 var name = x.type==TYPE_SCORE ? '评分' :(x.type==TYPE_BET?'投注':'投票'), atv=!x.end || w.__NOW<=x.end, txt="<table id='"+id+"'><tbody>", info = "", btn='', i=0,savg=0
 
@@ -1346,16 +1348,18 @@ for (var k in x){
 			txt += "<td></td>"
 		}
 	if(x.type==2){
-		txt += "<td><b>"+(tmp = (x[k][2]/x[k][1]*100|0)/100)+"分</b></td><td style='width:10em'><div style='background:#790000;height:1em;width:"+(tmp? tmp/x.max*100 : 0)+"%'></div></td>"
+		txt += "<td><b>"+(tmp = (x[k][2]/x[k][1]*100|0)/100)+"分</b></td><td style='width:10em'><div style='background:"+__COLOR.quote1bg+";border-radius:0.17em;width:100%'><div style='background:"+__COLOR.border0+";border-radius:0.17em;height:1em;width:"+(tmp? tmp/x.max*100 : 0)+"%'></div></div></td>"
 		this.vote['votedata_vote'+i+'value']= tmp
 		savg+=tmp
 		}
 	else{
 		txt += "<td><b>"+x[k][1]+"人</b></td>"
-		txt += "<td style='width:10em'><div style='background:#790000;height:1em;width:"+(sum? x[k][1]/sum*100 : 0)+"%'></div></td>";
+		txt += "<td>"+(((x[k][1]/sum*1000)|0)/10)+"%</td>"
+		txt += "<td style='width:10em'><div style='background:"+__COLOR.quote1bg+";border-radius:0.17em;width:100%'><div style='background:"+__COLOR.border0+";border-radius:0.17em;height:1em;width:"+(sum? x[k][1]/sum*100 : 0)+"%'></div></div></td>";
 		if(x.type==1){
 			txt += "<td><b>投注"+x[k][2]+"</b></td>"
-			txt += "<td style='width:10em'><div style='background:#790000;height:1em;width:"+(vsum? x[k][2]/vsum*100 : 0)+"%'></div></td>";
+			txt += "<td>"+(((x[k][2]/vsum*1000)|0)/10)+"%</td>"
+			txt += "<td style='width:10em'><div style='background:"+__COLOR.quote1bg+";border-radius:0.17em;width:100%'><div style='background:"+__COLOR.border0+";border-radius:0.17em;height:1em;width:"+(vsum? x[k][2]/vsum*100 : 0)+"%'></div></div></td>";
 			}
 		}
 	txt+='</tr>'
@@ -1696,7 +1700,13 @@ d:{
 36:{n1:'道具',n2:'对此贴使用道具',on:function(e,a){commonui.atItemBuyUse(e,a.tid,a.pid)} ,ck:function(a){if (a.__CURRENT_UID)return 1}},
 
 37:{n1:'道具2',n2:'对此贴使用道具',on:function(e,a){commonui.recommendPost(e,a.i,this)},
-	ck:function(a){if (a.__CURRENT_UID)return 1} }
+	ck:function(a){if (a.__CURRENT_UID)return 1} },
+
+38:{n1:'推荐',n2:'推荐此贴至工作人员',on:function(e,a){commonui.logPostRecommend(e,a.tid,a.pid)},
+	ck:function(a){if ( a.__GP.rvrc>=200 || a.__GP.admincheck)return 1} },
+
+39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
+	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} }
 },
 
 replaceUrl:function (u){
@@ -1706,8 +1716,8 @@ return u.replace('_TOPIC',e(document.title)).replace('_URL',e(document.location.
 
 def:[28,6,7,8,34],
 all:{
-'帖子':[4,5,6,7,8,9,18,33,35,36,37],
-'用户':[19,20,21,22,23],
+'帖子':[4,5,6,7,8,9,18,33,35,36,37,38],
+'用户':[19,20,21,22,23,39],
 '管理':[10,11,13,14,15,16,17,29,32,30],
 '分享':[24,25,26,27]
 },

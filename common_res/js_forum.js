@@ -745,7 +745,7 @@ d:{
 	on:function(e,a){commonui.massAdmin.checkAll($('m_threads'))},
 	ck:function(a){if(a.admin)return 1} },
 
-15:{n1:'集合操作',
+15:{n1:'合集操作',
 	on:function(e,a){
 		var aa = {fid:a.fid,tid:a.stid,admin:a.admin,anyAdmin:a.anyAdmin,minorAdmin:a.minorAdmin,pid:0,greater:window.__GP.greater}
 		commonui.topicBtn.allBtn(e,aa)
@@ -776,6 +776,8 @@ genC:commonui.buttonBase.genC,
 genA:commonui.buttonBase.genA,
 
 load:function(o,type,fid,admin){
+if(!o || o.nodeType!=1)
+	return
 if(window.__CURRENT_FID)fid = window.__CURRENT_FID
 
 

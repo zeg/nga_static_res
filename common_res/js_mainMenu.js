@@ -80,7 +80,6 @@ for (i=0;i<ks.length;i++){
 },
 
 next:function(id,n){//要打开的菜单项目id 点击的菜单项目所在级node
-
 if(n.firstChild){
 	var t = n.firstChild.childNodes
 	for (var i=0; i<t.length; i++){
@@ -405,19 +404,13 @@ if (x.u===0 && __CURRENT_UID)
 	return
 if (x.check && !x.check())
 	return
-var y,self = this
+var y = x.tagName ? _$('/'+x.tagName): _$('/a')
+	
+y.className = ismainmenu ? 'mmdefault ' : ''
 
-if(x.options){
-	var z = _$('/select')
-	for (var j=0; j<x.options.length; j++)
-		z._.add( _$('<option/>')._.attr('value',x.options[j].v,1)._.attr('innerHTML',x.options[j].k,1) )
-	y = _$('/span')._.add(z)
-	}
-else if(x.tagName){
-	y = _$('<'+x.tagName+'/>')
-	}
+if(x.arg)
+	y._.call.apply(y._,x.arg)
 else{
-	y = _$('<a/>')
 	if(x.href){
 		y.href = x.href
 		if(x.href.match(/^https?:\/\//i))
@@ -425,28 +418,32 @@ else{
 		}
 	else
 		y.href='javascript:void(0)'
-	}
-y.className = ismainmenu ? 'mmdefault ' : ''
-if(x.className)
-	y.className += x.className
-if(x.innerHTML){
-	if( x.innerHTML.constructor==Function)
-		x.innerHTML = x.innerHTML()
-	if(x.innerHTML.constructor == String)
-		y.innerHTML = x.innerHTML
-	else
-		y._.css('padding',0)._.add(x.innerHTML)
-		
-	}
-if (x.color)
-	y.style.color=x.color
-if(x.on){
-	if(x.on.constructor==Array){
-		for(var i=0;i<x.on.length;i+=2)
-			y._.on(x.on[i],x.on[i+1])
+	if(x.className)
+		y.className += x.className
+	if(x.innerHTML){
+		if( x.innerHTML.constructor==Function){
+			var z = x.innerHTML()
+			if(z && z.constructor==String)
+				y.innerHTML = z
+			else
+				y._.add(z)
+			}
+		else if(x.innerHTML.constructor == String)
+			y.innerHTML = x.innerHTML
+		else
+			y._.css('padding',0)._.add(x.innerHTML)
+
 		}
-	else
-		y._.on(x.on.event,x.on.func)
+	if (x.color)
+		y.style.color=x.color
+	if(x.on){
+		if(x.on.constructor==Array){
+			for(var i=0;i<x.on.length;i+=2)
+				y._.on(x.on[i],x.on[i+1])
+			}
+		else
+			y._.on(x.on.event,x.on.func)
+		}
 	}
 y._.sV('id',id)
 

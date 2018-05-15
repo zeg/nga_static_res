@@ -108,7 +108,7 @@ if(_U.buffs){
 var info = this._span(
 	
 	this._ul(
-		this._a(true, '搜索用户','/nuke.php?func=ucp'),
+		this._a(!_SELF, '发送私信','/nuke.php?func=message#to='+_U.uid),
 		this._a(_GREATER, '被操作记录',null,function(){adminui.viewLog(_U.uid,null)}),
 		this._a(_GREATER, '操作记录',null,function(){adminui.viewLog(null,_U.uid)}),
 		this._a((_GREATER && _SELF) || _ADMIN , '访问记录','/nuke.php?__lib=admin_log_search&__act=access_log&uid='+_U.uid),
@@ -740,3 +740,61 @@ __NUKE.doRequest({
 this.adminwindow._.show()
 }//fe
 
+
+commonui.ucp.accountAction = function(act){
+var c = commonui
+c.createadminwindow()
+var $ = _$,x = c.adminwindow,y='账号操作'
+switch(act){
+	case 'oauthlogin':
+		y='使用第三方账号登录'
+		break;
+	case 'login':
+		y='账号登录'
+		break;
+	case 'resetpass':
+		y='重置密码'
+		break;
+	case 'changepass':
+		y='修改密码'
+		break;
+	case 'changephone':
+		y='修改绑定手机'
+		break;
+	case 'setphone':
+		y='绑定手机'
+		break;
+	case 'oauthreg':
+		y='使用第三方账号登录'
+		break;
+	case 'register':
+		y='账号注册'
+		break;
+	case 'logout':
+		y='账号登出'
+		break;
+	case 'iflogin':
+		y='账号登录'
+		break;
+	}
+x._.addContent(null)
+x._.addTitle(y)
+
+if(!this.accountAction.iif){
+	this.accountAction.iif = $('/iframe','style','border:none;width:25em;height:60em')
+	window.addEventListener("message", function(e){
+		//if(e.origin!=location.host)return
+		var x
+		if((x = commonui.ucp.accountAction.iif) && e.data=='loginFrameWindowWidth50'){
+			x.$0('style','width:50em;height:120em')
+			commonui.adminwindow._.show()
+			}
+		})
+	}
+this.accountAction.iif.src = 'https://'+location.host+'/nuke.php?__lib=login&__act=account&'+act
+x._.addContent(
+	this.accountAction.iif
+	)
+
+c.adminwindow._.show()
+}//

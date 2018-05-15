@@ -1,7 +1,3 @@
-//no use
-
-
-
 /*
 ========================
 FOR NGACN ONLY
@@ -12,16 +8,10 @@ bbs.ngacn.cc 广告列表 v1.00
 written by zeg 20051010
 ========================
 
-/* 总表 
+/* 总表 */
 if(!window.ngaAds)
 	ngaAds = [];
 
-ngaAds.objClone = function(o){
-	if(o == null || typeof(o) != 'object')return o;
-	var oo = new o.constructor();
-	for(var k in o)oo[key] = this.objClone(o[key]);
-	return oo;
-	}
 ngaAds.ckurl = function(url){
 	return location.pathname==url ? true : false
 	}
@@ -33,7 +23,29 @@ for (var k in s){
 	}
 }
 
+ngaAds.style =function(x) {
+switch(x){
+	case 'bbs_ds32':
+		return 'background:'+__COLOR.gbg1+';box-shadow: 0px 2px 2px #777 inset;margin-top: -0.4em;'
+	case 'bbs_ds32_a':
+		return 'color:#ddd;'
+	case 'adsc1':
+		return 'margin-bottom:'+__COLOR.spc+'px;'
+	case 'adsc10':
+		return 'border-top:3px solid '+__COLOR.border0+';border-bottom:3px solid '+__COLOR.border0+';'
+	case 'adshid':
+		return 'width:0px;height:0px;padding:0px;margin:0px;font-size:0px;line-height:0px;overflow:hidden;'
+	case 'adsc':
+		return 'background:'+__COLOR.gbg1+';vertical-align:top;padding:0.25em 0;text-align:center;'
+	case 'adsh':
+		return 'background:'+__COLOR.gbg1+';padding:0.416em;width:192px;text-align:center;vertical-align:top;'
+	case 'dslabel':
+		return 'line-height:1.1em;font-size:0.583em;letter-spacing:0.25em;'
+	}
+}
 
+
+/*
 ngaAds.push( {
 	date: "01/5/2015-01/30/2015",
 	id: "bbs_ads32",
@@ -55,7 +67,7 @@ ngaAds.push( {
 	title: "小窗大世界 旅游攻略征集",
 	url: "/read.php?tid=7756429"
 	})
-
+*/
 
 
 ngaAds.count32 = 0
@@ -64,7 +76,7 @@ ngaAds.bbs_ads32_gen = function(){
 if(__SETTING.bit & 4)
 	return ''
 if ((this.count32++ <= 1) && this.bbs_ads32)
-	return "<span class='bbs_ds32 small_colored_text_btn'>"+this.genAds(this.bbs_ads32)+"</span> "
+	return "<span class='small_colored_text_btn' style='"+this.style('bbs_ds32')+"'>"+this.genAds(this.bbs_ads32, this.style('bbs_ds32_a'))+"</span> "
 return ''
 }
 
@@ -84,7 +96,7 @@ if((__SETTING.bit & 4))
 ngaAds.count31++
 if ((ngaAds.count31 == 1) && (this.bbs_ads31 || this.bbs_ads1 || this.bbs_ads40 || this.bbs_ads41)){
 	var x='', z=$(id).parentNode
-	x+="<div class='adsc adsch' id='bbs_ds31'>"
+	x+="<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"
 	if(this.bbs_ads1)
 		x+=this.genAds(this.bbs_ads1)
 	if(this.bbs_ads40 || this.bbs_ads41)
@@ -97,7 +109,7 @@ if ((ngaAds.count31 == 1) && (this.bbs_ads31 || this.bbs_ads1 || this.bbs_ads40 
 	}
 if ((ngaAds.count31 == 10) && (this.bbs_ads33 || this.bbs_ads42 || this.bbs_ads43)){
 	var x='', z=$(id).parentNode
-	x+="<div class='adsc adsch' id='bbs_ds33'>"
+	x+="<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"
 	if(this.bbs_ads42 || this.bbs_ads43)
 		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads42)+'</td><td>'+this.genAds(this.bbs_ads43)+'</td></tr></table>'
 	else if(this.bbs_ads33)
@@ -131,8 +143,9 @@ if (x.bbs_ads27){
 
 /*
  bbs_ads8 论坛阅读帖子页面（看帖）第1贴右侧190*400
- bbs_ads24 论坛阅读帖子页面（看帖）第1贴右侧190*400 优先级高于bbs_ads24
-
+ bbs_ads24 论坛阅读帖子页面（看帖）第1贴右侧190*400 优先级高于bbs_ads8
+ bbs_ads45 与bbs_ads24不同高度互换 自动选择
+								
  bbs_ads21 论坛阅读帖子页面（看帖）第2贴右侧190*400
  bbs_ads25 论坛阅读帖子页面（看帖）第2贴右侧190*400 优先级高于bbs_ads21
 
@@ -142,43 +155,61 @@ ngaAds.bbs_ads8_preload = function(){
 
 }//fe
 
+
 ngaAds.bbs_ads8_load_new = function(o,i,fid){
-if(o.parentNode.tagName!='TR' || o.parentNode.offsetWidth<1200)
+if(i>2 || o.parentNode.tagName!='TR' || __SETTING.currentClientWidth<1200)
 	return
-var a;
-if (this.bbs_ads8 && i==0)
-	a = this.bbs_ads8
-if (this.bbs_ads24 && i==0)
-	a = this.bbs_ads24
-if (this.bbs_ads21 && i==1)
-	a = this.bbs_ads21
-if (this.bbs_ads25 && i==1)
-	a = this.bbs_ads25
-if (this.bbs_ads17 && i==2)
-	a = this.bbs_ads17
+var a,t=this;
+if(i==0)
+	a = t.bbs_ads24 ? t.bbs_ads24 : (t.bbs_ads45 ? t.bbs_ads45 : (t.bbs_ads8 ? t.bbs_ads8 : null) )
+else if(i==1)
+	a = t.bbs_ads25 ? t.bbs_ads25 : (t.bbs_ads21 ? t.bbs_ads21 : null)
+else if(i==2)
+	a = t.bbs_ads17 ? t.bbs_ads17 : null
 if (a)
 	{
-	if (typeof(a.file)=='object'){
-		if (a.file['f'+fid])
-			a.file = a.file['f'+fid];
-		else
-			a.file = a.file['default'];
-		}
-	o.innerHTML=this.genAds(a);
-	_$(o).$0('style',{background:'#444',padding:'5px',width:'192px',textAlign:'center',verticalAlign:'top'},'className',null)
+	//if (typeof(a.file)=='object'){
+	//	if (a.file['f'+fid])
+	//		a.file = a.file['f'+fid];
+	//	else
+	//		a.file = a.file['default'];
+	//	}
+	t.bbs_ads8_load_new[i] = o
+	_$(o).$0('style',"background:#444;padding:5px;width:"+(a.width|0?(a.width|0)+2|0:192)+"px;textAlign:center;verticalAlign:top;display:;",'className',null)
+	return 1
 	}
 }//fe
-
+ngaAds.bbs_ads8_load_new_load = function(i){
+if(i>2 || !this.bbs_ads8_load_new[i])return
+var t = this
+if(i==0){
+	if(t.bbs_ads24 && t.bbs_ads45){
+		var x = t.bbs_ads8_load_new[i].offsetHeight
+		if(x>t.bbs_ads24.height && x>t.bbs_ads45.height)
+			x = t.bbs_ads24.height > t.bbs_ads45.height ? t.bbs_ads24 : t.bbs_ads45
+		else
+			x = t.bbs_ads24.height > t.bbs_ads45.height ? t.bbs_ads45 : t.bbs_ads24
+		}
+	else
+		x = t.bbs_ads24 ? t.bbs_ads24 : (t.bbs_ads45 ? t.bbs_ads45 : (t.bbs_ads8 ? t.bbs_ads8 : null) )
+	}
+else if(i==1)
+	x = t.bbs_ads25 ? t.bbs_ads25 : (t.bbs_ads21 ? t.bbs_ads21 : null)
+else if(i==2)
+	x = t.bbs_ads17 ? t.bbs_ads17 : null
+if(x)
+	t.bbs_ads8_load_new[i].innerHTML = this.genAds(x)
+}//
 
 
 
 /*论坛全页面上通栏 900×60		bbs_ads1*/
-ngaAds.bbs_ads1_gen=function(x){
+ngaAds.bbs_ads1_gen=function(){
 if(__SETTING.bit & 4)
 	return '';
 
 if (this.bbs_ads1)
-	return "<div id='adsc1' class='adsc' "+(x?"style='margin-top:"+x+"'":'')+">"+this.genAds(this.bbs_ads1)+'</div>'
+	return "<div style='"+this.style('adsc')+this.style('adsc1')+"'>"+this.genAds(this.bbs_ads1)+'</div>'
 return ''
 }
 
@@ -188,9 +219,9 @@ return ''
 function bbs_ads9(){
 if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
 	return
-var n=window.ngaAds, w = window.put
-if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && window.location.search.match(/(?:\?|&)fid=-7(?:&|$)/i))){
-	w("<div id='adsc9' class='adsc adsch' style='margin-bottom:8px;'>");
+var n=ngaAds, w = window.put
+if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && __CURRENT_FID==-7)){
+	w("<div style='"+n.style('adsc')+";margin-bottom:8px;'>");
 	if(n.bbs_ads1)
 		w(n.genAds(n.bbs_ads1));
 	if(n.bbs_ads9)
@@ -201,7 +232,7 @@ if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && window.location.s
 		w(n.genAds(n.bbs_ads28));
 	w("</div>");
 	}
-	
+
 }//fe
 
 ngaAds.open_69124=function(e,u,h){
@@ -214,10 +245,7 @@ if(!this.open_69124.w){
 this.open_69124.w._.show(null,null,2)
 }//fe
 
-ngaAds.bbs_ads30 = function(){
-if(__SETTING.bit & 4)
-	return
-//window.put("<div class='catenew'><ifra"+"me src='http://wow.178.com/201407/t_198270781239.html' style='margin:0px;overflow:hidden;width:100%;height:175px;border:none' scrolling='no' frameborder='0' allowTransparency='true'></ifr"+"ame></div>");
+ngaAds.bbs_ads30_gen = function(){
 
 }//fe
 
@@ -251,7 +279,7 @@ else{
 	}
 
 if(x){
-	put("<div class='adsc' id='bbs_ads14'>")
+	put("<div style='"+this.style('adsc')+"'>")
 	put(x)
 	put("<div class='clear'></div></div>");
 	}
@@ -281,16 +309,34 @@ if (ad)
 	return _$('/td').$0('id','bbs_ads16','className','adsh','innerHTML',ad)
 */
 if (this.bbs_ads22)
-	return _$('/td').$0('id','bbs_ads16','className','adsh','innerHTML',this.genAds(this.bbs_ads22))
+	return _$('/td').$0('style', this.style('adsh'),'innerHTML',this.genAds(this.bbs_ads22))
 return null
 }
 
 /**/
 ngaAds.bbs_ads29_gen = function(id){
 if((__SETTING.bit & 8)==0 && id==1 && this.bbs_ads29)
-	return "<div class='adsc' id='bbs_ads29' style='margin-top:1em'><span class='dslabel'>ADVERTISEMENT</span><br/>"+this.genAds(this.bbs_ads29)+"<div class='clear'></div></div>"
+	return "<div style='"+this.style('adsc')+"' style='margin-top:1em'>"+this.genAds(this.bbs_ads29)+"<div class='clear'></div></div>"
 return ''
 }
+	
+//移动页面下浮动 固定尺寸比例640*150
+ngaAds.bbs_ads44_gen = function(){
+var x=this.bbs_ads44
+if((__SETTING.bit & 16) && x){
+	if((''+x.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/)){//img
+		x.width = '525'
+		x.height = '123'
+		}
+	else{//iframe
+		if(x.width>525){
+			x.style = 'transform: scale('+(525/x.width)+');transform-origin:0% 0%;margin-bottom:-'+(x.height-525/x.width*x.height)+'px;'
+			}
+		}
+	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(x)))
+	}
+return null
+}//
 
 
 /*特殊广告加载*/

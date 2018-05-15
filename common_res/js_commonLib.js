@@ -1,23 +1,23 @@
 /*
 ========================
-commonlib.20131012 for nga
+commonlib misc functions for nga
 ------------
-(c) Zeg All Rights Reserved
+(c), Zeg, All Rights Reserved
+Distributed under GPLv3 license
 ========================
 */
 
-//==================================
 
-//基本功能
+window.$ = function(id){return document.getElementById(id)}
+window.put = function(txt){document.write(txt)}
 
-//==================================
 var __NUKE = {
 	
 _w : window,
 _d : window.document,
 
 /**
- *简单的复制一个ocject
+ *简单的复制一个object
  */
 simpleClone : function (o){
 if(o == null || typeof(o) != 'object')
@@ -39,40 +39,6 @@ oo.prototype=o
 return new oo;
 },//fe
 
-
-/**
- *一种简单的编码 不建议用这个……
- */
-scEn:function (v,no){
-switch (typeof(v)) { 
-	case 'string':
-		return v.replace(/~/g,'');
-	case 'number':
-		return v.toString(10);
-	case 'boolean':
-		return v?1:0
-	case 'object':
-		if(no)return ''
-		var buf=[]
-		for (var k in v)
-			buf.push(this.scEn(k,1) + '~' + this.scEn(v[k],1));
-		return buf.join('~');
-	default: 
-		return '';
-	}
-},//fe
-
-/**
- *一种简单的编码的解码
- */
-scDe:function (s){
-s = s.split('~')
-if(s.length==1)return s
-var v={}
-for (var i=0;i<s.length;i+=2)
-	v[s[i]]=s[i+1]
-return v
-},//fe
 
 /*
  *获取css/event等浏览器兼容属性名 用第一个属性检测 生成后面一系列的兼容名称
@@ -185,7 +151,7 @@ if (!this.getOffset){
 			return {xf:window.pageXOffset, yf:window.pageYOffset, pw:b.scrollWidth, ph:b.scrollHeight, cw:b.clientWidth, ch:b.clientHeight} 
 			}
 	else
-		this.getOffset = function(e){
+		this.getOffset = function(){
 			var b = this.b;
 			return {xf:b.scrollLeft,yf:b.scrollTop, pw:b.scrollWidth, ph:b.scrollHeight, cw:b.clientWidth, ch:b.clientHeight}
 			}
@@ -322,19 +288,7 @@ o.style.visibility='inherit';
 
 },//ce position
 
-/**
- *同上 老格式兼容 别用这个……
- */
-getDocSize:function(){
-var p = this.position.get()
-p.sW = p.pw
-p.sH = p.ph
-p.cW = p.cw
-p.cH = p.ch
-p.sL = p.xf
-p.sT = p.yf
-return p
-},//fe
+
 
 /**
  *判断一个mouseout事件 是否是鼠标移到元素之外
@@ -348,15 +302,6 @@ while (r && r != o && r.nodeName != 'BODY')
 	r= r.parentNode
 if (r==o) return false;
 return t
-},//fe
-
-/**
- *主要用来将数字形式的字符串转成整数型(int)变量
- */
-toInt:function(n){
-var n = parseInt(n,10)
-if(!n)n=0
-return n
 },//fe
 
 /**
@@ -384,6 +329,9 @@ else {
 	}
 },//fe
 
+/**
+ *触发事件
+ */
 fireEvent:function(o,n){
 var e={}; // The custom event that will be created
 
@@ -401,8 +349,42 @@ if (document.createEvent)
 	o.dispatchEvent(e);
 else
 	o.fireEvent("on" + e.eventType, e);
-}//fe
+},//fe
 
+
+
+/**
+*检测doRequest返回的标准数据是否正确 在成功时callback函数中自行调用 (针对nga论坛的常用数据格式) 
+*返回错误信息 如返回true则为超时
+*/
+doRequestIfErr : function(x,tt){
+if(!x)
+	return 'no data'
+if(x.error)
+	return x.error[0]
+if(!x.data)
+	return 'no data'
+if(x.data.constructor === Array){
+	if(!x.data.length)
+		return 'no data'
+	}
+else{
+	var k=null;
+	for(var k in x.data){
+		break
+		}
+	if(k===null)
+		return 'no data'
+	}
+if(x.time && (tt || x.timeout)){
+	var t = window.__NOW
+	if(!t)
+		t = Math.floor((new Date).getTime()/1000)
+	
+	if(t-x.time > (tt ? tt : x.timeout))
+		return true
+	}
+}//fe
 
 
 }//ce
@@ -410,21 +392,21 @@ else
 
 
 
-//==================================
+/*
+========================
+NJtools nga javascript tool lib
+------------
+(c), Zeg, All Rights Reserved
+Distributed under MIT license
+========================
+*/
 
-//DOM
 
-//==================================
-
-window.$ = function(id){return document.getElementById(id)}
-
-window.put = function(txt){document.write(txt)}
-
+;(function(NAME){
 /*
 *Element 原型扩展
-*实际使用方式看下面的window._$
 */
-var domExtPrototype={ 
+window.domExtPrototype={ 
 /*
  *增加样式class
  */
@@ -438,16 +420,47 @@ cls:function(cn){
  *@param (obj)o/{name:value,name:value,name:value...}
  */
 css:function(){
-	if(arguments.length==1){
-		var o = arguments[0]
-		for (var k in o)
-			this.self.style[k]=o[k]
+	var o = this.self, a=arguments
+	if(a.length==1){
+		var c = arguments[0]
+		for (var k in c){
+			if(k.charAt(0)=='-')
+				k=this.csn(o.style,k.substr(1))
+			o.style[k]=c[k]
+			}
 		}
 	else
-		for(var i=0;i<arguments.length;i+=2)
-			this.self.style[arguments[i]]=arguments[i+1]
-	return this.self
+		for(var i=0;i<a.length;i+=2){
+			if(a[i].charAt(0)=='-')
+				a[i]=this.csn(o.style,a[i].substr(1))
+			o.style[a[i]]=a[i+1]
+			}
+	return o
 	},
+csn:function(s,k,r){
+	if( k in s)
+		return k
+	else{
+		var kk = k.substr(0,1).toUpperCase()+k.substr(1)
+		if(this.csnp[0]+kk in s)
+			return this.csnp[0]+kk
+		else{
+			for(var i=1;i<this.csnp.length;i++){
+				if(this.csnp[i]+kk in s){
+					this.csnp[0] = this.csnp[i]
+					return this.csnp[i]+kk
+					}
+				}
+			}
+		}
+	return r?null:k
+	},
+csnp:[
+	'',
+	'webkit',
+	'ms',
+	'moz'
+	],
 /*
  *绑定事件
  *@param 事件名(无on) , callback(第一个参数是event)
@@ -460,50 +473,6 @@ on:function(type, fn){
 		o.attachEvent('on'+type, function(){fn.call(o, window.event)} ) 
 		}
 	return this.self; 
-	},
-
-/*
- *增加子节点
- *@param node , node , node , node , node , node ...
- *node为null时忽略
- *node为string时node=$(node)
- *node为array时 insertBefore(node.0,node.1)
- */
-aC:function(){
-	var o = this.self, i=0, a=arguments
-	for (;i<a.length;i++){
-		if(a[i]===null)continue
-		if(a[i].constructor==Array){
-			if(typeof(a[i][0])=='string')a[i][0]=$(a[i][0])
-			o.insertBefore(a[i][0],a[i][1])
-			}
-		else{
-			if(typeof(a[i])=='string')a[i]=$(a[i])
-			o.appendChild(a[i])
-			}
-		}
-	return o;
-	},
-/*
- *保存数据
- *@param name , value
- */
-sV:function (o,v){
-	if(!this.anyVar)this.anyVar={}
-	if (v!==undefined) 
-		this.anyVar[o]=v
-	else 
-		for (var k in o)  
-			this.sV(k, o[k]) 
-	return this.self
-	},
-/*
- *取出数据
- *@param name
- */
-gV:function (k){
-	if(!this.anyVar)this.anyVar={}
-	return this.anyVar[k] 
 	},
 /*
  *增加子节点
@@ -519,7 +488,7 @@ add:function(){
 			continue
 		else if(typeof a[i] =='object'){
 			if(a[i].constructor==Array){
-				o._.add.apply(o._,a[i])
+				this.add.apply(this,a[i])
 				}
 			else
 				o.appendChild(a[i])
@@ -529,6 +498,7 @@ add:function(){
 		}
 	return o
 	},
+
 /*
  *综合调用
  *@param attrName , attrValue , attrName , attrValue ... 设置属性 具体参看attr函数
@@ -546,7 +516,7 @@ call:function(){
 			continue
 		else if(typeof a == 'object'){
 			if(a.constructor==Array)
-				this.add.apply(this.self._,a)
+				this.add.apply(this,a)
 			else if(a.nodeType)
 				this.self.appendChild(a)
 			else
@@ -563,8 +533,9 @@ call:function(){
  *@param name , value 
  *@param event , callback 
  *@param {name: value, name: value ...}
+ *自定义属性名用 _ 开头
  *设定className时如value为null则清空 否则为添加到原className结尾
- *设定style时value为{cssName: value, cssName: value ...}
+ *设定style时value为'cssName:value;cssName:value;...'或{cssName: value, cssName: value ...}
  */
 attr:function(k,v){
 	if(typeof v == 'function' && k.substr(0,2)=='on')
@@ -619,33 +590,24 @@ attr:function(k,v){
 	}
 }//oe
 
+
 /*
- *NGA版$ 取元素或新建元素
-
-//新建元素 
-var x = $('<span>')
-var x = $('<span/>')
-var x = $('/span')
-var x = $('<span>abcd</span>')
-
-//用id取元素 
-var x = $('xxoo')
-
-//例子
-$('xxoo')._.cls('xxxxoooo')._.attr('title','abcd')._.add($('<span/>'),$('<div/>'))//链式调用 各个方法的使用参看domExtPrototype
-
-$('xxoo').$0('className','xxoo','style',{width:'100%'},$('/span'),'onclick',function(e){alert(123)})//综合调用(这样比较好用) $0的参数参看domExtPrototype.call
-		
-$('xxoo').$0('className','xxoo').$0('style',{width:'100%'},$('/span'),'onclick',function(e){alert(123)})//链式综合调用
-
+*为element原型增加综合调用函数$0
 */
-var $0ie = function(){return this._.call.apply(this._,arguments)}
-window._$ = function (o){//fs
+if (window.Element)
+    window.Element.prototype.$0=function(){return this._.call.apply(this._,arguments)}
+else//ie6 ie7
+	var $0ie = function(){return this._.call.apply(this._,arguments)}
+
+/*
+取元素或新建元素
+*/
+window[NAME] = function (o){//fs
 if(typeof o == 'string'){
-	var x = o.substr(0,1)
-	if(x=='/')
+	if(o.charAt(0)=='/')
 		o = document.createElement(o.substr(1))
-	else if(x=='<'){
+	else if(o.charAt(0)=='<'){//$('<span>') or $('<span/>') or $('<span>abcd</span>')
+		var x
 		if(x=o.match(/^<?\/?([a-zA-Z0-9]+)\/?>?$/))
 			o = document.createElement(x[1])
 		else{
@@ -675,279 +637,126 @@ if(o!==null){
 return o
 }//fe
 
+})(window.$ ? '_$' : '$');//指定主函数名字 自行修改
+
+/**
+//用例:
+
+//新建元素
+var x = $('/span')
+
+//用id取元素 
+var x = $('xxoo')
+
+//例子
+$('/span','id','xxoo','style','width:100%',$('/span'),'className','xxoo')//使用主函数一次生成
+
+$('xxoo').$0('style',{width:'100%'},$('/span'),'onclick',function(e){alert(123)}).$0('className','xxoo')//使用$0方法 $0参看domExtPrototype.call
+
+$('/span')._.cls('xxxxoooo')._.attr('title','abcd')._.add($('/span'),$('/div'),'test text')//使用不同的方法链式调用 使用参看domExtPrototype
+
+*/
+
+
 
 /*
-*为element原型增加综合调用函数$0 ie6 ie7之外
+========================
+commonlib file loader functions for nga
+脚本/样式表文件加载器
+------------
+(c), Zeg, All Rights Reserved
+Distributed under GPLv3 license
+========================
 */
-if (window.Element)
-    window.Element.prototype.$0=function(){return this._.call.apply(this._,arguments)}
 
+var __LOADER = {
 
-
-
-
-//==================================
-
-//XHR
-
-//==================================
-
-;(function(){
-var $=_$,FORM,SCRIPT,TARGET,ARGS,RUN
 /**
-* HTTP REQUEST
-* @param a 输入参数是一个object 结构如下
-* a._id 不要设这个
-* a._noLock 不要设这个
-* a.u 请求地址 为string时使用get方法;  为{u:url,a:{k1:v1,k2:v2....}}时使用post方法;  需要使用“多个地址”时[u0,u1 ...]
-* a.c 返回信息的字符集 不设默认为空（和页面相同编码
-* a.b 提交按钮/或链接 (可以忽略
-* a.f 成功时callback函数 如此函数返回true意为成功 返回false意为失败 失败并且有“多个地址”时则继续尝试下一个
-* a.ff 失败时时callback函数 如果请求全部失败或 a.f全部返回false时执行
-* a.t 表单的target(仅在post时用) 如为dom node则表单目标iframe会置于其中 如不设使用隐形iframe
-* a.n 数据变量的名字 不设默认为script_muti_get_var_store (如果存在数据变量会作为callback a.f的第一个参数 
-* a.ca 是否缓存结果 (仅在a.u是string时
-* a.xr 是否使用XHR(仅在post时
-*/
-var doRequest=function(a){
-
-if(!FORM){
-	FORM = $('/form','method','post','style','display:none')
-	document.body.insertBefore(FORM,document.body.firstChild)
-	TARGET = $('/span','style','display:none')
-	document.body.insertBefore(TARGET,document.body.firstChild)
-	ARGS=[]
-	CACHE=[]
+ *加载样式表文件
+ *@param src 地址
+ *@param sync 是否用同步模式 (直接document.write
+ */
+css:function (src,sync){
+if(sync){
+	sync = "<link rel='stylesheet' href='"+src+"' type='text/css'/>"
+	if(document._documentWirteBak)document._documentWirteBak(sync)
+	else document.write(sync)
+	return
 	}
+var x = document.createElement('link')
+x.href = src
+x.rel = 'stylesheet'
+x.type = 'text/css'
+var h = document.getElementsByTagName('head')[0]
+h.insertBefore(x,h.firstChild)
+},//fe
 
-if(!a._id)
-	a._id = 'doHttpRequest'+Math.floor(Math.random()*10000)
-if(!a.n)
-	a.n = 'script_muti_get_var_store'
-if(!a.t)
-	a.t = TARGET
+scriptTpl:null,
 
-var f = _doRequestLock(a)
-if(f)return alert(f)
-
-if(!a.f){
-	a.f = function(d){//如有.error则显示.error 否则显示.data
-		if(!d)
-			return
-		var x,y='';
-		if(d.error)
-			x= d.error
-		else if(d.data)
-			x=d.data
-		if(!x)
-			x={0:'ERROR NO DATA'}
-		if(typeof x=='string')
-			y=x
-		else{
-			for(var k in x)
-				y+=x[k]+'\n'
+/**
+ *加载脚本
+ *@param src 地址
+ *@param callback 回调函数 函数中的this为script node本身
+ *@param charset 指定脚本的编码 一般不用设 浏览器会自动识别
+ *@param sync 是否用同步模式 (直接document.write
+ */
+script:function (src,callback,charset,sync){
+if(typeof(src)=='object'){
+	callback = src[1]
+	charset = src[2]
+	sync = src[3]
+	src = src[0]
+	}	
+if(!this.scriptTpl)this.scriptTpl = document.createElement('script')
+if(sync){
+	if(callback){
+		var k='call'+Math.random().toString().substr(2)
+		this.callback[k]=callback
+		if(this.scriptTpl.readyState)
+			var c=" onreadystatechange='if(this.readyState && this.readyState != \"loaded\" && this.readyState != \"complete\")return;window.loader.callback."+k+".call(this)' "
+		else
+			var c=" onload='window.loader.callback."+k+".call(this)' "
+		}
+	else
+		c=''
+	sync = "<scr"+"ipt src='"+src+"' "+(charset ? "charset='"+charset+"'" : '')+" "+c+" type='text/javasc"+"ript'></scr"+"ipt>"
+	if(document._documentWirteBak)document._documentWirteBak(sync)
+	else document.write(sync)
+	return
+	}
+var x = this.scriptTpl.cloneNode(0)
+x.src=src
+if(charset)x.charset = charset
+if (callback) {
+	if(x.readyState){
+		x.onreadystatechange = function() {
+			if (this.readyState && this.readyState != 'loaded' && this.readyState != 'complete')return;
+			callback.call(this);
 			}
-		alert(y)
-		return true
 		}
-	a.ff = function(){
-		alert('ERROR REQUEST')
+	else{
+		x.onload = function() {callback.call(this)}
 		}
 	}
 
-if(a.ca && typeof a.u=='string'){
-	if(CACHE[a.u])
-		return a.f.call(window,CACHE[a.u])
-	}
-	
-ARGS.push(a)
+var h = document.getElementsByTagName('head')[0]
+h.insertBefore(x,h.firstChild)
+//commonui._debug.push('start '+src)
+},
 
-if(!RUN){
-	RUN=true
-	return setTimeout(function(){_doRequest()})
-	}
-}//fe
+callback:{}
 
-var _doRequest=function(){
-	
-var a = ARGS[0]
+}//ce
 
-if(!a)
-	return RUN=false
-
-if(!a.u){
-	_doRequestLock(a,true)
-	ARGS.shift()
-	return setTimeout(function(){_doRequest()})
-	}
-
-var u = typeof(a.u)=='string' || a.u.u ? a.u : a.u[0]
-
-if(typeof(u)=='string'){
-	if(SCRIPT)SCRIPT.parentNode.removeChild(SCRIPT)
-	SCRIPT = $('/script','id',a._id, 'src',u, 'charset',a.c?a.c:'', 'type','text/javascript','onreadystatechange',_doRequestCallback,'onload',_doRequestCallback,'onerror',_doRequestCallback)
-	window[a.n]=null
-	document.getElementsByTagName('head')[0].appendChild(SCRIPT)
-	return
-	}
-
-if(a.xr){
-	var fd = new FormData()
-	for(var k in a.u.a)
-		fd.append(k,a.u.a[k])
-	var xr = new XMLHttpRequest()
-	xr.onload = function(e) {
-		var xhr = e.target
-		if (xhr.readyState !== 4 && xhr.status !== 200)
-			return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{}})
-		y = eval(xhr.responseText)
-		return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{script_muti_get_var_store:y}})
-		}
-	//if(xr.upload)
-	//	xr.upload.onprogress = function(e){if (e.lengthComputable) console.log(Math.round(e.loaded * 100 / e.total).toString()+'%') }
-	xr.open("POST", a.u.u) // Boooom!	
-	xr.withCredentials=true //must after open
-	xr.send(fd)
-	return
-	}
-
-FORM.innerHTML=''
-FORM.action = u.u
-for(var k in u.a)
-	FORM._.add($('/input','type','hidden','value',u.a[k],'name',k))
-
-if(typeof(a.t)=='object' && a.t.nodeType==1){
-	FORM.target = a._id
-	a.t.innerHTML = ''
-	//a.t.appendChild(this._w._$('<iframe name="'+a._id+'"></iframe>')._.attr({name:a._id, id:a._id, scrolling:'no', allowtransparency:'true', src:'about:blank', frameBorder:'0'})._.css({width:(a.t.offsetWidth ? a.t.offsetWidth+'px' : '200px'),height:(a.t.offsetHeight ? a.t.offsetHeight+'px' : '50px'),border:'none',overflow:'hidden'}))._.on('readystatechange',this._doRequestCallback)._.on('load',this._doRequestCallback)._.on('error',this._doRequestCallback)
-
-	a.t.appendChild(
-		$('/iframe','name',a._id,'id',a._id, 'scrolling','no', 'allowtransparency','true', 'frameBorder','0','style','width:'+(a.t.offsetWidth ? a.t.offsetWidth+'px' : '200px')+'height:'+(a.t.offsetHeight ? a.t.offsetHeight+'px' : '50px')+';border:none;overflow:hidden')
-		)
-	a.t.firstChild.$0('onreadystatechange',_doRequestCallback,'onload',_doRequestCallback,'onerror',_doRequestCallback)
-	}
-else if(typeof(a.t)=='string')
-	FORM.target = a.t
-
-FORM.submit()
-}//fe
-
-var _doRequestCache={}
-
-var _doRequestLock=function(a,clear){
-if(clear){
-	if(a.b){
-		a.b.disabled = a.b.__submiting = false
-		if(a.b.style)
-			a.b.style.crusor = ''
-		}
-	return
-	}
-if(a.b){
-	if(a.b.disabled || a.b.__submiting)
-		return '提交中 请稍后再试'
-	a.b.disabled = a.b.__submiting = true
-	if(a.b.style)
-		a.b.style.crusor = 'wait'
-	}
-}//fe
-
-var _doRequestCallback = function(e){
-var o = this
-if((o.readyState && o.readyState!='complete' && o.readyState!='loaded')||o.__loadRunned)
-	return
-o.__loadRunned = true
-var r = true, a = ARGS[0]
-if(a.f){
-	var d = null
-	try{
-		d = o.nodeName == 'IFRAME' ? o.contentWindow[a.n] : window[a.n]
-		}
-	catch(e){
-		console.log('_doRequestCallback:'+e)
-		d = null
-		}
-	if(d && d.debug)
-		console.log(d.debug)
-	if(a.ca && typeof(a.u)=='string')
-		_doRequestCache[a.u] = d
-	r = a.f.call(window, d)
-	}
-if(r || typeof(a.u)=='string' || a.u.u || a.u.length==1){//如成功 或 单get 或 单post 或 队列get或post并且队列中没有下一个了 的时候 结束任务
-	if(!r && a.ff)
-		a.ff.call(window)
-	a.u=null
-	}
-else
-	a.u.shift()
-setTimeout(function(){_doRequest()})
-}//fe
-
-/**
-* http post
-* 同doRequest
+/*
+========================
+commonlib cookie functions for nga
+------------
+(c), Zeg, All Rights Reserved
+Distributed under GPLv3 license
+========================
 */
-doPost = function(a){
-if(a.a){
-	a.u={u:a.u,a:a.a}
-	delete a.a
-	}
-else if(typeof(a.u)=='string'){
-	a.u={u:a.u,a:{nouse:'post'}}
-	}
-return doRequest(a)
-}//fe
 
-/**
-*检测doRequest返回的标准数据是否正确(论坛的API借口返回数据大部分是同样格式的……) 返回错误信息 如返回true则为超时
-*/
-var doRequestIfErr = function(x,tt){
-if(!x)
-	return 'no data'
-if(x.error)
-	return x.error[0]
-if(!x.data)
-	return 'no data'
-if(x.data.constructor === Array){
-	if(!x.data.length)
-		return 'no data'
-	}
-else{
-	var k=null;
-	for(var k in x.data){
-		break
-		}
-	if(k===null)
-		return 'no data'
-	}
-if(x.time && (tt || x.timeout)){
-	var t = window.__NOW
-	if(!t)
-		t = Math.floor((new Date).getTime()/1000)
-	
-	if(t-x.time > (tt ? tt : x.timeout))
-		return true
-	}
-}//fe
-
-__NUKE.doRequest = doRequest
-__NUKE.doPost = doPost
-__NUKE.doRequestIfErr = doRequestIfErr
-})();
-
-
-
-
-
-
-
-
-
-//==================================
-
-//cookieAndSerialize
-//cookie 相关功能
-//==================================
 
 var __COOKIE = {
 cookieCache:{},
@@ -1137,124 +946,18 @@ json_decode:function(txt){
 	return x
 	}//fe
 }//ce
-
-//==================================
-
-//脚本/样式表文件加载器
-
-//==================================
-
-var loader = {
-
-/**
- *加载样式表文件
- *@param src 地址
- *@param sync 是否用同步模式 (直接document.write
- */
-css:function (src,sync){
-if(sync){
-	sync = "<link rel='stylesheet' href='"+src+"' type='text/css'/>"
-	if(document._documentWirteBak)document._documentWirteBak(sync)
-	else document.write(sync)
-	return
-	}
-var x = document.createElement('link')
-x.href = src
-x.rel = 'stylesheet'
-x.type = 'text/css'
-var h = document.getElementsByTagName('head')[0]
-h.insertBefore(x,h.firstChild)
-},//fe
-
-scriptTpl:null,
-
-/**
- *加载脚本
- *@param src 地址
- *@param callback 回调函数 函数中的this为script node本身
- *@param charset 指定脚本的编码 一般不用设 浏览器会自动识别
- *@param sync 是否用同步模式 (直接document.write
- */
-script:function (src,callback,charset,sync){
-if(typeof(src)=='object'){
-	callback = src[1]
-	charset = src[2]
-	sync = src[3]
-	src = src[0]
-	}	
-if(!this.scriptTpl)this.scriptTpl = document.createElement('script')
-if(sync){
-	if(callback){
-		var k='call'+Math.random().toString().substr(2)
-		this.callback[k]=callback
-		if(this.scriptTpl.readyState)
-			var c=" onreadystatechange='if(this.readyState && this.readyState != \"loaded\" && this.readyState != \"complete\")return;window.loader.callback."+k+".call(this)' "
-		else
-			var c=" onload='window.loader.callback."+k+".call(this)' "
-		}
-	else
-		c=''
-	sync = "<scr"+"ipt src='"+src+"' "+(charset ? "charset='"+charset+"'" : '')+" "+c+" type='text/javasc"+"ript'></scr"+"ipt>"
-	if(document._documentWirteBak)document._documentWirteBak(sync)
-	else document.write(sync)
-	return
-	}
-var x = this.scriptTpl.cloneNode(0)
-x.src=src
-if(charset)x.charset = charset
-if (callback) {
-	if(x.readyState){
-		x.onreadystatechange = function() {
-			if (this.readyState && this.readyState != 'loaded' && this.readyState != 'complete')return;
-			callback.call(this);
-			}
-		}
-	else{
-		x.onload = function() {callback.call(this)}
-		}
-	}
-
-var h = document.getElementsByTagName('head')[0]
-h.insertBefore(x,h.firstChild)
-//commonui._debug.push('start '+src)
-},
-
-callback:{}
-
 /*
-ver:4,
-w_i: function(s,o){
-o.onload = null;
-window.setTimeout(function(){o.src=s},100);
-},//fe
-
-w_s:function(s,o,writeSelf){
-if (!writeSelf)
-	o = o.parentNode;
-if (s.indexOf(':')==-1){
-	if (s.charAt(0)==' ')
-		window.setTimeout(function(){o.className=o.className+s},100);
-	else
-		window.setTimeout(function(){o.className=s},100);
-	}
-else{
-	if (s.charAt(0)==';')
-		window.setTimeout(function(){o.style.cssText=o.style.cssText+s},100);
-	else
-		window.setTimeout(function(){o.style.cssText=s},100);
-	}
-}//fe
+========================
+commonlib localstorage functions for nga
+------------
+(c), Zeg, All Rights Reserved
+Distributed under GPLv3 license
+========================
 */
-}//ce
-
-if(window.__SCRIPTS)
-	__SCRIPTS.load = function(src,callback,charset,sync){
-		return loader.script(this[src],callback,charset,sync)
-		}
 
 //==================================
 //DOM STORE
-//浏览器本地储存 建议使用commonui.userCache 不要直接用这个
+//浏览器本地储存 使用commonui.userCache 不要直接用这个
 //==================================
 ;(function(){
 var O, err, W=window, NOW = W.__NOW ? (__NOW|0) : Math.floor((new Date).getTime()/1000)
@@ -1344,12 +1047,251 @@ W.domStorageFuncs = {
 	}
 
 })();
+/*
+========================
+NJtools nga javascript tool lib
+------------
+(c), Zeg, All Rights Reserved
+Distributed under MIT license
+========================
+*/
+
+
+;(function($){
+var FORM,SCRIPT,TARGET,ARGS,RUN
+/**
+* 使用jsonp方式向服务器请求数据 可get或post
+* @param a 输入参数是一个object 结构如下
+* a._id 不要设这个
+* a._noLock 不要设这个
+* a.u 请求地址 
+*		为string时使用get方法 使用插入script标签的方式获取数据 可以跨域
+*		为{u:url,a:{k1:v1,k2:v2....}}时使用post方法 使用iframe或XHR方式获取数据 跨域需XHR并在服务器输出特定header
+*		需要使用“多组地址”时[请求地址0,请求地址1 ...]
+* a.c 返回信息的字符集 不设默认为空（和页面相同编码
+* a.b 提交按钮/或链接 (可以忽略
+* a.f 成功时callback函数 如此函数返回true意为成功 返回false意为失败 失败并且有“多组地址”时则继续尝试下一个
+* a.ff 失败时时callback函数 如果请求全部失败或 a.f全部返回false时执行
+* a.t 表单的target(仅在post时用) 如为dom node则表单目标iframe会置于其中 如不设使用隐形iframe
+* a.n 服务器返回数据变量的名字 不设默认为script_muti_get_var_store (如果存在数据变量会作为callback a.f的第一个参数 
+* a.ca 是否缓存结果 (仅在a.u是string时
+* a.xr 是否使用XHR(仅在post时
+*/
+var doRequest=function(a){
+
+if(!FORM){
+	FORM = $('/form','method','post','style','display:none')
+	document.body.insertBefore(FORM,document.body.firstChild)
+	TARGET = $('/span','style','display:none')
+	document.body.insertBefore(TARGET,document.body.firstChild)
+	ARGS=[]
+	CACHE=[]
+	}
+
+if(!a._id)
+	a._id = 'doHttpRequest'+Math.floor(Math.random()*10000)
+if(!a.n)
+	a.n = 'script_muti_get_var_store'
+if(!a.t)
+	a.t = TARGET
+
+var f = _doRequestLock(a)
+if(f)return alert(f)
+
+if(!a.f){
+	a.f = function(d){//如有.error则显示.error 否则显示.data
+		if(!d)
+			return
+		var x,y='';
+		if(d.error)
+			x= d.error
+		else if(d.data)
+			x=d.data
+		if(!x)
+			x={0:'ERROR NO DATA'}
+		if(typeof x=='string')
+			y=x
+		else{
+			for(var k in x)
+				y+=x[k]+'\n'
+			}
+		alert(y)
+		return true
+		}
+	a.ff = function(){
+		alert('ERROR REQUEST')
+		}
+	}
+
+if(a.ca && typeof a.u=='string'){
+	if(CACHE[a.u])
+		return a.f.call(window,CACHE[a.u])
+	}
+	
+ARGS.push(a)
+
+if(!RUN){
+	RUN=true
+	return setTimeout(function(){_doRequest()})
+	}
+}//fe
+
+var _doRequest=function(){
+	
+var a = ARGS[0]
+
+if(!a)
+	return RUN=false
+
+if(!a.u){
+	_doRequestLock(a,true)
+	ARGS.shift()
+	return setTimeout(function(){_doRequest()})
+	}
+
+var u = typeof(a.u)=='string' || a.u.u ? a.u : a.u[0]
+
+if(typeof(u)=='string'){
+	if(SCRIPT)SCRIPT.parentNode.removeChild(SCRIPT)
+	SCRIPT = $('/script','id',a._id, 'src',u, 'charset',a.c?a.c:'', 'type','text/javascript','onreadystatechange',_doRequestCallback,'onload',_doRequestCallback,'onerror',_doRequestCallback)
+	window[a.n]=null
+	document.getElementsByTagName('head')[0].appendChild(SCRIPT)
+	return
+	}
+
+if(a.xr){
+	var fd = new FormData()
+	for(var k in a.u.a)
+		fd.append(k,a.u.a[k])
+	var xr = new XMLHttpRequest()
+	xr.onload = function(e) {
+		var xhr = e.target
+		if (xhr.readyState !== 4 && xhr.status !== 200)
+			return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{}})
+		y = eval(xhr.responseText)
+		return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{script_muti_get_var_store:y}})
+		}
+	//if(xr.upload)
+	//	xr.upload.onprogress = function(e){if (e.lengthComputable) console.log(Math.round(e.loaded * 100 / e.total).toString()+'%') }
+	xr.open("POST", a.u.u) // Boooom!	
+	xr.withCredentials=true //must after open
+	xr.send(fd)
+	return
+	}
+
+FORM.innerHTML=''
+FORM.action = u.u
+for(var k in u.a)
+	FORM._.add($('/input','type','hidden','value',u.a[k],'name',k))
+
+if(typeof(a.t)=='object' && a.t.nodeType==1){
+	FORM.target = a._id
+	a.t.innerHTML = ''
+	a.t.appendChild(
+		$('/iframe','name',a._id,'id',a._id, 'scrolling','no', 'allowtransparency','true', 'frameBorder','0','style','width:'+(a.t.offsetWidth ? a.t.offsetWidth+'px' : '200px')+'height:'+(a.t.offsetHeight ? a.t.offsetHeight+'px' : '50px')+';border:none;overflow:hidden')
+		)
+	a.t.firstChild.$0('onreadystatechange',_doRequestCallback,'onload',_doRequestCallback,'onerror',_doRequestCallback)
+	}
+else if(typeof(a.t)=='string')
+	FORM.target = a.t
+
+FORM.submit()
+}//fe
+
+var _doRequestCache={}
+
+var _doRequestLock=function(a,clear){
+if(clear){
+	if(a.b){
+		a.b.disabled = a.b.__submiting = false
+		if(a.b.style)
+			a.b.style.crusor = ''
+		}
+	return
+	}
+if(a.b){
+	if(a.b.disabled || a.b.__submiting)
+		return '提交中 请稍后再试'
+	a.b.disabled = a.b.__submiting = true
+	if(a.b.style)
+		a.b.style.crusor = 'wait'
+	}
+}//fe
+
+var _doRequestCallback = function(e){
+var o = this
+if((o.readyState && o.readyState!='complete' && o.readyState!='loaded')||o.__loadRunned)
+	return
+o.__loadRunned = true
+var r = true, a = ARGS[0]
+if(a.f){
+	var d = null
+	try{
+		d = o.nodeName == 'IFRAME' ? o.contentWindow[a.n] : window[a.n]
+		}
+	catch(e){
+		console.log('_doRequestCallback:'+e)
+		d = null
+		}
+	if(d && d.debug)
+		console.log(d.debug)
+	if(a.ca && typeof(a.u)=='string')
+		_doRequestCache[a.u] = d
+	r = a.f.call(window, d)
+	}
+if(r || typeof(a.u)=='string' || a.u.u || a.u.length==1){//如成功 或 单get 或 单post 或 队列get或post并且队列中没有下一个了 的时候 结束任务
+	if(!r && a.ff)
+		a.ff.call(window)
+	a.u=null
+	}
+else
+	a.u.shift()
+setTimeout(function(){_doRequest()})
+}//fe
+
+/**
+* http post
+* 同doRequest
+*/
+doPost = function(a){
+if(a.a){
+	a.u={u:a.u,a:a.a}
+	delete a.a
+	}
+else if(typeof(a.u)=='string'){
+	a.u={u:a.u,a:{nouse:'post'}}
+	}
+return doRequest(a)
+}//fe
+
+
+$.doRequest = doRequest
+$.doPost = doPost
+
+})(
+	_$ //NJtools的主函数$  自行修改
+	);
+
+/**
+//用例:
+
+参照doRequest的注释
+ */
+
+/*
+========================
+commonlib forward compatible and old functions for nga
+方法兼容转换 和一些不再使用的方法
+------------
+(c), Zeg, All Rights Reserved
+Distributed under GPLv3 license
+========================
+*/
 
 
 //==================================
-
-//Forward compatible for nga
-//老接口兼容
+//forward compatible for nga
+//兼容转换
 //==================================
 var httpDataGetter={script_muti_get:function(u,h,hf,c,cN){
 var a = {
@@ -1375,3 +1317,121 @@ var /*w_i = loader.w_i, w_s = loader.w_s,*/ id2e = $, cookieFuncs = __COOKIE, tT
 
 if(!window.console)
 	var console = {log:function(){}}
+
+var loader = __LOADER
+
+if(window.__SCRIPTS)
+	__SCRIPTS.load = function(src,callback,charset,sync){
+		return __LOADER.script(this[src],callback,charset,sync)
+		}
+
+__NUKE.doRequest = _$.doRequest
+__NUKE.doPost = _$.doPost
+
+//==================================
+//old functions for nga
+//不再使用的方法
+//==================================
+
+/**
+ *
+ */
+__NUKE.getDocSize=function(){
+var p = this.position.get()
+p.sW = p.pw
+p.sH = p.ph
+p.cW = p.cw
+p.cH = p.ch
+p.sL = p.xf
+p.sT = p.yf
+return p
+}//fe
+
+/**
+ *一种简单的编码 
+ */
+__NUKE.scEn=function (v,no){
+switch (typeof(v)) { 
+	case 'string':
+		return v.replace(/~/g,'');
+	case 'number':
+		return v.toString(10);
+	case 'boolean':
+		return v?1:0
+	case 'object':
+		if(no)return ''
+		var buf=[]
+		for (var k in v)
+			buf.push(this.scEn(k,1) + '~' + this.scEn(v[k],1));
+		return buf.join('~');
+	default: 
+		return '';
+	}
+}//fe
+
+/**
+ *一种简单的编码的解码
+ */
+__NUKE.scDe=function (s){
+s = s.split('~')
+if(s.length==1)return s
+var v={}
+for (var i=0;i<s.length;i+=2)
+	v[s[i]]=s[i+1]
+return v
+},//fe
+
+/**
+ *
+ */
+__NUKE.toInt=function(n){
+var n = parseInt(n,10)
+if(!n)n=0
+return n
+}//fe
+
+
+/*
+ *增加子节点
+ *@param node , node , node , node , node , node ...
+ *node为null时忽略
+ *node为string时node=$(node)
+ *node为array时 insertBefore(node.0,node.1)
+ */
+domExtPrototype.aC=function(){
+	var o = this.self, i=0, a=arguments
+	for (;i<a.length;i++){
+		if(a[i]===null)continue
+		if(a[i].constructor==Array){
+			if(typeof(a[i][0])=='string')a[i][0]=$(a[i][0])
+			o.insertBefore(a[i][0],a[i][1])
+			}
+		else{
+			if(typeof(a[i])=='string')a[i]=$(a[i])
+			o.appendChild(a[i])
+			}
+		}
+	return o;
+	}
+	
+/*
+ *保存数据
+ *@param name , value
+ */
+domExtPrototype.sV=function (o,v){
+	if(!this.anyVar)this.anyVar={}
+	if (v!==undefined) 
+		this.anyVar[o]=v
+	else 
+		for (var k in o)  
+			this.sV(k, o[k]) 
+	return this.self
+	}
+/*
+ *取出数据
+ *@param name
+ */
+domExtPrototype.gV=function (k){
+	if(!this.anyVar)this.anyVar={}
+	return this.anyVar[k] 
+	}

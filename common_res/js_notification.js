@@ -1,43 +1,93 @@
 if(!window.commonui)var commonui={}
 
+
+var KEY={_BIT_REPLY:0,
+_BIT_MSG:1,
+_BIT_SYS:2,
+
+_TYPE_REPLY_TOPIC:1,
+_TYPE_REPLY_REPLY:2,
+_TYPE_COMMENT_TOPIC:3,
+_TYPE_COMMENT_REPLY:4,
+_TYPE_KEYWORD_WATCH_TOPIC:5,
+_TYPE_KEYWORD_WATCH_REPLY:6,
+_TYPE_MENTION_TOPIC:7,
+_TYPE_MENTION_REPLY:8,
+_TYPE_IP_CHANGE:9,
+_TYPE_MESSAGE_NEW:10,
+_TYPE_MESSAGE_REPLY:11,
+_TYPE_MESSAGE_ADD:12,
+_TYPE_REPORT_TOPIC:13,
+_TYPE_REPORT_REPLY:14,
+_TYPE_RECOMMEND_POST:15,
+_TYPE_KEYWORD_WATCH:16,
+_TYPE_UPVOTE:17,
+
+_TYPE:0,
+_FROM_UID:1,
+_FROM_UNAME:2,
+_TO_UID:3,
+_TO_UNAME:4,
+_TEXT:5,
+_ABOUT_ID:6,
+_ABOUT_ID_2:7,
+_ABOUT_ID_3:8,
+_TIME:9,
+_ABOUT_ID_4:10,
+_TEXT_2:11}
+
+with(KEY){
+
+var TPL = {}
+TPL[_BIT_REPLY] = TPL[_BIT_MSG] = TPL[_BIT_SYS] = {}
+
+var T = TPL[_BIT_REPLY]
+T[_TYPE_REPLY_TOPIC] = function(x){return x[_ABOUT_ID_4] ? '{_U} {_R} 了你的{_T1} {_R2} {_TNO}<br/>' : '{_U} {_R} 了你的{_T1} {_R4} {_TNO}<br/>'}
+T[_TYPE_REPLY_REPLY] = function(x){return x[_ABOUT_ID_4] ? '{_U} {_R} 了你在{_T1} {_R2} 中的 {_R3} {_RNO}<br/>' : '{_U} {_R} 了你在{_T1} {_R4} 中的 {_R3} {_RNO}<br/>'}
+T[_TYPE_COMMENT_TOPIC] = '{_U} <a class="b" href="/read.php?tid={_ABOUT_ID}">评论</a> 了你的主题 {_T} {_TNO}<br/>'
+T[_TYPE_COMMENT_REPLY] = function(x){return x[_ABOUT_ID_4] ? '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在{_T1} {_R2} 中的 {_R3} {_RNO}<br/>' : '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在主题 {_T} 中的 {_R3} {_RNO}<br/>'}
+T[_TYPE_MENTION_TOPIC] = '{_U} 在主题 {_T} 中提到了你<br/>',
+T[_TYPE_MENTION_REPLY] = function(x){return x[k._ABOUT_ID_4]? '{_U} 在{_T1} {_R2} 中的 {_R} 中提到了你<br/>': '{_U} 在主题 {_T} 中的 {_R} 中提到了你<br/>'}
+T[_TYPE_RECOMMEND_POST] = function(x){return '{_U} 评价了你在{_T} 中的'+(x[k._ABOUT_ID_2] ? ' {_R}' : ' 发言')+' 并使用了道具 {_RNO}<br/>'}
+
+var T = TPL[_BIT_MSG]
+T[_TYPE_MESSAGE_NEW] = '{_U} 发起了新的 {_M}<br/>',
+T[_TYPE_MESSAGE_REPLY] = '{_U} 回复了 {_M}<br/>',
+T[_TYPE_MESSAGE_ADD] = '{_U} 邀请了新用户加入 {_M}<br/>',
+T[_TYPE_REPORT_TOPIC] = '{_U} 举报了主题 {_T} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>',
+T[_TYPE_REPORT_REPLY] = function(x){return x[_ABOUT_ID_4]?'{_U} 举报了{_T1} {_R2} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>' : '{_U} 举报了主题 {_T} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>'}
+
+var T = TPL[_BIT_SYS]
+T[_TYPE_KEYWORD_WATCH_TOPIC] = '{_U} 发布的主题 {_T} 触发了关键词监视<br/>',
+T[_TYPE_KEYWORD_WATCH_REPLY] = function(x){x[k._ABOUT_ID_4] ? '{_U} 在{_T1} {_R2} 中的 {_R5} 触发了关键词监视<br/>' : '{_U} 在主题 {_T} 中的 {_R5} 触发了关键词监视<br/>'}
+T[_TYPE_KEYWORD_WATCH] = 'FID:{_ABOUT_ID}中的发帖触发了关键词监视 查看<a href="javascript:void(0)" onclick="commonui.filterList(event,{_ABOUT_ID},{_ABOUT_ID_2})" class="b red"/>详细信息</a><br/>'
+T[_TYPE_IP_CHANGE] = '<span class="red">你的帐号可能记录到新的IP 查看 <a href="/nuke.php?func=adminlog&f=access_log" target="_blank" class="b red"/>访问记录</a> 获得详细信息</span><br/>',
+T[_TYPE_UPVOTE] = function(x){
+	if(x[k._ABOUT_ID_2]){
+		x[k._ABOUT_ID_3] = x[k._ABOUT_ID_2]
+		return '你在主题 {_R2} 中的 {_R} 获得了支持或反对 {_RNO}<br/>'
+		}
+	else
+		return '你的主题 {_T} 获得了支持或反对 {_TNO}<br/>'
+	}
+		
+}//
+
+var TPLSUB = {
+_U:'<a class="b" target="_blank" href="/nuke.php?func=ucp&uid={_FROM_UID}">{_FROM_UNAME}</a>',
+_R:'<a class="b" href="/read.php?pid={_ABOUT_ID_2}">回复</a>',
+_R2:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&page={_ABOUT_ID_4}#pid{_ABOUT_ID_2}Anchor" title="{_TEXT}">{_TEXT_S}</a></nobr>',
+_R4:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1" title="{_TEXT}">{_TEXT_S}</a></nobr>',
+_R5:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1">回复</a></nobr>',
+_R3:'<a class="b" href="/read.php?pid={_ABOUT_ID_3}">回复</a>',
+_T:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}" title="{_TEXT}">{_TEXT_S}</a></nobr>',
+_T1:'<a class="b" href="/read.php?tid={_ABOUT_ID}">主题</a>',
+_TNO:'<a href="javascript:void(0)" onclick="commonui.notification.setNoti({_ABOUT_ID})" class="b silver" title="不再提示此主题的回复或评论">不提示</a>',
+_RNO:'<a href="javascript:void(0)" class="b silver" onclick="commonui.notification.setNoti({_ABOUT_ID},{_ABOUT_ID_3})" title="不再提示此回复的回复或评论">不提示</a>',
+_M:'<a class="b" href="/nuke.php?func=message#mid={_ABOUT_ID}">对话</a>'
+}
+
 commonui.notification={
-
-key:{
-	_BIT_REPLY:0,
-	_BIT_MSG:1,
-	_BIT_SYS:2,
-
-	_TYPE_REPLY_TOPIC:1,
-	_TYPE_REPLY_REPLY:2,
-	_TYPE_COMMENT_TOPIC:3,
-	_TYPE_COMMENT_REPLY:4,
-	_TYPE_KEYWORD_WATCH_TOPIC:5,
-	_TYPE_KEYWORD_WATCH_REPLY:6,
-	_TYPE_MENTION_TOPIC:7,
-	_TYPE_MENTION_REPLY:8,
-	_TYPE_IP_CHANGE:9,
-	_TYPE_MESSAGE_NEW:10,
-	_TYPE_MESSAGE_REPLY:11,
-	_TYPE_MESSAGE_ADD:12,
-	_TYPE_REPORT_TOPIC:13,
-	_TYPE_REPORT_REPLY:14,
-	_TYPE_RECOMMEND_POST:15,
-	_TYPE_KEYWORD_WATCH:16,
-	_TYPE_UPVOTE:17,
-	
-	_TYPE:0,
-	_FROM_UID:1,
-	_FROM_UNAME:2,
-	_TO_UID:3,
-	_TO_UNAME:4,
-	_TEXT:5,
-	_ABOUT_ID:6,
-	_ABOUT_ID_2:7,
-	_ABOUT_ID_3:8,
-	_TIME:9,
-	_ABOUT_ID_4:10,
-	_TEXT_2:11
-	},
 
 cache:null,
 
@@ -50,78 +100,6 @@ boxYTo:0,
 timeout:null,
 
 bg:2,
-
-_tpl:{
-_U:'<a class="b" target="_blank" href="/nuke.php?func=ucp&uid={_FROM_UID}">{_FROM_UNAME}</a>',
-_R:'<a class="b" href="/read.php?pid={_ABOUT_ID_2}">回复</a>',
-_R2:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&page={_ABOUT_ID_4}#pid{_ABOUT_ID_2}Anchor" title="{_TEXT}">{_TEXT_S}</a></nobr>',
-_R4:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1" title="{_TEXT}">{_TEXT_S}</a></nobr>',
-_R5:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1">回复</a></nobr>',
-_R3:'<a class="b" href="/read.php?pid={_ABOUT_ID_3}">回复</a>',
-_T:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}" title="{_TEXT}">{_TEXT_S}</a></nobr>',
-_T1:'<a class="b" href="/read.php?tid={_ABOUT_ID}">主题</a>',
-_TNO:'<a href="javascript:void(0)" onclick="commonui.notification.setNoti({_ABOUT_ID})" class="b silver" title="不再提示此主题的回复或评论">不提示</a>',
-_RNO:'<a href="javascript:void(0)" class="b silver" onclick="commonui.notification.setNoti({_ABOUT_ID},{_ABOUT_ID_3})" title="不再提示此回复的回复或评论">不提示</a>',
-_M:'<a class="b" href="/nuke.php?func=message#mid={_ABOUT_ID}">对话</a>'
-},
-
-tpl:{
-	0:{
-		1:function(x,k){
-			if(x[k._ABOUT_ID_4]) 
-				return '{_U} {_R} 了你的{_T1} {_R2} {_TNO}<br/>'
-			else
-				return '{_U} {_R} 了你的{_T1} {_R4} {_TNO}<br/>'},
-		2:function(x,k){
-			if(x[k._ABOUT_ID_4]) 
-				return '{_U} {_R} 了你在{_T1} {_R2} 中的 {_R3} {_RNO}<br/>'
-			else
-				return '{_U} {_R} 了你在{_T1} {_R4} 中的 {_R3} {_RNO}<br/>'},
-		3:'{_U} <a class="b" href="/read.php?tid={_ABOUT_ID}">评论</a> 了你的主题 {_T} {_TNO}<br/>',
-		4:function(x,k){
-			if(x[k._ABOUT_ID_4] && x[k._TIME]>1362416539) 
-				return '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在{_T1} {_R2} 中的 {_R3} {_RNO}<br/>'
-			else
-				return '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在主题 {_T} 中的 {_R3} {_RNO}<br/>'},
-		7:'{_U} 在主题 {_T} 中提到了你<br/>',
-		8:function(x,k){
-			if(x[k._ABOUT_ID_4] && x[k._TIME]>1362416539) 
-				return '{_U} 在{_T1} {_R2} 中的 {_R} 中提到了你<br/>'
-			else
-				return '{_U} 在主题 {_T} 中的 {_R} 中提到了你<br/>'},
-		15:function(x,k){
-			return '{_U} 评价了你在{_T} 中的'+(x[k._ABOUT_ID_2] ? ' {_R}' : ' 发言')+' 并使用了道具 {_RNO}<br/>'}
-		},
-	1:{
-		10:'{_U} 发起了新的 {_M}<br/>',
-		11:'{_U} 回复了 {_M}<br/>',
-		12:'{_U} 邀请了新用户加入 {_M}<br/>',
-		13:'{_U} 举报了主题 {_T} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>',
-		14:function(x,k){
-			if(x[k._ABOUT_ID_4] && x[k._TIME]>1362416539) 
-				return '{_U} 举报了{_T1} {_R2} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>'
-			else
-				return '{_U} 举报了主题 {_T} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>'}
-		},
-	2:{
-		5:'{_U} 发布的主题 {_T} 触发了关键词监视<br/>',
-		6:function(x,k){
-			if(x[k._ABOUT_ID_4] && x[k._TIME]>1362416539) 
-				return '{_U} 在{_T1} {_R2} 中的 {_R5} 触发了关键词监视<br/>'
-			else
-				return '{_U} 在主题 {_T} 中的 {_R5} 触发了关键词监视<br/>'},
-		16:'FID:{_ABOUT_ID}中的发帖触发了关键词监视 查看<a href="javascript:void(0)" onclick="commonui.filterList(event,{_ABOUT_ID},{_ABOUT_ID_2})" class="b red"/>详细信息</a><br/>',
-		9:'<span class="red">你的帐号可能记录到新的IP 查看 <a href="/nuke.php?func=adminlog&f=access_log" target="_blank" class="b red"/>访问记录</a> 获得详细信息</span><br/>',
-		17:function(x,k){
-			if(x[k._ABOUT_ID_2]){
-				x[k._ABOUT_ID_3] = x[k._ABOUT_ID_2]
-				return '你在主题 {_R2} 中的 {_R} 获得了支持或反对 {_RNO}<br/>'
-				}
-			else
-				return '你的主题 {_T} 获得了支持或反对 {_TNO}<br/>'
-			},
-		}
-	},
 
 color:{
 	0:{
@@ -231,25 +209,26 @@ if (this.cache[k].length>50)this.cache[k].shift()
 _add:function(k,x,tab){
 if(!this.box)
 	this.createBox()
-var tpl= this._tpl, key = this.key, str = this.tpl[k][x[this.key._TYPE]]
+with(KEY){
+var str = TPL[k][x[_TYPE]]
 if(typeof(str)=='function')
-	str = str(x,this.key)
+	str = str(x)
 if(!tab)tab=k
-this._tab[tab].insertBefore(this.linkConv(_$('<span class="bg'+(this.bg^=3)+'"><b style="color:'+this.color[k][x[this.key._TYPE]]+'">&#9632;</b> <span class="silver">'+(x[this.key._TIME] ? commonui.time2dis(x[this.key._TIME])+' ' : '')
+this._tab[tab].insertBefore(this.linkConv(_$('<span class="bg'+(this.bg^=3)+'"><b style="color:'+this.color[k][x[_TYPE]]+'">&#9632;</b> <span class="silver">'+(x[_TIME] ? commonui.time2dis(x[_TIME])+' ' : '')
 	+str.replace(/\{(_[A-Z0-9_]+)\}/g,function ($0,$1){
-		return (tpl[$1] ? tpl[$1] : $0)
+		return (TPLSUB[$1] ? TPLSUB[$1] : $0)
 		}).replace(/\{(_[A-Z0-9_]+)\}/g,function ($0,$1){
-		if($1=='_TEXT_S' && x[key._TEXT]){
-			var s=commonui.cutstrbylen(x[key._TEXT],19)
-			if(s.length<x[key._TEXT].length)s+='...'
+		if($1=='_TEXT_S' && x[_TEXT]){
+			var s=commonui.cutstrbylen(x[_TEXT],19)
+			if(s.length<x[_TEXT].length)s+='...'
 			return s
 			}
-		if($1=='_TEXT_2_S' && x[key._TEXT_2]){
-			var s=commonui.cutstrbylen(x[key._TEXT_2],19)
-			if(s.length<x[key._TEXT_2].length)s+='...'
+		if($1=='_TEXT_2_S' && x[_TEXT_2]){
+			var s=commonui.cutstrbylen(x[_TEXT_2],19)
+			if(s.length<x[_TEXT_2].length)s+='...'
 			return s
 			}
-		return (x[key[$1]] ? x[key[$1]] : $0)
+		return (x[KEY[$1]] ? x[KEY[$1]] : $0)
 		})
 	+'</span></span>')),this._tab[tab].firstChild)
 for (var k in this._tab){
@@ -262,6 +241,7 @@ for (var k in this._tab){
 			this._tab[k].style.display='none'
 		}
 	}
+}//with
 },//fe
 
 createBox:function (){

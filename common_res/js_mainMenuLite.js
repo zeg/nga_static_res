@@ -88,7 +88,7 @@ var menuItem = {
 		4:{h:'http://g.nga.cn/',t:'聚聚'},
 		5:{h:'http://tv.nga.cn/',t:'赛事'},
 		//6:{h:'https://shop322965498.taobao.com',t:'商城'},
-		6:{h:'http://app.nga.cn/',t:'移动�?'}
+		6:{h:'http://app.nga.cn/',t:'移动端?'}
 		},
 	right:{
 		1:{u:1, c:'invert', h:'http://bbs.nga.cn/nuke.php?func=ucp&uid='+uid, t:uid ? '<div class="half">你好<br/>'+c(uname,7,6,'...')+'</div>':''},
@@ -96,7 +96,7 @@ var menuItem = {
 		3:{u:1, h:'https://account.178.com/q_account.php?_act=logout&to='+encodeURIComponent(location.href), t:'登出'},
 		4:{u:0, h:'https://bbs.nga.cn/nuke.php?__lib=login&__act=login_ui', t:'登录'},
 		5:{u:0, b:1, h:'https://account.178.com/?p=register', t:'注册'},
-		6:navigator.userAgent.match(/iphone os|android/i) ? {h:'http://app.178.com/',t:'移动�?'} : null
+		6:navigator.userAgent.match(/iphone os|android/i) ? {h:'http://app.178.com/',t:'移动端'} : null
 		}
 	}
 

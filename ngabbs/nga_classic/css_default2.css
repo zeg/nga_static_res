@@ -94,6 +94,9 @@ ui次级重点文字颜色2 (#274349, -0.0375*0.666, -0.2126*0.666, 0.3490*0.666)
 
 块阴影或块边框
 border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+
+页面主题左右margin
+10 = 10
 */
 
 /*style_define
@@ -195,6 +198,9 @@ ui次级重点文字颜色1
 
 块阴影或块边框
 border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+
+页面主题左右margin
+10 = 10
 */
 
 /*style_define
@@ -296,6 +302,8 @@ ui次级重点文字颜色2
 块阴影或块边框
 border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
 
+页面主题左右margin
+10 = 10
 */
 
 /*style_define
@@ -397,6 +405,8 @@ ui次级重点文字颜色2
 块阴影或块边框
 border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid '.#ebd6dc.';box-shadow:0 0 5px -3px #fff;'
 
+页面主题左右margin
+10 = 10
 */
 
 

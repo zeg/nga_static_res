@@ -1145,7 +1145,7 @@ $('/button').$0('innerHTML','NUKE','onclick',function(){
 	//		})
 	//	}
 	}),
-
+/*
 (uid && (__GP.userBit & 1024) ? $('/span')._.add(
 	$('/br'),
 	$('/br'),
@@ -1161,7 +1161,7 @@ $('/button').$0('innerHTML','NUKE','onclick',function(){
 	$('/span')._.add('金钱清0 '),
 	$('/input').$0('type','checkbox'),
 	'威望清0'
-	) : ''),
+	) : ''),*/
 (uid && (__GP.userBit & 1024) ? $('/span')._.add(
 	$('/br'),
 	$('/br'),
@@ -1196,6 +1196,56 @@ this.w._.show(e)
 //fe
 
 
+adminui.remarkUi = function(e,uid){
+var $ = _$,ma,re,op
+this.createadminwindow()
+this.w._.addContent(null)
+this.w._.addTitle('添加备注')
+this.w._.addContent($('/span')._.add(
+	'备注身份或事迹的描述性信息供其他版主参考',$('/br'),
+	'禁止添加无用信息',$('/br'),
+	'添加备注在缓存过期后生效',$('/br'),
+	__GP.super ? [ma = $('/textarea','placeholder',uid,'onclick',function(){this.placeholder='可填入多个uid 换行 空格 逗号分隔'}),$('/br')]:null,
+	re = $('/input','placeholder','备注信息','size',20),$('/br'),
+	__GP.admin ? [op = $('/input','type','checkbox'),'所有用户可见',$('/br')]: null,
+	$('/button','innerHTML','提交','onclick',function(){
+		var uids=[],v = re.value, w = ''
+		v.replace(/(?:&|\?)(tid|pid)=(\d+)/g,function($0,$1,$2){w+='['+$1+']'+$2+'[/'+$1+']';return $0})
+		if(w)v=w
+		if(!v)
+			return
+		if(v.match(/\.(jpg|jpeg|gif|png)$/))
+			return alert('仅限文字')
+		if(ma.value)
+			ma.value.replace(/\d+/g,function($0){uids.push($0);return $0})
+		else
+			uids = [uid]
+		var ret='',nu = function(){
+			var uu = uids.shift();
+			if(uu){
+				__NUKE.doRequest({
+					u:__API.remarkAdd(uu,v,op.checked?1:0),
+					b:this,
+					f:function(d){
+						var y = d?(d.error?d.error[0]:(d.data?d.data[0]:'')):''
+						ret+='UID'+uu+' '+y+'\n'
+						window.setTimeout(nu,100)
+						return true
+						}
+					})
+				}
+			else
+				alert(ret)
+			}
+		nu()
+		})
+	))
+
+
+this.w._.show(e)
+
+}
+//fe
 
 
 /**
@@ -1396,10 +1446,27 @@ __NUKE.doRequest({
 		
 		for(var k in x.allForumTree){
 			var z = x.allForumTree[k]
-			y[z.fid] = _$('/div').$0(
+			y[z.stid ? z.stid+'_'+z.fup : z.fid] = _$('/div',
 				'title',z.fup?z.fup:'',
 				'style',{marginLeft:'1em'},
-				_$('/a').$0('title',z.fid,'href','/thread.php?fid='+z.fid,'innerHTML',z.fid+' : '+z.name,'onclick',function(e){adminui.modifyForum(null,this.title);commonui.cancelEvent(e)})
+				_$('/a','title',z.stid?'':z.fid,'href',z.stid?'/thread.php?stid='+z.stid:'/thread.php?fid='+z.fid,'innerHTML',(z.stid?'S'+z.stid : z.fid)+' : '+z.name,'onclick',function(e){if(this.title)adminui.modifyForum(null,this.title);commonui.cancelEvent(e)}),
+				_$('/a','href','javascript:void(0)','innerHTML','&#8854;','style','marginLeft:0.5em','onclick',function(e){
+					var x = this.parentNode.childNodes
+					if(this._m){
+						this._m=0
+						this.innerHTML = '&#8854;'
+						for(var i=0;i<x.length;i++)
+							if(x[i].nodeName=='DIV')
+								x[i].style.display=''
+						}
+					else{
+						this._m=1
+						this.innerHTML = '&#8853;'
+						for(var i=0;i<x.length;i++)
+							if(x[i].nodeName=='DIV')
+								x[i].style.display='none'
+						}
+					})
 				)
 			}
 		for(var k in y){
@@ -2198,7 +2265,7 @@ this.w._.show(e)
 }//fe
 
 
-adminui.viewLog = function(tou,fromu,id){
+adminui.viewLog = function(tou,fromu,id,about){
 
 var $=_$,self=this,vtype,vfrom,vto,vabout,y,vp,vpb
 commonui.createadminwindow()
@@ -2206,10 +2273,11 @@ commonui.adminwindow._.addContent(null)
 commonui.adminwindow._.addContent(
 	$('/span')._.add(
 		'类型',vtype = $('/select'),
-		' 操作人',vfrom = $('/input').$0('size',15),
-		' 被操作人',vto = $('/input').$0('size',15),
-		' 相关ID',vabout = $('/input').$0('size',15),'(主题ID/回复ID/版面ID……依类型不同) ',
-		 $('/br'),
+		' 操作人',vfrom = $('/input').$0('size',12),
+		' 被操作人',vto = $('/input').$0('size',12),
+		' 相关ID',vabout = $('/input').$0('size',12),'(主题ID/回复ID/版面ID……依类型不同) ',
+		$('/br'),'(主题的审核记录在相关ID中查询TID) ',
+		$('/br'),
 		vp = $('/button').$0('innerHTML','&#9668; 第1页 &#9658;','value',1,
 			'onclick',function(e){z(this,e)}),
 		$('/button').$0('innerHTML','提交','onclick',function(){
@@ -2277,15 +2345,18 @@ var x = function(id,type,from,to,about,page,o){
 		})
 	}
 if(tou){
-	x(0,0,0,tou,0,null)
+	x(0,0,0,tou,0,0,null)
 	vto.value=tou
 	}
 else if(fromu){
-	x(0,0,fromu,0,0,null)
+	x(0,0,fromu,0,0,0,null)
 	vfrom.value = fromu
 	}
 else if(id){
-	x(id,0,0,0,0,null)
+	x(id,0,0,0,0,0,null)
+	}
+else if(about){
+	x(0,0,0,0,about,0,null)
 	}
 commonui.adminwindow._.show()
 }//fe

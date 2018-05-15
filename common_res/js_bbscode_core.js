@@ -321,8 +321,11 @@ pg:{
 }//s
 
 
-
-
+;(function(){
+var d1 = function(){
+	return (window.__CURRENT_FID==570) ? 1 : -2
+	}
+//1未知 2可信
 ubbcode.checkLinkTable = {
 'ngacn.cc':{_:2,'bbs.ngacn.cc':3},
 'nga.cn':{_:2,'bbs.nga.cn':3},
@@ -376,30 +379,38 @@ _:1,
 'zhanqi.tv':2, // 
 'bogou.tv':2, // 播狗
 'steampowered.com':2,
-'2zhk.com':-2,
-'t.cn':-2,
-'sina.lt':-2,
-'url.cn':-2,
-'t.co':-2,
-'goo.gl':-2,
-'hiurl.me':-2,
-'dwz.cn':-2,
-'985.so':-2,
-'980.so':-2,
-'9.cn':-2,
-'qyub.cn':-2,
-'ppt.cc':-2,
-'qr.net':-2,
-'tinyurl.com':-2,
-'bocaidj.com':-2,
-'bit.ly':-2,
-'xici800.cn':-2,
-'jiaoyimao.com':-2,
-'suo.im':-2,
+'www.iyingdi.cn':-2,
+'2zhk.com':d1,
+'t.cn':d1,
+'sina.lt':d1,
+'url.cn':d1,
+'t.co':d1,
+'goo.gl':d1,
+'hiurl.me':d1,
+'dwz.cn':d1,
+'985.so':d1,
+'980.so':d1,
+'9.cn':d1,
+'qyub.cn':d1,
+'ppt.cc':d1,
+'qr.net':d1,
+'tinyurl.com':d1,
+'bocaidj.com':d1,
+'bit.ly':d1,
+'xici800.cn':d1,
+'jiaoyimao.com':d1,
+'suo.im':d1,
+'hupu.com':function(u){
+	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485 || window.__CURRENT_FID==-7) ? 1 : -2
+	},
 'taobao.com':function(u){
-	return u.url.match(/coupon\.|taoquan\.|click\.|activity_id/) ? -2 : 1
+	if(u.url.match(/coupon\.|taoquan\.|click\.|activity_id/))
+		return d1(u)
+	else
+		return 1
 	}
 }
+})();
 
 ubbcode.checkIframeTable = {
 'wow.178.com/':2,
@@ -438,6 +449,37 @@ return p+Math.floor(Math.random()*l)
 }//fe
 
 
+;(function(){
+var mwo = {
+arg:null,
+s:undefined,
+v:function(){
+if(this.s!==undefined)
+	return this.s
+if(this.arg.c){
+	var p = this.arg.c
+	for(var i=0;i<4;i++){
+		if(p){
+			if(p.nodeName=='TD' || p.nodeName=='DIV' || p.clientWidth)
+				return this.s = p.clientWidth-parseInt(commonui.getStyle(p,'paddingLeft'))-parseInt(commonui.getStyle(p,'paddingRight'))-1//防止四舍五入
+			else
+				p=p.parentNode
+			}
+		else
+			break
+		}
+	}
+return this.s=0
+}
+}//mwo
+mwo.valueOf = mwo.toString =function(){return this.v()},
+ubbcode._argMaxWidth = function(x//同ubbcode.bbsCode
+){
+var o = function(y){this.arg=y}
+o.prototype = mwo
+return new o(x)
+}//f
+})();
 
 /*
 var arg = {
@@ -481,17 +523,10 @@ if (this.regexplock){
 
 this.regexplock = 1;
 if(typeof(arg.c)=='string')arg.c=document.getElementById(arg.c)
-if(!arg.maxWidth && arg.c){//获取可用的宽度
-	var p = arg.c.parentNode
-	for(var i=0;i<3;i++){
-		if(p.offsetWidth && p.nodeName=='TD' || p.nodeName=='DIV'){
-			arg.maxWidth = p.clientWidth-parseInt(commonui.getStyle(p,'paddingLeft'))-parseInt(commonui.getStyle(p,'paddingRight'))-1//防止四舍五入
-			break
-			}
-		else
-			p=p.parentNode
-		}
-	}
+
+if(!arg.maxWidth)//获取可用的宽度
+	arg.maxWidth = this._argMaxWidth(arg)
+
 arg.tId = parseInt(arg.tId,10)
 if(!arg.tId)arg.tId=0
 arg.pId = parseInt(arg.pId,10)
@@ -565,7 +600,8 @@ ubbcode.manualLoadCache = {}
 ubbcode.bbscode_core=function(arg)
 {
 if(!arg.txt)arg.txt = arg.c.innerHTML
-
+//if(!arg.noCov)
+//	arg.txt = arg.txt.replace(/<br\s*\/>/g,'\x01')
 if(this.bbscode_pre)
 	this.bbscode_pre(arg)
 
@@ -618,8 +654,12 @@ this.bbscode_common(arg)
 if(this.bbscode_aft)
 	this.bbscode_aft(arg)
 
-this.contentPrefix(arg)
+if(this.collapse.had && arg.txt.indexOf('[collapse')!=-1)
+	arg.txt = arg.txt.replace(/\[collapse(=[^\]]{1,50})?\].+\n/,"<span style='text-decoration:line-through' class='gray'>&nbsp;被折叠的内容&nbsp;</span>")
 
+this.contentPrefix(arg)
+//if(!arg.noCov)
+//	arg.txt = arg.txt.replace(/\x01/,'<br/>')
 return arg.txt;
 }//fe
 
@@ -708,7 +748,7 @@ return "<table class='dice'><tr><td><b>ROLL : "+rr+'</b>='+$1.substr(1)+'=<b>'+s
 });//[dice]
 		
 ubbcode.parseList.parse(arg)//[list]
-
+/*
 var tmp = 0
 arg.txt = arg.txt.replace(/\[(?:\/?)color(?:\d?)(?:=(bg)?(skyblue|royalblue|blue|darkblue|orange|orangered|crimson|red|firebrick|darkred|green|limegreen|seagreen|teal|deeppink|tomato|coral|purple|indigo|burlywood|sandybrown|sienna|chocolate|silver|gray))?\]/gi,function($0,$1,$2){
 	if(tmp<0)
@@ -732,24 +772,26 @@ if(tmp>0){
 	while((tmp--)>0)
 		arg.txt+="</span><!--[color]error-->"
 	}
+	*/
 
 //c = c.replace(/\[email\](.+?)\[\/email\]/gi,"<a href='mailto:$1'>$1</a>");//[email\]
+/*
 arg.txt = arg.txt.replace(/\[upup\](.+?)\[\/upup\]/i,function($0,$1){
 	if(self.ifCanvas && $1.length<8 && $1.indexOf('[')==-1 && $1.indexOf('<')==-1)
 		return ' <b>'+$1+"</b><img src='about:blank' style='display:none' onerror='ubbcode.upupProc(this.previousSibling)'/> "
 	else
 		return ' <b>'+$1+"</b> "
 	});//[upup]
+*/
+//arg.txt = arg.txt.replace(/\[size=(\d{1,3})%?\](.*?)\[\/size\]/gi,function($0,$1,$2){return "<span style='font-size:"+$1+"%;line-height:183%'>"+$2+"</span>"});//[size\]
 
-arg.txt = arg.txt.replace(/\[size=(\d{1,3})%?\](.*?)\[\/size\]/gi,function($0,$1,$2){return "<span style='font-size:"+$1+"%;line-height:183%'>"+$2+"</span>"});//[size\]
-
-arg.txt = arg.txt.replace(/\[font=(simsun|simhei|Arial|Arial Black|Book Antiqua|Century Gothic|Comic Sans MS|Courier New|Georgia|Impact|Tahoma|Times New Roman|Trebuchet MS|Script MT Bold|Stencil|Verdana|Lucida Console)\](.+?)\[\/font\]/gi,"<span style='font-family:$1'>$2</span>");//[font]
-
+//arg.txt = arg.txt.replace(/\[font=(simsun|simhei|Arial|Arial Black|Book Antiqua|Century Gothic|Comic Sans MS|Courier New|Georgia|Impact|Tahoma|Times New Roman|Trebuchet MS|Script MT Bold|Stencil|Verdana|Lucida Console)\](.+?)\[\/font\]/gi,"<span style='font-family:$1'>$2</span>");//[font]
+/*
 arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[align=(left|center|right)\](.+?)\[\/align\]\s*(?:<br\s*\/?>)?/gi,
 	function($0,$1,$2){
-		return "<div class='ta"+$1.substr(0,1)+"' style='text-align:"+$1+"'>"+$2+"</div>"
+		return "<div class='ta"+$1.substr(0,1)+"' style='text-align:"+$1+"'>"+$2.replace(/^<br\s*\/?>|<br\s*\/?>$/g,'')+"</div>"
 		});//[align]
-
+*/
 if(arg.txt.indexOf('[headline]')!=-1)
 	this.parseHeadline(arg)
 
@@ -846,7 +888,11 @@ arg.txt = arg.txt.replace(/\[attach\](.+?)\[\/attach\]/gi,function($0,$1){
 	if ($1 && $1.substr(0,2).toLowerCase()=='./')
 		$1 = commonui.getAttachBase($1)+'/'+$1.substr(2);
 	if (commonui.ifUrlAttach($1))
+		//var uu = self.urlToAry($1),x=self.mediaBlk(arg,uu)
+		//if(x)
+			//return x
 		return self.writelink($1)
+	return $0
 	});
 
 
@@ -872,7 +918,10 @@ arg.txt = arg.txt.replace(/\[uid=?(\d{0,50})\](.+?)\[\/uid\]/gi,function($0,$1,$
 		return " <b>["+commonui.anonyName($2,true)+"]</b>";
 	})
 
-arg.txt = arg.txt.replace(/\[@(.{2,20}?)\]/gi,function($0,$1){ return" <a href='/nuke.php?func=ucp&__inchst=UTF-8&username="+encodeURIComponent($1)+"' class='b'>"+$0+"</a> " } );//[@]
+arg.txt = arg.txt.replace(/\[@(.{2,20}?)\]/gi,function($0,$1){
+	var i
+	return" <a href='/nuke.php?func=ucp&__inchst=UTF-8&"+((i=$1.match(/^(?:UID)?(\d+)$/i)) ? "uid="+i[1] : "username="+encodeURIComponent($1))+"' class='b'>"+$0+"</a> " 
+	} );//[@]
 
 var tmp=0
 arg.txt = arg.txt.replace(/\s*\[h\](.*?)\[\/h\]\s*(?:<br \/>)?/gi,function($0,$1){
@@ -950,7 +999,7 @@ arg.txt = arg.txt.replace(/\[chartradar (\d+) (\d+) (\d+) (\d+) (#[a-fA-F0-9]{6}
 
 		return self.drawChartRadar(x)
 		});//[h]
-
+/*
 arg.txt = arg.txt.replace(/(?:<br \/>)?\s*\[(l|r)(\s[^\[\]]+)?\]\s*(?:<br \/>)?\s*(.+?)\s*(?:<br \/>)?\s*\[\/\1\]\s*(?:<br \/>)?/gi,function($0,$1,$2,$3){
 	if($2){
 		$2 = $2.replace(/^\s+/,'').split(/\s+/)
@@ -982,9 +1031,9 @@ arg.txt = arg.txt.replace(/(?:<br \/>)?\s*\[(l|r)(\s[^\[\]]+)?\]\s*(?:<br \/>)?\
 		$1='right'
 	return "<div "+$2+" class='"+$1+"'>"+$3+"</div>"
 	});//[left][right]
-
-if(arg.txt.indexOf('[t.178.com')!=-1)
-	this.parseT178(arg)
+*/
+//if(arg.txt.indexOf('[t.178.com')!=-1)
+//	this.parseT178(arg)
 
 if(arg.isBlock && arg.opt && (arg.opt&1))
 	this.parseFix(arg)
@@ -996,7 +1045,6 @@ if(arg.txt.length>24)//常见符号连续25个加空格
 			x += $0.charAt(i)+'\u200b'//0宽空格以自动换行
 		return x
 		})
-
 }//fe
 //=============================
 //table
@@ -1008,7 +1056,7 @@ function init(){
 table=/(?:<br \/>\s*)?\[table\s*([^\]]*)\](.+?)\[\/table\]\s*(?:<br \/>)?/gi
 tr=/(?:<br \/>\s*)?\[tr\](.+?)\[\/tr\]\s*(?:<br \/>)?/gi
 td=/(?:<br \/>\s*)?\[td\s*([^\]]*)\](.*?)\[\/td\]\s*(?:<br \/>)?/gi
-noboder=/noboder/
+noboder=/noborder/
 align=/top/g
 width=/width=?(auto|\d{0,2})/
 width=/width=?(auto|\d{0,2})/
@@ -1020,9 +1068,9 @@ ubbcode.parseTable=function(arg){
 if(table===undefined)
 	init()
 arg.txt = arg.txt.replace(table,function ($0,$1,$2){
-	var t = $2.replace(space,''),y,z="'",b=1,d='',m
-	if ($1.match(noboder))
-		b=0
+	var t = $2.replace(space,''),y,z="'",b=1,d='',m,bc=__COLOR.border3
+	//if ($1.match(noboder))
+		//b=0
 	
 	t = t.replace(tr,function($0,$1){return '<tr>'+$1.replace(space,'')+'</tr>'});//[tr]
 	t = t.replace(td,function($0,$1,$2){
@@ -1046,7 +1094,7 @@ arg.txt = arg.txt.replace(table,function ($0,$1,$2){
 					//	w='text-align:justify-all;text-align-last:justify;text-justify:inter-word;'+w
 				}
 			}
-		return "<td style='border-left:"+b+"px solid #aaa;border-bottom:"+b+"px solid #aaa; "+w+">"+$2.replace(space,'')+"</td>"
+		return "<td style='border-left:"+b+"px solid "+bc+";border-bottom:"+b+"px solid "+bc+"; "+w+">"+$2.replace(space,'')+"</td>"
 		});//[td]
 	if (y = parseFloat($1)){
 		if(y<=100)
@@ -1058,7 +1106,7 @@ arg.txt = arg.txt.replace(table,function ($0,$1,$2){
 		else
 			z='width:99.95%'+z
 		}
-	return "<div><table cellspacing='0px' style='border:"+b+"px solid #aaa;border-left:none;border-bottom:none;"+z+"'>"+t+"</table></div>"
+	return "<div><table cellspacing='0px' style='border:"+b+"px solid "+bc+";border-left:none;border-bottom:none;"+z+"'>"+t+"</table></div>"
 	});//[table]
 }//fe
 
@@ -1129,7 +1177,7 @@ if(!arg.isNukePost){
 		if($0.charAt(1)=='/')
 			i++
 		else
-			arg.isNukePost=$1
+			arg.isNukePost=$1?$1:1
 		return '';
 		});//[lessernuke]
 	}
@@ -1168,7 +1216,7 @@ ubbcode.parseFix = function(arg){
 			}
 
 		if(w && w<300 && w>0 && h && h<(arg.opt&4 ? 21 : 300) && h >0){
-			fc="<div class='fixblk' id='fixblk_"+arg.argsId+"' style='clear:both;overflow:hidden;width:auto;height:"+h+"em;"+(b ? "background:"+b : 'box-shadow: inset 0 0 15px -8px #000;background:'+__COLOR.bg6)+"'><div style='margin:auto;overflow:hidden;position:relative;height:"+h+"em;"+((mw && mw>0 && mw<300) ? "max-width:"+mw+"em;min-width:"+w+"em;" : "width:"+w+"em;")+(bb ? "background:"+bb : '')+"'>"
+			fc="<div class='fixblk' id='fixblk_"+arg.argsId+"' style='clear:both;overflow:hidden;width:auto;height:"+h+"em;"+(b ? "background:"+b : 'box-shadow: inset 0 0 15px -8px #000;background:'+__COLOR.bg6)+"'><div style='margin:auto;overflow:hidden;position:relative;z-index:0;height:"+h+"em;"+((mw && mw>0 && mw<300) ? "max-width:"+mw+"em;min-width:"+w+"em;" : "width:"+w+"em;")+(bb ? "background:"+bb : '')+"'>"
 			return ''
 			}
 		else
@@ -1194,6 +1242,10 @@ ubbcode.parseFix = function(arg){
 				case 'rotate':
 					if(z = toF(z))
 						t[y] = z+"deg"
+					break
+				case 'scale':
+					if(z = toF(z))
+						t[y] = z
 					break
 				case 'margin':
 				case 'padding':
@@ -1274,7 +1326,26 @@ ubbcode.parseFix = function(arg){
 					if(z.match(/^#[0-9a-fA-F]{3,6}$/))
 						s[y] = z
 					break	
-				case'parentfitwidth':
+				case 'dybg'://背景图缩放(相对于元素)x%,背景位置x,背景位置y,(活动量水平,活动量垂直 或 活动量水平)
+					if(s.width && s.height){
+						var pm = z.match(/-?[\d\.]+%?/g),pb = z.match(/\.\/.+$/)
+						if(pm && pb){
+							for(var j=0;j<pm.length;j++)
+								pm[j] = (parseFloat(pm[j])*1000<<1)|(pm[j].charAt(pm[j].length-1)=='%' ? 1:0)
+							if(!pm[4])pm[4]=0
+							pb = commonui.getAttachBase(pb[0])+'/'+pb[0].substr(2)
+							s['background-image'] = 'url('+pb+')'
+							s['background-position'] = (pm[1]>>1)/1000+(pm[1]&1?'%':'em')+' '+(pm[2]>>1)/1000+(pm[2]&1?'%':'em')
+							s['transition'] = 'background-position 0.1s linear 0s';
+							if(pm[0]>>1)
+								s['background-size'] = (pm[0]>>1)/1000+'%'//(Math.max(pm[4],pm[3])*2)+'%'
+							if(!u.onmousemove)u.onmousemove=''
+							u.onmousemove += 'if(!this._gybg)this._gybg=ubbcode.parseFix.dybg;this._gybg(event,this,"'+arg.argsId+'",'+pm[1]+','+pm[2]+','+pm[3]+','+pm[4]+');'
+							}
+						}
+					break
+				case 'parentfitwidth':
+					if(!u.onload)u.onload=''
 					u.onload+="var x=this.parentNode;x.style.width=this.width+\"px\";x.style.height=this.height+\"px\";"
 					i--
 				}
@@ -1311,7 +1382,7 @@ ubbcode.parseFix = function(arg){
 		if(z)
 			y+="transform:"+z
 		//console.log(a+"<"+u+" style='"+y+"'>"+w)
-		return a+"<"+u.tagName+(u.id?" id='"+u.id+"'":'')+(u.src?" src='"+u.src+"'":'')+(u.onload ? " onload='"+u.onload+"'" : '')+" style='"+y+"'>"+(u.innerHTML?u.innerHTML:'')
+		return a+"<"+u.tagName+(u.id?" id='"+u.id+"'":'')+(u.src?" src='"+u.src+"'":'')+(u.onload ? " onload='"+u.onload+"'" : '')+(u.onmousemove ? " onmousemove='"+u.onmousemove+"'" : '')+" style='"+y+"'>"+(u.innerHTML?u.innerHTML:'')
 		})
 /*
 	arg.txt = arg.txt.replace(/(?:<br \/>\s*)?\[\/style\](?:<br \/>\s*)?/g,function($0){
@@ -1330,6 +1401,29 @@ ubbcode.parseFix = function(arg){
 	arg.txt = arg.txt.replace(/\x00/g,'<br />')
 	arg.txt +="</div></div>"//+(arg.shiftElm?"<img src='about:blank' onerror='this.previousSibling.onmousemove=ubbcodeParseFixMousemove'/>":'')
 	//arg.txt +="<img src='about:blank' onerror='ubbcode.parseFix.adjsize(\""+arg.argsId+"\",this.previousSibling.firstChild)' style='display:none'/>"
+}//fe
+
+
+ubbcode.parseFix.dybg = function(e,o,argsId,px,py,dx,dy){
+	//console.log(dx)
+if(dx || dy){
+	if(dx){
+		var x = (e.offsetX-(o.offsetWidth/2))/(o.offsetWidth/2)
+		x = (dx>>1)/1000*x
+		px+=x*1000<<1
+		}
+	if(dy){
+		var x = (e.offsetY-(o.offsetHeight/2))/(o.offsetHeight/2)
+		x = (dy>>1)/1000*x
+		py+=x*1000<<1
+		}
+	requestAnimationFrame(function(){o.style.backgroundPosition = (px>>1)/1000+(px&1?'%':'em')+' '+(py>>1)/1000+(py&1?'%':'em')})
+	//o._dybgx = px
+	//o._dybgy = py
+	//if(o._dybgto)
+	//	clearTimeout(o._dybgto)
+	//o._dybgto = setTimeout(function(){console.log(o._dybgx+' '+o._dybgy);o.style.backgroundPosition = o._dybgx+'% '+o._dybgy+'%'},100)
+	}
 }//fe
 
 /*
@@ -1360,6 +1454,7 @@ else{
 	else if(arg.opt&2){}//in [fixsize]
 	else{
 		w+="max-width:"+( arg.maxWidth ? arg.maxWidth-10 : 650 )+"px;" 
+		//w+="max-width:90%;" 
 		n+='ubbcode.adjImgSize(this);'
 		}
 	if(arg.opt&256)
@@ -1608,6 +1703,24 @@ ubbcode.parseQuote = {
 p:false,
 a:null,
 parse:function(arg){
+	/*
+	if(arg.txt.indexOf('[quote')==-1)
+		return
+	var c = 0
+	arg.txt = arg.txt.replace(/(?:<br \/>)?\s*(\[\/?quote\])\s*(?:<br \/>)?|\[img[^\]]*\]|\[iframe[^\]]*\]/gi,function($0,e){
+		if(e){
+			if(c==0)
+				return "/&#42;bbscode /quote error&#42;/"
+			else
+				return "[/quote"+(c--)+"]"
+			}
+		else{
+			if()
+			return "[quote"+(++c)+"]"
+			}
+		})
+	*/
+	
 	this.p = arg.txt.indexOf('[quote')+1
 	if(this.p)
 		arg.txt = arg.txt.replace(/(?:<br \/>)?\s*(\[\/?quote\])\s*(?:<br \/>)?/gi,"$1")
@@ -1742,7 +1855,6 @@ rnd:function(argsId){
 	if (argsId){
 		if(!this.seeds[argsId]){
 			var arg = ubbcode.bbscodeConvArgsSave[argsId]
-			console.log(arg)
 			this.seeds[argsId] = arg.authorId+arg.tId+arg.pId+(arg.tId>10246184 || arg.pId>200188932 ? (arg.seedOffset|0) : 0)
 			if(!this.seeds[argsId])
 				this.seeds[argsId]=Math.floor(Math.random()*10000)
@@ -1776,10 +1888,11 @@ ubbcode.sRand_v2={}
 ubbcode.collapse={
 parent:ubbcode,
 parse:function(arg){
-var self = this
 if(arg.txt.indexOf('[collapse')!=-1){
-	arg.txt = arg.txt.replace(/\[collapse(=[^\]]{1,50})?\]\s*(?:<br\s*\/?>)*\s*(.+?)\s*(?:<br\s*\/?>)*\s*\[\/collapse\]/gi,function($0,$1,$2){
-		var l=$1 ? $1.substr(1)+' ...' : '点击显示隐藏的内容 ...' , id = self.parent.randDigi('collapse', 10000)
+	this.had = 1
+	arg.txt = arg.txt.replace(/\[collapse(=[^\]]{1,50})?\](.+?)\[\/collapse\]/gi,function($0,$1,$2){
+		var l=$1 ? $1.substr(1)+' ...' : '点击显示隐藏的内容 ...'
+		$2 = $2.replace(/^\s*(?:<br\s*\/?>)*\s*|\s*(?:<br\s*\/?>)*\s*$/g,'')
 		if(!arg.collapseBlock)arg.collapseBlock=[]
 		arg.collapseBlock.push($2)
 		arg.collapseAttach=1
@@ -1787,7 +1900,8 @@ if(arg.txt.indexOf('[collapse')!=-1){
 		})
 	}
 if(arg.txt.indexOf('[randomblock')!=-1){
-	arg.txt = arg.txt.replace(/(?:<br\s*\/?>){0,2}\s*\[randomblock\]\s*(?:<br\s*\/?>)*\s*(.+?)\s*(?:<br\s*\/?>)*\s*\[\/randomblock\]\s*(?:<br\s*\/?>){0,2}/gi,function($0,$1){
+	arg.txt = arg.txt.replace(/(?:<br\s*\/?>){0,2}\s*\[randomblock\](.+?)\[\/randomblock\]\s*(?:<br\s*\/?>){0,2}/gi,function($0,$1){
+		$1 = $1.replace(/^\s*(?:<br\s*\/?>)*\s*|\s*(?:<br\s*\/?>)*\s*$/g,'')
 		if(!arg.randomBlock)arg.randomBlock=[]
 		if(arg.txt.indexOf('[fixsize')!=-1)
 			arg.opt|=2
@@ -1858,7 +1972,7 @@ arg.c = $('/div').$0('style','transition:all 0.2s ease-out 50ms')
 arg.noCov = 1
 arg.isBlock = 1
 arg.opt|=64|256
-arg.maxWidth = o.offsetWidth
+//arg.maxWidth = o.offsetWidth
 arg.onResizeQue.push(function(){//块渲染完成后 内部有发生长宽变化时
 	var p = this.c.getBoundingClientRect() , q = this.c.parentNode.getBoundingClientRect()
 	if(p.bottom-p.top != q.bottom-q.top)
@@ -2110,8 +2224,17 @@ __NUKE.doRequest({
 //ubi
 //=============================
 ;(function(){
-var g = /(?:\[(\/?)(del|u|b|i|sub|sup|span)(?:\s+([^\]]+))?\])|\n+/gi,b={},off,aa,
-r= function($0,e,t,opt,of){
+var g = /(\s*(?:<br \/>)?\s*)(?:\[(\/?)(b|color|size|align|del|font|u|i|sub|sup|span|upup|l|r)(?:[=\s]+([^\]]+))?\])(\s*(?:<br \/>)\s*)?|\n+/gi,b={},off,aa,
+r = function($0,brs,e,t,opt,bre,of){
+if(!brs || t=='l' || t== 'r')
+	brs = ''
+if(!bre || t=='l' || t== 'r')
+	bre = ''
+if(!opt)
+	opt=''
+return brs+rr($0,e,t,opt,of)+bre
+},
+rr= function($0,e,t,opt,of){
 if($0=='\n'){//在换行处分段如有未结束的tag强行结束
 	var n=''
 	for(var k in b){
@@ -2120,7 +2243,7 @@ if($0=='\n'){//在换行处分段如有未结束的tag强行结束
 			b[k]--
 			}
 		}
-	return n
+	return n+'\n'
 	}
 t = t.toLowerCase()
 if(!b[t])
@@ -2155,6 +2278,78 @@ else if(t=='i' || t=='sup' || t=='sub'){
 		return "<span>"
 		}
 	}
+else if(t=='color'){
+	if(e)
+		return '</span>'
+	var c
+	if(opt && (c = opt.match(/^(bg)?(skyblue|royalblue|blue|darkblue|orange|orangered|crimson|red|firebrick|darkred|green|limegreen|seagreen|teal|deeppink|tomato|coral|purple|indigo|burlywood|sandybrown|sienna|chocolate|silver|gray)\s*$/i))){
+		if(c[1])
+			return "<span class='small_colored_text_btn white' style='font-family:inherit;background-color:"+c[2]+"'>"
+		else
+			return "<span class='"+c[2]+"'>"
+		}
+	else
+		return "<span>/* bbscode color error */"
+	}
+else if(t=='font'){
+	if(e)
+		return '</span>'
+	var c = opt.match(/^(simsun|simhei|Arial|Arial Black|Book Antiqua|Century Gothic|Comic Sans MS|Courier New|Georgia|Impact|Tahoma|Times New Roman|Trebuchet MS|Script MT Bold|Stencil|Verdana|Lucida Console)\s*$/i)
+	if(c)
+		return "<span style='font-family:"+c[1]+"'>"
+	else
+		return "<span>/* bbscode font error */"
+	}
+else if(t=='size'){
+	if(e)
+		return '</span>'
+	var c = opt.match(/^(\d{1,3})%?\s*$/i)
+	if(c)
+		return "<span style='font-size:"+(c[1]|0)+"%;line-height:183%'>"
+	else
+		return "<span>/* bbscode size error */"
+	}
+else if(t=='l'||t=='r'){
+	if(e)
+		return '</span>'
+	if(opt){
+		var c = opt.replace(/^\s+/,'').split(/\s+/),i=0,j
+		while(i<2){
+			if(j= parseInt(c[i],10)){
+				if(c[i].substr(c[i].length-2)=='em')
+					c[i] = j+'em'
+				else
+					c[i] = (j-0.05)+'%'
+				}
+			else
+				c[i] = 0
+			i++
+			}
+		if(c[0]){
+			if(c[1])
+				opt=";overflow:hidden;min-width:"+c[0]+";max-width:"+c[1]+"'"
+			else
+				opt=";overflow:hidden;width:"+c[0]
+			}
+		else
+			opt=''
+		}
+	return "<span style='display:block;' class='"+(t=='l'?'left':'right')+"'>"
+	}
+else if(t=='align'){
+	if(e)
+		return '</span>'
+	var c = opt.match(/^(left|right|center)\s*$/i)
+	if(c)
+		return "<span class='"+(c[1]=='center'?'tac':(c[1]=='right'?'tar':''))+"' style='display:block;text-align:"+c[1]+"'>"
+	else
+		return "<span>/* bbscode align error */"
+	}
+else if(t=='upup'){
+	if(e)
+		return '</span>'
+	return "<img src='about:blank' style='display:none' onerror='ubbcode.upupProc(this.nextSibling)'/><span style='font-weight:bold'>"
+	}
 else if(t=='span'){
 	if(e)
 		return '</span>'
@@ -2172,6 +2367,7 @@ ubbcode.ubi={
 parse:function(arg){
 var n = ''
 off={}
+b={}
 aa=arg
 if(arg.constructor===Object)
 	n = arg.txt.replace(g,r)
@@ -2190,49 +2386,37 @@ else
 	return n
 },
 aligntable:function(o,argsId){
-var j=0,arg = ubbcode.bbscodeConvArgsSave[argsId],iff = function(t){
+var $=_$,j=0,tc=[],arg = ubbcode.bbscodeConvArgsSave[argsId],iff = function(t){
 	if(t.nodeName=='DIV' && t.firstChild && t.firstChild.nodeName=='TABLE' && t.firstChild==t.lastChild)
 		return 1
 	}
 for(var i=0;i<o.childNodes.length;i++){
 	var t =o.childNodes[i]
 	if(iff(t)){
-		t.style.cssFloat='left'
-		t.style.marginRight='-1px'
+		tc.push(t)
 		j++
 		}
 	else if(t.nodeName=='BR')
 		t.style.display='none'
 	}
 if(j>8)j=8
-for(var i=0;i<o.childNodes.length;i++){
-	var t =o.childNodes[i]
-	if(iff(t)){
-		t.style.width = t.style.maxWidth=(100/j-0.05)+'%'
-		t.style.minWidth='24em'
-		t.style.overflow='hidden'
-		t.firstChild.style.width='100%'
-		}
+for(var i=0;i<tc.length;i++){
+	$(tc[i],'style','cssFloat:left;width:'+(100/j)+'%;maxWidth:'+(100/j)+'%;minWidth:24em;overflow:hidden;marginRight:-1px;marginBottom:-1px;borderTop:1px solid '+__COLOR.border3+';borderRight:1px solid '+__COLOR.border3)
+	$(tc[i].firstChild,'style','width:100.1%;borderTop:none;borderRight:none')
 	}
-o.appendChild(_$('/div','className','clear'))
+o.appendChild($('/div','className','clear'))
+o.style.paddingBottom='1px'
+o.style.paddingRight='1px'
 o.style.display='block'
 arg.opt |=256
 arg.onResizeQue.push(function(){
 	j=0
-	for(var i=0;i<o.childNodes.length;i++){
-		var t =o.childNodes[i]
-		if(iff(t)){
-			if(t.firstChild.offsetHeight>j)
-				j=t.firstChild.offsetHeight
-			if(t.firstChild.offsetWidth<t.offsetWidth)
-				t.style.marginRight='-2px'
-			}
+	for(var i=0;i<tc.length;i++){
+		if(tc[i].firstChild.offsetHeight>j)
+			j=tc[i].firstChild.offsetHeight
 		}
-	for(var i=0;i<o.childNodes.length;i++){
-		var t =o.childNodes[i]
-		if(iff(t)){
-			t.firstChild.style.height = j+'px'
-			}
+	for(var i=0;i<tc.length;i++){
+		tc[i].firstChild.style.height = j+'px'
 		}
 	})
 if(arg.opt&256)
@@ -2299,6 +2483,21 @@ if(x){
 });
 }//fe
 
+
+
+ubbcode.mediaBlk = function(arg,uu){
+var x=uu.pathname.match(/\.(.{1,5})$/)
+if(x){
+	if((x[1]=='mp4'||x[1]=='ogg'||x[1]=='webm') && (arg.opt&1)){
+		return "<a class='video' href='"+uu.url+"' target='_blank' style='text-align:center;display:table-cell' onclick='commonui.cancelEvent(event);if(this.__clicked)return;this.__clicked=1;this.childNodes[0].style.display=\"none\";this.childNodes[1].src=this.href;this.childNodes[1].play()'><i class='silver'>点击开始<br/></i><video controls preload='none'><source src='' type='video/"+x[1]+"'></video></a>"
+		}
+	else if(x[1]=='aac'||x[1]=='mp3'){
+		return "<div class='video' style='text-align:center;display:table-cell'><audio controls preload='none'><source src='"+uu.url+"' type='audio/"+x[1]+"'></audio></div>"
+		}
+	}
+return null
+}//fe
+
 //============================
 //flash
 
@@ -2309,12 +2508,11 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 			  $2.replace(/\.bilibili\.(?:us|tv)/,'.bilibili.com')
 			  .replace(/(is)?Auto(Play)?=.+?(&|$)/ig,'')
 			  .replace('static.acfun.tv','cdn.aixifan.com')
-
 	if(u.substr(0,2)=='./')
 		u = commonui.getAttachBase(u)+'/'+u.substr(2);
 	if(!u.match(/^https?:\/\//))
 		u = 'http://'+u
-
+	var ua = self.urlToAry(u),u=ua.url
 	if(x=u.match(/^http:\/\/v\.youku\.com\/v_show\/id_(.+?)\.html/i))
 		uu = u,	u='http://player.youku.com/player.php/sid/'+x[1]+'/v.swf';
 	else if(x=u.match(/^http:\/\/www\.bilibili\.com\/video\/av(\d+)/i))
@@ -2339,32 +2537,16 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 		uu = u, u = 'http://www.66play.com/home/VideoPlay/index?id='+x[1], w=640, h=400, i=1	
 	else if(x=u.match(/^http:\/\/(?:www\.)?feixiong\.tv\/Video\/(?:play\/id\/|fx_)(\d+)/i))
 		uu = 'http://www.feixiong.tv/Video/fx_'+x[1], u = 'http://www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
-	
-	var ua = self.urlToAry(u),x=ua.pathname.match(/\.(.{1,5})$/)
 
-	if($1=='video' || (x && (x[1]=='mp4'||x[1]=='ogg'||x[1]=='webm'))){
-
-		//x = "<div class='video' style='text-align:center;display:table-cell' onclick='if(this.__clicked)return;this.__clicked=1;this.childNodes[0].style.display=\"none\";this.childNodes[1].play()'><i class='silver'>点击开始播放<br/></i><video controls preload='none'><source src='"+u+"' type='video/"+(x[1]?x[1]:'mp4')+"'></video></div>"
-		x = "<a class='video' href='"+u+"' target='_blank' style='text-align:center;display:table-cell' onclick='if(this.__clicked)return;this.__clicked=1;this.childNodes[0].style.display=\"none\";this.childNodes[1].play()'><i class='silver'>点击开始<br/></i><video controls preload='none'><source src='' type='video/"+(x[1]?x[1]:'mp4')+"'></video></a>"
-		if(arg.noImg || self.videonum>1){
-			var id = self.randDigi('manualLoadSwf', 10000)
-			self.manualLoadCache[id]=x
-			return "<button type='button' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+id+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'>点击显示视频</button><span style='display:none'></span>"
-			}
-		else
-			return x
-		}
-
-	if($1=='audio' || (x && (x[1]=='aac'||x[1]=='mp3'))){
-		return "<div class='video' style='text-align:center;display:table-cell'><audio controls preload='none'><source src='"+u+"' type='audio/"+(x&&x[1]?x[1]:'mp3')+"'></audio></div>"
-		}
+	var x=self.mediaBlk(arg,ua)
+	if(x)
+		return x
 
 	if (self.checklink(ua,1)<2)
 		return $0
 
 
 	if(!uu){
-		//console.log(u)
 		if(x=u.match(/^http:\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
 			uu = 'http://live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
 		else if(x=u.match(/^http:\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
@@ -2712,9 +2894,8 @@ var v = this.urlToAry(u)
 
 var h = " onmouseover='this.childNodes[0].style.display=\"inline\"' onmouseout='this.childNodes[0].style.display=\"none\"'>"+v.hintHTML;
 
-
 if (v.check<2)
-	h = " onclick='this.previousSibling.style.display=\"inline\";return false' "+h;
+	h = " onclick='this.previousSibling.style.display=\"inline\";commonui.cancelEvent(event);commonui.cancelBubble(event);return false' "+h;
 if(v.check==-2 && n)
 	n = '被禁止的链接'
 	
@@ -2722,7 +2903,7 @@ if(v.check==-1 && v.pathname.substr(v.pathname-10)=='/read.php'){
 	var an = v.hash.match(/#pid\d+Anchor$/)
 	if(an){
 		an = an[0].substr(1)
-		h = " onclick='if($(\""+an+"\")){commonui.cancelEvent(event);window.location.hash = \"#"+an+"\";return false}' "+h
+		h = " onclick='if($(\""+an+"\")){window.location.hash = \"#"+an+"\";commonui.cancelEvent(event);commonui.cancelBubble(event);return false}' "+h
 		}
 	}
 return "<span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>[</span>"+v.alertHTML+"<a href='"+v.url+"' target='_blank' "+h+(n?n:v.url)+"</a><span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>]</span>";
@@ -2731,13 +2912,17 @@ return "<span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+
 
 //[url,protocol,host,pathname,search,has,color,check,hintHTML,alertHTML]
 ubbcode.urlToAry=function(u){
+	if(u.match(/^[^\x00-\x1f><"']|[^\x00-\x1f><"']$/))
+		u = u.replace(/^(:?\s|<br \/>)+|(:?\s|<br \/>)+$/,'')
 var v = commonui.urlToAry(u)
 if(!v)
-	return {url:'错误的链接',pathname:'',color:'#888',check:-1,hintHTML:'',alertHTML:''}
+	return {host:location.host,pathname:'/错误的链接',search:'',hash:'',url:location.host+'/错误的链接',pathname:'',color:'#888',check:-1,hintHTML:'',alertHTML:''}
 var c='#D0D0D0', s = this.checklink(v), u
 if(s==4)
 	v.host = location.host
 if(s==3){
+	if(location.protocol=='https:' && v.protocol=='http')
+		v.protocol = 'https'
 	u = v.pathname+v.search+v.hash
 	if(u.charAt(0)=='/')
 		u = v.protocol+'://'+location.host+u
@@ -2777,7 +2962,6 @@ if((u).constructor==String){
 	if(!u)
 		return 0
 	}
-
 //if (!this.noCheckLinkCookie || nocookie)
 //	{
 	if (u.host==location.host)return 3;
@@ -3294,8 +3478,8 @@ ubbcode.codeHelpCommon = [
 \n\
 [table]\n\
   [tr]\n\
-  &nbsp; [td]第一行第一列[/td]\n\
-  &nbsp; [td]第一行第二列[/td]\n\
+  &nbsp; [td top]第一行第一列 顶端对齐[/td]\n\
+  &nbsp; [td top]第一行第二列 顶端对齐[/td]\n\
   &nbsp; [td]第一行第三列[/td]\n\
   [/tr]\n\
   [tr]\n\

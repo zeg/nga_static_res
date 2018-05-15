@@ -870,6 +870,8 @@ else{
 		var utf8oname = __NUKE.scDe(attach).url_utf8_org_name
 		
 	z.__infoC.innerHTML='<span class=gray>文件</span> <span class=orange>[attach]./'+url+(utf8oname?'?filename='+utf8oname:'')+'[/attach]</span>'
+	if(__GP.ubMod && url.match(/\.(mp4|webm|ogg|mp3|aac)$/))
+		z.__infoC.innerHTML+='<br/><span class=gray>播放</span> <span class=orange>[flash]./'+url+(utf8oname?'?filename='+utf8oname:'')+'[/flash]</span><br/><span class=gray>在加分/加亮贴中有效</span><br/><span class=gray>使用h264编码mp4/mp3/aac以获得最大兼容性</span>'
 
 	}
 
@@ -1169,7 +1171,7 @@ var o_main = $('/span').$0(
 				),//tr
 
 			$('/tr').$0('className','row'+(((i++)&1)+1),
-				$('/td').$0('className','c2',
+				$('/td','className','c2')._.add(
 					this.o_hidden = $('/input').$0('name','hidden','type','checkbox','value',1,'checked',(bit & this.postBit._POST_IF_HIDDEN) ? 1 : ''),
 					t('隐藏内容 仅版主可见 '),
 					mode==this.__NEW ? this.o_selfReply = $('/input').$0('name','self_reply','type','checkbox','value',1,'checked',(bit & this.postBit._POST_IF_SELF_REPLY) ? 1 : '') : null,
@@ -1193,8 +1195,9 @@ var o_main = $('/span').$0(
 						 : null,
 						 */
 					$('/button').$0('innerHTML','预览','title','','type','button','onclick',function(){self.preview()}),
-					t(' '),
-					$('/button').$0('innerHTML','长度','title','查看帖子长度','type','button','onclick',function(){window.alert('您的信息已经有 '+self.o_content.value.length+' 字节');})
+					' ',
+					$('/button').$0('innerHTML','长度','title','查看帖子长度','type','button','onclick',function(){window.alert('您的信息已经有 '+self.o_content.value.length+' 字节');}),
+					' 按下alt可插入符号'
 					)
 				),//tr
 					
@@ -1253,12 +1256,18 @@ var o_main = $('/span').$0(
 								if(!this._cw){
 									var _cwt={},bb = function(y,x,z){_cwt[x]=z?z:y;return [$('/span','innerHTML',y),$('/button','type','button','style','margin:0 0.8em 0 0.5em','innerHTML',x)]}
 									this._cw = commonui.createCommmonWindow(1)
-									this._cw._.addTitle('插入文字')
+									this._cw._.addTitle('按对应的按键以插入文字')
 									this._cw._.addContent(
 										$('/span')._.add(
-											bb('tab',1,'\t'),
+											bb('tab/空格',1,'\t'),
 											bb('&#9679;',2),
-											bb('&#9899;',3)
+											bb('&#9675;',3),
+											bb('&#9899;',4),
+											bb('&#9898;',5),
+											bb('&#9733;',6),
+											bb('&#9734;',7),
+											bb('&#9632;',8),
+											bb('&#9633;',9)
 											)
 										)
 									this._cwt = _cwt
@@ -2132,6 +2141,7 @@ if((opt&2) == 0){
 	}
 
 //per check code
+/*
 if((opt&64)==0 ){
 	if (cache._perCheckCode){
 		opt|=64
@@ -2206,7 +2216,7 @@ if((opt&64)==0 ){
 			})//doRequest
 		return false;
 		}
-	}
+	}*/
 
 //是否有设置强制分类
 if(action == P.__NEW  && (fbit & P._bit.if_force_topickey) && (opt&4)==0 ){
@@ -2293,6 +2303,7 @@ if (fid && (fbit & P._bit.if_hint) && (opt&8)==0){
 		__NUKE.doRequest({
 			u:__API._base+'__lib=log_post&__act=get_post_hint&raw=1&fid='+fid,
 			f:function(d){
+				cache._post_hint = ''
 				if(!d.data)
 					return true
 				cache._post_hint = d.data[0]
@@ -2427,6 +2438,7 @@ var argmap = {'action':action,//操作
 	'tpic_misc_bit1':tmbit1,
 	'per_check_code':cache._perCheckCode,//验证码
 	'nojump':1,
+	'post_opt':window._tmp_post_opt|0,
 	'lite':'htmljs',
 	step:2
 	},arg={}
@@ -2447,7 +2459,7 @@ __NUKE.doRequest({
 			C.adminwindow._.addContent(null)
 			C.adminwindow._.addTitle(d.data.__MESSAGE[1])
 			
-			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = 'http://'+window.location.host+'/read.php?tid='
+			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = '/read.php?tid='
 			
 			C.adminwindow._.addContent(
 				c01 = _$('/div')._.cls('ltxt b')._.add(

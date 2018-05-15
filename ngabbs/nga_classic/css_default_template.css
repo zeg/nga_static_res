@@ -94,6 +94,9 @@ $rdi = 2
 
 块阴影或块边框
 $shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+
+页面主题左右margin
+$mwm = 10
 */
 
 /*style_define
@@ -195,6 +198,9 @@ $rdi = 2
 
 块阴影或块边框
 $shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+
+页面主题左右margin
+$mwm = 10
 */
 
 /*style_define
@@ -296,6 +302,8 @@ $rdi = 2
 块阴影或块边框
 $shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
 
+页面主题左右margin
+$mwm = 10
 */
 
 /*style_define
@@ -397,6 +405,8 @@ $rdi = 2
 块阴影或块边框
 $shadow1 = 'border: '.$bd.'px solid '.$bg5.';box-shadow:0 0 5px -3px #fff;'
 
+页面主题左右margin
+$mwm = 10
 */
 
 
@@ -687,7 +697,7 @@ color: $gbg2;
 
 /*misc block*/
 #mc {display:block}
-.module_wrap {text-align:center;margin:0px 10px 8px 10px}
+.module_wrap {text-align:center;margin:0px |$mwm|px 8px |$mwm|px}
 .module_wrap_sub {text-align:center;margin:0 0 8px 0}
 //.module_wrap table {margin:auto}
 #m_pbtntop, #m_pbtnbtm {margin-bottom:0}

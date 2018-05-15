@@ -524,7 +524,7 @@ if(x){
 
 if(u.match(/iphone|mobile safari|IEMobile/i))//手机
 	a[6] |= 2
-else if(u.match(/mobile|Tablet|ipad/))//平板 一般只标注mobile而非mobile safari firefox标注tablet
+else if(u.match(/mobile|Tablet|ipad/i) && a[2]!=1)//平板 一般只标注mobile而非mobile safari firefox标注tablet windows平板除外
 	a[6] |= 1
 
 if(a[0]==1 && a[1]<=6){
@@ -882,7 +882,8 @@ this.width = wi
 if(wi)
 	this.setWidth(wi)
 this.setfont()
-this.setIframe()
+this.currentClientWidth = __NUKE.position.get().cw
+//commonui.aE(window,'DOMContentLoaded',function(){__SETTING.currentClientWidth = __NUKE.position.get().cw})
 },
 /*
 devPixDetect:function(){
@@ -1094,9 +1095,11 @@ window.loader.script( window.__SCRIPTS.iframeRead2 , function(){iframeRead.init(
 //事件注册=====================
 commonui.aE=function(obj,e,fn) {
 if (e=='DOMContentLoaded' || e=='bodyInit'){
-	if(!this['_addEventOn'+e+'Funcs'])
-		this['_addEventOn'+e+'Funcs'] = {length:0}
-	var x = this['_addEventOn'+e+'Funcs']
+	var x = this._addEventOnDOMContentLoadedFuncs
+	if(!x){
+		x = {length:0}
+		this._addEventOnDOMContentLoadedFuncs = x
+		}
 	x[x.length++]=fn
 	if(x.done)fn()
 	return
@@ -1123,7 +1126,7 @@ if(x = this._addEventOnDOMContentLoadedFuncs){
 	x.done=true
 	}
 else
-	this._addEventOnDOMContentLoadedFuncs={done:true}
+	this._addEventOnDOMContentLoadedFuncs={done:true,length:0}
 }//fe
 
 //事件取消=====================
@@ -1338,8 +1341,6 @@ else{
 	}
 }//fe
 )();
-
-
 
 //获取border+padding的值
 commonui.getPad=function(o){
@@ -1827,22 +1828,29 @@ if(opt & 1)
 	return window.parent.postMessage(act, tar)
 var a = arguments
 if(!F[tar]){
-	if(document.body)
-		document.body.insertBefore(
-			F[tar]= _$('/iframe','style','display:none','src', tar+'/crossdomain.html','onload',function(){this.__loaded=1;CALL.apply(window,a)}),
-			document.body.firstChild)
-	else
-		this.aE(window,'bodyInit',function(){CALL.apply(window,a)})
+	//if(document.body)
+	//	document.body.insertBefore(
+	//		F[tar]= _$('/iframe','style','display:none','src', tar+'/crossdomain.html','onload',function(){this.__loaded=1;CALL.apply(window,a)}),
+	//		document.body.firstChild)
+	//else
+		commonui.aE(window,'bodyInit',function(){
+			document.body.insertBefore(
+				F[tar]= _$('/iframe','style','display:none','src', tar+'/crossdomain.html','onload',function(){this.__loaded=1;CALL.apply(window,a)}),
+				document.body.firstChild)
+			//CALL.apply(window,a)
+			})
 	return
 	}
 else if(!F[tar].__loaded)
 	return setTimeout(function(){CALL.apply(window,a)},300)
+
 F[tar].contentWindow.postMessage(act, tar)
+
 	
 }//fe
 
 /**
- * 跨域函数调用 如果调用时body不存在 会等待至body出现后执行
+ * 跨域函数调用 首次调用会等待至bodyInit后执行
  * @param {type} opt ==1时调用父frame中callname函数 ==0其他
  * @param {type} host 指定域名 如"https://xxx.oo"
  * @param {type} callname 要调用的函数名
@@ -1933,11 +1941,11 @@ P = 'userCache_'+uid+'_'
 }//ce
 })();
 //弹窗界面=====================
-commonui.createCommmonWindow = function (opt){//&1无动画
+commonui.createCommmonWindow = function (opt){//&1无动画 &2无标题栏
 var $ = _$,r = __NUKE.cpblName(document.body.style,'transition',1,'transform',1,'transformOrigin',1,'opacity',1),
 
 t = $('/div').$0(
-	'className','tip_title',
+	'className','tip_title'+((opt&2)?' x':''),
 	'draggable',true,
 	'ondragstart' , function(e){
 		this._p = {x:e.screenX,y:e.screenY}
@@ -2032,7 +2040,7 @@ w._.show=function (x,y,z){
 	if(!o.parentNode || o.parentNode.nodeType!=1 || o.nextSibling)
 		document.body.appendChild(o)
 	if(r){
-		var a = (o.style.display=='none'),p = __NUKE.position.setPos(o,x,y,(z?z:0)|32)
+		var a = (o.style.display=='none'),p = __NUKE.position.setPos(o,x,y,z|32)
 		if(!a){
 			if(Math.abs(p.px-parseInt(o.style.left)) > p.cw/3 || Math.abs(p.py-parseInt(o.style.top)) > p.ch/3)
 				a = true
@@ -2053,7 +2061,7 @@ w._.show=function (x,y,z){
 		o.style.top = p.oy+'px';
 		}
 	else
-		__NUKE.position.setPos(o,x,y,z?z:0)
+		__NUKE.position.setPos(o,x,y,z|0)
 	return o
 	};//fe
 w._.hide=function (e){
@@ -2534,7 +2542,7 @@ PB={
 10:	[G|MMOD|TT,				256,		'占楼',	'',		'#909090',	'只能主题发布者自己回复',							'只能主题发布者自己回复'],
 11:	[MOD|MWD|TT|PP,		16384,	'屏蔽',	'屏蔽',	'#C58080',	'作者/访客(短时间内)/版主可见',					'作者/访客(短时间内)/版主可见'],
 12:	[MOD|MNO|TS|QF|QQ,	1026,		'下沉',	'下沉',	'#A0B4F0',	'合集/镜像/版面镜像不上浮',						'合集/镜像/版面镜像不上浮'],
-13:	[MOD|MMOD|TS|QF|QQ,	1025,		'下沉',	'下沉',	'#A0B4F0',	'合集/镜像/版面镜像不上浮',						'合集/镜像/版面镜像不上浮'],
+13:	[MOD|MMOD|TS|QF|QQ,	16777216,'下沉',	'下沉',	'#A0B4F0',	'合集/镜像/版面镜像不上浮',						'合集/镜像/版面镜像不上浮'],
 14:	[MOD|MSU|TT|PP,		2048,		'处罚',	'处罚',	'#909090',	'有用户在此贴内被处罚',								'处罚标记'],
 15:	[MOD|TT|PP,				8,			'延时',	'延时',	'#909090',	'查看预订操作记录',									''],
 16:	[MOD|TT|PP,				32,		'标记',	'标记',	'#909090',	'查看标记/举报记录',								''],
@@ -2542,7 +2550,7 @@ PB={
 },
 TMB={
 1:		[G|MMOD|TS,		131072,		'全锁',	'全锁',	'#C58080',	'合集内无法编辑/回复/发布子主题',					'锁定合集的全部主题'],
-2:		[MOD|MMOD|TS,	524288,		'下沉1',	'下沉1',	'#A0B4F0',	'只显示合集 子主题不上浮',							'只显示合集 子主题不上浮'],
+2:		[MOD|MMOD|TS,	524288,		'下沉1',	'下沉1',	'#A0B4F0',	'合集子主题不上浮',									'合集子主题不上浮'],
 3:		[MOD|MMOD|TS|QF,16777216,	'折叠',	'折叠',	'#A0B4F0',	'',													'合集/版面镜像不显示附加子主题'],
 4:		[MOD|MSU|TT,	256,			'开放',	'开放',	'#909090',	'',													'回复不受注册时间限制'],
 5:		[G|MMOD|TT,		2097152,		'全匿',	'全匿',	'#C58080',	'回复这个主题会自动匿名',							'回复自动匿名'],
@@ -3287,9 +3295,9 @@ var H=false
 
 //导航中生成历史访问链接弹窗=====
 commonui.advNav = function (o){
-var w = window, a = o.getElementsByTagName('a'), u = a[0], p = u.parentNode, s = o.getElementsByTagName('span')
+var $ = _$, a = o.getElementsByTagName('a'), u = a[0], p = u.parentNode, s = o.getElementsByTagName('span')
 
-p.appendChild(_$('/div').$0('className','clear'))
+p.appendChild($('/div').$0('className','clear'))
 
 for(var i=0;i<s.length;i++){
 	if(s[i].className=='nav_spr')
@@ -3317,7 +3325,7 @@ for(var i=0;i<a.length;i++){
 		z.innerHTML = z.innerHTML.replace(/(.)/g,"&nbsp;$1").substr(6)
 	}
 
-var x = _$('/div').$0(
+var x = $('/div').$0(
 	'ontouchstart',function(e){
 		this._ttime= y.style.display!='block' ? e.timeStamp : 0
 		},
@@ -3332,13 +3340,26 @@ var x = _$('/div').$0(
 			commonui.genHisLink(y)
 			y.__loaded = y.firstChild ? 1 : 2
 			}
+		var z = x.getBoundingClientRect()
+		y.style.left = z.left+'px'
+		y.style.top = (__NUKE.position.get().yf+z.bottom-(z.bottom-z.top)*0.25|0)+'px'
 		y.style.display='block'
 		},
 	'className','nav_root_c'
 	)
-, y = _$('<div/>').$0('className','urltip urltip2 navhisurltip','style',{display:'none'})
+,out = function(e){
+		var to = e.relatedTarget || e.toElement;
+		for(var i=0;i<6;i++){
+			if(to == x.parentNode || to==y)
+				return
+			if(!to || !(to = to.parentNode))
+				break
+			}
+		y.style.display='none'
+		},
+y = $('/div','style','position:absolute;float:left;background:'+__COLOR.bg1+';border:0.0769em solid '+__COLOR.border4+';padding:0 0.3em;textAlign:left;marginTop:0;fontSize:1.083em;lineHeight:1.8em;zIndex:1;display:none','onmouseout',out)
 if(this.customBackgroundHasVideo)
-	y.style.transform=o.style.transform='scale(1)'
+	/*y.style.transform=*/o.style.transform='scale(1)'
 	
 /*
 if(this.customBackgroundVideoPlay){
@@ -3350,13 +3371,10 @@ if(this.customBackgroundVideoPlay){
 	a[0].parentNode.insertBefore(vp,a[a.length-1].nextSibling)
 	}
 */
-x.appendChild(y)
 p.replaceChild(x,u)
-_$(x.parentNode).$0(
-	'onmouseout',function(e){
-		var to = e.relatedTarget || e.toElement;
-		if(to && to!=this && to.parentNode!=this && to.parentNode.parentNode!=this)y.style.display='none'
-		}
+x.parentNode.parentNode.parentNode.insertBefore(y,x.parentNode.parentNode)
+$(x.parentNode).$0(
+	'onmouseout',out
 	)
 x.appendChild(u)
 //if(w.__SETTING.bit & 4096)
@@ -3398,7 +3416,7 @@ if(H===false){
 	}
 if(!H)
 	return null
-var $ = _$, x = $('/span')._.cls('his_select_c'), self= this, t1='点击解除锁定', t2='锁定这个链接 (可添加到首页快速导航中)', sw = function(o,y){
+var $ = _$, x = $('/span'), self= this, t1='点击解除锁定', t2='锁定这个链接 (可添加到首页快速导航中)', sw = function(o,y){
 	var x = (o.title == t1)
 	self.lockViewHis(y[0],(x ? 0 : 1),y[5])
 	o.title = x ? t2 : t1
@@ -3408,15 +3426,16 @@ for (var k in H){
 	var y = H[k]
 	x._.add(
 		$('/span')._.add(
-			$('/a').$0(
+			$('/a',
 				//'name',y[0]+','+(y[5]?y[5]:''),
 				'href','javascript:void(0)',
 				'onclick',function(){sw(this,this.parentNode._.gV('data'))},
 				'title',(y[2] ? t1:t2),
-				__TXT('label'),
+				__TXT('label',1)._.add('\u00A0'),
 				'style',(y[2] ? 'color:'+__COLOR.border0 : 'color:gray')
 				),
 			$('/a').$0(
+				'className','b',
 				'href',this.domainSelect(y[0])+'/thread.php?fid='+y[0],
 				'innerHTML',y[1],
 				f?'onclick':null,
@@ -3424,7 +3443,8 @@ for (var k in H){
 				),
 			y[5] ? $('/br') : null,
 			y[5] ? $('/a').$0(
-				'className','teal sub',
+				'className','teal b',
+				'style','marginLeft:1.3em',
 				'href',this.domainSelect(y[0])+'/thread.php?stid='+y[5],
 				'innerHTML',y[6],
 				f?'onclick':null,
@@ -3458,8 +3478,17 @@ oo._.add(x)
 	}
 *}
 */
-commonui.addForumViewHis = function(n,id,stidN,stid,p)
-{
+commonui.addForumViewHis = function(n,id,stidN,stid,p){
+
+if(!this.addForumViewHis.load){
+	this.addForumViewHis.load =1
+	var arg = arguments
+	this.aE(window,'bodyInit',function(){
+		setTimeout(function(){commonui.addForumViewHis.apply(commonui,arg)},500)
+		})
+	return
+	}
+	
 if(H===false){
 	var arg = arguments
 	return this.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){H=x; commonui.addForumViewHis.apply(commonui,arg)})
@@ -3602,10 +3631,10 @@ if(e<s)
 var oo = this.stdBtns()
 
 for(var i=s;i<=e;i++){
-	if((opt&2) && i<cur)
-		continue
-	if((opt&4) && i>cur)
-		continue
+	//if((opt&2) && i<cur)
+	//	continue
+	//if((opt&4) && i>cur)
+	//	continue
 	if(i==cur && i>1 && (opt&16) && commonui.loadReadHidden)
 		oo._.__add( _$('/a').$0(
 				'href','javascript:void(0)',
@@ -3761,10 +3790,10 @@ this.adminwindow._.show(e)
 
 //判断翻页按钮是否折行==========
 commonui.pageBtnAdjHeight = function(o,oo){
-window.setTimeout(function(){
-	if(!oo.offsetHeight || o.offsetHeight<oo.offsetHeight*1.5)return
-	o.className = 'doublebtns'
-	},150)
+//window.setTimeout(function(){
+//	if(!oo.offsetHeight || o.offsetHeight<oo.offsetHeight*1.5)return
+//	o.className = 'doublebtns'
+//	},150)
 }//fe
 
 }//be
@@ -4145,7 +4174,7 @@ var self = this, txt = [], getTxt = function(n){
 			txt.push(nc[i])
 		else if(nc[i].nodeType==1){
 			nn = nc[i].nodeName.toLowerCase()
-			if(nn!='script' && nn!='a' && !nc[i].className.match(/dice|textfield/))
+			if(nn=='div' || nn=='span' || nn=='h5' || nn=='h4')
 				getTxt(nc[i])
 			}
 		}
@@ -4319,7 +4348,7 @@ bg,
 ww=window, 
 bit=__SETTING.bit,
 $ = _$,
-iw=$('mc').offsetWidth
+iw=__SETTING.currentClientWidth
 if(!this._ALL)
 	this.init()
 if(!sub){
@@ -5321,15 +5350,50 @@ this.adminwindow._.show()
 //举报========================
 commonui.logPost = function (e,tid,pid)
 {
+var $ = _$
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-this.adminwindow._.addContent( "\
-<form action='./nuke.php?func=logpost&tid="+tid+"&pid="+pid+"&log' target='commonuiwindowiframe' method='post'><input type=text name=info size=35/>举报理由</form><button type='button' onclick='this.previousSibling.submit();this.disabled=1'>向版主举报此贴</button><br/>\
-<iframe name='commonuiwindowiframe' id='commonuiwindowiframe' onreadystatechange='commonui.remuseInputAfterSubmit(this)' scrolling='no' allowtransparency='true' src='about:blank' frameBorder='0' style='height:50px;width:200px;border:none;overflow:hidden'></iframe>\
-")
+this.adminwindow._.addTitle('向版主举报此贴')
+this.adminwindow._.addContent(
+	$('/span')._.add(
+		$('/input','placeholder','举报理由'),$('/br'),
+		$('/button','innerHTML','提交','type','button','onclick',function(){
+				__NUKE.doRequest({
+					u:{
+						u:__API._base+'__lib=log_post&__act=report',
+						a:{'tid':tid,'pid':pid,'info':this.previousSibling.previousSibling.value,'raw':3}
+						},
+					b:this
+					})
+				}
+			)
+		)
+	)
 this.adminwindow._.show(e)
 }//fe
-
+//推荐========================
+commonui.logPostRecommend = function (e,tid,pid)
+{
+var $ = _$
+this.createadminwindow()
+this.adminwindow._.addContent(null)
+this.adminwindow._.addTitle('向工作人员推荐此贴')
+this.adminwindow._.addContent( 
+	$('/span')._.add(
+		$('/button','innerHTML','提交','type','button','onclick',function(){
+				__NUKE.doRequest({
+					u:{
+						u:__API._base+'__lib=log_post&__act=recommend',
+						a:{'tid':tid,'pid':pid,'raw':3}
+						},
+					b:this
+					})
+				}
+			)
+		)
+	)
+this.adminwindow._.show(e)
+}//fe
 //设置用户声望=================
 /**
  * @param {type} e
@@ -5396,6 +5460,13 @@ function(){
 );
 }//fe
 
+//账号操作===
+commonui.accountAction = function(act){
+if(!this.ucp)
+	__SCRIPTS.load('ucp',function(){commonui.ucp.accountAction(act)})
+else
+	commonui.ucp.accountAction(act)
+}//fe
 
 
 //178直播======================
