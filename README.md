@@ -8,7 +8,8 @@ bbs.ngacn.cc使用的javascript与css等静态资源(仅公开的部分..
 
 2 在本机开设http服务 使源码能从http://127.0.0.1访问
 
-3 新建一个http://127.0.0.1/js_debug.js 内容如
+3 新建一个http://127.0.0.1/js_debug.js 内容如下
+
 	;(function(){
 	var x = document.cookie.match(/debug=(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3});/)
 	if(x)
