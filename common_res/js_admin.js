@@ -170,7 +170,7 @@ adminui.addpoint = function (e,tid,pid,fid)
 
 this.createadminwindow()
 this.w._.addContent(null)
-var $ = _$, n, de=function(x){return $('/span','className','silver','innerHTML',x)},rr,rs,ri,rv,ni,rg,
+var $ = _$, n, de=function(x){return $('/span','className','silver','innerHTML',x)},rr,rs,ri,rv,ni,rg,rt,rx,
 lv = function(v){
 	return $('/input').$0('type','radio','name','level','value',v,'onclick',function(){
 		rr.checked=(this.value&(16|32|64|128)) ? false :true
@@ -287,19 +287,20 @@ this.w._.addContent(
 		$('/br'),
 		rr = $('/input').$0('type','checkbox','value','8'),' 主题加入精华区 ',
 		$('/br'),
-		pid ? [$('/input').$0('type','checkbox','value','8388608'),' 增加回复的推荐值 ',
+		pid ? [rt = $('/input').$0('type','checkbox','value','8388608'),' 增加回复的推荐值 ',
 		$('/br')] : null,
-		$('/input').$0('type','checkbox','value','4','checked','1'),' 给作者发送PM ',
+		rx = $('/input').$0('type','checkbox','value','4','checked','1'),' 给作者发送PM ',
 		$('/br'),
 		ni = $('/input').$0('type','text','placeholder','加分说明','value',''),
 		$('/br'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
 				var x = this.parentNode.getElementsByTagName('input'),opt=0
-				for(var i=0;i<x.length;i++){
-					if(x[i].checked)
-						opt |= x[i].value
-					}
+				for (var i=0;i<x.length;i++){
+					if (x[i].checked) opt |= x[i].value
+				}
+				commonui.userCache.set('lastTipOpt', opt, 86400 * 30);
+				commonui.userCache.set('lastTipInfo', ni.value, 86400 * 30);
 				__NUKE.doRequest({
 					u:{u:__API._base,
 							a:{__lib:"add_point_v3",__act:"add",opt:opt,fid:fid,tid:tid,pid:pid,info:ni.value,value:ri.value,raw:3}
@@ -313,6 +314,29 @@ this.w._.addContent(
 		de('* 150声望合1威望<br/>** 100声望合1金币 扣减声望时可以扣除金钱<br/><br/>'),n = de('')
 		)
 	)
+// Restore tip settings from userCache, if any.
+if (commonui.userCache.get('lastTipOpt')) {
+	var lastTipOpt = commonui.userCache.get('lastTipOpt'), lastTipInfo =  commonui.userCache.get('lastTipInfo');
+	rv.checked = !!(lastTipOpt & rv.value);
+	rg.checked = !!(lastTipOpt & rg.value);
+	rr.checked = !!(lastTipOpt & rr.value);
+	rx.checked = !!(lastTipOpt & rx.value);
+	ni.value = lastTipInfo;
+	if (pid) {
+		rt.checked = !!(lastTipOpt & rt.value);
+	}
+
+	// Point setting, represented by 11111111111110000 bit mask for 10 levels.
+	var pos = 0, bit = (lastTipOpt & 131056) >> 4;
+	if (bit > 0) {
+		while (bit > 0) {
+			bit >>= 1;
+			pos++;
+		}
+		rs.children[1].children[Math.floor(--pos / 3)].children[pos % 3].firstChild.checked = true;
+	}
+}
+
 ri.style.display='none'
 this.w._.show(e)
 if(!__GP.greater){
