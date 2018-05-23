@@ -2027,6 +2027,28 @@ this.parent.bbsCode(arg)
 
 }//ce
 
+//Courtesy of https://github.com/icyblade
+ubbcode.collapse.load_original = ubbcode.collapse.load;
+ubbcode.collapse.load = function (o, argsId, id, r) {
+	var expandDiv = o.previousSibling;
+	var expandButton = expandDiv.firstChild;
+	var title = expandButton.nextSibling;
+	var content = o;
+
+	expandDiv.style.display = 'block';
+	if (content.innerHTML == '') { // click collapse button for the first time
+		expandButton.innerHTML = '-';
+		ubbcode.collapse.load_original(o, argsId, id, r);
+	} else {
+		if (expandButton.innerHTML == '+') { // un-collapse
+			content.style.display = 'block';
+			expandButton.innerHTML = '-';
+		} else {
+			content.style.display = 'none';
+			expandButton.innerHTML = '+';
+		}
+	}
+}
 //=============================
 //code±Í«©
 //=============================
