@@ -315,27 +315,14 @@ this.w._.addContent(
 		)
 	)
 // Restore tip settings from userCache, if any.
-if (commonui.userCache.get('lastTipOpt')) {
-	var lastTipOpt = commonui.userCache.get('lastTipOpt'), lastTipInfo =  commonui.userCache.get('lastTipInfo');
-	rv.checked = !!(lastTipOpt & rv.value);
-	rg.checked = !!(lastTipOpt & rg.value);
-	rr.checked = !!(lastTipOpt & rr.value);
-	rx.checked = !!(lastTipOpt & rx.value);
-	ni.value = lastTipInfo;
-	if (pid) {
-		rt.checked = !!(lastTipOpt & rt.value);
-	}
-
-	// Point setting, represented by 11111111111110000 bit mask for 10 levels.
-	var pos = 0, bit = (lastTipOpt & 131056) >> 4;
-	if (bit > 0) {
-		while (bit > 0) {
-			bit >>= 1;
-			pos++;
+var lto = commonui.userCache.get('lastTipOpt')|0
+if (lto) {
+	var lti = commonui.userCache.get('lastTipInfo'), x = rs.parentNode.getElementsByTagName('input')
+	for (var i=0;i<x.length;i++){
+		if (x[i].type=='checkbox' && (lto & x[i].value)==x[i].value) x[i].checked='checked'
 		}
-		rs.children[1].children[Math.floor(--pos / 3)].children[pos % 3].firstChild.checked = true;
+	ni.value = lti?lti:'';
 	}
-}
 
 ri.style.display='none'
 this.w._.show(e)
@@ -1239,7 +1226,7 @@ this.w._.addContent($('/span')._.add(
 		if(!v)
 			return
 		if(v.match(/\.(jpg|jpeg|gif|png)$/))
-			return alert('仅限文字')
+			return alert('仅限文字 ')
 		if(ma.value)
 			ma.value.replace(/\d+/g,function($0){uids.push($0);return $0})
 		else

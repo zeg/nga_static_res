@@ -309,7 +309,7 @@ if (ad)
 	return _$('/td').$0('id','bbs_ads16','className','adsh','innerHTML',ad)
 */
 if (this.bbs_ads22)
-	return _$('/td').$0('style', this.style('adsh'),'innerHTML',this.genAds(this.bbs_ads22))
+	return _$('/td').$0('style', this.style('adsh')+(this.bbs_ads22.width ? 'width:'+this.bbs_ads22.width+'px;' : ''),'innerHTML',this.genAds(this.bbs_ads22))
 return null
 }
 

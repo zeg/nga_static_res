@@ -2809,6 +2809,7 @@ _FONT_SILVER:16,
 _FONT_B:32,
 _FONT_I:64,
 _FONT_U:128,
+_ALL_FONT:255,
 
 unpack:function(x){
 if(x.match(/~1?$/))
@@ -2931,7 +2932,6 @@ if (a && a.constructor==String){
 				}
 			if(!a.l)
 				a=''
-			console.log(a)
 			}
 		else if(a.charAt(0)=='.' || a.substr(0,4)=='http')
 			return a

@@ -128,8 +128,10 @@ if(!a.comment){
 		a.subjectC.innerHTML='&nbsp;'
 	var x = a.subjectC.parentNode
 	//x.removeChild(a.subjectC)
-	if(x.firstElementChild.nodeName=='BR')
-		x.removeChild(x.firstElementChild)
+	var xx = x.firstChild
+	if(xx.nodeType!=1)xx=xx.nextSibling
+	if(xx.nodeName=='BR')
+		x.removeChild(xx)
 	x.insertBefore(
 		$('/div','style',{marginTop:'-0.25em'},
 			good._.css('verticalAlign','0.2em','marginRight',a.small?'1.5em':'0.7em') ,

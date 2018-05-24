@@ -1896,7 +1896,7 @@ if(arg.txt.indexOf('[collapse')!=-1){
 		if(!arg.collapseBlock)arg.collapseBlock=[]
 		arg.collapseBlock.push($2)
 		arg.collapseAttach=1
-		return "<div class='collapse_btn'><button onclick='this.parentNode.style.display=\"none\";ubbcode.collapse.load(this.parentNode.nextSibling,\""+arg.argsId+"\","+(arg.collapseBlock.length-1)+");' type='button' name='collapseSwitchButton'>+</button> "+l+"</div><div class='collapse_content' style='display:none'></div>";
+		return "<div class='collapse_btn'><button onclick='ubbcode.collapse.load(this.parentNode.nextSibling,\""+arg.argsId+"\","+(arg.collapseBlock.length-1)+",this);' type='button' name='collapseSwitchButton'>+</button> "+l+"</div><div class='collapse_content' style='display:none'></div>";
 		})
 	}
 if(arg.txt.indexOf('[randomblock')!=-1){
@@ -1912,7 +1912,7 @@ if(arg.txt.indexOf('[randomblock')!=-1){
 	}
 },//fe
 
-load:function(o,argsId,id,r){
+load:function(o,argsId,id,b){
 var arg = __NUKE.inheritClone(this.parent.bbscodeConvArgsSave[argsId])
 arg.txt = arg.collapseBlock[id]
 arg.c = o
@@ -1922,7 +1922,22 @@ arg.noCov = 1
 arg.isBlock = 1
 arg.opt|=64
 arg.adjBlkSize = function(){}
-arg.callBack = function(){o.style.display=''}
+if(b)
+	arg.callBack = function(){
+	b.onclick=function(){
+		if(b.innerHTML =='\u2212'){
+			o.style.display='none'
+			o.style.borderTopWidth=b.parentNode.style.borderBottomWidth=''
+			b.innerHTML='+'
+			}
+		else{
+			o.style.display=''
+			o.style.borderTopWidth=b.parentNode.style.borderBottomWidth='0'
+			b.innerHTML='\u2212'
+			}
+		}
+	b.onclick()
+	}
 this.parent.bbsCode(arg)
 },//fe
 
@@ -2027,28 +2042,6 @@ this.parent.bbsCode(arg)
 
 }//ce
 
-//Courtesy of https://github.com/icyblade
-ubbcode.collapse.load_original = ubbcode.collapse.load;
-ubbcode.collapse.load = function (o, argsId, id, r) {
-	var expandDiv = o.previousSibling;
-	var expandButton = expandDiv.firstChild;
-	var title = expandButton.nextSibling;
-	var content = o;
-
-	expandDiv.style.display = 'block';
-	if (content.innerHTML == '') { // click collapse button for the first time
-		expandButton.innerHTML = '-';
-		ubbcode.collapse.load_original(o, argsId, id, r);
-	} else {
-		if (expandButton.innerHTML == '+') { // un-collapse
-			content.style.display = 'block';
-			expandButton.innerHTML = '-';
-		} else {
-			content.style.display = 'none';
-			expandButton.innerHTML = '+';
-		}
-	}
-}
 //=============================
 //code±Í«©
 //=============================

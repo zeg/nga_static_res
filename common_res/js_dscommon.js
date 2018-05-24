@@ -8,84 +8,70 @@ FOR NGACN ONLY
 written by zeg 2007/12/14
 ========================
 */
-
-ngaAds.genadslist = function ()
+ngaAds.nowTime = new Date;
+ngaAds.nowDay = (ngaAds.nowTime.getMonth()+1)+'/'+ngaAds.nowTime.getDate()+'/'+ngaAds.nowTime.getFullYear()
+ngaAds.nowDayTime = Date.parse(ngaAds.nowDay)
+ngaAds.rateSum = []
+ngaAds.rnd = []
+ngaAds.genadslist = function (id)
 {
-var date = new Date;
-var now = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
-var nowtime = Date.parse(now);
-var rateSum = new Array;
-var rnd = new Array;
-var tempDate = null;
-var tempShow = false;
-for (var k=0;k<this.length;k++)
-	{
-		if(this[k].ifShow && !this[k].ifShow())
-			continue
-		if (this[k]['id'] && this[k]['date'])
-		{
-			this[k]['date'] =  this[k]['date'].replace(/(^| |\/)0/g,'$1');
-			tempShow = false;
-			if (this[k]['date'] == 'all')
-			{
-				tempShow = true;
-			}
-			else
-			{
-				var ni = -1;
-				var od;
-				tempDate = this[k]['date']+' ';
-				while (tempDate && ((ni = tempDate.indexOf(' ')) != -1) )
-				{
-					od = tempDate.substr(0,ni);
-					tempDate = tempDate.substr(ni+1);
-					if (od.length>11)
-					{
-						od = od.split('-');
-						if (od[1])
-							{
-								if (nowtime>=Date.parse(od[0]) && nowtime<=Date.parse(od[1]))
-									{
-										tempShow = true;
-										break;
-									}
-							}
-					}
-					else
-					{
-						if (now == od)
-							{
-								tempShow = true;
-								break;
-							}
+var tempDate , tempShow
+
+for (var k=0;k<this.length;k++){
+	var D = this[k]
+	if(!D)
+		continue
+	if(id && D.id!=id)
+		continue
+	if(D.ifShow && !D.ifShow())
+		continue
+	if(!D.id || !D.date)
+		continue
+
+	D.date =  D.date.replace(/(^| |\/)0/g,'$1');
+	tempShow = false;
+	if (D.date == 'all'){
+		tempShow = true;
+		}
+	else{
+		var ni = -1, od;
+		tempDate = D.date+' ';
+		while (tempDate && ((ni = tempDate.indexOf(' ')) != -1) ){
+			od = tempDate.substr(0,ni);
+			tempDate = tempDate.substr(ni+1);
+			if (od.length>11){
+				od = od.split('-');
+				if (od[1]){
+					if (this.nowDayTime>=Date.parse(od[0]) && this.nowDayTime<=Date.parse(od[1])){
+						tempShow = true;
+						break;
+						}
 					}
 				}
-			}
-			if (tempShow)
-			{
-				if (!rateSum[this[k]['id']])
-				{
-					rateSum[this[k]['id']] = 0;
-				}
-				if (!rnd[this[k]['id']])
-				{
-					rnd[this[k]['id']] = Math.floor(Math.random()*100);
-					//if (window.location.href.indexOf('debug')!=-1) document.title+=ads[k]['id']+':'+rnd[ads[k]['id']]+' ';
-				}
-				//if (!ads[k]['rate'])
-				//{
-				//	ads[k]['rate'] = 100;
-				//}
-				rateSum[this[k]['id']] = rateSum[this[k]['id']] + this[k]['rate'];
-				if (rnd[this[k]['id']]<rateSum[this[k]['id']] && !this[this[k]['id']])
-				{
-					this[this[k]['id']] = this[k]
-					this[this[k]['id']]['now'] = nowtime;
-					rnd[this[k]['id']] = 1000;
-					delete this[k]
+			else{
+				if (this.nowDay == od){
+					tempShow = true;
+					break;
+					}
 				}
 			}
 		}
+	if (tempShow){
+		if (!this.rateSum[D.id])
+			this.rateSum[D.id] = 0;
+		if (!this.rnd[D.id])
+			this.rnd[D.id] = Math.floor(Math.random()*100);
+		if(!D.rate)
+			D.rate = 100
+		this.rateSum[D.id] += (D.rate|0);
+		if (this.rnd[D.id]<this.rateSum[D.id] && !this[D.id]){
+			this[D.id] = D
+			this[D.id].now = this.nowDayTime;
+			this.rnd[D.id] = 1000;
+			delete this[k]
+			}
+		}
+		
 	}
 }
 //fe
@@ -112,8 +98,76 @@ obj.parentNode.appendChild(x)
 }
 //fe
 
-ngaAds.genAds = function (a)
-{
+ngaAds.replaceDs = function(o,id){
+if(!this.replaceDs[id] && window.__SCRIPTS && __SCRIPTS['dsid_'+id]){
+	var x = o.getBoundingClientRect(),y = __NUKE.position.get()
+	y.vb = y.yf+y.ch
+	//console.log('lazyload check '+id)
+	if((x.bottom>=0 && x.bottom<=y.ch) || (x.top>=0 && x.top<=y.ch)){
+		delete ngaAds[id]
+		this.rateSum[id]=this.rnd[id]=0
+		this.replaceDs[id] = 1
+		if((new Date).getTime()-ngaAds.nowTime>90000)//1.5min
+			__SCRIPTS['dsid_'+id]+=(__SCRIPTS['dsid_'+id].indexOf('?')==-1?'?':'&')+'stat=1'
+		__SCRIPTS.load('dsid_'+id,function(){
+			ngaAds.genadslist(id)
+			if(ngaAds[id]){
+				var x = _$('/span','innerHTML',ngaAds.genAds(ngaAds[id]))
+				o.parentNode.replaceChild(x.firstChild,o)
+				}
+			})
+		//console.log('in sight '+id)
+		return 1//ads loaded
+		}
+	//console.log('no in sight '+id)
+	return 0
+	}
+return 1
+}//
+
+ngaAds.loadQueue = null
+ngaAds.loadQueueInit = function(){
+this.loadQueue=[]
+var timer,counter=0,qu = this.loadQueue,gon=false,
+ot = function(){
+	var j=true
+	for(var i=0;i<qu.length;i++){
+		if(qu[i]){
+			if(ngaAds.replaceDs(qu[i][0],qu[i][1]))
+				qu[i] = null
+			else
+				j=false
+			}
+		}
+	if(j){
+		//console.log('scroll dereg')
+		commonui.dE(window,'scroll',lq)
+		gon=false
+		}
+	},
+lq = function(e){
+	if(e.timestamp-counter<700)
+		return counter=e.timestamp
+	if(timer)
+		clearTimeout(timer)
+	timer = setTimeout(ot,750)
+	},
+go=function(){
+	if(gon)return
+	gon=true
+	//console.log('scroll reg')
+	commonui.aE(window,'scroll',lq)
+	}
+qu.insert=function(o,id){
+	//console.log('insert '+id)
+	if(ngaAds.replaceDs(o,id))//
+		return
+	this.push([o,id])
+	go()
+	}
+}//
+
+ngaAds.genAds = function (a){
 if (a.type=='js')
 	return "<scr"+"ipt type='text/javascr"+"ipt' src='"+a.file+"'></scr"+"ipt>"
 else if (a.type=='baidu' && a.cpro_id){
@@ -137,8 +191,13 @@ else if (a.type=='txt'){
 	return "<span style='"+(a.style?a.style:'')+"'>"+a.file+"</span>"
 	}
 else{
+	var ww = a.width|0 ? (a.width|0)+'px' : 'auto',hh = a.height|0 ? (a.height|0)+'px' : 'auto'
+	if(a.placeholder){
+		if(!this.loadQueue)
+			this.loadQueueInit()
+		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
+		}
 	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', log='', ic="<img src='http://gg.stargame.com/images/mark.png' style='margin-left:-48px'>"
-	,ww = a.width|0 ? (a.width|0)+'px' : 'auto',hh = a.height|0 ? (a.height|0)+'px' : 'auto'
 	if(tp && tp[1]=='swf'){
 		img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
 		if (a.url)
@@ -182,7 +241,7 @@ else{
 				}
 			rr = " onmouseenter='window[\""+rd+"\"].mouseenter(this)'  onmouseout='window[\""+rd+"\"].mouseout(this)' "
 			}
-		return "<ifr"+"ame style='margin:0px;width:"+ww+";height:"+hh+";overflow:hidden;"+(a.style?a.style:'')+"' scrolling='no' frameborder='0' src='"+a.file+"' style='border:1px solid #000' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"' "+rr+"></ifr"+"ame>";
+		return "<ifr"+"ame scrolling='no' frameborder='0' style='border:1px solid #000000;margin:0px;width:"+ww+";height:"+hh+";overflow:hidden;"+(a.style?a.style:'')+"' src='"+a.file+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"' "+rr+"></ifr"+"ame>";
 		}
 
 	}

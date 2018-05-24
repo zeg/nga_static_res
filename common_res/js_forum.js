@@ -378,39 +378,15 @@ o_topic.parentNode.insertBefore(tmp,o_topic.nextSibling);
 if(topicMisc._BIT1&134217728)
 	commonui.loadThreadInfoLoadReply(o_topic.parentNode,(quote_from ? quote_from : tid))
 
-	// Done with topic title, proceed to filter spoiler.
-	// Skip topic with any color or additional class besides 'topic'
-	try {
-		if (o_topic.classList.length == 1 || o_topic.classList.length == 2 && o_topic.classList[1] == 'AgDUGNM') {
-			var spoilerRe = /.*¾çÍ¸.*/;
-			if (spoilerRe.test(o_topic.textContent)) {
-				var tmpHint = document.createElement('span');
-				tmpHint.className = 'silver';
-				tmpHint.innerText = '[¾çÍ¸] '
-
-				o_topic.style['transition'] = 'opacity 2s';
-				o_topic.style['-webkit-transition'] = 'opacity 2s';
-				o_topic.style['-moz-transition'] = 'opacity 2s';
-				o_topic.style['-o-transition'] = 'opacity 2s';
-				o_topic.style.opacity = 0;
-				o_topic.parentNode.insertBefore(tmpHint, o_topic);
-				o_topic.addEventListener('mouseover', function (e) {
-					this.style.opacity = 1;
-					if (tmpHint) {
-						o_topic.parentNode.removeChild(tmpHint);
-					}
-				});
-				o_topic.addEventListener('mouseout', function (e) {
-					this.style.opacity = 0;
-					if (tmpHint) {
-						o_topic.parentNode.insertBefore(tmpHint, o_topic);
-					}
-				});
-			}
+/*
+if ((topicMisc._BIT1 & this.topicMiscVar._ALL_FONT)==0) {
+	if (o_topic.innerText.match(/¾çÍ¸/)) {
+		var tmp=__NUKE.cpblName(o_topic.style,'transition')
+		o_topic.parentNode.insertBefore($('/span','className','silver','innerHTML','[¾çÍ¸]'), o_topic);
+		$(o_topic).$0('style',tmp[0]+':opacity 2s;opacity:0','onmouseover',function(){this.style.opacity = 1},'onmouseout',function(){this.style.opacity = 0})
 		}
-	} catch (error) {
-		// update your browser!
 	}
+*/
 //o_replies.style.display=o_ptime.style.display=o_rtime.style.display='none'
 
 if (admin&1)

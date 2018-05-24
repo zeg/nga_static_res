@@ -934,21 +934,19 @@ if(window.getMatchedCSSRules){
 */
 
 if(w.__DEBUG)
-if ('serviceWorker' in navigator)
+
+if ('serviceWorker' in navigator){
 	navigator.serviceWorker.register(__SCRIPTS.service,{scope: '/'}).then(function(reg) {
-
-    if(reg.installing) {
-      console.log('Service worker installing');
-    } else if(reg.waiting) {
-      console.log('Service worker installed');
-    } else if(reg.active) {
-      console.log('Service worker active');
-    }
-
-  }).catch(function(error) {
-    // registration failed
-    console.log('Registration failed with ' + error);
-  })
+		if(reg.installing)
+		  console.log('Service worker installing');
+		else if(reg.waiting)
+		  console.log('Service worker installed');
+		else if(reg.active) 
+		  console.log('Service worker active');
+	 })['catch'](function(err) {
+		console.log('Registration failed with ' + err);
+	 });
+  }
 
 if(ngaAds && ngaAds.bbs_ads12 && ngaAds.bbs_ads12.o && ngaAds.bbs_ads12.o!==true)
 	document.body.insertBefore(ngaAds.bbs_ads12.o,document.body.firstChild)
@@ -1324,7 +1322,7 @@ return _$('/span')._.add((opt&1) ? null:'\u00A0',_$('/span','style',g._c)._.add(
 //主菜单=======================
 commonui.mainMenuItems={
 	//hisAddon:[100],
-	hisDefLeft:[7,5,6,8,9,160,10],
+	hisDefLeft:[7,5,6,8,9,160,10,151],
 	hisDef:[0,115,116,119,146,162],
 	0:{subKeys:[144,18,118,147],
 		title:(__GP.userBit&256) ? '移动验证成功' : '点此打开主菜单',
@@ -1593,7 +1591,7 @@ commonui.mainMenuItems={
 	148:{u:1,check:function(){if(__GP.ubSecAct)return true},href:'/nuke.php?func=message&asuid=34909933',innerHTML:'公共收件箱(帐号安全)',disableDefault:1,color:'sandybrown'},
 149:{u:1,href:'https://account.178.com/?p=renew_pass',innerHTML:'修改密码',disableDefault:1},
 150:{href:'https://account.178.com/?p=reset_pass',innerHTML:'重置密码',disableDefault:1},
-	151:{href:'https://shop322965498.taobao.com',innerHTML:'商城'},
+	151:{href:'https://shop482085632.taobao.com',innerHTML:'商城'},
 	152:{u:1,check:function(){if(__GP.ubMod)return true},innerHTML:'debug',on:{event:'click',func:function(e){commonui.userDebug()}}},
 	153:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'update src',on:{event:'click',func:function(e){adminui.updateSrc()}}},
 	154:{u:1,check:function(){if(__GP.greater || __GP.rvrc>=200)return true},innerHTML:'随机头衔',on:{event:'click',func:function(e){commonui.randomTitle()}}},
