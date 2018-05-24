@@ -1874,13 +1874,16 @@ d:{
 	u:'nga://?tid={tid}',
 	c:'disable_tap_menu teal',
 	//on:function(e,a){setTimeout(function(){location.assign('http://app.178.com/phone.html')},3000)},
-	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} }
+	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} },
+16:{n1:'调查',n2:'当前主题内相关操作记录',n3:'调查操作',
+	on:function(e,a){adminui.viewLog(0, 0, 0, a.tid)},
+	ck:function(a){if(a.admin&2)return 1} } 
 },
 
 replaceUrl:commonui.buttonBase.replaceUrl,
 
 def:[11,12,10,15],
-all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14]},
+all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14,16]},
 
 genU:commonui.buttonBase.genU,
 
