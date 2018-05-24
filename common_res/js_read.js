@@ -1706,7 +1706,10 @@ d:{
 	ck:function(a){if ( a.__GP.rvrc>=200 || a.__GP.admincheck)return 1} },
 
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
-	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} }
+	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
+
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup3;',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+
 },
 
 replaceUrl:function (u){
@@ -1717,7 +1720,7 @@ return u.replace('_TOPIC',e(document.title)).replace('_URL',e(document.location.
 def:[28,6,7,8,34],
 all:{
 '帖子':[4,5,6,7,8,9,18,33,35,36,37,38],
-'用户':[19,20,21,22,23,39],
+'用户':[19,20,21,22,23,40,39],
 '管理':[10,11,13,14,15,16,17,29,32,30],
 '分享':[24,25,26,27]
 },
