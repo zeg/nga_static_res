@@ -1650,8 +1650,29 @@ d:{
 16:{n1:'头像',n2:'清除头像',n3:'清除头像',on:function(e,a){commonui.setAvatar(e,a.pAid,a.__GP.greater)},
 	ck:function(a){if (a.__GP.greater)return 1} },
 
-17:{n1:'锁定',n2:'锁定回复',n3:'锁定回复',on:function(e,a){commonui.setPost(e,a.tid,a.pid,a.fid)},
-	ck:function(a){if ((a.__GP.admincheck&2) && a.pid && parseInt(a.pid,10) && a.pid>0)return 1} },
+17: {
+	n1: '属性', n2: '设置帖子属性', n3: '帖子属性', on: function (e, a) { commonui.setPost(e, a.tid, a.pid, a.fid) },
+	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
+},
+
+41: {
+	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
+		__NUKE.doRequest({
+			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 1026, 0, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
+			b: this
+		})
+	},
+	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
+},
+
+42: {
+	n1: '解抽', n2: '解除锁定隐藏', n3: '解除锁隐', on: function (e, a) {
+		__NUKE.doRequest({
+			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 0, 1026, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
+			b: this
+		})
+	},
+ck:function(a){if ((a.__GP.admincheck&2) && a.pid && parseInt(a.pid,10) && a.pid>0)return 1} },
 
 18:{n1:'翻译',n2:'以版主提供的术语表进行对照翻译',on:function(e,a,o){if(o._.gV('transed'))return;commonui.autoTranslate.main($('postcontent'+a.lou),a.fid);o._.sV('transed',1)},
 	ck:function(a){if (window.__AUTO_TRANS_FID)return 1} },
@@ -1708,7 +1729,10 @@ d:{
 	ck:function(a){if ( a.__GP.rvrc>=200 || a.__GP.admincheck)return 1} },
 
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
-	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} }
+	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
+
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup3;',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+
 },
 
 replaceUrl:function (u){
@@ -1719,8 +1743,8 @@ return u.replace('_TOPIC',e(document.title)).replace('_URL',e(document.location.
 def:[28,6,7,8,34],
 all:{
 '帖子':[4,5,6,7,8,9,18,33,35,36,37,38],
-'用户':[19,20,21,22,23,39],
-'管理':[10,11,13,14,15,16,17,29,32,30],
+'用户':[19,20,21,22,23,40,39],
+'管理':[10,11,13,14,15,16,41,42,17,29,32,30],
 '分享':[24,25,26,27]
 },
 
@@ -1876,13 +1900,16 @@ d:{
 	u:'nga://?tid={tid}',
 	c:'disable_tap_menu teal',
 	//on:function(e,a){setTimeout(function(){location.assign('http://app.178.com/phone.html')},3000)},
-	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} }
+	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} },
+16:{n1:'调查',n2:'当前主题内相关操作记录',n3:'调查操作',
+	on:function(e,a){adminui.viewLog(0, 0, 0, a.tid)},
+	ck:function(a){if(a.admin&2)return 1} } 
 },
 
 replaceUrl:commonui.buttonBase.replaceUrl,
 
 def:[11,12,10,15],
-all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14]},
+all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14,16]},
 
 genU:commonui.buttonBase.genU,
 
