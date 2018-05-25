@@ -852,11 +852,12 @@ z.__infoC.innerHTML=''
 if(isimg){
 	if(z.__fileName)
 		z.__infoC.innerHTML += z.__fileName+'<br/>'
+	z.__infoC.innerHTML += '<span class="silver xtxt"> 点击下方插入附件</span><br/>'
 	for(var i = 0;i<thumb.length;i++)
 		z.__infoC.innerHTML+=this.add1Attach.sub(thumb[i][1],url+thumb[i][0])
-	z.__infoC.innerHTML+=this.add1Attach.sub('fullsize',url)
+	z.__infoC.innerHTML+=this.add1Attach.sub('完整大小',url)
 	var button = document.createElement('div');
-	button.innerHTML = '<button class="gray xtxt" style="width:5.5em" type=button title="点击删除该附件">删除附件</button>'
+	button.innerHTML = '<button class="deleteAttach xtxt" style="width:5.5em" type=button title="点击删除该附件">删除附件</button>'
 	button.onclick = function() {
 		var aid = url.split(/\//).pop();
 		if (confirm('是否要删除') && tid & pid && aid) {
