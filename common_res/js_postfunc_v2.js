@@ -828,7 +828,7 @@ commonui.imageEditor= function(e,img,callback){if(this.imageEditor.load)return;t
  * isimg 附件是否是图片
  * thumb 附件是否有缩略图 3小 2中小 1大中小 0无
  */
-postfunc.add1Attach=function (attach,checkSum,url,isimg,thumb,utf8oname){
+postfunc.add1Attach=function (attach,checkSum,url,isimg,thumb,utf8oname,tid,pid){
 
 if(!this.o_attachList.firstChild)
 	this.o_attachList.parentNode.insertBefore( _$('/div').$0('innerHTML','已有附件','style',{clear:'both'}), this.o_attachList)
@@ -855,7 +855,17 @@ if(isimg){
 	for(var i = 0;i<thumb.length;i++)
 		z.__infoC.innerHTML+=this.add1Attach.sub(thumb[i][1],url+thumb[i][0])
 	z.__infoC.innerHTML+=this.add1Attach.sub('fullsize',url)
-	
+	var button = document.createElement('div');
+	button.innerHTML = '<button class="gray xtxt" style="width:5.5em" type=button title="点击删除该附件">删除附件</button>'
+	button.onclick = function() {
+		var aid = url.split(/\//).pop();
+		if (confirm('是否要删除') && tid & pid && aid) {
+			__NUKE.doPost(__API.delAttach(pid, tid, aid))
+		}
+	}
+	z.__infoC.appendChild(button);
+
+
 	//图片超过5个显示使用相册的提示
 	if(!this.album)this.album=_$('<div>在有大量图片的时候建议使用相册<span class="silver">([album])</span><br/><span class="orange">[album=查看全部附件][/album]</span><br/><br/></div>')
 	this.album.innerHTML=this.album.innerHTML.replace('[/album]','<br/>./'+url+'[/album]')
@@ -1445,7 +1455,7 @@ var o_ath = $('/table').$0(
 if(attach){
 	for(var j in attach){
 		var tmp = attach[j]
-		this.add1Attach(null,null,tmp.attachurl, tmp.type=='img'?1:0, tmp.thumb,tmp.url_utf8_org_name)
+		this.add1Attach(null,null,tmp.attachurl, tmp.type=='img'?1:0, tmp.thumb,tmp.url_utf8_org_name, tid, pid)
 		}
 	} 
 //-----------------------------------------------------
