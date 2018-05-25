@@ -4044,6 +4044,27 @@ x._.aC( $('/br') , $('/br') , _$("<button type='button' onclick='commonui.hideAd
 c.adminwindow._.addContent(x)
 
 c.adminwindow._.show(e)
+
+// Select all text on click.
+document.querySelectorAll('.ltxt .xtxt').forEach(function (node) {
+  node.onclick = function () {
+    var doc = window.document, sel, range
+    if (window.getSelection && doc.createRange) {
+      // non-ie
+      sel = window.getSelection()
+      range = doc.createRange()
+      range.selectNodeContents(this)
+      sel.removeAllRanges()
+      sel.addRange(range)
+    } else if (doc.body.createTextRange) {
+      // ie
+      range = doc.body.createTextRange()
+      range.moveToElementText(this)
+      range.select()
+    }
+  }
+})
+
 },//fe
 
 saveHis:function(id){
