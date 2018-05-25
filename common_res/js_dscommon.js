@@ -108,7 +108,7 @@ if(!this.replaceDs[id] && window.__SCRIPTS && __SCRIPTS['dsid_'+id]){
 		this.rateSum[id]=this.rnd[id]=0
 		this.replaceDs[id] = 1
 		if((new Date).getTime()-ngaAds.nowTime>90000)//1.5min
-			__SCRIPTS['dsid_'+id]+=(__SCRIPTS['dsid_'+id].indexOf('?')==-1?'?':'&')+'stat=1'
+			__SCRIPTS['dsid_'+id]+=(__SCRIPTS['dsid_'+id].indexOf('?')==-1?'?':'&')+'status=1'
 		__SCRIPTS.load('dsid_'+id,function(){
 			ngaAds.genadslist(id)
 			if(ngaAds[id]){
