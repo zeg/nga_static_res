@@ -890,7 +890,7 @@ this.o_attachChk.value+=checkSum+'\t';
 window.setTimeout(function(){postfunc.attachUpload()},200)
 }//fe
 
-postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10),1)" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
+postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10))" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
 
 postfunc.add1Attach.getDispThumb = function(thumb){
 var t = [],thumb = parseInt(thumb,10)
