@@ -1213,6 +1213,7 @@ var o_main = $('/span').$0(
 						) :null,
 					modifyAppend ? t('，如需修改原帖请联系版主') :null,
 					this.o_content = $('/textarea').$0(
+						'autofocus', '',
 						'name','post_content',
 						'style',{width:'98%',height:'25em',lineHeight:'1.538em'},
 						'value',content,
