@@ -4663,7 +4663,7 @@ __NUKE.doRequest({
 			x._.add(
 				$('/tr').$0('className','row'+(1+((i++)&1)),
 					$('/td').$0('className','c1',
-						$('/a').$0('className','b','target','_blank','innerHTML',u[l[k][3]][0],'href','/nuke.php?func=ucp&uid='+u[l[k][3]][0])
+						$('/a').$0('className','b','target','_blank','innerHTML',u[l[k][3]][0],'href','/nuke.php?func=ucp&username='+u[l[k][3]][0])
 						),
 					$('/td').$0('className','c2',
 						$('/a').$0('className','b','target','_blank','innerHTML',t[l[k][0]][0],'href','/read.php?tid='+l[k][0]+(l[k][1]?'&pid='+l[k][1]+'&to=1':''))
