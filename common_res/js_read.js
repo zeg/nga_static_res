@@ -1655,25 +1655,6 @@ d:{
 	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
 },
 
-41: {
-	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
-		__NUKE.doRequest({
-			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 1026, 0, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
-			b: this
-		})
-	},
-	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
-},
-
-42: {
-	n1: '解抽', n2: '解除锁定隐藏', n3: '解除锁隐', on: function (e, a) {
-		__NUKE.doRequest({
-			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 0, 1026, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
-			b: this
-		})
-	},
-ck:function(a){if ((a.__GP.admincheck&2) && a.pid && parseInt(a.pid,10) && a.pid>0)return 1} },
-
 18:{n1:'翻译',n2:'以版主提供的术语表进行对照翻译',on:function(e,a,o){if(o._.gV('transed'))return;commonui.autoTranslate.main($('postcontent'+a.lou),a.fid);o._.sV('transed',1)},
 	ck:function(a){if (window.__AUTO_TRANS_FID)return 1} },
 
@@ -1731,8 +1712,26 @@ ck:function(a){if ((a.__GP.admincheck&2) && a.pid && parseInt(a.pid,10) && a.pid
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
 	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
 
-40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup3;',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索\u2074',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
 
+41: {
+	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
+		__NUKE.doRequest({
+			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 1026, 0, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
+			b: this
+		})
+	},
+	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
+},
+
+42: {
+	n1: '解抽', n2: '解除锁定隐藏', n3: '解除锁隐', on: function (e, a) {
+		__NUKE.doRequest({
+			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 0, 1026, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
+			b: this
+		})
+	},
+ck:function(a){if ((a.__GP.admincheck&2) && a.pid && parseInt(a.pid,10) && a.pid>0)return 1} }
 },
 
 replaceUrl:function (u){
