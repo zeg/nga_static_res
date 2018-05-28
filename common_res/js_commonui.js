@@ -4013,15 +4013,15 @@ for (var k in y){
 if(arg.tid)
 	x._.add(
 		$('/h4').$0('className',"textTitle",'innerHTML','主题地址'),
-		$('/span').$0('className',"xtxt",'innerHTML',s+'/read.php?tid=<span class=red>'+arg.tid+'</span> ')
+		$('/span','className',"xtxt",'innerHTML',s+'/read.php?tid=<span class=red>'+arg.tid+'</span>','onclick',function(){commonui.buttonBase.selTxt(this)}),' '
 		)
 
 if (arg.pid!='tpc' && arg.pid>0){
 	x._.add(
-		$('/h4').$0('className',"textTitle",'innerHTML','此回复地址'),
-		$('/span').$0('className',"xtxt",'innerHTML',s+'/read.php?pid=<span class=blue>'+arg.pid+'</span> '),
-		$('/h4').$0('className',"textTitle",'innerHTML','此位置地址'),
-		$('/span').$0('className',"xtxt",'innerHTML',s+c.genPidLink(arg.pid,arg.i)+' ')
+		$('/h4','className',"textTitle",'innerHTML','此回复地址'),
+		$('/span','className',"xtxt",'innerHTML',s+'/read.php?pid=<span class=blue>'+arg.pid+'</span>','onclick',function(){commonui.buttonBase.selTxt(this)}),' ',
+		$('/h4','className',"textTitle",'innerHTML','此位置地址'),
+		$('/span','className',"xtxt",'innerHTML',s+c.genPidLink(arg.pid,arg.i),'onclick',function(){commonui.buttonBase.selTxt(this)}),' '
 		)
 	}
 
@@ -4045,27 +4045,25 @@ c.adminwindow._.addContent(x)
 
 c.adminwindow._.show(e)
 
-// Select all text on click.
-document.querySelectorAll('.ltxt .xtxt').forEach(function (node) {
-  node.onclick = function () {
-    var doc = window.document, sel, range
-    if (window.getSelection && doc.createRange) {
-      // non-ie
-      sel = window.getSelection()
-      range = doc.createRange()
-      range.selectNodeContents(this)
-      sel.removeAllRanges()
-      sel.addRange(range)
-    } else if (doc.body.createTextRange) {
-      // ie
-      range = doc.body.createTextRange()
-      range.moveToElementText(this)
-      range.select()
-    }
-  }
-})
-
 },//fe
+
+
+selTxt:function(o){console.log(123)
+	var d = window.document, s, r
+	if (window.getSelection && d.createRange) {
+	  // non-ie
+	  s = window.getSelection()
+	  r = d.createRange()
+	  r.selectNodeContents(o)
+	  s.removeAllRanges()
+	  s.addRange(r)
+	} else if (d.body.createTextRange) {
+	  // ie
+	  r = d.body.createTextRange()
+	  r.moveToElementText(o)
+	  r.select()
+	}
+},//
 
 saveHis:function(id){
 if(!this.d[id] || !this.d[id].n1 || !this.his)return
