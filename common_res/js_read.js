@@ -601,7 +601,7 @@ o.style.backgroundColor=''
 
 //Ç©Ãû¸ß¶È=====================
 commonui.postSignCheckHeight=function(o){
-if(o.offsetHeight<300){
+if(o.offsetHeight<=300){
 	o.style.visibility=''
 	return
 	}
