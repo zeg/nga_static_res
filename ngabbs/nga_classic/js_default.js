@@ -693,7 +693,10 @@ switch (fid){
 		return [1,w.__IMGPATH +'/head/20180410.jpg',0,190]
 	case 538:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.33?(r>0.66?'20180128':'20180127'):'20180126')+'.jpg',0,190]
+		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180525':'201805251'):'201805252'):'201805253'):'201805254'):'201805255')+'.jpg',0,190]
+	case -8180483:
+		var r = Math.random()
+		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180526':'201805261')+'.jpg',0,190,w.__IMGPATH +'/head/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
 	//default:
 	//	return [1,w.__IMGPATH +'/head/20170725.jpg',0,190]
 	}

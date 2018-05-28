@@ -443,12 +443,6 @@ border-radius: 0.25em;
 padding:0 0.5em;
 margin:0.1em 0.2em
 }
-
-.deleteAttach {
-background: #591804;
-color: white;
-}
-
 .inlineBlock, .inlineblock {display:inline-block;*zoom:1;*display:inline;}
 
 textarea, select, input, button, option {font-size:1.083em}

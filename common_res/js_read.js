@@ -601,7 +601,7 @@ o.style.backgroundColor=''
 
 //签名高度=====================
 commonui.postSignCheckHeight=function(o){
-if(o.offsetHeight<=300){
+if(o.offsetHeight<300){
 	o.style.visibility=''
 	return
 	}
@@ -1712,7 +1712,7 @@ d:{
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
 	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
 
-40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索\u2074',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup4;',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
 
 41: {
 	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
