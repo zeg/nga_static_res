@@ -1499,6 +1499,25 @@ if(o_btn._.__vml)
 	var tmp = $('/img').$0('src','about:blank','style',{display:'none'},'onerror',function(){o_btn._.__vml(2)})
 else
 	var tmp = null
+
+	// Allow drag-n-drop of files into attachment list.
+	var handler = function (el) {
+		el._.on('dragover', function (e) {
+			e.preventDefault()
+		});
+		el._.on('drop', function (e) {
+			if (document.getElementsByName('attachment_file1').length > 0 && e.dataTransfer.files) {
+				document.getElementsByName('attachment_file1')[0].files = e.dataTransfer.files;
+				e.preventDefault();
+			}
+		});
+	}
+	if (o_main) {
+		handler(o_main);
+	}
+	if (o_ath) {
+		handler(o_ath);
+	}
 //-----------------------------------------------------
 //
 //ºÊ»›
@@ -2561,8 +2580,5 @@ m = m.replace(/\s*<col(?:\s+[^>]+)?>\s*/ig,'')
 			//.replace(/<span(?:\s+[^>]+)?>(&nbsp;)*<\/span>/ig,'')
 return '[table]\n'+m.replace(/^\s+|\s+$/ig,'').replace(/<[^>]+>/,'')+'\n[/table]'
 }//fe
-
-
-
 
 
