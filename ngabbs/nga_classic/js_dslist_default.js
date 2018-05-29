@@ -322,22 +322,23 @@ return ''
 	
 //移动页面下浮动 固定尺寸比例640*150
 ngaAds.bbs_ads44_gen = function(){
-var x=this.bbs_ads44
-if((__SETTING.bit & 16) && x){
-	if((''+x.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/)){//img
-		x.width = '525'
-		x.height = '123'
-		}
-	else{//iframe
-		if(x.width>525){
-			x.style = 'transform: scale('+(525/x.width)+');transform-origin:0% 0%;margin-bottom:-'+(x.height-525/x.width*x.height)+'px;'
-			}
-		}
-	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(x)))
-	}
+if((__SETTING.bit & 16) && this.bbs_ads44)
+	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(this.bbs_ads44)))
 return null
 }//
-
+ngaAds.bbs_ads44_perproc = function(x){
+if((''+x.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/)){//img
+	if(x.width>523){
+		x.width='523'
+		x.height=Math.floor(525/x.width*x.height)+''
+		}
+	}
+else{//iframe
+	if(x.width>523)
+		x.style='transform: scale('+(523/x.width)+');transform-origin:0% 0%;margin-bottom:-'+Math.floor(x.height-523/x.width*x.height)+'px;'
+	}	
+return x
+}
 
 /*特殊广告加载*/
 ngaAds.loadCustomAds=function(arg)

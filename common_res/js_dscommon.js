@@ -168,6 +168,8 @@ qu.insert=function(o,id){
 }//
 
 ngaAds.genAds = function (a){
+if(this[a.id+'_perproc'])
+	a = this[a.id+'_perproc'](a)	
 if (a.type=='js')
 	return "<scr"+"ipt type='text/javascr"+"ipt' src='"+a.file+"'></scr"+"ipt>"
 else if (a.type=='baidu' && a.cpro_id){
@@ -195,19 +197,17 @@ else{
 	if(a.placeholder){
 		if(!this.loadQueue)
 			this.loadQueueInit()
-		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
+		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;margin:auto;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
 		}
-	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', log='', ic="<img src='http://gg.stargame.com/images/mark.png' style='margin-left:-48px'>"
+	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', ic="<br/><img src='http://gg.stargame.com/images/mark.png' style='margin:-18px 0 auto auto'>"
 	if(tp && tp[1]=='swf'){
 		img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
-		if (a.url)
-			img = "<a href='"+a.url+"' style='display:block;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+"<div style='width:100%;100%;position:relative;top:-100%;margin-bottom:-100%'"+log+"/>"+ic+"</a>";
+		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
 		return img
 		}
 	else if(tp){
-		img = "<img src='"+a.file+"' title='"+a.title+"' style='border:1px solid #000000;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'"+log+" onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"'/>";
-		if (a.url)
-			img = "<a href='"+a.url+"' target='_blank' title='"+a.title+"' style='text-align:right;"+(a.style?a.style:'')+"'>"+img+ic+"</a>";
+		img = "<img src='"+a.file+"' title='"+a.title+"' style='"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"'/>";
+		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+" style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
 		return img;
 		}
 	else{

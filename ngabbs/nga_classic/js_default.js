@@ -963,7 +963,7 @@ if(this.loginlog)
 //¹ã¸æ========================
 commonui.mobanner = function(){
 var r = 60,t = this.mobanner.unpack(__COOKIE.getMiscCookie('mobanner1')|0), ads, now=false
-if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5){
+if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
 	if(t.count_a<4){
 		now = this.mobanner.getMi()
 		if(now-t.time_a>r && (ads = ngaAds.bbs_ads44_gen())){
