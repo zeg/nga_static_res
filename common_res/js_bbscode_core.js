@@ -2907,7 +2907,7 @@ ubbcode.writelink=function(u,n)
 {
 var v = this.urlToAry(u)
 
-var h = " onmouseover='this.childNodes[0].style.display=\"inline\"' onmouseout='this.childNodes[0].style.display=\"none\"'>"+v.hintHTML;
+var h = " onmouseover='ubbcode.showUrlTip(this)' onmouseout='ubbcode.showUrlTip(this)'>"+v.hintHTML;
 
 if (v.check<2)
 	h = " onclick='this.previousSibling.style.display=\"inline\";commonui.cancelEvent(event);commonui.cancelBubble(event);return false' "+h;
@@ -2955,13 +2955,25 @@ else{
 		u = '被禁止的链接'
 		}
 	}
-v.hintHTML = "<span class='urltip nobr' style='color:"+c+"'>"+u+" </span>"
-v.alertHTML = s<2 ? "<span class='urltip' style='font-size:11px;padding:2px;text-align:center;line-height:15px' unselectable=on><div>"+(v.protocol+'://'+'<b class="red">'+v.host+'</b>'+v.pathname+v.search+v.hash)+"</div><div class='nobr'> 此网页不属于本网站，不保证其安全性 </div><div class='nobr'> <a href='"+u+"' onclick='this.parentNode.parentNode.style.display=\"none\"' target='_blank'>继续访问</a> &emsp; &emsp; &emsp; <a href='javascript:void(0)' onclick='this.parentNode.parentNode.style.display=\"none\"'>取消</a> </div></span>" : ''
+v.hintHTML = "<span class='urltip' style='margin-top:auto;color:"+c+"'>"+u+" </span>"
+v.alertHTML = s<2 ? "<span class='urltip' style='font-size:0.846em;padding:0.153em;text-align:center' unselectable=on><div>"+(v.protocol+'://'+'<b class="red">'+v.host+'</b>'+v.pathname+v.search+v.hash)+"</div><div class='nobr'> 此网页不属于本网站，不保证其安全性 </div><div class='nobr'> <a href='"+u+"' class='b' onclick='this.parentNode.parentNode.style.display=\"none\"' target='_blank'>继续访问</a> &emsp; &emsp; &emsp; <a class='b' href='javascript:void(0)' onclick='this.parentNode.parentNode.style.display=\"none\"'>取消</a> </div></span>" : ''
 v.color = c
 v.url = u
 v.check = s
 return v
 }//fe
+
+ubbcode.showUrlTip=function(p){
+var o = p.firstChild
+if(o.style.display!='inline'){
+	var x = p.getBoundingClientRect()
+	o.style.top = x.bottom+__NUKE.position.get().yf+'px'
+	o.style.left = x.left+'px'
+	o.style.display='inline'
+	}
+else
+	o.style.display='none'
+}//
 
 ubbcode.noCheckLinkCookie=__COOKIE.getMiscCookie('ngabbsnochecklink')?true:false
 //=============================

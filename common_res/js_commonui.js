@@ -2959,7 +2959,6 @@ return y
 
 commonui.allAvatar = function(a,uid){
 a=toArray(a)
-console.log(a)
 if(a){
 	if(a.constructor==String)
 		a = {l:1,0:a}
@@ -4048,7 +4047,7 @@ c.adminwindow._.show(e)
 },//fe
 
 
-selTxt:function(o){console.log(123)
+selTxt:function(o){
 	var d = window.document, s, r
 	if (window.getSelection && d.createRange) {
 	  // non-ie
