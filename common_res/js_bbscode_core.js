@@ -2907,7 +2907,7 @@ ubbcode.writelink=function(u,n)
 {
 var v = this.urlToAry(u)
 
-var h = " onmouseover='ubbcode.showUrlTip(this)' onmouseout='ubbcode.showUrlTip(this)'>"+v.hintHTML;
+var h = " onmouseover='ubbcode.showUrlTip(event,this)' onmouseout='ubbcode.showUrlTip(event,this)'>"+v.hintHTML;
 
 if (v.check<2)
 	h = " onclick='this.previousSibling.style.display=\"inline\";commonui.cancelEvent(event);commonui.cancelBubble(event);return false' "+h;
@@ -2963,16 +2963,28 @@ v.check = s
 return v
 }//fe
 
-ubbcode.showUrlTip=function(p){
+ubbcode.showUrlTip=function(e,p){
 var o = p.firstChild
 if(o.style.display!='inline'){
-	var x = p.getBoundingClientRect()
-	o.style.top = x.bottom+__NUKE.position.get().yf+'px'
-	o.style.left = x.left+'px'
-	o.style.display='inline'
+	if(!o.style.marginTop || o.style.marginTop=='auto'){
+		var x = p.getBoundingClientRect(),s=o.style
+		s.top = 0
+		s.left = 0
+		s.visibility='hidden'
+		s.display='inline'
+		var y = o.getBoundingClientRect(), z = y.width+x.left-__NUKE.position.get().cw
+		if(z>0)
+			s.marginLeft='-'+z+'px'
+		s.marginTop = '-'+(y.bottom-y.top)+'px'
+		s.top=s.left=s.visibility=''
+		}
+	else
+		o.style.display='inline'
 	}
-else
+else if(commonui.ifMouseOut(e,p)){
+	console.log('out')
 	o.style.display='none'
+	}
 }//
 
 ubbcode.noCheckLinkCookie=__COOKIE.getMiscCookie('ngabbsnochecklink')?true:false

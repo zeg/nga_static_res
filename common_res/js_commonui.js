@@ -1165,7 +1165,7 @@ var e,w=window;
 
 //mouseleave==================
 commonui.ifMouseOut=function(e,o){
-var t = e.srcElement ? e.srcElement : e.target, r = e.relatedTarget ? e.relatedTarget : e.toElement;
+var /*t = e.srcElement ? e.srcElement : e.target, */r = e.relatedTarget ? e.relatedTarget : e.toElement;
 while (r && r != o && r.nodeName != 'BODY')
 	r= r.parentNode
 if (r==o) return;

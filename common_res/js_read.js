@@ -1896,8 +1896,17 @@ d:{
 	on:function(e,a){commonui.setTopicBlock(this,a.tid)},
 	ck:function(a){return 1} },
 15:{n1:'APP阅读',n2:'使用论坛APP阅读此主题',n3:'APP阅读此贴',
-	u:'nga://?tid={tid}',
+	u:'javascript:void(0)',
 	c:'disable_tap_menu teal',
+	on:function(e,a,o){
+		var p = location.search.match(/(?:page|pid)=(?:\d+)/g),f=_$('/iframe','style','display:none','src','nga://?tid='+a.tid+(p?'&'+p.join('&'):''))
+		,st=e.now,to = setTimeout(function() {
+			if (!st || (Date.now() - st) < 800)
+				 window.location.assign('http://app.nga.cn/dl');
+			}, 600);
+		commonui.aE(window,'blur',function() {clearTimeout(to)})
+		document.body.appendChild(f)
+		},
 	//on:function(e,a){setTimeout(function(){location.assign('http://app.178.com/phone.html')},3000)},
 	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} },
 16:{n1:'调查',n2:'当前主题内相关操作记录',n3:'调查操作',

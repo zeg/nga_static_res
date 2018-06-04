@@ -330,7 +330,7 @@ ngaAds.bbs_ads44_perproc = function(x){
 if((''+x.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/)){//img
 	if(x.width>523){
 		x.width='523'
-		x.height=Math.floor(525/x.width*x.height)+''
+		x.height=Math.floor(523/x.width*x.height)+''
 		}
 	}
 else{//iframe
