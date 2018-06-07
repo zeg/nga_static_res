@@ -219,7 +219,7 @@ this.w._.addTitle('评分');
 
 this.w._.addContent(
 	$('/span')._.add(
-		$('/input').$0('type','radio','name','act','value',0,'checked',1,'onclick',function(){
+		$('/input').$0('type','radio','name','act','value',131072,'checked',1,'onclick',function(){
 			if(this.checked)sw(1)
 			}),'评分 ',
 		$('/input').$0('type','radio','name','act','value',4194304,'onclick',function(){
@@ -302,6 +302,7 @@ this.w._.addContent(
 				}
 				commonui.userCache.set('lastTipOpt', opt, 86400 * 30);
 				commonui.userCache.set('lastTipInfo', ni.value, 86400 * 30);
+				commonui.userCache.set('lastTipAmt', ri.value, 86400 * 30);
 				__NUKE.doRequest({
 					u:{u:__API._base,
 							a:{__lib:"add_point_v3",__act:"add",opt:opt,fid:fid,tid:tid,pid:pid,info:ni.value,value:ri.value,raw:3}
@@ -315,29 +316,29 @@ this.w._.addContent(
 		de('* 150声望合1威望<br/>** 100声望合1金币 扣减声望时可以扣除金钱<br/><br/>'),n = de('')
 		)
 	)
-// Restore tip settings from userCache, if any.
-var lto = commonui.userCache.get('lastTipOpt')|0
-if (lto) {
-	var lti = commonui.userCache.get('lastTipInfo'), x = rs.parentNode.getElementsByTagName('input')
-	for (var i=0;i<x.length;i++){
-		if ((x[i].type=='checkbox' ||x[i].type=='radio')  && (lto & x[i].value)==x[i].value){
-			x[i].checked='checked'
-			if(x[i].value==1)
-				sw(1)
-			else if(x[i].value==4194304)
-				sw()
-			}
-		}
-	ni._.on('focus',function(){if(!this.value && lti)this.value = lti})
-	}
-
 ri.style.display='none'
 this.w._.show(e)
 if(!__GP.greater){
 	off(rv,'需要Moderator权限',1)
 	off(rg,'需要Moderator权限',1)
 	}
-	
+// Restore tip settings from userCache, if any.
+var lto = commonui.userCache.get('lastTipOpt')|0
+if (lto) {
+	var lti = commonui.userCache.get('lastTipInfo'), lta = commonui.userCache.get('lastTipAmt'), x = rs.parentNode.getElementsByTagName('input')
+	for (var i=0;i<x.length;i++){
+		if (x[i].type=='checkbox' || x[i].type=='radio') {
+			x[i].checked = (lto & x[i].value)==x[i].value;
+			if(x[i].value==131072 && x[i].checked)
+				sw(1)
+			else if(x[i].value==4194304 && x[i].checked)
+				sw()
+			}
+		}
+	ni._.on('focus',function(){if(!this.value && lti)this.value = lti})
+	ri._.on('focus',function(){if(!this.value && lta)this.value = lta})
+	}
+
 __NUKE.doRequest({
 	u:{u:__API._base,
 			a:{__lib:"add_point_v3",__act:"get_limit",fid:fid,raw:3}
