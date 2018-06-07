@@ -2982,7 +2982,6 @@ if(o.style.display!='inline'){
 		o.style.display='inline'
 	}
 else if(commonui.ifMouseOut(e,p)){
-	console.log('out')
 	o.style.display='none'
 	}
 }//

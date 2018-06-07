@@ -15,70 +15,74 @@ ngaAds.rateSum = []
 ngaAds.rnd = []
 ngaAds.genadslist = function (id)
 {
+console.log('genadslist')
 var tempDate , tempShow
-
 for (var k=0;k<this.length;k++){
-	var D = this[k]
-	if(!D)
-		continue
-	if(id && D.id!=id)
-		continue
-	if(D.ifShow && !D.ifShow())
-		continue
-	if(!D.id || !D.date)
+	if(!this[k])
 		continue
 
-	D.date =  D.date.replace(/(^| |\/)0/g,'$1');
-	tempShow = false;
-	if (D.date == 'all'){
-		tempShow = true;
-		}
-	else{
-		var ni = -1, od;
-		tempDate = D.date+' ';
-		while (tempDate && ((ni = tempDate.indexOf(' ')) != -1) ){
-			od = tempDate.substr(0,ni);
-			tempDate = tempDate.substr(ni+1);
-			if (od.length>11){
-				od = od.split('-');
-				if (od[1]){
-					if (this.nowDayTime>=Date.parse(od[0]) && this.nowDayTime<=Date.parse(od[1])){
-						tempShow = true;
-						break;
+	var D = this[k]
+
+	if(D.id && D.date && !this[D.id]){
+		console.log(D.id)
+		D.date =  D.date.replace(/(^| |\/)0/g,'$1');
+		D.now = this.nowDayTime;
+		tempShow = false
+		if (D.date == 'all'){
+			tempShow = true
+			}
+		else{
+			var ni = -1, od
+			tempDate = D.date+' '
+			while (tempDate && ((ni = tempDate.indexOf(' ')) != -1) ){
+				od = tempDate.substr(0,ni)
+				tempDate = tempDate.substr(ni+1)
+				if (od.length>11){
+					od = od.split('-')
+					if (od[1]){
+						if (this.nowDayTime>=Date.parse(od[0]) && this.nowDayTime<=Date.parse(od[1])){
+							tempShow = true;
+							break
+							}
+						}
+					}
+				else{
+					if (this.nowDay == od){
+						tempShow = true
+						break
 						}
 					}
 				}
-			else{
-				if (this.nowDay == od){
-					tempShow = true;
-					break;
-					}
+			}
+		if (tempShow){
+			if (this.rateSum[D.id]===undefined)
+				this.rateSum[D.id] = 0;
+			if (this.rnd[D.id]===undefined)
+				this.rnd[D.id] = Math.floor(Math.random()*100);
+			if(!D.rate)
+				D.rate = 100
+			this.rateSum[D.id] += (D.rate|0);
+			if (this.rnd[D.id]<this.rateSum[D.id]){
+				this[D.id] = D
+				this.rnd[D.id] = 10000
 				}
 			}
 		}
-	if (tempShow){
-		if (!this.rateSum[D.id])
-			this.rateSum[D.id] = 0;
-		if (!this.rnd[D.id])
-			this.rnd[D.id] = Math.floor(Math.random()*100);
-		if(!D.rate)
-			D.rate = 100
-		this.rateSum[D.id] += (D.rate|0);
-		if (this.rnd[D.id]<this.rateSum[D.id] && !this[D.id]){
-			this[D.id] = D
-			this[D.id].now = this.nowDayTime;
-			this.rnd[D.id] = 1000;
-			delete this[k]
-			}
-		}
-		
+	delete this[k]
 	}
+
 }
 //fe
 
 
 //-------------------------------
 ngaAds.genadslist();//<-------------------
+
+ngaAds._push = ngaAds.push
+ngaAds.push = function(x){
+this._push(x)
+this.genadslist(x.id)
+}//
 
 //-------------------------------
 
@@ -100,10 +104,10 @@ obj.parentNode.appendChild(x)
 
 ngaAds.replaceDs = function(o,id){
 if(!this.replaceDs[id] && window.__SCRIPTS && __SCRIPTS['dsid_'+id]){
-	var x = o.getBoundingClientRect(),y = __NUKE.position.get()
-	y.vb = y.yf+y.ch
+	//var x = o.getBoundingClientRect(),y = __NUKE.position.get()
+	//y.vb = y.yf+y.ch
 	//console.log('lazyload check '+id)
-	if((x.bottom>=0 && x.bottom<=y.ch) || (x.top>=0 && x.top<=y.ch)){
+	//if((x.bottom>=0 && x.bottom<=y.ch) || (x.top>=0 && x.top<=y.ch)){
 		delete ngaAds[id]
 		this.rateSum[id]=this.rnd[id]=0
 		this.replaceDs[id] = 1
@@ -118,7 +122,7 @@ if(!this.replaceDs[id] && window.__SCRIPTS && __SCRIPTS['dsid_'+id]){
 			})
 		//console.log('in sight '+id)
 		return 1//ads loaded
-		}
+	//	}
 	//console.log('no in sight '+id)
 	return 0
 	}

@@ -1,6 +1,7 @@
 if(!window.adminui)
-	adminui = {};
-
+	var adminui = {};
+if(!window.commonui)
+	var commonui = {}
 
 
 adminui.getValue = function(f,n){
@@ -319,7 +320,13 @@ var lto = commonui.userCache.get('lastTipOpt')|0
 if (lto) {
 	var lti = commonui.userCache.get('lastTipInfo'), x = rs.parentNode.getElementsByTagName('input')
 	for (var i=0;i<x.length;i++){
-		if ((x[i].type=='checkbox' ||x[i].type=='radio')  && (lto & x[i].value)==x[i].value) x[i].checked='checked'
+		if ((x[i].type=='checkbox' ||x[i].type=='radio')  && (lto & x[i].value)==x[i].value){
+			x[i].checked='checked'
+			if(x[i].value==1)
+				sw(1)
+			else if(x[i].value==4194304)
+				sw()
+			}
 		}
 	ni._.on('focus',function(){if(!this.value && lti)this.value = lti})
 	}

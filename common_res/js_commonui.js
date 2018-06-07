@@ -2507,22 +2507,22 @@ if(f)f.call(imgo)
 //获取帖子或主题的类型说明
 (function(){
 var P, VP,EP, PBALL=0,TMBALL=0
-G=1,
-U=2,
-MOD=4,
-LE=8,
-WD=16,
-SL=32,
-SU=64,
-AD=128,
+G=1,//guest
+U=2,//user
+MOD=4,//显示需要版主权限
+LE=8,//需要lesser
+WD=16,//warden
+SL=32,//superlesser
+SU=64,//super
+AD=128,//admin
 
-MMOD=256,
-MLE=512,
-MWD=1024,
-MSL=2048,
-MSU=4096,
-MAD=8192,
-MNO=524288,
+MMOD=256,//修改需要版主权限
+MLE=512,//需要lesser
+MWD=1024,//warden
+MSL=2048,//superlesser
+MSU=4096,//super
+MAD=8192,//admin
+MNO=524288,//不能修改
 
 TT=16384,//仅主题
 PP=32768,//仅回复
@@ -2561,7 +2561,8 @@ TMB={
 //2048:			[MOD|MSU|TT,	2048,	'开放3',	'开放3',	'#909090',	'',													'NUKE用户可回复'],
 8:		[MOD|MAD|TT,	134217728,	'内容',	'',		'#909090',	'',													'主题列表中显示最近回复'],
 9:		[G|MMOD|TT,		1073741824,	'单帖',	'单帖',	'#909090',	'每个用户只能回复一次(2000回复以内)',			'每个用户只能回复一次(2000回复以内)'],
-10:	[G|TT,			65536,		'直播',	'直播',	'#909090',	'这是一条直播',										'']
+10:	[G|TT,			65536,		'直播',	'直播',	'#909090',	'这是一条直播',										''],
+11:	[G|TT|MMOD,		262144,		'新回复在前',	'倒序','#C58080','新回复在前','新回复在前']
 }
 
 var INIT=function(){
@@ -4662,7 +4663,7 @@ __NUKE.doRequest({
 			x._.add(
 				$('/tr').$0('className','row'+(1+((i++)&1)),
 					$('/td').$0('className','c1',
-						$('/a').$0('className','b','target','_blank','innerHTML',u[l[k][3]][0],'href','/nuke.php?func=ucp&username='+u[l[k][3]][0])
+						$('/a').$0('className','b','target','_blank','innerHTML',u[l[k][3]][0],'href','/nuke.php?func=ucp&uid='+u[l[k][3]][0])
 						),
 					$('/td').$0('className','c2',
 						$('/a').$0('className','b','target','_blank','innerHTML',t[l[k][0]][0],'href','/read.php?tid='+l[k][0]+(l[k][1]?'&pid='+l[k][1]+'&to=1':''))
@@ -5495,6 +5496,9 @@ for(var i=0;i<a.length;i++)
 	if(a[i].title=='发表回复')
 		a[i].parentNode.style.display='none'
 }
+
+//=============================
+commonui.fastPostUi =function(){}
 
 
 //论坛菜单当前用户头像选择=======

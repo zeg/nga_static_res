@@ -1,5 +1,7 @@
 if(!window.postfunc)
-	window.postfunc = {}
+	var postfunc = {}
+if(!window.commonui)
+	var commonui = {}
 /**
  *版面bit
  */
@@ -890,7 +892,7 @@ this.o_attachChk.value+=checkSum+'\t';
 window.setTimeout(function(){postfunc.attachUpload()},200)
 }//fe
 
-postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10))" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
+postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10),1)" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
 
 postfunc.add1Attach.getDispThumb = function(thumb){
 var t = [],thumb = parseInt(thumb,10)
@@ -938,7 +940,7 @@ s = function(y,o,f,i){
 	var x = $('/select').$0('onchange',function(){if(this.options[this.selectedIndex].value)f.call(this); this.selectedIndex=0},$('/option').$0('value','','innerHTML','默认'),'style',{width:'5em',marginRight:'1em'})
 	for(var k in o)
 		x._.add(
-			$('/option').$0('value',k,'innerHTML', o[k]?o[k]:'' , 'style', o[k] ? {} :{backgroundColor:k} )
+			$('/option').$0('value',k,'innerHTML', o[k]?o[k]:'' , 'style', o[k] ? '' :'backgroundColor:'+k )
 			)
 	return $('/span').$0(t(y+' '), x )
 	},
@@ -1213,7 +1215,6 @@ var o_main = $('/span').$0(
 						) :null,
 					modifyAppend ? t('，如需修改原帖请联系版主') :null,
 					this.o_content = $('/textarea').$0(
-						'autofocus', '',
 						'name','post_content',
 						'style',{width:'98%',height:'25em',lineHeight:'1.538em'},
 						'value',content,
@@ -1499,25 +1500,6 @@ if(o_btn._.__vml)
 	var tmp = $('/img').$0('src','about:blank','style',{display:'none'},'onerror',function(){o_btn._.__vml(2)})
 else
 	var tmp = null
-
-	// Allow drag-n-drop of files into attachment list.
-	var handler = function (el) {
-		el._.on('dragover', function (e) {
-			e.preventDefault()
-		});
-		el._.on('drop', function (e) {
-			if (document.getElementsByName('attachment_file1').length > 0 && e.dataTransfer.files) {
-				document.getElementsByName('attachment_file1')[0].files = e.dataTransfer.files;
-				e.preventDefault();
-			}
-		});
-	}
-	if (o_main) {
-		handler(o_main);
-	}
-	if (o_ath) {
-		handler(o_ath);
-	}
 //-----------------------------------------------------
 //
 //兼容
@@ -2580,5 +2562,8 @@ m = m.replace(/\s*<col(?:\s+[^>]+)?>\s*/ig,'')
 			//.replace(/<span(?:\s+[^>]+)?>(&nbsp;)*<\/span>/ig,'')
 return '[table]\n'+m.replace(/^\s+|\s+$/ig,'').replace(/<[^>]+>/,'')+'\n[/table]'
 }//fe
+
+
+
 
 

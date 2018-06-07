@@ -1712,7 +1712,7 @@ d:{
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
 	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
 
-40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup4;',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索\u2074',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
 
 41: {
 	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
@@ -1896,16 +1896,21 @@ d:{
 	on:function(e,a){commonui.setTopicBlock(this,a.tid)},
 	ck:function(a){return 1} },
 15:{n1:'APP阅读',n2:'使用论坛APP阅读此主题',n3:'APP阅读此贴',
-	u:'javascript:void(0)',
+	u:'nga://?tid={tid}'.replace(/.*/,function($1){
+		var p = location.search.match(/(?:tid|page|pid)=(?:\d+)/g)
+		if(p)
+			return 'nga://?'+p.join('&')
+		return $1
+		}),
 	c:'disable_tap_menu teal',
 	on:function(e,a,o){
-		var p = location.search.match(/(?:page|pid)=(?:\d+)/g),f=_$('/iframe','style','display:none','src','nga://?tid='+a.tid+(p?'&'+p.join('&'):''))
-		,st=e.now,to = setTimeout(function() {
-			if (!st || (Date.now() - st) < 800)
-				 window.location.assign('http://app.nga.cn/dl');
-			}, 600);
-		commonui.aE(window,'blur',function() {clearTimeout(to)})
-		document.body.appendChild(f)
+		if(__SETTING.uA[2]==2){
+			var st=e.timeStamp,to= setTimeout(function() {
+				if (!st || (Date.now() - st) < 800)
+					 window.location.assign('http://app.nga.cn/dl');
+				}, 600)
+			commonui.aE(window,'blur',function() {if(to)clearTimeout(to)})
+			}
 		},
 	//on:function(e,a){setTimeout(function(){location.assign('http://app.178.com/phone.html')},3000)},
 	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} },
