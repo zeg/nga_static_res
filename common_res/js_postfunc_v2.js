@@ -892,7 +892,7 @@ this.o_attachChk.value+=checkSum+'\t';
 window.setTimeout(function(){postfunc.attachUpload()},200)
 }//fe
 
-postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10),1)" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
+postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10))" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
 
 postfunc.add1Attach.getDispThumb = function(thumb){
 var t = [],thumb = parseInt(thumb,10)
@@ -1215,6 +1215,7 @@ var o_main = $('/span').$0(
 						) :null,
 					modifyAppend ? t('，如需修改原帖请联系版主') :null,
 					this.o_content = $('/textarea').$0(
+						'autofocus', '',
 						'name','post_content',
 						'style',{width:'98%',height:'25em',lineHeight:'1.538em'},
 						'value',content,
@@ -1428,7 +1429,7 @@ var o_ath = $('/table').$0(
 					'type','button',
 					'innerHTML','上传',
 					'onclick',function(){this.disabled=true;postfunc.attachUpload()} ),
-				this.ifMultiple ? t(' (可以一次选择多个附件) ') : null,
+				this.ifMultiple ? t(' (可一次选多个文件 可拖放) ') : null,
 				$('/a','href','javascript:void(0)','onclick',function(){this.style.display='none',this.nextSibling.style.display=''},__TXT('gear')),
 				$('/select','style','display:none',
 					$('/option').$0('value','','innerHTML','----'),
@@ -1496,10 +1497,34 @@ if (commonui.userCache){
 	}
 
 o_btn._.css('margin','1em auto auto auto')
-if(o_btn._.__vml)
-	var tmp = $('/img').$0('src','about:blank','style',{display:'none'},'onerror',function(){o_btn._.__vml(2)})
-else
-	var tmp = null
+
+var drpo = function (e) {
+	if (e.dataTransfer.files) {
+		e.dataTransfer.dropEffect = 'copy';
+		commonui.cancelEvent(e)
+		commonui.cancelBubble(e)
+		this.style.boxShadow='0 0 5px 0 '+__COLOR.border0
+		}
+	}
+
+var drp = function (e) {
+	if (e.dataTransfer.files) {
+		self.o_fileSelector.files = e.dataTransfer.files;
+		this.style.boxShadow=''
+		commonui.cancelEvent(e)
+		commonui.cancelBubble(e)
+		}
+	}
+
+//if (o_main)
+	//o_main.$0('ondrop',drp,'ondragover',drpo);
+
+if (o_ath){
+	o_ath.ondrop=drp
+	o_ath.ondragover=drpo
+	o_ath.onmouseout=function(){this.style.boxShadow=''}
+	
+	}
 //-----------------------------------------------------
 //
 //兼容
@@ -1530,7 +1555,7 @@ this.form = {
 //-----------------------------------------------------
 return $('/span').$0(
 
-			o_main,o_ath,o_btn,$('/br'),tmp
+			o_main,o_ath,o_btn,$('/br')
 
 			)
 
@@ -2454,6 +2479,10 @@ for(var i in argmap){
 		arg[i] = argmap[i]
 	}
 
+
+
+
+
 __NUKE.doRequest({
 	u:{u:'/post.php',	a:arg},
 	b:btn,
@@ -2465,14 +2494,14 @@ __NUKE.doRequest({
 			C.adminwindow._.addContent(null)
 			C.adminwindow._.addTitle(d.data.__MESSAGE[1])
 			
-			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = '/read.php?tid='
+			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = d.data.__MESSAGE[6]
 			
 			C.adminwindow._.addContent(
 				c01 = _$('/div')._.cls('ltxt b')._.add(
 					"发贴完毕 ",
 					c02 = _$('/span').$0('innerHTML',c04),
 					'秒后跳转 ',
-					_$('/a').$0('href',u+(c03?c03:tid)+'&page=e','className','gray','innerHTML','(点此跳转)'),
+					_$('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
 					' ',
 					_$('/a').$0('href','javascript:void(0)','className','gray','innerHTML','(点此取消跳转)'),
 					action==P.__NEW ? _$('/span').$0('innerHTML',C.quoteTo.afterPostQuote(true,subject,u+c03)) : ''
@@ -2489,7 +2518,7 @@ __NUKE.doRequest({
 				c04--
 				c02.innerHTML = c04
 				if(c04<1)
-					window.location.href=u+(c03?c03:tid)+'&page=e'
+					window.location.href=u
 				}, 1000)
 				
 			window.setTimeout(function(){unlock()},1000)

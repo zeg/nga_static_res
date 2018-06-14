@@ -601,7 +601,7 @@ o.style.backgroundColor=''
 
 //签名高度=====================
 commonui.postSignCheckHeight=function(o){
-if(o.offsetHeight<300){
+if(o.offsetHeight<=300){
 	o.style.visibility=''
 	return
 	}
@@ -890,7 +890,10 @@ for(var k in remark){
 	var y = this.c.cutstrbylen(remark[k][4],9)
 	if(y!=remark[k][4])
 		y=y+'…'
-	x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+((remark[k][3]&1)? __COLOR.quote1 : __COLOR.txt2)+"'title='"+((remark[k][3]&1)? '公开备注 ' : '版主可见 ')+remark[k][4]+"'>"+((remark[k][3]&1)? '<span class="block_txt block_txt_c0" style="margin-left:-0.4em">&#10003;</span> ' :'' )+z+y+"</span> "
+	if(remark[k][3]&1)
+		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.quote1+"'title='"+'公开备注 '+remark[k][4]+"'>"+'<span class="block_txt block_txt_c0" style="margin-left:-0.4em">&#10003;</span> ' +z+y+"</span> "
+	else
+		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.txt2+"'title='版主可见 '"+remark[k][4]+"'><span style='visibility:hidden' onmouseover='this.style.visibility=\"\"' onmouseout='this.style.visibility=\"hidden\"'>"+z+y+"</span></span> "
 	}
 
 return x

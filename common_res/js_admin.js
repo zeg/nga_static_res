@@ -280,7 +280,7 @@ this.w._.addContent(
 					)
 				)
 			),
-		ri=$('/input','placeholder','声望-1500~1500','value',''),
+		ri=$('/input','placeholder','声望-1500~1500','value','','style','display:none'),
 		$('/br'),$('/br'),
 		rv = $('/input').$0('type','checkbox','value','2','checked','1'),' 增加威望* ',
 		$('/br'),
@@ -302,6 +302,7 @@ this.w._.addContent(
 				}
 				commonui.userCache.set('lastTipOpt', opt, 86400 * 30);
 				commonui.userCache.set('lastTipInfo', ni.value, 86400 * 30);
+				commonui.userCache.set('lastTipAmt', ri.value, 86400 * 30);
 				__NUKE.doRequest({
 					u:{u:__API._base,
 							a:{__lib:"add_point_v3",__act:"add",opt:opt,fid:fid,tid:tid,pid:pid,info:ni.value,value:ri.value,raw:3}
@@ -318,20 +319,18 @@ this.w._.addContent(
 // Restore tip settings from userCache, if any.
 var lto = commonui.userCache.get('lastTipOpt')|0
 if (lto) {
-	var lti = commonui.userCache.get('lastTipInfo'), x = rs.parentNode.getElementsByTagName('input')
+	var lti = commonui.userCache.get('lastTipInfo'), lta = commonui.userCache.get('lastTipAmt'), x = rs.parentNode.getElementsByTagName('input')
 	for (var i=0;i<x.length;i++){
-		if ((x[i].type=='checkbox' ||x[i].type=='radio')  && (lto & x[i].value)==x[i].value){
+		if ((x[i].type=='checkbox' ||x[i].type=='radio')  && x[i].value && (lto & x[i].value)==x[i].value){
 			x[i].checked='checked'
-			if(x[i].value==1)
-				sw(1)
-			else if(x[i].value==4194304)
+			if(x[i].value==4194304)
 				sw()
 			}
 		}
 	ni._.on('focus',function(){if(!this.value && lti)this.value = lti})
+	ri._.on('focus',function(){if(!this.value && lta)this.value = lta})
 	}
 
-ri.style.display='none'
 this.w._.show(e)
 if(!__GP.greater){
 	off(rv,'需要Moderator权限',1)

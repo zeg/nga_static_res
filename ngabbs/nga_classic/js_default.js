@@ -974,7 +974,7 @@ if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
 			document.body.appendChild(x)
 			}
 		}
-	if(t.count_b<4){
+	if(t.count_b<4 && __SETTING.uA[2]!=4){
 		if(now===false)now = this.mobanner.getMi()
 		if(now-t.time_b>r && !ads){
 			var $ = _$,x = $('/div','style','position:fixed;backgroundColor:rgba(255, 252, 238, 0.95);bottom:0px;color:#fff;width:100%;lineHeight:3em;textAlign:center;zIndex:6',
@@ -985,20 +985,7 @@ if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
 			}
 		}
 	}
-else{
-	if(t.count_a<4 && __SETTING.currentClientWidth>1000 && window.__CURRENT_FID && __CURRENT_FID==459 && !window.__CURRENT_TID && window.__NOW>1524499200 && window.__NOW<1524672000){
-		if(now===false)now = this.mobanner.getMi()
-		if(now-t.time_a>r){
-			var $ = _$,x = $('/span','style','position:fixed;bottom:0;right:0;textAlign:right;zIndex:6',
-				$('/a','style','backgroundColor:'+__COLOR.gbg1+';color:'+__COLOR.gbg6+';line-height:2em;display:block;padding:0 0.5em;float:right','href','javascript:void(0)','innerHTML',' 关闭 ','onclick',function(){x.style.display='none';t.time_a = now;t.count_a++;__COOKIE.setMiscCookieInSecond('mobanner1',commonui.mobanner.pack(t),(1440-now+5)*60)}),
-				$('/ins','className','adsbygoogle','data-ad-client',"ca-pub-3127873732676646",'data-ad-slot',"5552429680",'style','clear:both;display:block;width:300px;height:250px;padding:5px;background:'+__COLOR.gbg1),
-				$('/script','async','async','src',"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
-				);
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			document.body.appendChild(x)
-			}
-		}
-	}
+
 
 /*	if(window.navigator.userAgent.match(/micromessenger/i)){
 		var y=5,x = $('/div','style','position:fixed;backgroundColor:rgba(255, 252, 238, 0.95);top:0px;width:100%;fontSize:1.5em;height:6em;lineHeight:2em;marginTop:-6em;transition:margin-top 0.3s ease-out;textAlign:center;zIndex:6')._.add(
@@ -1519,16 +1506,17 @@ commonui.mainMenuItems={
 	113:{u:1,check:function(){if(__GP.admin)return true},href:'/nuke.php?func=listuser',innerHTML:'统计'},
 	
 	114:{on:{event:'click',func:function(e){commonui.mainMenu.menuOpen(e)}},innerHTML:'开始',className:'invert',disableDefault:1},
-115:{u:0,href:'https://'+location.hostname+'/nuke.php?__lib=login&__act=login_ui', target:'_blank',innerHTML:'登录',disableDefault:1,on:{event:'click',func:function(e){
-		if(__SETTING.bit&24){
-			this.target=''
-			this.href=this.href.replace(/(?:&url=.+)|$/,'&url='+encodeURIComponent(location.href))
-			}
-		}}},
-	//115:{u:0,href:'https://account.178.com/?p=trylogin&to='+encodeURIComponent(location.href), innerHTML:'登录',disableDefault:1},
-116:{u:0,href:'http://account.178.com/?p=register', innerHTML:'注册',disableDefault:1},
+//115:{u:0,href:'https://'+location.hostname+'/nuke.php?__lib=login&__act=login_ui', target:'_blank',innerHTML:'登录',disableDefault:1,on:{event:'click',func:function(e){
+	//	if(__SETTING.bit&24){
+	//		this.target=''
+	//		this.href=this.href.replace(/(?:&url=.+)|$/,'&url='+encodeURIComponent(location.href))
+	//		}
+	//	}}},
+
+	115:{arg:['innerHTML','登录','onclick',function(){commonui.accountAction('login')}],disableDefault:1,u:0},
+//116:{u:0,href:'http://account.178.com/?p=register', innerHTML:'注册',disableDefault:1},
 	//117:{u:1,href:'/nuke.php?func=message', innerHTML:'短消息',disableDefault:1},
-	
+	116:{arg:['innerHTML','注册','onclick',function(){commonui.accountAction('register')}],disableDefault:1,u:0},
 	118:{u:1,innerHTML:'搜索',on:{event:'click',func:function(e){commonui.uniSearchWindow(e)}},disableDefault:1},
 
 	119:{u:1,title:'登出: 若你的帐号在其他终端登录本站, 亦可一并登出' ,innerHTML:'登出',
@@ -1580,7 +1568,7 @@ commonui.mainMenuItems={
 	142:{ innerHTML:'移动验证器(beta)',on:{event:'click', func:function(e){commonui.extraAuthInput(e)} }},
 
 	144:{u:1,innerHTML:'我的',subKeys:[25,158,146,1,2,3,104,93,107,101,102,154]},
-	18:{innerHTML:'设置',subKeys:[97,95,141,22,108,142,109,110,111,112,113,152,153,155,156,157]},
+	18:{innerHTML:'设置',subKeys:[97,95,141,22,108,142,109,110,111,112,113,152,153,155,156,157,164]},
 	146:{innerHTML:'消息',subKeys:[26,27,148,161,163]},
 	147:{ innerHTML:'商店',color:'gray',check:function(){
 			if(window.__CURRENT_UID)
@@ -1592,8 +1580,10 @@ commonui.mainMenuItems={
 			loader.script(__SCRIPTS.userItem,function(){commonui.userItem.storeUi()} )
 		} } },
 	148:{u:1,check:function(){if(__GP.ubSecAct)return true},href:'/nuke.php?func=message&asuid=34909933',innerHTML:'公共收件箱(帐号安全)',disableDefault:1,color:'sandybrown'},
-149:{u:1,href:'https://account.178.com/?p=renew_pass',innerHTML:'修改密码',disableDefault:1},
-150:{href:'https://account.178.com/?p=reset_pass',innerHTML:'重置密码',disableDefault:1},
+//149:{u:1,href:'https://account.178.com/?p=renew_pass',innerHTML:'修改密码',disableDefault:1},
+	149:{arg:['innerHTML','修改密码','onclick',function(){commonui.accountAction('changepass')}],disableDefault:1,u:1},
+//150:{href:'https://account.178.com/?p=reset_pass',innerHTML:'重置密码',disableDefault:1},
+	150:{arg:['innerHTML','重置密码','onclick',function(){commonui.accountAction('resetpass')}],disableDefault:1,u:1},
 	151:{href:'https://shop482085632.taobao.com',innerHTML:'商城'},
 	152:{u:1,check:function(){if(__GP.ubMod)return true},innerHTML:'debug',on:{event:'click',func:function(e){commonui.userDebug()}}},
 	153:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'update src',on:{event:'click',func:function(e){adminui.updateSrc()}}},
@@ -1602,7 +1592,8 @@ commonui.mainMenuItems={
 	156:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGACN.CC',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.ngacn.cc')}}},
 	157:{u:1,check:function(){if(__GP['super'])return true},innerHTML:'设置版面图标',on:{event:'click',func:function(e){adminui.fIconGen()}}},
 	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159]},
-159:{u:1,innerHTML:'绑定手机号'  ,on:{event:'click',func:function(e){__SCRIPTS.load('ucp',function(){commonui.setPhone()})}}},
+	//159:{u:1,innerHTML:'绑定手机号'  ,on:{event:'click',func:function(e){__SCRIPTS.load('ucp',function(){commonui.setPhone()})}}},
+	159:{arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1},
 	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
 	162:{u:1,tagName:'span',disableDefault:1,innerHTML:function(){
@@ -1650,8 +1641,21 @@ commonui.mainMenuItems={
 				'onclick',function(){this._on()}),
 			'\u00A0']
 		}},
-		163:{u:1,check:function(){if(__GP.superlesser && __GP.greater)return true},href:'/nuke.php?func=message&asuid=42766294',innerHTML:'公共收件箱(版务申诉)',disableDefault:1,color:'sandybrown'}
-		
+		163:{u:1,check:function(){if(__GP.superlesser && __GP.greater)return true},href:'/nuke.php?func=message&asuid=42766294',innerHTML:'公共收件箱(版务申诉)',disableDefault:1,color:'sandybrown'},
+		164:{innerHTML:'提交debug信息',on:{event:'click',func:function(e){
+			if(!confirm('是否要提交debug信息'))
+				return
+			var x=document.getElementsByTagName('head')[0].outerHTML+"\n"+document.body.outerHTML+"\n\n==============",y=document.getElementsByTagName('script')
+			for(var i=0;i<y.length;i++){
+				if(y[i])
+					x+="\n"+y[i].src
+				}
+			__NUKE.doRequest({
+				u:{u:__API._base,
+						a:{__lib:"admin_code",__act:"upload_debug_info",data:binl2b64(str2binl(x)),raw:3}
+						}
+				})
+			}}}
 	}
 
 if((__NOW/3600)&1){

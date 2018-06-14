@@ -15,7 +15,7 @@ ngaAds.rateSum = []
 ngaAds.rnd = []
 ngaAds.genadslist = function (id)
 {
-console.log('genadslist')
+//console.log('genadslist')
 var tempDate , tempShow
 for (var k=0;k<this.length;k++){
 	if(!this[k])
@@ -24,7 +24,7 @@ for (var k=0;k<this.length;k++){
 	var D = this[k]
 
 	if(D.id && D.date && !this[D.id]){
-		console.log(D.id)
+		//console.log(D.id)
 		D.date =  D.date.replace(/(^| |\/)0/g,'$1');
 		D.now = this.nowDayTime;
 		tempShow = false
