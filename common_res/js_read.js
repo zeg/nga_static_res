@@ -893,7 +893,7 @@ for(var k in remark){
 	if(remark[k][3]&1)
 		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.quote1+"'title='"+'公开备注 '+remark[k][4]+"'>"+'<span class="block_txt block_txt_c0" style="margin-left:-0.4em">&#10003;</span> ' +z+y+"</span> "
 	else
-		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.txt2+"'title='版主可见 '"+remark[k][4]+"'><span style='visibility:hidden' onmouseover='this.style.visibility=\"\"' onmouseout='this.style.visibility=\"hidden\"'>"+z+y+"</span></span> "
+		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.txt2+"'title='版主可见 '"+remark[k][4]+"' onmouseover='this.firstChild.style.visibility=\"\"' onmouseout='this.firstChild.style.visibility=\"hidden\"'><span style='visibility:hidden'>"+z+y+"</span></span> "
 	}
 
 return x
@@ -1065,11 +1065,11 @@ else
 floor:function(i,pid){
 if(!i)
 	return ''
-return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt white'>#"+i+"</a></span>"
+return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt white' style='vertical-align:text-bottom'>#"+i+"</a></span>"
 },//fe
 
 uid:function(uid){
-return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt white' style='background:#aaa' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
+return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt white' style='background:#aaa;vertical-align:text-bottom' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
 },//fe
 
 level:function(lite,level,rvrc,fid,uid,active,gid,mod){

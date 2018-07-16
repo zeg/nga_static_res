@@ -436,9 +436,8 @@ del {text-decoration:line-through}
 button {
 background: #dec8c7;
 color: #444;
-border: 1px solid #ded1d4;
-box-shadow: 0 0 2px 0 #888;
 line-height: 1.5em;
+border:none;
 border-radius: 0.25em;
 padding:0 0.5em;
 margin:0.1em 0.2em
@@ -786,7 +785,7 @@ border:1px solid #f9f3f4;
 border-radius:2.5px;
 box-shadow:0 0 6px -3px #000;
 -moz-border-radius:0.25em;
-padding:0 0.4em 0.0714em 0.4em;
+padding:0 0.4em 0 0.4em;
 display:block;
 line-height:2.857em;
 margin-right:0.6em;
@@ -919,7 +918,7 @@ word-wrap: break-word;
 word-break:break-all;
 }
 
-.forumbox .topicrow .topic {font-size:1.085em;line-height: 1.9em;}
+.forumbox .topicrow .topic {font-size:1.085em;line-height:1.9em}
 
 .forumbox .topicrow .topic_content {margin: 0px 5px 5px 15px;padding: 0 8px 8px 8px;}
 .forumbox .topicrow .topic_content .postcontent {border-top:1px solid #915c60;font-size:1.085em;line-height: 1.9em}
@@ -1258,7 +1257,7 @@ text-decoration:none;
 #usernamebg span {display:block;float:left;clear:both;padding:0 0 1px 0}
 
 #mainmenu .stdbtn .td {line-height: 55px;height:55px;float:left}
-#mainmenu .stdbtn {display:block;padding:0}
+#mainmenu .stdbtn {display:block;padding:0;border:none}
 #mainmenu .stdbtn .innerbg {height:55px;overflow:hidden;background:#efdde2}
 #mainmenu .stdbtn a {border-radius:0px;border:none;font-weight:normal;padding:0 1.5em;overflow:hidden;height:55px}
 #mainmenu .stdbtn a:hover {border-bottom:4px solid #4a2731;height:51px}

@@ -1,1 +1,288 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.JSSDK=t()}("undefined"!=typeof window?window:this,function(){"use strict";var e=null,t=app_key||null,n="//log.tagtic.cn/mininfo/v1/logs/"+t,o=null,i=0,a=null,r=0,u="",c={ajax:function(e){e.url=e.url||"",e.method=e.method||"get",e.data=e.data||"",e.callback=e.callback||"",e.async=e.async||!0;var t=function(t){200===t.status?e.callback({code:1,msg:t.responseText}):e.callback({code:0,msg:"error status: "+t.status+" "+t.statusText})},n=null;if("GET"===e.method.toUpperCase()){if(n=window.XMLHttpRequest?new XMLHttpRequest:new ActiveXObject("Microsoft.XMLHttp"),"object"==typeof e.data){var o=[];for(var i in e.data)o.push(i+"="+e.data[i]);e.url+=(-1===e.url.indexOf("?")?"?":"")+o.join("&")}null!=n?(n.open("GET",e.url,e.async),n.send(),n.onreadystatechange=function(){!0===e.async&&4===n.readyState?t(n):!1===e.async&&t(n)}):console.log("Your browser does not support XMLHTTP.")}if("POST"===e.method.toUpperCase()){if("object"==typeof e.data)try{e.data=JSON.stringify(e.data)}catch(t){e.data=""}window.XMLHttpRequest?"withCredentials"in(n=new window.XMLHttpRequest)&&(n.open("POST",e.url,!0),n.setRequestHeader("Content-Type","text/plain"),n.onreadystatechange=function(){4===n.readyState&&t(n)},n.send(e.data)):console.log("Your browser does not support XMLHTTP.")}},md5:function(e){function t(e,t){var n=(65535&e)+(65535&t);return(e>>16)+(t>>16)+(n>>16)<<16|65535&n}function n(e,n,o,i,a,r){return t((u=t(t(n,e),t(i,r)))<<(c=a)|u>>>32-c,o);var u,c}function o(e,t,o,i,a,r,u){return n(t&o|~t&i,e,t,a,r,u)}function i(e,t,o,i,a,r,u){return n(t&i|o&~i,e,t,a,r,u)}function a(e,t,o,i,a,r,u){return n(t^o^i,e,t,a,r,u)}function r(e,t,o,i,a,r,u){return n(o^(t|~i),e,t,a,r,u)}function u(e,n){var u,c,s,d,l;e[n>>5]|=128<<n%32,e[14+(n+64>>>9<<4)]=n;var f=1732584193,g=-271733879,h=-1732584194,p=271733878;for(u=0;u<e.length;u+=16)c=f,s=g,d=h,l=p,g=r(g=r(g=r(g=r(g=a(g=a(g=a(g=a(g=i(g=i(g=i(g=i(g=o(g=o(g=o(g=o(g,h=o(h,p=o(p,f=o(f,g,h,p,e[u],7,-680876936),g,h,e[u+1],12,-389564586),f,g,e[u+2],17,606105819),p,f,e[u+3],22,-1044525330),h=o(h,p=o(p,f=o(f,g,h,p,e[u+4],7,-176418897),g,h,e[u+5],12,1200080426),f,g,e[u+6],17,-1473231341),p,f,e[u+7],22,-45705983),h=o(h,p=o(p,f=o(f,g,h,p,e[u+8],7,1770035416),g,h,e[u+9],12,-1958414417),f,g,e[u+10],17,-42063),p,f,e[u+11],22,-1990404162),h=o(h,p=o(p,f=o(f,g,h,p,e[u+12],7,1804603682),g,h,e[u+13],12,-40341101),f,g,e[u+14],17,-1502002290),p,f,e[u+15],22,1236535329),h=i(h,p=i(p,f=i(f,g,h,p,e[u+1],5,-165796510),g,h,e[u+6],9,-1069501632),f,g,e[u+11],14,643717713),p,f,e[u],20,-373897302),h=i(h,p=i(p,f=i(f,g,h,p,e[u+5],5,-701558691),g,h,e[u+10],9,38016083),f,g,e[u+15],14,-660478335),p,f,e[u+4],20,-405537848),h=i(h,p=i(p,f=i(f,g,h,p,e[u+9],5,568446438),g,h,e[u+14],9,-1019803690),f,g,e[u+3],14,-187363961),p,f,e[u+8],20,1163531501),h=i(h,p=i(p,f=i(f,g,h,p,e[u+13],5,-1444681467),g,h,e[u+2],9,-51403784),f,g,e[u+7],14,1735328473),p,f,e[u+12],20,-1926607734),h=a(h,p=a(p,f=a(f,g,h,p,e[u+5],4,-378558),g,h,e[u+8],11,-2022574463),f,g,e[u+11],16,1839030562),p,f,e[u+14],23,-35309556),h=a(h,p=a(p,f=a(f,g,h,p,e[u+1],4,-1530992060),g,h,e[u+4],11,1272893353),f,g,e[u+7],16,-155497632),p,f,e[u+10],23,-1094730640),h=a(h,p=a(p,f=a(f,g,h,p,e[u+13],4,681279174),g,h,e[u],11,-358537222),f,g,e[u+3],16,-722521979),p,f,e[u+6],23,76029189),h=a(h,p=a(p,f=a(f,g,h,p,e[u+9],4,-640364487),g,h,e[u+12],11,-421815835),f,g,e[u+15],16,530742520),p,f,e[u+2],23,-995338651),h=r(h,p=r(p,f=r(f,g,h,p,e[u],6,-198630844),g,h,e[u+7],10,1126891415),f,g,e[u+14],15,-1416354905),p,f,e[u+5],21,-57434055),h=r(h,p=r(p,f=r(f,g,h,p,e[u+12],6,1700485571),g,h,e[u+3],10,-1894986606),f,g,e[u+10],15,-1051523),p,f,e[u+1],21,-2054922799),h=r(h,p=r(p,f=r(f,g,h,p,e[u+8],6,1873313359),g,h,e[u+15],10,-30611744),f,g,e[u+6],15,-1560198380),p,f,e[u+13],21,1309151649),h=r(h,p=r(p,f=r(f,g,h,p,e[u+4],6,-145523070),g,h,e[u+11],10,-1120210379),f,g,e[u+2],15,718787259),p,f,e[u+9],21,-343485551),f=t(f,c),g=t(g,s),h=t(h,d),p=t(p,l);return[f,g,h,p]}function c(e){var t,n="",o=32*e.length;for(t=0;t<o;t+=8)n+=String.fromCharCode(e[t>>5]>>>t%32&255);return n}function s(e){var t,n=[];for(n[(e.length>>2)-1]=void 0,t=0;t<n.length;t+=1)n[t]=0;var o=8*e.length;for(t=0;t<o;t+=8)n[t>>5]|=(255&e.charCodeAt(t/8))<<t%32;return n}function d(e){var t,n,o="0123456789abcdef",i="";for(n=0;n<e.length;n+=1)t=e.charCodeAt(n),i+=o.charAt(t>>>4&15)+o.charAt(15&t);return i}function l(e){return unescape(encodeURIComponent(e))}function f(e){return c(u(s(t=l(e)),8*t.length));var t}function g(e,t){return function(e,t){var n,o,i=s(e),a=[],r=[];for(a[15]=r[15]=void 0,i.length>16&&(i=u(i,8*e.length)),n=0;n<16;n+=1)a[n]=909522486^i[n],r[n]=1549556828^i[n];return o=u(a.concat(s(t)),512+8*t.length),c(u(r.concat(o),640))}(l(e),l(t))}return h=e,p?m?g(p,h):d(g(p,h)):m?f(h):d(f(h));var h,p,m},setCookie:function(e,t,n){var o=this.GetFirstLevelDomain();n=n||24;var i=new Date;i.setTime(i.getTime()+36e5*n),document.cookie=e+"="+escape(t)+";expires="+i.toGMTString()+";domain="+o+";path=/"},getCookie:function(e){return null!==(e=window.document.cookie.match(new RegExp("(^| )"+e+"=([^;]*)(;|$)")))?unescape(e[2]):null},loadJS:function(e){var t=window.document.getElementsByTagName("head")[0],n=window.document.createElement("script");n.charset="utf-8",n.async=!0,n.src=e;try{t.appendChild(n)}catch(e){console.log(e)}},GetFirstLevelDomain:function(e){if(!(e=e||document.location.hostname))return"";-1!=e.indexOf("://")&&(e=e.substr(e.indexOf("://")+3));var t=["com","net","org","gov","edu","mil","biz","name","info","mobi","pro","travel","museum","int","areo","post","rec"],n=e.split(".");if(n.length<=1)return e;if(!isNaN(n[n.length-1]))return e;for(var o=0;o<t.length&&t[o]!=n[n.length-1];)o++;if(o!=t.length)return n[n.length-2]+"."+n[n.length-1];for(o=0;o<t.length&&t[o]!=n[n.length-2];)o++;return o==t.length?n[n.length-2]+"."+n[n.length-1]:n[n.length-3]+"."+n[n.length-2]+"."+n[n.length-1]},addEvent:window.addEventListener?function(e,t,n,o){e.addEventListener(t,n,o)}:(window.attachEvent,function(e,t,n){e.attachEvent("on"+t,n)})};function s(e){o=e}function d(e){e.appkey&&"app_key"!==t&&c.ajax({method:"post",url:n,data:e,callback:function(e){1===e.code||e.code}})}function l(n,s){n&&d({cookie:c.getCookie("taihe"),page_id:a,short_cookie:c.getCookie("taihe_session"),appkey:t,http_url:u,timestamp:(new Date).toISOString(),event:"duration",duration:parseInt(((new Date).getTime()-e)/1e3)});var l=s||window.location.href,f=c.GetFirstLevelDomain();function g(n){if(n.cookie=c.getCookie("taihe"),n.page_id=a,n.short_cookie=c.getCookie("taihe_session"),n.appkey=t,!(n.http_url.search("http:")<0)&&n.cookie){if("jump"===n.event){if(n=function(e){if(e.to_target.indexOf("http")<0)return e.to_target=null,e;var t=c.GetFirstLevelDomain(e.to_target);return f===t&&(e.to_target=null),e}(n),!r)d({cookie:c.getCookie("taihe"),page_id:a,short_cookie:c.getCookie("taihe_session"),appkey:t,http_url:l,timestamp:(new Date).toISOString(),event:"duration",duration:parseInt(((new Date).getTime()-e)/1e3)}),r=1;if(n.to_target)return void d(n)}if("load"!==n.event){if("close"===n.event)d({cookie:c.getCookie("taihe"),page_id:a,short_cookie:c.getCookie("taihe_session"),appkey:t,http_url:l,timestamp:(new Date).toISOString(),event:"duration",duration:parseInt(((new Date).getTime()-e)/1e3)})}else d(n)}}if(e=(new Date).getTime(),a=c.md5(l+e),!c.getCookie("taihe")&&o){i=1;var h=navigator.userAgent+o+(new Date).getTime(),p=c.md5(h);c.setCookie("taihe",p,43800)}c.getCookie("taihe_session")?c.setCookie("taihe_session",c.getCookie("taihe_session"),1/6):c.setCookie("taihe_session",c.md5((new Date).getTime()),1/6),c.addEvent(window,"beforeunload",function(e){"a"!=e.target.activeElement.nodeName.toLowerCase()&&g({to_target:e.target.links[0].href,http_url:l,timestamp:(new Date).toISOString(),event:"close"})}),c.addEvent(document.body,"click",function(e){for(var t=e.target||e.srcElement,n=0;n<3;n++){if(!t)return;if("A"==t.nodeName)return void g({to_target:t.getAttribute("href"),http_url:l,timestamp:(new Date).toISOString(),event:"jump"});t=t.parentNode}});var m;m=n?u:document.referrer?document.referrer:null,g({status:200,http_user_agent:navigator.userAgent,request_method:"get",timestamp:(new Date).toISOString(),http_url:l,http_x_forwarded_for:o,event:"load",is_new:i,http_referer:m});var w=window.onblur;window.onblur=function(){!w||w()};var v=window.onfocus;window.onfocus=function(){!v||v()},u=l}function f(){}return c.ajax({method:"get",url:"//log.tagtic.cn/mininfo/v1/ip",callback:function(e){if(1===e.code){e=e.msg;try{e=JSON.parse(e)}catch(e){s(null)}e&&0==e.code?(s(e.msg),l()):s(null)}else 0===e.code&&s(null)}}),f.sendExtData=function(e){e&&d({cookie:c.getCookie("taihe"),page_id:a,short_cookie:c.getCookie("taihe_session"),appkey:t,http_url:window.location.href,timestamp:(new Date).toISOString(),event:"ext_event",event_name:e})},f.SPA_RouterChange=function(e){var t=e;r=0,e&&e.indexOf("http")<0&&(t=window.location.origin+(0!==e.indexOf("/")?"/":"")+e),e?l(!0,t):l(!0)},null==window.JSSDK&&(window.JSSDK=f),f});
+(function(global, factory) {
+	typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : global.JSSDK = factory()
+} (typeof window !== "undefined" ? window: this,
+function() {
+	var oldTimestamp = null,
+	topic = app_key || null,
+	sendDataUrl = location.protocol+"//xy-log2.tagtic.cn/mininfo/v1/logs/" + topic,
+	ip = null,
+	isNew = 0,
+	pageId = null,
+	sendFlag = 0,
+	oldUrl = "";
+	var Util = function() {
+		return {
+			ajax: function(o) {
+				o.url = o.url || "";
+				o.method = o.method || "get";
+				o.data = o.data || "";
+				o.callback = o.callback || "";
+				o.async = o.async || true;
+				var callback = function(xhr) {};
+				var xhr = null;
+				if (o.method.toUpperCase() === "POST") {
+					if (typeof o.data === "object") {
+						try {
+							o.data = JSON.stringify(o.data)
+						} catch(e) {
+							o.data = ""
+						}
+					}
+					if (window.XMLHttpRequest) {
+						xhr = new window.XMLHttpRequest;
+						if ("withCredentials" in xhr) {
+							xhr.open("POST", o.url, true);
+							xhr.setRequestHeader("Content-Type", "text/plain");
+							xhr.onreadystatechange = function() {
+								if (4 === xhr.readyState) {
+									callback(xhr)
+								}
+							};
+							xhr.send(o.data)
+						}
+					} else {
+						//console.log("Your browser does not support XMLHTTP.")
+					}
+				}
+			},
+			md5: function(str) {
+				return hex_md5(str+'')
+			},
+			setCookie: function(name, value, expire) {
+				var domain = this.GetFirstLevelDomain();
+				expire = expire || 24;
+				var exp = new Date();
+				exp.setTime(exp.getTime() + expire * 3600000);
+				document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";domain=" + domain + ";path=/"
+			},
+			getCookie: function(name) {
+				name = window.document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+				return null !== name ? unescape(name[2]) : null
+			},
+			GetFirstLevelDomain: function(s) {
+				if(s){
+					if(s=s.match(/^(?:[a-z0-9]+:\/\/)?([^\/]+)/))
+						s=s[1]
+					else
+						return 'unknow'
+					}
+				else
+					s=document.location.hostname;
+				s = s.match(/[^\.]+\.(?:(?:com|co|net|org|gov|edu|mil|biz|name|info|mobi|pro|travel|museum|int|areo|post|rec)\.)?[^\.]+$/)
+				return s? s[0]:'unknow'
+			},
+			addEvent: function(obj,e,fn, flag) {
+				commonui.aE(obj,e,fn)
+			}
+		}
+	} ();
+	function setip(result) {
+		ip = result
+	}
+	init();
+	function sendData(content) {
+		if (!content.appkey || topic === "app_key") {
+			return
+		}
+		Util.ajax({
+			method: "post",
+			url: sendDataUrl,
+			data: content/*,
+				
+			callback: function(data) {
+				if (1 === data.code) {
+					console.log(data)
+				} else {
+					if (0 === data.code) {
+						console.log(data)
+					}
+				}
+			}*/
+		})
+	}
+	function init(spaFlag, currUrl) {
+		if (spaFlag) {
+			var duration = {
+				cookie: Util.getCookie("taihe"),
+				page_id: pageId,
+				short_cookie: Util.getCookie("taihe_session"),
+				appkey: topic,
+				http_url: oldUrl,
+				timestamp: new Date().toISOString(),
+				event: "duration",
+				duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
+			};
+			sendData(duration)
+		}
+		var currentUrl = currUrl || window.location.href;
+		var domain = Util.GetFirstLevelDomain();
+		function filterUrl(data) {
+			if (data.to_target.indexOf("http") < 0) {
+				data.to_target = null;
+				return data
+			}
+			var toDomain = Util.GetFirstLevelDomain(data.to_target);
+			if (domain === toDomain) {
+				data.to_target = null
+			}
+			return data
+		}
+		function dealwithData(content) {
+			content.cookie = Util.getCookie("taihe");
+			content.page_id = pageId;
+			content.short_cookie = Util.getCookie("taihe_session");
+			content.appkey = topic;
+			if (content.http_url.search("http:") < 0 || !content.cookie) {
+				return
+			}
+			if (content.event === "jump") {
+				content = filterUrl(content);
+				if (!sendFlag) {
+					var duration = {
+						cookie: Util.getCookie("taihe"),
+						page_id: pageId,
+						short_cookie: Util.getCookie("taihe_session"),
+						appkey: topic,
+						http_url: currentUrl,
+						timestamp: new Date().toISOString(),
+						event: "duration",
+						duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
+					};
+					sendData(duration);
+					sendFlag = 1
+				}
+				if (content.to_target) {
+					sendData(content);
+					return
+				}
+			}
+			if (content.event === "load") {
+				sendData(content);
+				return
+			}
+			if (content.event === "close") {
+				var duration = {
+					cookie: Util.getCookie("taihe"),
+					page_id: pageId,
+					short_cookie: Util.getCookie("taihe_session"),
+					appkey: topic,
+					http_url: currentUrl,
+					timestamp: new Date().toISOString(),
+					event: "duration",
+					duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
+				};
+				sendData(duration)
+			}
+		}
+		oldTimestamp = new Date().getTime();
+		pageId = Util.md5(currentUrl + oldTimestamp);
+		if (!Util.getCookie("taihe")) {
+			isNew = 1;
+			var value = navigator.userAgent + new Date().getTime();
+			var md5Value = Util.md5(value);
+			Util.setCookie("taihe", md5Value, 5 * 365 * 24)
+		}
+		if (!Util.getCookie("taihe_session")) {
+			Util.setCookie("taihe_session", Util.md5(new Date().getTime()), 1 / 6)
+		} else {
+			Util.setCookie("taihe_session", Util.getCookie("taihe_session"), 1 / 6)
+		}
+		Util.addEvent(window, "beforeunload",
+		function(e) {
+			var node = e.target.activeElement.nodeName.toLowerCase();
+			if (node != "a") {
+				var result = {
+					to_target: e.target.links[0].href,
+					http_url: currentUrl,
+					timestamp: new Date().toISOString(),
+					event: "close",
+				};
+				dealwithData(result)
+			}
+		});
+
+		Util.addEvent(document.body, 'click', function (e) {
+		var h = e.target || e.srcElement
+		for(var i=0;i<3;i++){
+			if(h){
+				if(h.nodeName=='A'){
+					dealwithData({
+						to_target: h.getAttribute("href"),
+						http_url: currentUrl,
+						timestamp: new Date().toISOString(),
+						event: 'jump',
+						})
+					return
+					}
+				else
+					h=h.parentNode
+				}
+			else
+				return
+			}
+		})
+
+		var load = function() {
+			var referer = spaFlag ? oldUrl: (document.referrer ? document.referrer: null);
+			var result = {
+				status: 200,
+				http_user_agent: navigator.userAgent,
+				request_method: "get",
+				timestamp: new Date().toISOString(),
+				http_url: currentUrl,
+				http_x_forwarded_for: ip,
+				event: "load",
+				is_new: isNew,
+				http_referer: referer
+			};
+			dealwithData(result)
+		};
+		load();
+		/*
+		var onblur = window.onblur;
+		window.onblur = function() {
+			onblur ? onblur() : true
+		};
+		var focus = window.onfocus;
+		window.onfocus = function() {
+			focus ? focus() : true
+		};*/
+		oldUrl = currentUrl
+	}
+		/*
+	function sendExtEventData(event_value) {
+		if (!event_value) {
+			return
+		}
+		var data = {
+			cookie: Util.getCookie("taihe"),
+			page_id: pageId,
+			short_cookie: Util.getCookie("taihe_session"),
+			appkey: topic,
+			http_url: window.location.href,
+			timestamp: new Date().toISOString(),
+			event: "ext_event",
+			event_name: event_value
+		};
+		sendData(data)
+	}
+	function sendSPA_RouterChange(info) {
+		var currentUrl = info;
+		sendFlag = 0;
+		if (info && info.indexOf("http") < 0) {
+			currentUrl = window.location.origin + (info.indexOf("/") !== 0 ? "/": "") + info
+		}
+		if (info) {
+			init(true, currentUrl)
+		} else {
+			init(true)
+		}
+	}*/
+	function JSSDK() {}
+	//JSSDK.sendExtData = sendExtEventData;
+	//JSSDK.SPA_RouterChange = sendSPA_RouterChange;
+	if (window.JSSDK == undefined) {
+		window.JSSDK = JSSDK
+	}
+	return JSSDK
+}));

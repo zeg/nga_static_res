@@ -242,7 +242,9 @@ if(topicMisc._BIT1){
 	if(i&tmp._FONT_B)
 		x+='b ';
 	if(i&tmp._FONT_I)
-		x+='italic ';
+		o_topic.style.fontStyle='italic'
+	if(i&tmp._FONT_U)
+		o_topic.style.textDecoration='line-through'
 	if(x)
 		o_topic.className+=' '+x;
 	}
@@ -261,7 +263,7 @@ if(ds){
 //page===================
 if (replies+1>20){//每页20
 	var pn = Math.ceil((replies+1)/20), pc=o_topic.target?" target='_blank' ":'', pb = ds+'/read.php?tid='+(quote_from ? quote_from : tid) , ph = ''
-	ph +=" <span class='pager'>&gt;&gt; [ ";
+	ph +=" <span class='pager'> &nbsp; [ ";
 	for(var i=1; i<=pn; i++){
 		if (i==6){
 			i=pn
@@ -311,7 +313,7 @@ if(quote_from)
 tmp.innerHTML+=this.getPostBitInfo(fid, tid, pid , type, topicMisc._BIT1, 1, admin)
 
 if (now-lastpost<=3600)
-	tmp.innerHTML+=" <b style='color:sienna'>&#8226;</b>";
+	tmp.innerHTML+=" <b style='color:#BD7E6D'>&#8226;</b>";
 //if (__GP.lesser && lastpost>postdate && (lastpost-postdate)<24*3600)
 //	tmp.innerHTML+=" <span class='orange nobr' title='平均回复间隔时间'>["+Math.floor((lastpost-postdate)/replies)+"]</span>";
 if (type & 8192){

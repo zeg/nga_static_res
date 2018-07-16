@@ -19,8 +19,9 @@ var al = mkk.getContext('2d').getImageData(0, 0, mkk.width, mkk.height).data,
 xc = im.getContext('2d').getImageData(0, 0, m.width, m.height), xcn = xc.data;
 // loop through alpha mask and apply alpha values to base image
 for (var i = 3, len = al.length; i < len; i = i + 4) {
-	if (al[i])
-		xcn[i] = al[i]
+	if (al[i]){
+		//xcn[i] = al[i]
+		}
 	else
 		xcn[i-3] = xcn[i-2] = xcn[i-1] = xcn[i] = 0
 	}
@@ -142,7 +143,7 @@ commonui.imageCanvasResize = function(im,xl,yl){
 commonui.cutImage = function(e,img,opt,lw,lh,cb){//&1选区保持长宽比 &2确定后不关闭窗口 &4扩大选区
 if(!this.cutImage.w)
 	this.cutImage.w = this.createCommmonWindow()
-var $=_$,bd=5,w = this.cutImage.w, c, om ,pos, im, sx,sy,sw,sh,downSize = this.imageCanvasResize, redraw=function(x,y,w,h){
+var $=_$,bd=5,w = this.cutImage.w, c, om ,pos, poss,im, sx,sy,sw,sh,downSize = this.imageCanvasResize, redraw=function(x,y,w,h){
 	om.getContext('2d').clearRect(0, 0, om.width, om.height)
 	om.getContext('2d').fillRect(x , y, w,  h)
 	}
@@ -197,17 +198,19 @@ w._.addContent(
 			var p = __NUKE.position.get(e),cr = this.getBoundingClientRect()
 			p.x = p.cx-cr.left
 			p.y = p.cy-cr.top
-			var yy = (opt&1) ? Math.abs((p.x-pos.x)/lw*lh|0)*(p.y<pos.y?-1:1) :  p.y-pos.y
-			redraw(pos.x , pos.y, p.x-pos.x,  yy);		
+			p.wx = p.x-pos.x
+			p.hy = (opt&1) ? Math.abs((p.x-pos.x)/lw*lh|0)*(p.y<pos.y?-1:1) :  p.y-pos.y
+			redraw(pos.x , pos.y, p.wx,  p.hy);
+			poss = p
 		},'onmouseup',function(e){
-			var poss = __NUKE.position.get(e),cr = this.getBoundingClientRect()
-			poss.x = poss.x-cr.left
-			poss.y = poss.y-cr.top
-			sx = (pos.x < poss.x ? pos.x : poss.x)|0
-			sy = (pos.y < poss.y ? pos.y : poss.y)|0
-			sw = Math.abs(pos.x - poss.x)|0
-			sh = Math.abs(pos.y - poss.y)|0
-			pos=null
+			if(!pos ||!poss)
+				return
+			sx = (poss.wx>0 ? pos.x : pos.x+poss.wx)|0
+			sy = (poss.hy>0 ? pos.y : pos.y+poss.hy)|0
+			sw = Math.abs(poss.wx)|0
+			sh = Math.abs(poss.hy)|0
+			redraw(sx , sy, sw,  sh);
+			poss=pos=null
 
 		}),
 	$('/br'),
@@ -281,10 +284,11 @@ var av={},LIM=5,checksum='nochecksum',NEW='new',OTHER='other',KEEP='keep',
 imc,y,y1,y2,y3,$=_$,
 uu = function(im){
 	var m
-	if(m = im.match(/\/[0-9a-z]{3}\/[0-9a-z]{3}\/[0-9a-z]{3}\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)$/i)){//完整的本站头像地址还原成缩写
-		if(m[1]==uid)
-			im = '.a/'+m[1]+'_'+m[2]+'.'+m[3]+'?'+m[4]
-		}
+	//if(m = im.match(/\/[0-9a-z]{3}\/[0-9a-z]{3}\/[0-9a-z]{3}\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)$/i)){//完整的本站头像地址还原成缩写
+	//	if(m[1]==uid)
+	//		im = '.a/'+m[1]+'_'+m[2]+'.'+m[3]+'?'+m[4]
+	//	}
+	im = commonui.avatarReal2Short(im)
 	if(im.match(/^https?:\/\//))
 		return [im,OTHER,'']
 	else if(m = im.match(/^\.a\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)/))

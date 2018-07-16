@@ -408,7 +408,7 @@ if(_LESSER){
 	var u = _$('<span/>');
 	if(typeof(_U.remark)=='object'){
 		for(var k in _U.remark)
-			u.innerHTML+="<span class='gray'>"+commonui.time2date(_U.remark[k][3])+"</span> <a href='nuke.php?func=ucp&uid="+_U.remark[k][1]+"' target='_blank'>["+_U.remark[k][1]+"]</a> "+_U.remark[k][2]+" <a href='javascript:void(0)' onclick='__NUKE.doRequest({u:__API.remarkDel("+_U.uid+","+_U.remark[k][0]+"),b:this})'>[删除]</a><br/>";
+			u.innerHTML+="<div "+((_U.remark[k][4]&1)?'><span':"onmouseover='this.firstChild.style.visibility=\"\"' onmouseout='this.firstChild.style.visibility=\"hidden\"'><span style='visibility:hidden'")+"><span class='gray'>"+commonui.time2date(_U.remark[k][3])+"</span> <a href='nuke.php?func=ucp&uid="+_U.remark[k][1]+"' target='_blank'>["+_U.remark[k][1]+"]</a> "+_U.remark[k][2]+" <a href='javascript:void(0)' onclick='__NUKE.doRequest({u:__API.remarkDel("+_U.uid+","+_U.remark[k][0]+"),b:this})'>[删除]</a></span></div>";
 		}
 	all._.aC(this._genBlock('user_remark_block','用户备注','版主可见,用户信息备忘,添加/删除备注可能在一天后方能生效',
 		this._span(

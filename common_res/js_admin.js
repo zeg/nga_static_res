@@ -358,6 +358,88 @@ __NUKE.doRequest({
 }
 //fe
 
+
+adminui.new_post = function ()
+{
+	if(!__CURRENT_FID)
+		return
+this.createadminwindow()
+this.w._.addContent(null)
+var $ = _$, x,y
+this.w._.addTitle('当前版批量主题');
+
+this.w._.addContent(
+	$('/span')._.add(
+		'每行一个 主题\\t内容 返回结果显示在控制台',
+		$('/br'),
+		y = $('/textarea').$0('name','info','rows','5','cols','40'),
+		$('/br'),
+		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
+
+				x = y.value.split("\n")
+				for(var i=0;i<x.length;i++){
+					if(x[i]){
+						x[i]=x[i].split("\t")
+						x[i][0]=x[i][0].replace(/^\s+|\s+$/g,'')
+						x[i][1]=x[i][1].replace(/^\s+|\s+$/g,'')
+						}
+					else
+						x[i]=[]
+					}
+				var al = window.alert
+				window.alert=function(x){console.log(x)}
+				var to = function(){
+							var y = x.shift()
+							if(y){
+								if(y[0] && y[1]){
+									console.log(y[0]+'\t'+y[1])
+									commonui.newPost(
+										{_nojump:1},
+										postfunc.__NEW,//操作
+										__CURRENT_F_BIT,//版面bit type
+										__CURRENT_FID,//版面id
+										null,//主题id
+										null,//回复id
+										null,//o_setTopic
+										y[0],//标题
+										y[1],//内容
+										0,//隐藏帖子 仅版主可见
+										0,//只有作者和版主可回复
+										null,//附件
+										null,//附件校验
+										null,//投票内容
+										null,// 0投票 1投注铜币
+										null,//每人最多可投 0不限
+										null,//小时后结束
+										null,//投注最大值
+										null,//投注最小值
+										null,//投票的声望限制
+										null,
+										null,
+										null
+										)
+									}
+								}
+							if(x.length)
+								setTimeout(to,1000*30)
+							else{
+								clearTimeout(to)
+								window.alert=al
+								console.log('all done')
+								}
+							}//
+				setTimeout(to,1000*30)
+
+				}
+			)
+		)
+	)
+this.w._.show()
+
+}//fe
+
+
+
 adminui.system_trade = function(e){
 this.createadminwindow()
 this.w._.addContent(null)
@@ -528,7 +610,7 @@ this.w._.addContent(
 		$('/br'),
 		t('将主题的标题显示在版头下部'),
 		$('/br'),
-		t('修改时间最近的一个普通置顶会持续一周显示在版面第一页'),
+		t('最近一次普通置顶的主题会显示在版面第一页(且最后改动时间在一周内)'),
 		$('/br'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
@@ -621,7 +703,7 @@ this.w._.addContent(
 		$('/br'),
 		$('/input').$0('type','checkbox','name','fontI','value','I'),t(' 斜体'),
 		$('/br'),
-		$('/input').$0('type','checkbox','name','fontU','value','U'),t('下划线'),
+		$('/input').$0('type','checkbox','name','fontU','value','U'),t(' 划线'),
 		$('/br'),$('/br'),
 		$('/input').$0('type','radio','name','color','value','red'),$('/span').$0('class','red','innerHTML',' 红色'),
 		$('/br'),

@@ -122,7 +122,8 @@ this.o_f_content	//快速发帖input内容
  */
 postfunc.ifMultiple= (window.XMLHttpRequest!==undefined && ('withCredentials' in new XMLHttpRequest()) && window.FormData !== undefined) ? true : false
 
-
+//当前发帖信息
+postfunc.currentPostStat =null
 
 /**
  *在光标位置插入文字
@@ -1451,7 +1452,7 @@ var o_ath = $('/table').$0(
 if(attach){
 	for(var j in attach){
 		var tmp = attach[j]
-		console.log(tmp)
+		//console.log(tmp)
 		this.add1Attach(null,null,tmp.attachurl, tmp.type=='img'?1:0, tmp.thumb,tmp.url_utf8_org_name, tid, pid, tmp.name)
 		}
 	} 
@@ -1697,6 +1698,8 @@ return __NUKE.doRequest({
 
 		if(d.attach_url)
 			postfunc._ATTACH_UPLOAD = d.attach_url
+		
+		postfunc.currentPostStat = d
 		
 		var d = postfunc.genForm(//mode,fid,tid,pid,stid,fbit,bit,subject,content,attach
 			mode,d.fid,d.tid,d.pid,d.__ST.tid,
@@ -2081,7 +2084,7 @@ tmbit1
 if(opt&1)
 	return
 opt|=1
-var C = this, P=window.postfunc
+var C = this, P=window.postfunc, $=_$
 
 argBak = arguments
 
@@ -2494,17 +2497,57 @@ __NUKE.doRequest({
 			C.adminwindow._.addContent(null)
 			C.adminwindow._.addTitle(d.data.__MESSAGE[1])
 			
-			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = d.data.__MESSAGE[6]
+			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = d.data.__MESSAGE[6],thetid,ifmod = postfunc.currentPostStat ? postfunc.currentPostStat.if_moderator : __GP.admincheck
+			
+			if(thetid=u.match(/(?:\?|&)tid=(\d+)/))thetid=thetid[1]
+			
+			if(btn && btn._nojump){
+				//console.log(d.data.__MESSAGE[1])
+				unlock('1 done')
+				return true
+				}
 			
 			C.adminwindow._.addContent(
-				c01 = _$('/div')._.cls('ltxt b')._.add(
+				c01 = $('/div')._.cls('ltxt b')._.add(
 					"发贴完毕 ",
-					c02 = _$('/span').$0('innerHTML',c04),
+					c02 = $('/span','innerHTML',c04),
 					'秒后跳转 ',
-					_$('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
+					$('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
 					' ',
-					_$('/a').$0('href','javascript:void(0)','className','gray','innerHTML','(点此取消跳转)'),
-					action==P.__NEW ? _$('/span').$0('innerHTML',C.quoteTo.afterPostQuote(true,subject,u+c03)) : ''
+					$('/a','href','javascript:void(0)','className','gray','innerHTML','(点此取消跳转)'),
+					' ',
+					ifmod&&tid ? $('/a','href','javascript:void(0)','className','gray','innerHTML','(设置主题标题)','onclick',function(e){
+						var sv = commonui.userCache.get('tColorOnPost')
+						if(!sv)
+							return __NUKE.fireEvent(this.nextSibling,'click')
+						
+						__NUKE.doRequest({
+							u:__API.topicColor(thetid,sv,1)
+							})
+						}) : null,
+					ifmod&&tid ? _$('/a','href','javascript:void(0)','style','color:#aaa;',__TXT('gear'),'onclick',function(e){
+						var y=this
+						this.parentNode._.add(
+							$('/br'),
+							$('/span','style','fontWeight:normal')._.add(
+								$('/input','type','radio','name','color','value','silver'),' 银色',
+								$('/input','type','checkbox','value','I'),'斜体 ',
+								$('/input','type','checkbox','value','U'),'划线 ',
+								$('/button','innerHTML','确定','type','button','onclick',function(){
+									var x = ''
+									commonui.forEach(this.parentNode.getElementsByTagName('input'),function(i,o){
+										if(o.checked)
+											x+=o.value+','
+										})
+									if(x){
+										commonui.userCache.set('tColorOnPost', x, 86400 * 30)
+										__NUKE.fireEvent(y.previousSibling,'click')
+										}
+									})
+								)
+							)
+						}) : null,
+					action==P.__NEW ? $('/span','innerHTML',C.quoteTo.afterPostQuote(true,subject,u+c03)) : ''
 					)//c01
 				);//addContent
 			C.adminwindow._.on(

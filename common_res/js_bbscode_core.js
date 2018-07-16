@@ -327,10 +327,11 @@ var d1 = function(){
 	}
 //1未知 2可信
 ubbcode.checkLinkTable = {
-'ngacn.cc':{_:2,'bbs.ngacn.cc':3},
+'ngacn.cc':{_:2,'bbs.ngacn.cc':3},// _ 指无更多前缀的域名 2为保持原链接 3为替换成当前host
 'nga.cn':{_:2,'bbs.nga.cn':3},
+'donews.com':{_:2,'nga.donews.com':{_:3,'img.nga.donews.com':2,'img4.nga.donews.com':2}},
 'bigccq.cn':{_:4,'bbs.bigccq.cn':4},
-'178.com':{_:2,'nga.178.com':3,'club.178.com':3,'wb.178.com':-2},
+'178.com':{_:2,'nga.178.com':{_:3,'img.nga.178.com':2,'img4.nga.178.com':2},'club.178.com':3,'wb.178.com':-2},
 'ngacn.com':{_:4,'bbs.ngacn.com':4},
 _:1,
 'worldofwarcraft.com':2,
@@ -1225,7 +1226,7 @@ ubbcode.parseFix = function(arg){
 	
 	if(!fc)
 		return
-	arg.txt = arg.txt.replace(/<br \/>/g,'\x00')
+	arg.txt = arg.txt.replace(/\s*<br \/>/g,'\x00')
 	arg.txt = arg.txt.replace(/\[\/?comment (.+?)\]/g,'')
 	arg.txt = arg.txt.replace(/\[stripbr\][\x00\s]*/g,'')
 	
@@ -1318,7 +1319,7 @@ ubbcode.parseFix = function(arg){
 						u.innerHTML = commonui.vote && commonui.vote[z.substr(5)] ? commonui.vote[z.substr(5)] : 'N/A'
 					break;
 				case 'src':
-					if(z.match(/^\.\/[a-zA-Z0-9_\/\.\-]+\.(?:jpg|png)$/))
+					if(z.match(/^\.\/[a-zA-Z0-9_\/\.\-]+\.(?:jpg|png|svg)$/))
 						u[y] = commonui.getAttachBase(z)+z.substr(1)
 					break;
 				case 'background':
@@ -2327,7 +2328,7 @@ else if(t=='size'){
 else if(t=='l'||t=='r'){
 	if(e)
 		return '</span>'
-	if(opt){
+	/*if(opt){
 		var c = opt.replace(/^\s+/,'').split(/\s+/),i=0,j
 		while(i<2){
 			if(j= parseInt(c[i],10)){
@@ -2349,6 +2350,9 @@ else if(t=='l'||t=='r'){
 		else
 			opt=''
 		}
+	else
+		opt=''
+	*/
 	return "<span style='display:block;' class='"+(t=='l'?'left':'right')+"'>"
 	}
 else if(t=='align'){
@@ -2905,6 +2909,7 @@ o.appendChild(_$('<table/>')._.cls('headline')._.aC(_$('<tbody/>')._.aC(tr)))
 //=============================
 ubbcode.writelink=function(u,n)
 {
+
 var v = this.urlToAry(u)
 
 var h = " onmouseover='ubbcode.showUrlTip(event,this)' onmouseout='ubbcode.showUrlTip(event,this)'>"+v.hintHTML;
@@ -3403,7 +3408,7 @@ ubbcode.codeHelpCommon = [
 		}
 	}
 },
-{0:'<b>[l/r]</b><br/><nobr>左/右浮动</nobr>',1:"<b>段落左/右浮动</b><br/><br/>	[l]左浮动段落<br/>	甲乙丙丁戊己庚辛[/l]<br/><br/>	[r]右浮动段落<br/>	甲乙丙丁戊己庚辛[/r]<br/><br/>	[l20]可以设置百分比宽度[/l]<br/><br/>	[l20 40]可以设置最小/最大宽度[/l]<br/><br/>	[l20em 40]可以设置绝对宽度[/l]<br/>	"},
+{0:'<b>[l/r]</b><br/><nobr>左/右浮动</nobr>',1:"<b>段落左/右浮动</b><br/><br/>	[l]左浮动段落<br/>	甲乙丙丁戊己庚辛[/l]<br/><br/>	[r]右浮动段落<br/>	甲乙丙丁戊己庚辛[/r]<br/><br/>	"},//[l 20]可以设置百分比宽度[/l]<br/><br/>	[l 20 40]可以设置最小/最大宽度[/l]<br/><br/>	[l 20em 40]可以设置绝对宽度[/l]<br/>	"},
 {
 	0:'<b>[list]</b><br/><nobr>列表条目</nobr>',
 	1:"<b>列表条目</b><br/><br/>	[list]<br/>	[*]条目1<br/>	[*]条目2<br/>	[*]条目3<br/>	[*]条目4<br/>	[/list]<br/>	",
@@ -3529,7 +3534,7 @@ ubbcode.codeHelpCommon = [
   [/tr]\n\
 [/table]\n\
 \n\
-[table noborder] <-无边框的表格\n\
+[table]\n\
   [tr]\n\
   &nbsp; [td rowspan=3]第一行和第二行第三行第一列合并[/td]\n\
   &nbsp; [td]第一行第二列[/td]\n\

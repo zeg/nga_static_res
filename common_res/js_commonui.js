@@ -152,9 +152,9 @@ userInfo:function(uid,name){
 editLock:function(tid,pid,lock){
 	return {u:this._base, a:{__lib:'topic_lock', __act:'edit_lock', tid:tid, lock:(lock?1:0), pid:(pid?pid:0),raw:3} }
 	},*/
-messageNew:function(s,c,t,asuid){
+messageNew:function(s,c,t,asuid,iso){
 	return {
-		u:this._base+"__lib=message&__act=message&act=new&raw=3"+(asuid?'&asuid='+asuid:''),
+		u:this._base+"__lib=message&__act=message&act=new&raw=3"+(asuid?'&asuid='+asuid:'')+(iso?'&isolate=1':''),
 		a:{subject:s, content:c, to:t}
 		}
 	},
@@ -462,6 +462,7 @@ style3:1048576 //使用样式3
 },
 width:null,
 cName:'uisetting',
+css:'',
 
 uA:{},// 0:浏览器 1ie 2chrome 3ff 1:浏览器版本 2:操作系统 1windows 2android 3osx 3:操作系统版本
 
@@ -665,7 +666,7 @@ this.o._.addContent(
 		),
 	fontHei.disabled ? null:  $('/span')._.add(
 		fontHei,
-		'微软雅黑字体',
+		'黑体',
 		$('/br')
 		),
 	$('/br'),
@@ -743,7 +744,7 @@ this.o._.show()
 get:function(k){
 return this.bit & this.bits[k]
 },
-
+/*
 initOld:function(){
 var	bit = this.bit, bits = this.bits, w = window, c = w.__COOKIE
 
@@ -789,7 +790,7 @@ this.setfont()
 this.setIframe()
 
 },
-
+*/
 syncLoadStyle:function(def){
 var s = 
 (this.bit & this.bits.style0) ? 0 : (
@@ -802,8 +803,12 @@ var s =
 		)
 	)
 document.write("<link rel='stylesheet' href='"+__STYLE[s][1]+"' type='text/css'/>")
-var x ='<scr'+'ipt src=\"'+__STYLE[s][2]+'\" type=\"text/javasc'+'ript\"></scr'+'ipt>';
+var x ='<scr'+'ipt src=\"'+__STYLE[s][2]+'\" type=\"text/javasc'+'ript\" onload="__SETTING.applyThemeColor()"></scr'+'ipt>';
 document.write(x)
+},
+
+applyThemeColor:function(){
+document.getElementsByTagName('head')[0].appendChild(	_$('/meta','name','theme-color','content',__COLOR.border4))
 },
 
 save:function(bit,day){
@@ -883,6 +888,8 @@ if(wi)
 	this.setWidth(wi)
 this.setfont()
 this.currentClientWidth = __NUKE.position.get().cw
+if(this.css)
+	__NUKE.addCss(this.css)
 //commonui.aE(window,'DOMContentLoaded',function(){__SETTING.currentClientWidth = __NUKE.position.get().cw})
 },
 /*
@@ -1060,15 +1067,27 @@ if((this.bit & (this.bits.fontHei | this.bits.fontdef))==0){
 		this.bit = this.bit | this.bits.fontDef
 	}
 
-if(this.bit & this.bits.fontHei)
-	__NUKE.addCss('body, textarea, select, input, button {font-family:Microsoft Yahei, 微软雅黑, Verdana, Tahoma, Arial, sans-serif}')
-
+if(this.bit & this.bits.fontHei){
+	//this.css+='body, textarea, select, input, button {font-family:Microsoft Yahei, 微软雅黑, Verdana, Tahoma, Arial, sans-serif}'
+	if(this.uA[2]==3 || this.uA[2]==4)
+		this.css+='\nbody, textarea, select, input, button {font-family:"Helvetica Neue", Helvetica, Verdana, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif}'
+	else
+		this.css+='\nbody, textarea, select, input, button {font-family:Verdana, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif}'
+	}
+if(this.uA[4]==3 || this.uA[4]==1){
+	if(this.uA[6]==2 || this.uA[6]==1)
+		this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.453;padding-top:0.154em;padding-bottom:0}'
+	else
+		this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.53;padding-top:0.077em;padding-bottom:0}'
+	}
+else
+	this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.53;padding-top:0;padding-bottom:0}'
 },
 
 setWidth:function(w){
 var h = document.getElementsByTagName('head')[0], ww = window, fz = this.bit & this.bits.size7 ? true : false
 h.appendChild(_$('</meta>')._.attr({name:'viewport',content:'width='+w}))
-ww.__NUKE.addCss('@-ms-viewport {width:'+w+'px}\nbody {font-size:'+(fz?19:16)+'px} \nbody * {max-height:50000em;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%; -ms-text-size-adjust:100%}\n.posterInfoLine {font-size:0.85em}\nbody , #minWidthSpacer {width:'+w+'px} \n #adsc1, #_178NavAll_110906_765453, #mc , #custombg {width:'+w+'px;overflow:hidden} \n .urltip, .urltip2, .default_tip {font-size:1em} \n .notLoadImg #mainmenu {margin-bottom:0px} \n .single_ttip2 {max-width:'+w+'px}\n.postrow td.c1 {display:none} \n.module_wrap {margin-left:3px;margin-right:3px}\n.adsc {max-width:'+w+'px;overflow:hidden}\n.navhisurltip {line-height:2em;margin-top:2.5em}\n.navhisurltip .star {margin-top:0.5em} \n #m_nav .bbsinfo {display:none} \n #iframereadc {border-left-width:1px} \n #m_cate5 {font-size:0.736em} \n #postsubject {display:none}')
+this.css+='\n@-ms-viewport {width:'+w+'px}\nbody {font-size:'+(fz?19:16)+'px} \nbody * {max-height:50000em;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%; -ms-text-size-adjust:100%}\n.posterInfoLine {font-size:0.85em}\nbody , #minWidthSpacer {width:'+w+'px} \n #adsc1, #_178NavAll_110906_765453, #mc , #custombg {width:'+w+'px;overflow:hidden} \n .urltip, .urltip2, .default_tip {font-size:1em} \n .notLoadImg #mainmenu {margin-bottom:0px} \n .single_ttip2 {max-width:'+w+'px}\n.postrow td.c1 {display:none} \n.module_wrap {margin-left:3px;margin-right:3px}\n.adsc {max-width:'+w+'px;overflow:hidden}\n.navhisurltip {line-height:2em;margin-top:2.5em}\n.navhisurltip .star {margin-top:0.5em} \n #m_nav .bbsinfo {display:none} \n #iframereadc {border-left-width:1px} \n #m_cate5 {font-size:0.736em} \n #postsubject {display:none}'
 ww.commonui.aE(window,'DOMContentLoaded',function(){document.body.style.width='auto',$('mc').style.overflow='visible'})
 },
 
@@ -1162,6 +1181,11 @@ var e,w=window;
     o.fireEvent("on" + e.eventType, e);
   }
 }
+//foreach==================
+commonui.forEach=function(H,f){
+for(var i=0;i<H.length;i++)
+	f(i,H[i])
+}//
 
 //mouseleave==================
 commonui.ifMouseOut=function(e,o){
@@ -1885,7 +1909,7 @@ if(call){
 //本地缓存=====================
 ;(function(){
 var co = commonui, C = {}, CH = false, P = 'userCache_'+(window.__CURRENT_UID ? __CURRENT_UID+'_' : '0_') , PO = location.protocol ,S = domStorageFuncs, CK = __COOKIE, H=co.crossDomainCall,
-HS = ['http://bbs.ngacn.cc','http://bbs.nga.cn','http://nga.178.com','http://bbs.bigccq.cn','https://bbs.ngacn.cc','https://bbs.nga.cn','https://nga.178.com','https://bbs.bigccq.cn'],
+HS = ['http://bbs.ngacn.cc','http://nga.donews.com','http://bbs.nga.cn','http://nga.178.com','http://bbs.bigccq.cn','https://bbs.ngacn.cc','https://bbs.donews.com','https://bbs.nga.cn','https://nga.178.com','https://bbs.bigccq.cn'],
 CH = location.protocol+'//'+location.host
 
 commonui.userCache ={
@@ -2530,7 +2554,7 @@ TS=65536,//仅合集
 QF=131072,//仅版面镜像
 QQ=262144,//仅镜像
 PB={
-1:		[G|TT,					8192,		'',		'+',		'sienna',	'主题中有附件',										''],
+1:		[G|TT,					8192,		'',		'+',		"#BD7E6D",	'主题中有附件',										''],
 2:		[G|TT|PP,				262144,	'匿名',	'',		'#909090',	'不显示发帖人信息',									''],
 3:		[G|PP,					1,			'评论',	'',		'#909090',	'这是对某一个帖子的评论/回复/贴条',				''],
 4:		[G|MMOD|TT|PP,			1024,		'锁定',	'锁定',	'#C58080',	'无法编辑/回复',										'无法编辑/回复*'],
@@ -2546,7 +2570,7 @@ PB={
 14:	[MOD|MSU|TT|PP,		2048,		'处罚',	'处罚',	'#909090',	'有用户在此贴内被处罚',								'处罚标记'],
 15:	[MOD|TT|PP,				8,			'延时',	'延时',	'#909090',	'查看预订操作记录',									''],
 16:	[MOD|TT|PP,				32,		'标记',	'标记',	'#909090',	'查看标记/举报记录',								''],
-17:	[MOD|MSL|TT,			524288,	'附件',	'+',		'sienna',	'在主题列表中显示附件',								'在主题列表中显示附件']
+17:	[MOD|MSL|TT,			524288,	'附件',	'+',		"#BD7E6D",	'在主题列表中显示附件',								'在主题列表中显示附件']
 },
 TMB={
 1:		[G|MMOD|TS,		131072,		'全锁',	'全锁',	'#C58080',	'合集内无法编辑/回复/发布子主题',					'锁定合集的全部主题'],
@@ -2785,7 +2809,7 @@ c[1] = c[1]/255/2+0.25
 c[2] = c[2]/255/2+0.25
 
 c = this.hsvToRgb(c[0],c[1],c[2])
-hex = "<b class='inlineblock' "+(o?"title='"+( (o&2)?name+' ':''  )+(  (o&1)?'这是一个匿名用户 ':'' )+"'":'')+" style='padding:0 0.2em;height:1.5em;line-height:1.5em;border-radius: 0.25em;text-align:center;background:#"+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))+";color:#ffffff'>"
+hex = "<b class='block_txt' "+(o?"title='"+( (o&2)?name+' ':''  )+(  (o&1)?'这是一个匿名用户 ':'' )+"'":'')+" style='padding-left:0;padding-right:0;min-width:1.4em;width:1.4em;text-align:center;background:#"+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))+";color:#ffffff'>"
 
 if(n.match(/UID\d+/i)){
 	if(n.length>6)
@@ -2921,8 +2945,8 @@ if (a && a.constructor==String){
 	else if(a.substr(0,8)=='/*$js$*/')
 		a = __COOKIE.json_decode(a.substr(8))
 	else{
-		if(a.indexOf('|')!==-1){//多地址
-			var b = a.split('|'),a ={l:0}
+		if(a.match(/\||%7c/i)){//多地址
+			var b = a.split(/\||%7c/i),a ={l:0}
 			for(var i=0;i<b.length;i++){
 				if(b[i]=='t2')
 					a.t=2
@@ -2943,18 +2967,27 @@ if (a && a.constructor==String){
 if(a && a.l && a[0])
 	return a
 return ''
-}
+}//
+commonui.avatarReal2Short=function(im,uid){//完整的本站头像地址还原成缩写
+if(im.match(/^https?:\/\/.+?(?:ngacn\.cc|nga\.cn|178\.com|nga\.donews\.com)\//) && (m = im.match(/\/[0-9a-z]{3}\/[0-9a-z]{3}\/[0-9a-z]{3}\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)$/i))){
+	if(m[1]==uid)
+		im = '.a/'+m[1]+'_'+m[2]+'.'+m[3]+'?'+m[4]
+	}
+return im
+}//
 commonui.avatarUrl=function(y,uid){
 if(y.charAt(0)=='.' && (i=y.match(/^\.a\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)/)))
 	y= __AVATAR_BASE_VIEW+'/'+('000000000'+(i[1]|0).toString(16)).replace(/.+?([0-9a-z]{3})([0-9a-z]{3})([0-9a-z]{3})$/,'$3/$2/$1')+'/'+i[1]+'_'+i[2]+'.'+i[3]+'?'+i[4]
 else if(y.charAt(0)=='h' && (i = y.match(/^https?:\/\/([^\/]+)\//))){
-	if(!i[1].match(/\.(ngacn\.cc|nga\.cn|178\.com)$/) && uid!=window.__CURRENT_UID)
+	if(!i[1].match(/\.(ngacn\.cc|nga\.cn|178\.com|nga\.donews\.com)$/) && uid!=window.__CURRENT_UID)
 		y=''
 	}
 else if(y)
 	y= __PORTRAIT_PATH+'/'+y
 else
 	y= ''
+if(this.correctAttachUrl)
+	y = this.correctAttachUrl(y)
 return y
 }//fe
 

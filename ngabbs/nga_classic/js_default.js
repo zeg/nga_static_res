@@ -170,6 +170,10 @@ if(!ngaAds || !ngaAds.bbs_ads12 || (window.__GP && window.__GP.greater && !windo
 var l=location
 if(l.pathname!='/' && l.pathname!='/thread.php' && l.pathname!='/read.php')
 	return
+
+if(l.host=='bbs.nga.cn')
+	l.replace(l.protocol+'//'+'nga.donews.com'+l.pathname+l.search+l.hash)
+
 var C = __COOKIE,n = ngaAds,v = __NUKE.toInt(C.getMiscCookie('insad_views')), c = C.getMiscCookie('pv_count_for_insad')
 if (n.bbs_ads12.refreshid && C.getMiscCookie('insad_refreshid')!=n.bbs_ads12.refreshid){
 	C.setMiscCookieInSecond('insad_refreshid',n.bbs_ads12.refreshid,3600*24*7)
@@ -392,7 +396,7 @@ if(window.__CURRENT_FID){
 			break;
 		case -452227:
 			commonui.forumBtns.d[15] = {n1:'对战模拟',c:'uitxt1',
-				u:'http://tools.nga.cn/iframe/-452227/VGCDmgCalc/index.html',
+				u:'http://tools.ngacn.cc/iframe/-452227/VGCDmgCalc/index.html',
 				ck:function(a){if(a.fid==-452227)return 1} }
 			commonui.forumBtns.def1.unshift(15)
 			break;
@@ -629,7 +633,7 @@ switch (fid){
 	case -985658:
 		return [1,w.__IMGPATH +'/head/-985658.jpg',0,190]
 	case 431:
-		return [1,w.__IMGPATH +'/head/20171225.jpg',0,190]
+		return [1,w.__IMGPATH +'/head/20180627.jpg',0,190]
 	case 321:
 		return [1,w.__IMGPATH +'/head/20170412.jpg',0,190]
 	case 452:
@@ -645,7 +649,7 @@ switch (fid){
 	case -362960:
 		return [1,w.__IMGPATH +'/head/20180515.jpg',0,190]
 	case -7861121:
-		return [1,w.__IMGPATH +'/head/20180111.jpg',0,190]
+		return [1,w.__IMGPATH +'/head/20180616.jpg',0,190]
 	case 482:
 		return [1,w.__IMGPATH +'/head/20170414.jpg',0,190]
 	case 414:
@@ -667,8 +671,8 @@ switch (fid){
 		return [1,w.__IMGPATH +'/head/20160519.jpg',0,190]
 	case 555:
 		return [1,w.__IMGPATH +'/head/20170406.jpg',0,190,w.__IMGPATH +'/head/20180202.mp4',Math.random()>0.99?0:1,'474747']
-	case -447601:
-		return [1,w.__IMGPATH +'/head/20180212.jpg',0,190,w.__IMGPATH +'/head/20180213.mp4',Math.random()>0.99?0:1,'474747']
+	//case -447601:
+		//return [1,w.__IMGPATH +'/head/20180212.jpg',0,190,w.__IMGPATH +'/head/20180213.mp4',Math.random()>0.99?0:1,'474747']
 	case 516:
 		return [1,w.__IMGPATH +'/head/20170419.jpg',0,190]
 	case -15219445:
@@ -691,6 +695,9 @@ switch (fid){
 		return [1,w.__IMGPATH +'/head/20180209.jpg',0,190]
 	case -4567100:
 		return [1,w.__IMGPATH +'/head/20180410.jpg',0,190]
+	case -7:
+	case -81981:
+		return [1,w.__IMGPATH +'/head/20180615.jpg',0,190]
 	case 538:
 		var r = Math.random()
 		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180525':'201805251'):'201805252'):'201805253'):'201805254'):'201805255')+'.jpg',0,190]
@@ -744,7 +751,7 @@ switch(__CURRENT_FID){
 		x = {0:'http://s1.xjwy.178.com/nga_game.php?game=xjwy',1:750}
 		break;
 	case 484:
-		x = {0:'http://s1.xmzyw.178.com/nga_game.php?game=xmzyw&id=1',1:750}
+		x = {0:'http://game.stargame.com/play/startgame?id=87',1:750}
 		break;
 	case 487:
 		x = {0:'http://s1.djmy.178.com/nga_game.php?game=djmy',1:760}
@@ -775,7 +782,7 @@ switch(__CURRENT_FID){
 		x = {0:'http://s1.zqsd.178.com/nga_game.php?game=zqsd',1:750}
 		break;
 	case 537:
-		x = {0:'http://s1.dhh.178.com/nga_game.php?game=dhh&id=1',1:750}
+		x = {0:'http://game.stargame.com/play/startgame?id=80',1:750}
 		break;
 	case 543:
 		x = {0:'http://wgapi.178.com/nga_game.php?game=dzz',1:750}
@@ -796,10 +803,10 @@ switch(__CURRENT_FID){
 		x = 'http://ccq.178.com/iframe/index.html?fid=482'
 		break;
 	case 568:
-		x = 'http://ccq.178.com/iframe/568/index.html'
+		x = 'http://tools.ngacn.cc/iframe/index.php?fid=568'
 		break;
 	case 540:
-		x = 'http://tools.nga.cn/iframe/index.php?fid=540'
+		x = 'http://tools.ngacn.cc/iframe/index.php?fid=540'
 		break;
 	case -149110:
 		x = '<span style="text-align:center"><table class=" stdbtn" style="margin-left:auto;margin-right:auto"><tbody><tr><td><a href="javascript:void(0)" class="b teal" onclick="ngaAds.open_69124(event,\'http://js.ntwikis.com/?nologin=1\',600)"><nobr><span style="font-size:1.5em">战舰少女资料库</span></nobr></a></td></tr></tbody></table></span>'
@@ -819,32 +826,23 @@ if(x){
 bbs_ads9_old()
 }//fe
 var bbs_ds9 = bbs_ads9
-/*
- *自动替换帖子中[img]图片的地址
- */
-commonui.correctAttachUrl = function(u){
-return u
-//if(__ATTACH_BASE == 'http://img6.nga.178.com:8080')
-//	return u.replace(/^http:\/\/(img\d?)\.ngacn\.cc\//,'http://$1.nga.178.com/')
-//else
-//	return u.replace(/^http:\/\/(img\d?)\.nga\.178\.com\//,'http://$1.ngacn.cc/')
-}//fe
+
 
 
 
 //获取附件地址==================
 ;(function(){
 if(__ATTACH_BASE == 'http://test.attach.ngacn.cc'){
-	__ATTACH_BASE_VIEW = 'http://test.attach.ngacn.cc/attachments'
-	__AVATAR_BASE_VIEW = 'http://test.attach.ngacn.cc/avatars'
+	_P_ATTACH_BASE_VIEW = 'http://test.attach.ngacn.cc/attachments'
+	__AVATAR_BASE_VIEW = _P_AVATAR_BASE_VIEW = 'http://test.attach.ngacn.cc/avatars'
 	}
 else{
-	__ATTACH_BASE_VIEW = /*location.protocol =='https:' ? 'https://img.nga.cn/attachments' : */ 'http://'+location.hostname.replace(/^(?:bbs\.)?/,'img.')
-	__AVATAR_BASE_VIEW = __ATTACH_BASE_VIEW+'/avatars/2002'
-	__ATTACH_BASE_VIEW = __ATTACH_BASE_VIEW+'/attachments'
+	_P_ATTACH_BASE_VIEW = /*location.protocol =='https:' ? __ATTACH_BASE_VIEW_SEC : */ 'http://'+__ATTACH_BASE_VIEW
+	__AVATAR_BASE_VIEW = _P_AVATAR_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/avatars/2002'
+	_P_ATTACH_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/attachments'
 	}
 commonui.getAttachBase=function(u){//相对地址
-return __ATTACH_BASE_VIEW
+return _P_ATTACH_BASE_VIEW
 /*
 if(u.substr(0,2)!='./')
 	u='./'+u
@@ -868,11 +866,28 @@ if(m){
 	}
 return ''*/
 }
+
+
+/*
+ *自动替换帖子中[img]图片的地址
+ */
+commonui.correctAttachUrl = function(u){
+u= u.replace(/^http(s)?:\/\/img7?\.nga\.cn\//,function($0,$1){return $1 ? 'https://'+__ATTACH_BASE_VIEW_SEC+'/' : 'http://'+__ATTACH_BASE_VIEW+'/'})
+return u
+//if(__ATTACH_BASE == 'http://img6.nga.178.com:8080')
+//	return u.replace(/^http:\/\/(img\d?)\.ngacn\.cc\//,'http://$1.nga.178.com/')
+//else
+//	return u.replace(/^http:\/\/(img\d?)\.nga\.178\.com\//,'http://$1.ngacn.cc/')
+}//fe
+
+
+
+
 })();
 
 //地址是否是附件================
 commonui.ifUrlAttach = function(u){
-if(u.match(/^http:\/\/(img\.ngacn\.cc|img6\.ngacn\.cc|img\.nga\.cn|img6\.nga\.cn|ngaimg\.178\.com|img\.nga\.178\.com|img6\.nga\.178\.com)\//))
+if(u.match(/^http:\/\/(img\.ngacn\.cc|img6\.ngacn\.cc|img\.nga\.cn|img6\.nga\.cn|ngaimg\.178\.com|img\.nga\.178\.com|img6\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
 	return true
 }
 
@@ -1312,7 +1327,7 @@ return _$('/span')._.add((opt&1) ? null:'\u00A0',_$('/span','style',g._c)._.add(
 //主菜单=======================
 commonui.mainMenuItems={
 	//hisAddon:[100],
-	hisDefLeft:[7,5,6,8,9,160,10,151],
+	hisDefLeft:[7,5,6,8,151,10],
 	hisDef:[0,115,116,119,146,162],
 	0:{subKeys:[144,18,118,147],
 		title:(__GP.userBit&256) ? '移动验证成功' : '点此打开主菜单',
@@ -1334,39 +1349,16 @@ commonui.mainMenuItems={
 				}//
 			}))},//头像预留
 		*/
-	5:{href:'http://nga.cn',innerHTML:'首页'},
+	5:{href:'http://ngacn.cc',innerHTML:'首页'},
 	6:{href:'/',innerHTML:'论坛',className:'active'},
-	7:{href:'/',innerHTML:_$('/img').$0('src',__IMG_STYLE+'/logo10.png','style'),disableDefault:1},
-	8:{href:'http://game.nga.cn/',innerHTML:'评分'},
-	9:{href:'http://g.nga.cn/',innerHTML:'聚聚'},
-	10:{href:'http://app.178.com/',innerHTML:'移动端'},
+	7:{disableDefault:1,arg:['style','padding:0.2em 0.5em','href','/',
+			'innerHTML',typeof SVGRect === 'function' ? '<svg xmlns="http://www.w3.org/2000/svg" style="height:50px;fill:'+__COLOR.border0+'" viewBox="129.22 30.208 1120.58 411.795"><path fill-rule="evenodd" d="M1192.47 335.038L1165.6 219.78l-8.62-2.889 7.7 118.147h-59V82.75l5.75-5.853 46.75-5.5L1188.6 189.6l8.78 2.567L1189.93 83l3.33-5.884 56.54-5.449v263.371h-57.33zm-234.661-.538l-10.352-8.734-9.16-57.937.053-11.09 9.291-167.1 9.631-9.9 92.158-13.713 28.49 34.508 5.5 40.053v30.233h-53.2l-11.51-55.48-17.86 3.149-5.1 149.449 5.1 23.035 22.05-3.722 6.73-52.221 53.79.011v73l-19.46 26.438zM898.5 288.715h34.044V335H898.5v-46.285zm-75.236-.39h-25.438l-4.276 46.713h-62.614l30.132-248.484 10.408-9.636 81.144-9.271 36.232 267.391h-61.771zm-10.229-158.973L807.128 133 796.92 242.254h24.48zM669.371 316.417l-16.115 18.059-64.447.019-10.352-8.734-9.16-57.937.053-11.09 9.291-167.1 9.631-9.9 92.156-13.713 28.5 34.508 5.491 40.053v30.238h-53.2l-11.5-55.48-17.861 3.149-5.1 149.449 5.1 23.035 22.047-3.722 3.07-21.4 3.667-30.821h-19.488v-39.489h73.261v139.5H675.15zm-122.9 18.621h-57.337L462.271 219.78l-8.629-2.889 7.7 118.147h-58.993V82.75l5.751-5.85 46.75-5.5 30.414 118.2 8.787 2.567L486.593 83l3.336-5.884 62.208-7.468L546.47 101v234.038zm-142.462 30.815h-13.692v6.678h-11.5v-6.678H359.4v6.678h-11.3v-6.678h-14.093v-8.071H348.1v-6.795h11.3v6.795h19.408v-6.795h11.5v6.795H404v8.071zm-234.822-79.74l-39.967-2.864V30.208h225.066l-3.241 45.227 27.772 1.99v257.637H165.681zm29.651-207.861l-11.5 3.113-10.947 19.082 17.7 12.294 18.836-5.649.721-2.125-2.778-23.806 3.658-26.774zm44.005 3.472l-10.358 17.594 5.886 19.985 8.53-4.207 8.773-3.079 4.846-23.094L264.7 51.8zm41.569 6.755L269.1 112.263l4.08 15.258 18.785-4.063 3.972-16.213 2.875-14.007 3.659-26.774zm32.2 19.806l-15.772 23.489 4.1 11.71 15.617-4.165 9.09-21.65 5.375-27.933zm37.24 34.067l-.822-9.27 1.881-14.973-13.04 19.749-13.62 3.757 5.87 16.816 14.175.083zM261.48 302.875l27.273 10.638 19.234-35.658-12.241-31.208-50.99-7.719-2.656 34.283zm-58.357-137.367l31.5 1.976 68.321 52.41 12.569 3.58 20.868-11.174-2.187-24.364-76.618-50.41-71.294-8.139-34.841 33.519-3.041 27.824s11.908 24.2 20.466 36.516c11.464.276 40.155 1.029 40.155 1.029l-11.2-54.534zm-31.088 190.144l2.528 18.455-6.16-.328L166.2 356.4zm17.6 18.455l2.92-18.455 4.43.743-3.28 17.712h-4.07zm-22.264 16.526v-8.926h9.51v-30.674h9.846v30.654h8.295v8.925h-8.445l11.585 24.528-4.428 6.715-2.972-7.967-3.631-8.1-.383 36.212h-9.883v-.02l.219-36.193-4.218 11.253-4.146 10.139-5.72-8.493 13.676-28.053h-9.306zm48.164-12.764h-12.589v-5.7h12.591v-8.023h-13.413v-6.463h13.413v-6.653h11.284v6.653h13.416v6.463h-13.416v8.023H239.3v5.7h-12.479v8.242h15.246v7.3h-40.86v-7.3h14.33v-8.242zm23.765 64.093h-9.744l1.019-2.1V429.1h-18.904v12.865h-8.725v-41.524H239.3v41.521zm-20.7-34.279h-6.931v14.663h6.931v-14.663zm11.975 0h-6.725v14.663h6.725v-14.663zm-1.028 34.279h.009l-.009.018v-.018zm112.912-58.531H362.9v-8.48h12.4v8.48h20.436v20.362h7.352v9.35h-22.676l3.2 3.638a83.019 83.019 0 0 0 19.446 16.241l-7.2 8.964a102.793 102.793 0 0 1-24.7-23.443l-1.581-2.09-1.856 1.741c-2.756 3.544-12.461 15.428-25.067 23.792l-7.316-9.022a88.52 88.52 0 0 0 19.352-16.183l3.27-3.638h-23.053v-9.35h7.554v-20.362zm32.841 20.362h10.75V391.1H375.3v12.7zm-23.158 0H362.9V391.1h-10.756v12.7zm154.719-9.99h-6.031v-11.515h6.031v-18.44h-6.776v-11.717H525.5v11.739h-6.224v18.44h5.262v11.512h-5.262v22l7.854-.556v11.944l-28.869 2.058V417.3l8.6-.575V393.8zM572.519 351v11.164h-37.257V351h37.257zm5.048 36.737h-7.426V430.5h8.23l.924-.761v11.245h-21v-53.267h-8.329l-3.634 54.254-11.782-.721 3.555-53.514h-6.933V376.8h46.39v10.934zm120.066-36.749h14.28v7.472h28.62v20.007h-10.527V367h-50.464v11.464h-10.529v-20.005h28.62v-7.472zm4.76 56.974l-.342-3.379-28.037 16.129-4.174-6.221 31.019-16.937-1.753-6.97-24.326 13.1-4.193-6.758 23.536-11.792-1.048-4.05h-5.931v-6.761h35.276v6.761h-14.1l1.372 2.993a79.408 79.408 0 0 1 3.427 9.237l.906 2.88 16.319-11.232 5.83 7.641-16.923 11.139L741 428.468l-8.187 7.144-16.665-20.512-.564 5.377a64.2 64.2 0 0 1-6.294 21.526l-13.471-2.8.381-.212.283-.673a76.951 76.951 0 0 0 3.974-11.348l1.271-5.069-26.885 15.975-4.741-6.7 32.413-18.3v-1.228a34.229 34.229 0 0 0-.122-3.687zm158.148-54.115l-5.289 11.553v75.63H844.87L845 387l-4.024 9.42-2.476 5.38-6.816-8.076 20.046-42.668zm6.174 1.359h36.763v56.57h6.136v9.163h-48.135v-9.163h5.236v-56.57zm10.088 56.57h16.479v-7.959H876.8v7.959zm0-13.823h16.479V389.9H876.8v8.056zm0-13.3h16.479V376.7H876.8v7.959zm0-13.609h16.479v-8.056H876.8v8.056zm4.352 59.775l-11.849 11.161-6.705-7.454 12.05-11.065zm29.581 3.727l-6.56 7.434-11.924-11.16 6.394-7.358zm113.7-18.671l-15.67 21.9-7.5-7.324 15.66-21zm6.89-13.681h-28.57v-10.31h5.93v-35.441L1061.64 351l1.16 9.087-42.62 4.439v27.362h11.14v-20.58h13.82v20.58h26.28V402.2h-26.28V442h-16.42l2.61-3.313V402.2zm44.2 28.233l-7.59 7.324-15.58-21.779 7.51-6.434zm98.44-61.071h-3.86v-8.624h13.53v-9.684h11.27v9.684h14.16v8.624h-4.68v17.619h5.72v9.606h-42.18v-9.606h6.04v-17.618zm9.81 17.619h11.02v-17.618h-11.02v17.619zM1207.51 442h-35.63v-35.2h35.63V442zm-10.22-25.3h-14.86v15.694h14.86V416.7zm42.26-26.851l.46.748a46.807 46.807 0 0 1 6.55 23.472c0 10.293-4.02 21.372-12.86 21.372h-7.22v6.459h-10.25V353H1247zm-13.11-26.616v24.79h.02l4.2.413 4.64-25.2h-8.86zm4.01 28.9l-3.99 1.061v30.6h2.94c3.96 0 6.5-4.576 6.5-11.667 0-5.841-2.18-13.876-5.45-20.003z" data-name="Color Fill 5"/></svg>' :'<img src="'+__IMG_STYLE+'/logo11-1.png" style="height:50px"/>']},
+	8:{href:'http://game.ngacn.cc/',innerHTML:'评分'},
+	9:{href:'http://g.ngacn.cc/',innerHTML:'聚聚'},
+	10:{href:'http://app.nga.donews.com/',innerHTML:'移动端'},
 
-/*
-	4:{ innerHTML:'魔兽世界',subKeys:[5,7,28,39,54,61,72,83,86,87],color:'#808FBC' },
-	5:{innerHTML:'魔兽世界专题站',href:"http://wow.178.com"},
-
-	7:{ innerHTML:'工具',subKeys:[8,9,10,11,12,13,14,15,16,17,100] },
-	8:{ innerHTML:'数据库（简体）',href:"http://db.178.com/wow/cn/index.html" },
-	9:{ innerHTML:'数据库（繁体）',href:"http://db.178.com/wow/tw/index.html" },
-	10:{ innerHTML:'大脚插件',href:"http://bigfoot.178.com/" },
-	11:{ innerHTML:'天赋模拟器',href:"http://wow.178.com/talent/" },
-	12:{ innerHTML:'签名生成器',href:"http://wowsig.178.com/" },
-	13:{ innerHTML:'成就查询',href:"http://wow.178.com/chengjiu/" },
-	14:{ innerHTML:'3D幻化试衣间',href:"http://db.178.com/wow/transmogrification/index.html" },
-	15:{ innerHTML:'竞技场点数计算器',href:"http://wow.178.com/jjc/" },
-	16:{ innerHTML:'WMO战斗数据分析',href:"http://wmo.178.com/" },
-	17:{ innerHTML:'魔兽网络加速',href:"http://www.ofcard.com/showinfo.do?cardid=3809&amp;username=173178" },
-
-	18:{ innerHTML:'论坛设置',subKeys:[19,20,21,22,97,101,102,109,110,111,112,113,108,141,142] },
-	19:{ html:function(){return commonui.picswitch()},title:'选择显示较少的图片',disableDefault:1 },
-	20:{ html:function(){return commonui.setfont()},title:'选择论坛显示字体',disableDefault:1},
-	21:{ html:function(){return commonui.iframeread()},title:'是否在内嵌窗口内阅读主题',disableDefault:1},
-	*/
 	22:{ innerHTML:'用户脚本',on:{event:'click',func:function(e){commonui.loadUserScript(__NUKE.position.dummyEvent(e))} }, check:function(){if(__CURRENT_UID)return true} },
-/*
-	23:{ innerHTML:'暗黑破坏神',subKeys:[24,98,99,106],color:'firebrick' },
-	24:{innerHTML:'暗黑破坏神专题站',href:"http://d3.178.com"},
-*/
+
 	25:{u:1,href:'/nuke.php?func=ucp&uid='+__CURRENT_UID,innerHTML:'论坛用户中心',disableDefault:1,color:'#551200'},
 	26:{u:1,href:'/nuke.php?func=message',innerHTML:'短消息',disableDefault:1,color:'sandybrown'},
 	27:{u:1,
@@ -1384,94 +1376,7 @@ commonui.mainMenuItems={
 			},
 		color:'sandybrown'
 		},
-/*
-	28:{ innerHTML:'职业',subKeys:[29,30,31,32,33,34,35,36,37,38] },
-	29:{ innerHTML:'死亡骑士',href:"http://wow.178.com/list/dk/" },
-	30:{ innerHTML:'战士',href:"http://wow.178.com/list/zs/" },
-	31:{ innerHTML:'圣骑士',href:"http://wow.178.com/list/sq/" },
-	32:{ innerHTML:'猎人',href:"http://wow.178.com/list/lr/" },
-	33:{ innerHTML:'萨满祭司',href:"http://wow.178.com/list/sm/" },
-	34:{ innerHTML:'潜行者',href:"http://wow.178.com/list/dz/" },
-	35:{ innerHTML:'德鲁伊',href:"http://wow.178.com/list/dly/" },
-	36:{ innerHTML:'法师',href:"http://wow.178.com/list/fs/" },
-	37:{ innerHTML:'牧师',href:"http://wow.178.com/list/ms/" },
-	38:{ innerHTML:'术士',href:"http://wow.178.com/list/ss/" },
 
-	39:{ innerHTML:'技能',subKeys:[89,40,41,42,43,44,45,46,47,48,49,50,51,52,53,94] },
-	40:{ innerHTML:'附魔',href:"http://wow.178.com/fumo/" },
-	41:{ innerHTML:'珠宝',href:"http://wow.178.com/zhubao/" },
-	42:{ innerHTML:'铭文',href:"http://wow.178.com/mingwen/" },
-	43:{ innerHTML:'工程学',href:"http://wow.178.com/gongcheng/" },
-	44:{ innerHTML:'锻造',href:"http://wow.178.com/duanzao/" },
-	45:{ innerHTML:'制皮',href:"http://wow.178.com/zhipi/" },
-	46:{ innerHTML:'裁缝',href:"http://wow.178.com/caifeng/" },
-	47:{ innerHTML:'炼金',href:"http://wow.178.com/lianjin/" },
-	48:{ innerHTML:'钓鱼',href:"http://wow.178.com/diaoyu/" },
-	49:{ innerHTML:'烹饪',href:"http://wow.178.com/pengren/" },
-	50:{ innerHTML:'采矿',href:"http://wow.178.com/caikuang/" },
-	51:{ innerHTML:'草药',href:"http://wow.178.com/caoyao/" },
-	52:{ innerHTML:'剥皮',href:"http://wow.178.com/bopi/" },
-	53:{ innerHTML:'急救',href:"http://wow.178.com/jijiu/" },
-
-	54:{ innerHTML:'攻略',subKeys:[55,56,57,58,59,60] },
-	55:{ innerHTML:'副本',href:"http://wow.178.com/list/fuben/index.html" },
-	56:{ innerHTML:'成就',href:"http://wow.178.com/list/chengjiu/index.html" },
-	57:{ innerHTML:'声望',href:"http://wow.178.com/list/shengwang/index.html" },
-	58:{ innerHTML:'PVP',href:"http://wow.178.com/list/pvp/index.html" },
-	59:{ innerHTML:'任务',href:"http://wow.178.com/list/renwu/index.html" },
-	60:{ innerHTML:'物品',href:"http://wow.178.com/list/wupin/index.html" },
-
-	61:{ innerHTML:'图片',subKeys:[62,63,64,65,66,67,68,69,70,71] },
-	62:{ innerHTML:'画匠专栏',href:"http://wow.178.com/pic/" },
-	63:{ innerHTML:'NGA画窟活动',href:"http://wow.178.com/list/39465524376.html" },
-	64:{ innerHTML:'NGA画窟作品集',href:"http://wow.178.com/list/18492273712.html" },
-	65:{ innerHTML:'搞笑图片',href:"http://wow.178.com/list/33270107982.html" },
-	66:{ innerHTML:'漫画',href:"http://wow.178.com/list/manhua/index.html" },
-	67:{ innerHTML:'热门连载',href:"http://wow.178.com/list/39465028323.html" },
-	68:{ innerHTML:'游戏周边',href:"http://wow.178.com/200907/t_42237847459.html" },
-	69:{ innerHTML:'暴雪画廊',href:"http://wow.178.com/list/39465575675.html" },
-	70:{ innerHTML:'精美壁纸',href:"http://wow.178.com/list/bizhi/index.html" },
-	71:{ innerHTML:'魔兽翻唱',href:"http://wow.178.com/list/30568303503.html" },
-
-	72:{ innerHTML:'UI插件',subKeys:[88,73,74,75,76,77,78,79,80,81,82] },
-	73:{ innerHTML:'商业物品',href:"http://wowui.178.com/sort/36" },
-	74:{ innerHTML:'战斗增强',href:"http://wowui.178.com/sort/29" },
-	75:{ innerHTML:'聊天交流',href:"http://wowui.178.com/sort/45" },
-	76:{ innerHTML:'地图',href:"http://wowui.178.com/sort/22" },
-	77:{ innerHTML:'团队和副本',href:"http://wowui.178.com/sort/12" },
-	78:{ innerHTML:'界面增强',href:"http://wowui.178.com/sort/18" },
-	79:{ innerHTML:'任务',href:"http://wowui.178.com/sort/26" },
-	80:{ innerHTML:'PvP',href:"http://wowui.178.com/sort/30" },
-	81:{ innerHTML:'职业',href:"http://wowui.178.com/sort/1" },
-	82:{ innerHTML:'管理与周边',href:"http://wowui.178.com/sort/35" },
-
-	83:{ innerHTML:'公会',subKeys:[84,85] },
-	84:{ innerHTML:'公会系统',href:"http://gh.178.com/" },
-	85:{ innerHTML:'DKP系统',href:"http://dkp.178.com/" },
-
-
-	86:{ innerHTML:'魔兽数据库',href:"http://db.178.com/wow/" },
-	87:{ innerHTML:'人口普查',href:"http://db.178.com/wow/summary/" },
-
-
-	88:{ innerHTML:'插件中心',href:"http://wowui.178.com" },
-	89:{ innerHTML:'技能首页',href:"http://http://wow.178.com/list/syjn/" },
-
-
-	90:{ innerHTML:'点击开始找到你需要的功能',tagName:'span' ,color:'silver',disableDefault:1},
-
-	91:{href:'/search.php',innerHTML:'高级搜索',color:'gray'},
-	92:{tagName:'select','options':[ {k:'版面跳转',v:0} ],on:{
-			event:'click',
-			func:function(){
-				if(this._loaded)return
-				this._loaded=true
-				commonui.onloadforumlist(this);
-				this.onchange=function(){window.location="/thread.php?fid="+this.options[this.selectedIndex].value}
-				}
-			}
-		},
-	*/
 	93:{u:1,href:'/thread.php?fid=357',innerHTML:'收藏的版面',check:function(){if(window.__GP && __GP['rvrc'] && __GP['rvrc']>=20)return true}},
 	//94:{ innerHTML:'考古学',href:"http://wow.178.com/kaogu/" },
 //95:custombg
@@ -1513,55 +1418,15 @@ commonui.mainMenuItems={
 	//		}
 	//	}}},
 
-	115:{arg:['innerHTML','登录','onclick',function(){commonui.accountAction('login')}],disableDefault:1,u:0},
+	115:{arg:['innerHTML','登录','href','javascript:void(0)','onclick',function(){commonui.accountAction('login')}],disableDefault:1,u:0},
 //116:{u:0,href:'http://account.178.com/?p=register', innerHTML:'注册',disableDefault:1},
 	//117:{u:1,href:'/nuke.php?func=message', innerHTML:'短消息',disableDefault:1},
 	116:{arg:['innerHTML','注册','onclick',function(){commonui.accountAction('register')}],disableDefault:1,u:0},
 	118:{u:1,innerHTML:'搜索',on:{event:'click',func:function(e){commonui.uniSearchWindow(e)}},disableDefault:1},
 
-	119:{u:1,title:'登出: 若你的帐号在其他终端登录本站, 亦可一并登出' ,innerHTML:'登出',
-		href:'javscript:void(0)',
-		on:{event:'click',func:function(e){
-				if(!confirm("你确认要登出吗"))
-					return commonui.cancelEvent(e)
-
-				var x = confirm("是否要将其他终端一并登出\n\n(本机或其他设备上的浏览器与APP等)") ? 1: 0 , y = 0
-
-				__NUKE.doRequest({
-					u:{u:__API._base,
-							a:{__lib:"login",__act:"logout",logout_current_only:x ? '' : 1,nojump:1,raw:3}
-							},
-					b:this,
-					f:function(d){
-						if(d.data && d.data[0]){
-							for(var k in d.data){
-								if(d.data[k].substr(0,4)=='http')
-									__NUKE.doRequest({
-										u:d.data[k].replace('raw=3','raw=1'),
-										f:function(){y++}
-										})
-								}
-							}
-						if(x)
-							__NUKE.doRequest({
-								u:{u:location.protocol+'//account.178.com/q_account.php?_act=logout&to=',a:{'null':'null'}},
-								f:function(){y++}
-								})
-						window.setTimeout(
-							function(){
-								if(y>=4)
-									alert('操作成功')
-								else
-									alert('网络速度较慢 请等待')
-							},3000)
-						}
-					})
-					
-				commonui.cancelEvent(e);
-				return false
-				}//fe
-			},
-		disableDefault:1
+	119:{u:1,disableDefault:1,arg:['title','登出: 若你的帐号在其他终端登录本站, 亦可一并登出' ,'innerHTML','登出',
+		'href','javascript:void(0)',
+		'onclick',function(e){commonui.accountAction('logout')}]
 		},
 	//120~140 for custom
 	141:{ innerHTML:'界面设置',on:{event:'click', func:function(e){__SETTING.ui()} }},
@@ -1594,7 +1459,7 @@ commonui.mainMenuItems={
 	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159]},
 	//159:{u:1,innerHTML:'绑定手机号'  ,on:{event:'click',func:function(e){__SCRIPTS.load('ucp',function(){commonui.setPhone()})}}},
 	159:{arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1},
-	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
+	160:{href:'http://tv.ngacn.cc/',innerHTML:'赛事'},
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
 	162:{u:1,tagName:'span',disableDefault:1,innerHTML:function(){
 		return ['\u00A0',
@@ -1641,8 +1506,8 @@ commonui.mainMenuItems={
 				'onclick',function(){this._on()}),
 			'\u00A0']
 		}},
-		163:{u:1,check:function(){if(__GP.superlesser && __GP.greater)return true},href:'/nuke.php?func=message&asuid=42766294',innerHTML:'公共收件箱(版务申诉)',disableDefault:1,color:'sandybrown'},
-		164:{innerHTML:'提交debug信息',on:{event:'click',func:function(e){
+	163:{u:1,check:function(){if(__GP.superlesser && __GP.greater)return true},href:'/nuke.php?func=message&asuid=42766294',innerHTML:'公共收件箱(版务申诉)',disableDefault:1,color:'sandybrown'},
+	164:{innerHTML:'提交debug信息',on:{event:'click',func:function(e){
 			if(!confirm('是否要提交debug信息'))
 				return
 			var x=document.getElementsByTagName('head')[0].outerHTML+"\n"+document.body.outerHTML+"\n\n==============",y=document.getElementsByTagName('script')
@@ -1655,7 +1520,8 @@ commonui.mainMenuItems={
 						a:{__lib:"admin_code",__act:"upload_debug_info",data:binl2b64(str2binl(x)),raw:3}
 						}
 				})
-			}}}
+			}}},
+	165:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'new post',on:{event:'click',func:function(e){adminui.new_post()}}},
 	}
 
 if((__NOW/3600)&1){
@@ -2061,15 +1927,24 @@ if(o.headline){
 	}
 
 c+="<div class='contentBlock'>"+(o.name ? "<h3 class='catetitle'>:: "+o.name+" ::</h3>" : '')
+var subclp
 for (var k in o.content){
 	if(o.content[k]){
 		if(i%y==0)
 			this.row = this.row==0?1:0
+		if(o.content[k].clp){
+			if(!subclp){
+				subclp=1
+				c+=this.genforum(o.content[k], null, i==0?1:0, y, i%y, this.row, sw)+'<span style="display:none">'
+				}
+			delete o.content[k].clp
+			}
 		c+=this.genforum(o.content[k], null, i==0?1:0, y, i%y, this.row, sw)
 		i++
 		}
 	}
-c+="<div class='clear'></div></div>"
+c+=(subclp?'</span>':'')+"<div class='clear'></div></div>"
+
 if(!i)
 	return '';
 
@@ -2142,6 +2017,8 @@ if(this.single && col==3){
 	name = commonui.cutstrbylen(name,7,6,'…')
 	info = commonui.cutstrbylen(info,10,9,'…')
 	}
+if(x.clp)
+	return "<div class='"+this.bg[cpl+''+row+''+col]+' c b'+cpl+''+row+''+col+(invert?' invert':'')+(first?' first':'')+"' style='"+(sw?"width:"+sw+'%;':'')+"background-image:url("+this.getIcon(0)+")'><div class='a'><div class='b'><a href='javascript:void(0)' onclick='var tmp = this.parentNode.parentNode.parentNode;tmp.style.display=\"none\";tmp.nextSibling.style.display=\"\"' class='uitxt2'>显示更多&gt;&gt;</a><br/><p> </p></div class='b'></div class='a'></div class='c'>"
 return "<div class='"+this.bg[cpl+''+row+''+col]+' c b'+cpl+''+row+''+col+(invert?' invert':'')+(first?' first':'')+"' style='"+(sw?"width:"+sw+'%;':'')+"background-image:url("+this.getIcon(k,icon,invert,stid)+")'><div class='a'><div class='b'><a href='"+link+"' "+target+" class='"+(this.single?'uitxt3':'uitxt1')+"'>"+name+"</a><br/><p>"+info+" </p></div class='b'></div class='a'></div class='c'>"
 },//fe
 

@@ -135,7 +135,13 @@ this._p.type = type
 this._p.subject.parentNode.parentNode.style.display=this._p.content.parentNode.parentNode.style.display=this._p.to.parentNode.parentNode.style.display=''
 this.clearPost()
 if(type==this._NEW){
-	this._p.hint.innerHTML = '发起新的对话 收件人可填<span title="用户名为数字时前面添加 \ 如 \12345">用户ID或用户名</span> 多个收件人用空格或逗号分隔'
+	this._p.hint.innerHTML = '发起新的对话 收件人可填<span title="用户名为数字时前面添加 \ 如 \12345">用户ID或用户名</span> 多个收件人用空格或逗号分隔 &nbsp; '
+	this._p.hint._.add(
+		$('/span','className','block_txt block_txt_c3 nobr','style','background:'+__COLOR.border3)._.add(
+			this._p.iso=$('/input','type','checkbox'),
+			'对话参与者只能看到自己的回复'
+			)
+		)
 	if(commonui.preMessageHint)
 		this._p.hint._.add(commonui.preMessageHint())
 	this._p.uc.innerHTML = '收件人'
@@ -232,7 +238,7 @@ if(this._p.type==this._NEW){
 	if(t==',' || t=='')return alert('未填写收信人')
 	this.waitPost();
 	__NUKE.doPost({
-		u:__API.messageNew(s,c,t, this.asUid),
+		u:__API.messageNew(s,c,t, this.asUid, this._p.iso.checked ? 1 : null),
 		b:this._p.button,
 		t:this._p.c,
 		f:function(x){
@@ -396,7 +402,7 @@ httpDataGetter.script_muti_get(
 			delete r.data.userInfo
 			}
 		var x = $('/tbody'), i =0, isS=(r.data.starterUid==self.asUid ? self.asUid : __CURRENT_UID)
-		for(var k in r.data){
+		for(var k=0;k<r.data.length;k++){
 			if(k=='currentPage' || k=='maxPage' || k=='nextPage' || k=='allUsers' || k=='starterUid')continue
 			var d = r.data[k]
 			if(d.data[1])
@@ -409,7 +415,9 @@ httpDataGetter.script_muti_get(
 							d.data[1]?$('/a').$0('className','silver stxt','href','javascript:void(0)','innerHTML','['+d.data[1]+']','onclick',function(e){commonui.ipArea(e,this.innerHTML.replace(/\[|\]/g,''))}) : null,
 							' ',
 							commonui.time2dis(d.time)),
-						$('/h3').$0('innerHTML',d.subject ),
+						$('/h3').$0('innerHTML',d.subject )._.add(
+							null	  
+							),
 						$('/br'),
 						$('/span').$0(
 							'innerHTML',ubbcode.bbscode_core({
@@ -434,6 +442,8 @@ httpDataGetter.script_muti_get(
 			var y = (r.data.allUsers+'').split('\t'),z='<span class="b gray">参与对话的用户</span> '
 			for(var j =0;j<y.length;j++)
 				z+=(isS && y[j]!=(self.asUid ? self.asUid : __CURRENT_UID) ? "<a href='javascript:void(0)' class='darkred' style='padding:0' onclick='commonui.message._leaveTopic(this,"+mid+","+y[j]+")' title='将此用户从对话中移除 用户将无法再看到对话内容'>[x]</a>" : '')+"<a href='/nuke.php?func=ucp&uid="+y[j]+"' target='_blank'>"+y[++j]+"</a> "
+			if(r.data.subjectBit & 32)
+				z+=' <span class="block_txt block_txt_c3 nobr" style="background:'+__COLOR.border3+'">对话参与者的回复互相不可见</span>'
 			}
 		o._.aC(
 			$('/table').$0(x,'className','forumbox msgread'),
