@@ -639,7 +639,7 @@ switch (fid){
 	case 452:
 		return [1,w.__IMGPATH +'/head/20140617.jpg',0,190]
 	case 422:
-		return [1,w.__IMGPATH +'/head/20180402.jpg?7',0,190]
+		return [1,w.__IMGPATH +'/head/20180718.jpg?7',0,190]
 	case -51095:
 		return [1,w.__IMGPATH +'/head/20140915a.png',0,190]
 	case -7202235:
@@ -664,7 +664,7 @@ switch (fid){
 	case 497:
 		return [1,w.__IMGPATH +'/head/20160314.jpg',0,190]
 	case 459:
-		return [1,w.__IMGPATH +'/head/20180323.jpg',0,190]
+		return [1,w.__IMGPATH +'/head/20180725.jpg',0,190]
 	case 492:
 		return [1,w.__IMGPATH +'/head/20160418.jpg',0,190]
 	case -149110:
@@ -698,6 +698,8 @@ switch (fid){
 	case -7:
 	case -81981:
 		return [1,w.__IMGPATH +'/head/20180615.jpg',0,190]
+	case 617:
+		return [1,w.__IMGPATH +'/head/20180724.jpg',0,190]
 	case 538:
 		var r = Math.random()
 		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180525':'201805251'):'201805252'):'201805253'):'201805254'):'201805255')+'.jpg',0,190]
@@ -841,6 +843,9 @@ else{
 	__AVATAR_BASE_VIEW = _P_AVATAR_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/avatars/2002'
 	_P_ATTACH_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/attachments'
 	}
+
+var HTTPS = location.protocol=='https:'?1:0
+
 commonui.getAttachBase=function(u){//相对地址
 return _P_ATTACH_BASE_VIEW
 /*
@@ -867,12 +872,17 @@ if(m){
 return ''*/
 }
 
-
+commonui.ifSelfDomain==function(d){
+if(d=='bbs.ngacn.cc' || d=='nga.178.com' || d=='nga.donews.com' || d=='bbs.nga.cn' || d=='bbs.bigccq.cn')
+	return 1
+}
 /*
  *自动替换帖子中[img]图片的地址
  */
 commonui.correctAttachUrl = function(u){
-u= u.replace(/^http(s)?:\/\/img7?\.nga\.cn\//,function($0,$1){return $1 ? 'https://'+__ATTACH_BASE_VIEW_SEC+'/' : 'http://'+__ATTACH_BASE_VIEW+'/'})
+if(u.charAt(0)=='.')
+	return _P_ATTACH_BASE_VIEW+u.substr(1)
+u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,function($0,$1){return HTTPS||$1 ? 'https://'+__ATTACH_BASE_VIEW_SEC+'/' : 'http://'+__ATTACH_BASE_VIEW+'/'})
 return u
 //if(__ATTACH_BASE == 'http://img6.nga.178.com:8080')
 //	return u.replace(/^http:\/\/(img\d?)\.ngacn\.cc\//,'http://$1.nga.178.com/')
@@ -880,14 +890,28 @@ return u
 //	return u.replace(/^http:\/\/(img\d?)\.nga\.178\.com\//,'http://$1.ngacn.cc/')
 }//fe
 
+commonui.toRelAthUrl = function(u){
+u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,'./')
+return u
+}//fe
 
+commonui.toRelUrl = function(u){
+u= u.replace(/^http(s)?:\/\/(?:bbs\.nga\.cn|bbs\.ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,'/')
+return u
+}//fe
 
+commonui.checkSigImg = function(u){
+if(commonui.ifUrlAttach(u+'') )
+	return 1
+if((u+'').match(/^https?:\/\/(card\.psnprofiles\.com|card\.exophase\.com|steamsignature\.com\/card)/))
+	return 1
+}//
 
 })();
 
 //地址是否是附件================
 commonui.ifUrlAttach = function(u){
-if(u.match(/^http:\/\/(img\.ngacn\.cc|img6\.ngacn\.cc|img\.nga\.cn|img6\.nga\.cn|ngaimg\.178\.com|img\.nga\.178\.com|img6\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
+if(u.match(/^https?:\/\/(img\d?\.ngacn\.cc|img\d?\.nga\.cn|ngaimg\.178\.com|img\d?\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
 	return true
 }
 
@@ -1723,17 +1747,9 @@ else if(i=='headline'){
 		var d = {txt:x[k]}
 		x[k+1].replace(/\[(url|img)\](.+?)\[\/\1\]/g,function($0,$1,$2){
 			if($1=='url')
-				$2 = $2.replace(/^(https?:)\/\/([^\/]+)/,function($0,$1,$2){
-					if($2=='bbs.nga.cn'||$2=='bbs.ngacn.cc'||$2=='nga.178.com'||$2=='bbs.bigccq.cn')
-						return ''
-					return $0
-					})
-			else if($1=='img'){
-				if(r=='https:')
-					$2 = $2.replace(/^http:\/\/img.nga[^\/]+/,'https://img.nga.cn')
-				if($2.charAt(0)=='.')
-					$2 = commonui.getAttachBase()+$2.substr(1)
-				}
+				$2 = commonui.toRelUrl($2)
+			else if($1=='img')
+				$2 = commonui.correctAttachUrl($2)
 			d[$1]=$2
 			})
 		a[b+'\t'+c+'\t'+i].push(d)

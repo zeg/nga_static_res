@@ -308,7 +308,7 @@ if (w.__CURRENT_FID && w.__SELECTED_FORUM && o_topic.parentNode.parentNode.class
 //topic tip ===================
 var tmp = document.createElement('span');
 if(quote_from)
-	tmp.innerHTML+="  <"+(admin&2 ? "a href='read.php?tid="+tid+"'" : "span")+" class='small_colored_text_btn white nobr' style='background-color:#909090;font-family:inherit'>镜像</"+(admin&2 ? "a" : "span")+">"
+	tmp.innerHTML+=' '+commonui.txtTagTemplate('镜像','链接到另一个主题 点此可进入镜像', (admin&2)? 'read.php?tid='+tid :'', '#909090')
 
 tmp.innerHTML+=this.getPostBitInfo(fid, tid, pid , type, topicMisc._BIT1, 1, admin)
 

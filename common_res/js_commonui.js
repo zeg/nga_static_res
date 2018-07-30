@@ -321,9 +321,9 @@ lesserNuke:function(tid,pid,level,info,infos){
 		a:{__lib:"lesser_nuke",__act:"lesser_nuke",tid:tid,pid:pid?pid:0,level:level,info:info,infos:infos,raw:3}
 		}
 	},
-lesserNuke2:function(tid,pid,opt,info,infos){
+lesserNuke2:function(tid,pid,opt,info,infos,ifsk){
 	return {u:this._base,
-		a:{__lib:"nuke",__act:"lesser_nuke",tid:tid,pid:pid?pid:0,opt:opt,info:info,infos:infos,raw:3}
+		a:{__lib:"nuke",__act:"lesser_nuke",tid:tid,pid:pid?pid:0,opt:opt,info:info,infos:infos,infosk:ifsk,raw:3}
 		}
 	},
 topicTop:function(tid,level){
@@ -993,8 +993,8 @@ if(b & s.embed){//如果是嵌入客户端
 	}
 else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//如果没设尺寸或选择自动
 	if(this.uA[6]&1){//tablet
-		if(ww.screen.width>ww.screen.height)//横屏
-			mm(0,1000)
+		if(ww.innerWidth>ww.innerHeight && ww.innerWidth>700)//横屏
+			mm(0,ww.innerWidth<950?1000:ww.innerWidth)
 		else//竖屏
 			ss(s.autoPic|s.lessPic)
 		}
@@ -1049,7 +1049,7 @@ else{//如果设了尺寸
 	else if(b & s.size7)
 		ss(0)
 	else if(b & s.size10)
-		mm(0)
+		mm(0,0)
 	else
 		w=0
 	}
@@ -1072,16 +1072,24 @@ if(this.bit & this.bits.fontHei){
 	if(this.uA[2]==3 || this.uA[2]==4)
 		this.css+='\nbody, textarea, select, input, button {font-family:"Helvetica Neue", Helvetica, Verdana, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif}'
 	else
-		this.css+='\nbody, textarea, select, input, button {font-family:Verdana, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif}'
+		this.css+='\nbody, textarea, select, input, button {font-family:Verdana, Tahoma, Arial, "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif}'
 	}
-if(this.uA[4]==3 || this.uA[4]==1){
-	if(this.uA[6]==2 || this.uA[6]==1)
-		this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.453;padding-top:0.154em;padding-bottom:0}'
-	else
-		this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.53;padding-top:0.077em;padding-bottom:0}'
+if(this.uA[4]==3 || this.uA[4]==1){//webkit/edge
+	if(this.uA[0]==5){//safari
+		if(this.bit & this.bits.size10)//small screen tablet or phone
+			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-bottom:0.15em;} \n .stdbtn a {padding-bottom:0.15em;}'
+		else
+			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.35;padding-top:0.05em;padding-bottom:0} \n .vertmod{}'
+		}
+	else{
+		if(this.bit & this.bits.size10)//small screen tablet or phone
+			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-top:0.15em;} \n .stdbtn a {padding-top:0.15em;}'
+		else
+			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
+		}
 	}
-else
-	this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.53;padding-top:0;padding-bottom:0}'
+else	
+	this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
 },
 
 setWidth:function(w){
@@ -2620,10 +2628,8 @@ else if(h&2){
 	}
 
 if(z)
-	 return "  <"+(u?"a href='"+u+"'":'span')+
-			((z=='+')? " style='font-size:1.085em;color:"+y[4]+"'" : 
-				" class='small_colored_text_btn white nobr' style='background-color:"+y[4]+((y[0]&3)==0 ? ";padding-right:0.2em;border-right:0.2em solid "+__COLOR.border0 : '')+";font-family:inherit'")+
-		  " title='"+y[5]+((y[0]&3)==0 ? " 此状态只有版主可见" : '')+"'>"+z+"</"+(u?'a':'span')+">"
+	return commonui.txtTagTemplate(z, y[5], u, y[4], (y[0]&3)==0 ? '此状态只有版主可见' : '')
+
 return ''
 }//
 
@@ -2633,6 +2639,12 @@ for(var k in PB)
 for(var k in TMB)
 	TMBALL|=TMB[k][1]
 
+commonui.txtTagTemplate=function(txt,til,url,bgc,sp){//文字 长说明 链接 颜色 加特殊说明
+ return "  <"+(url?"a href='"+url+"'":'span')+
+			((txt=='+')? " style='font-size:1.085em;color:"+bgc+"'" : 
+				" class='block_txt white nobr vertmod' style='background-color:"+bgc+(sp ? ";padding-right:0.2em;border-right:0.2em solid "+__COLOR.border0 : '')+"'")+
+		  " title='"+til+(sp ? ' '+sp : '')+"'>"+txt+"</"+(url?'a':'span')+">"
+}//
 
 commonui.getPostBitEdit=function(isset,ispost,isqf,isq,mod){//是合集 是回复 是版面镜像 是镜像 是版主
 if(P===undefined)
@@ -2809,9 +2821,9 @@ c[1] = c[1]/255/2+0.25
 c[2] = c[2]/255/2+0.25
 
 c = this.hsvToRgb(c[0],c[1],c[2])
-hex = "<b class='block_txt' "+(o?"title='"+( (o&2)?name+' ':''  )+(  (o&1)?'这是一个匿名用户 ':'' )+"'":'')+" style='padding-left:0;padding-right:0;min-width:1.4em;width:1.4em;text-align:center;background:#"+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))+";color:#ffffff'>"
+hex = "<b class='block_txt' "+(o?"title='"+( (o&2)?name+' ':''  )+(  (o&1)?'这是一个匿名用户 ':'' )+"'":'')+" style='padding-left:0.2em;padding-right:0.2em;min-width:1em;text-align:center;background:#"+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))+";color:#ffffff'>"
 
-if(n.match(/UID\d+/i)){
+if(n.match(/UID:?\d+/i)){
 	if(n.length>6)
 		return n.substr(0,n.length-4)+hex+n.substr(n.length-4)+"</b>"
 	else
@@ -4912,7 +4924,7 @@ commonui.lessernuke = function (e,tid,pid,f)
 {
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-var self=this,$ = _$, rg, rf, rs, m2, m4, m6, n1, n2, n3, n4, info, infos, infoss, ff=location.search.match(/_ff=(\d+)/), y= $('/span')
+var self=this,$ = _$, rg, rf, rs, m2, m4, m6, n1, n2, n3, n4, il, is, il, rf, sk='',ff=location.search.match(/_ff=(\d+)/), y= $('/span')
 this.adminwindow._.addTitle('次级NUKE');
 
 this.adminwindow._.addContent(
@@ -4935,15 +4947,11 @@ this.adminwindow._.addContent(
 		n4 = $('/input').$0('type','checkbox'),'延时',$('/span','className','silver','innerHTML','(从下次发言开始禁言)'),
 		$('/br'),
 		$('/br'),
-		infos = $('/input').$0('placeholder','操作说明(将显示在帖子中)','maxlength','20'),
-		 f ? $('/span')._.add(
-			$('/br'),
-			infoss = $('/select').$0($('/option').$0('innerHTML','预设说明','style',{color:'silver'}), 'onchange',function(){if(this.selectedIndex)this.parentNode.previousSibling.value+=' '+this.options[this.selectedIndex].innerHTML}),
-			$('/button').$0('innerHTML','编辑','type','button','onclick',function(e){commonui.editRule(e,f)})
-			) :null,
+		is = $('/input').$0('placeholder','操作说明(将显示在帖子中)','maxlength','20','onfocus',function(){if(isl.style.display=='none')isl.style.display=''}),
+		 f ? (isl = $('/span','style','display:none',$('/br'))) :null,
 		$('/br'),
 		$('/br'),
-		info = $('/textarea').$0('placeholder','更长的操作说明(将通过短信发送)','rows','3','cols','20'),
+		il = $('/textarea').$0('placeholder','更长的操作说明(将通过短信发送)','rows','3','cols','20'),
 		$('/br'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
@@ -4959,12 +4967,16 @@ this.adminwindow._.addContent(
 			if(n2.checked)opt|=2
 			if(!n3.checked)opt|=2048
 			if(n4.checked)opt|=4096
-			var iv = infos.value.replace(/^\s+|\s+$/g,'')
-			if(!iv)
+			var sls =  isl.getElementsByTagName('input'),ist=is.value? is.value : ''
+			for(var i=0;i<sls.length;i++){
+				if(sls[i].checked)
+					ist+="\t"+sls[i].value
+				}
+			if(!ist)
 				return alert("需要操作说明")
-			self.lessernuke['info_'+tid+'_'+pid] = iv
+			self.lessernuke['info_'+tid+'_'+pid] = ist
 			__NUKE.doRequest({
-				u:__API.lesserNuke2(tid, pid, opt, info.value? info.value : '', iv? iv : ''),
+				u:__API.lesserNuke2(tid, pid, opt, il ? il.value.replace(/^\s+|\s+$/g,''):'' , ist,sk),
 				b:this,
 				inline:true
 				})
@@ -4997,19 +5009,25 @@ __NUKE.doRequest({
 	
 if(f)
 	__NUKE.doRequest({
-		u:{u:'/nuke.php?__lib=modify_forum&__act=get_rule&raw=3',a:{fid:f,ffid:(ff?ff[1]:'')}},
+		u:{u:'/nuke.php?__lib=modify_forum&__act=get_rule&raw=3',a:{tid:tid,pid:pid,fid:f,ffid:(ff?ff[1]:'')}},
 		f:function(d){
 			var e = __NUKE.doRequestIfErr(d)
 			if(e)
 				return
 			var x = d.data[0].replace(/^\s+|\s+$/g,'').split("\n")
+			sk=d.data[1]?d.data[1]:''
 			for(var i=0;i<x.length;i++){
-				infoss._.add(
-					$('/option').$0('innerHTML',x[i])
-					)
+				if(x[i]){
+					isl._.add(
+						$('/nobr')._.add($('/input','type','checkbox','value',x[i]),
+						x[i]),' '
+						)
+					}
 				}
+			isl._.add($('/button','innerHTML','编辑','type','button','onclick',function(e){commonui.editRule(e,f)}))
 			}
 		})
+	
 }//fe
 
 commonui.editRule = function(e,f){

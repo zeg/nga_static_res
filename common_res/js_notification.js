@@ -47,8 +47,8 @@ T[_TYPE_REPLY_REPLY] = function(x){return x[_ABOUT_ID_4] ? '{_U} {_R} 了你在{_T1
 T[_TYPE_COMMENT_TOPIC] = '{_U} <a class="b" href="/read.php?tid={_ABOUT_ID}">评论</a> 了你的主题 {_T} {_TNO}<br/>'
 T[_TYPE_COMMENT_REPLY] = function(x){return x[_ABOUT_ID_4] ? '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在{_T1} {_R2} 中的 {_R3} {_RNO}<br/>' : '{_U} <a class="b" href="/read.php?pid={_ABOUT_ID_3}">评论</a> 了你在主题 {_T} 中的 {_R3} {_RNO}<br/>'}
 T[_TYPE_MENTION_TOPIC] = '{_U} 在主题 {_T} 中提到了你<br/>',
-T[_TYPE_MENTION_REPLY] = function(x){return x[k._ABOUT_ID_4]? '{_U} 在{_T1} {_R2} 中的 {_R} 中提到了你<br/>': '{_U} 在主题 {_T} 中的 {_R} 中提到了你<br/>'}
-T[_TYPE_RECOMMEND_POST] = function(x){return '{_U} 评价了你在{_T} 中的'+(x[k._ABOUT_ID_2] ? ' {_R}' : ' 发言')+' 并使用了道具 {_RNO}<br/>'}
+T[_TYPE_MENTION_REPLY] = function(x){return x[_ABOUT_ID_4]? '{_U} 在{_T1} {_R2} 中的 {_R} 中提到了你<br/>': '{_U} 在主题 {_T} 中的 {_R} 中提到了你<br/>'}
+T[_TYPE_RECOMMEND_POST] = function(x){return '{_U} 评价了你在{_T} 中的'+(x[_ABOUT_ID_2] ? ' {_R}' : ' 发言')+' 并使用了道具 {_RNO}<br/>'}
 
 var T = TPL[_BIT_MSG]
 T[_TYPE_MESSAGE_NEW] = '{_U} 发起了新的 {_M}<br/>',
@@ -59,12 +59,12 @@ T[_TYPE_REPORT_REPLY] = function(x){return x[_ABOUT_ID_4]?'{_U} 举报了{_T1} {_R2
 
 var T = TPL[_BIT_SYS]
 T[_TYPE_KEYWORD_WATCH_TOPIC] = '{_U} 发布的主题 {_T} 触发了关键词监视<br/>',
-T[_TYPE_KEYWORD_WATCH_REPLY] = function(x){x[k._ABOUT_ID_4] ? '{_U} 在{_T1} {_R2} 中的 {_R5} 触发了关键词监视<br/>' : '{_U} 在主题 {_T} 中的 {_R5} 触发了关键词监视<br/>'}
+T[_TYPE_KEYWORD_WATCH_REPLY] = function(x){x[_ABOUT_ID_4] ? '{_U} 在{_T1} {_R2} 中的 {_R5} 触发了关键词监视<br/>' : '{_U} 在主题 {_T} 中的 {_R5} 触发了关键词监视<br/>'}
 T[_TYPE_KEYWORD_WATCH] = 'FID:{_ABOUT_ID}中的发帖触发了关键词监视 查看<a href="javascript:void(0)" onclick="commonui.filterList(event,{_ABOUT_ID},{_ABOUT_ID_2})" class="b red"/>详细信息</a><br/>'
 T[_TYPE_IP_CHANGE] = '<span class="red">你的帐号可能记录到新的IP 查看 <a href="/nuke.php?func=adminlog&f=access_log" target="_blank" class="b red"/>访问记录</a> 获得详细信息</span><br/>',
 T[_TYPE_UPVOTE] = function(x){
-	if(x[k._ABOUT_ID_2]){
-		x[k._ABOUT_ID_3] = x[k._ABOUT_ID_2]
+	if(x[_ABOUT_ID_2]){
+		x[_ABOUT_ID_3] = x[_ABOUT_ID_2]
 		return '你在主题 {_R2} 中的 {_R} 获得了支持或反对 {_RNO}<br/>'
 		}
 	else

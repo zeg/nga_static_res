@@ -123,23 +123,30 @@ good = $('/span','className','small_colored_text_btn block_txt_c2 stxt')._.add(
 	$('/a','className','white','href','javascript:void(0)','title','·´¶Ô',__TXT('bad'),'onclick',function(){commonui.postScoreAdd(this,a,1)})
 	)
 	
-if(!a.comment){
-	if(a.i==0 && a.small || a.subjectC.innerHTML=='')
-		a.subjectC.innerHTML='&nbsp;'
-	var x = a.subjectC.parentNode
-	//x.removeChild(a.subjectC)
-	var xx = x.firstChild
-	if(xx.nodeType!=1)xx=xx.nextSibling
-	if(xx.nodeName=='BR')
-		x.removeChild(xx)
+
+var x = a.subjectC.parentNode
+var xx = x.firstChild
+if(xx.nodeType!=1)xx=xx.nextSibling
+if(xx.nodeName=='BR')
+	x.removeChild(xx)
+if(a.comment){
 	x.insertBefore(
-		$('/div','style',{marginTop:'-0.25em'},
+		a.subjectCC=$('/span',a.subjectC),
+		x.firstChild
+		)
+	}
+else{
+	if((a.i==0 && a.small) || a.subjectC.innerHTML=='')
+		a.subjectC.innerHTML='&nbsp;'
+	x.insertBefore(
+		a.subjectCC=$('/div','style',{marginTop:'-0.25em'},
 			good._.css('verticalAlign','0.2em','marginRight',a.small?'1.5em':'0.7em') ,
 			a.subjectC
 			),
 		x.firstChild
 		)
 	}
+
 
 //if((a.comment || a.cLength>40 || a.pAid==a.__CURRENT_UID) && uI.active>=0)
 //	lite = lite | 2;
@@ -208,8 +215,10 @@ if(a.atItem){
 
 
 if(a.type || a.tmBit1){
-	a.subjectC.innerHTML+=this.getPostBitInfo(a.fid, a.tid, a.pid , a.type, a.tmBit1, 2|(a.comment?4:0), a.__GP.admincheck)
-
+	a.subjectCC.insertBefore(
+		$('/span','innerHTML',this.getPostBitInfo(a.fid, a.tid, a.pid , a.type, a.tmBit1, 2|(a.comment?4:0), a.__GP.admincheck)),
+		a.subjectC.nextSibling
+		)
 /*
 	if(a.pid!=0 && (a.type & 1026)===1026 && !a.__GP.admincheck){
 		var x = a.pC
@@ -1065,11 +1074,11 @@ else
 floor:function(i,pid){
 if(!i)
 	return ''
-return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt white' style='vertical-align:text-bottom'>#"+i+"</a></span>"
+return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt white vertmod'>#"+i+"</a></span>"
 },//fe
 
 uid:function(uid){
-return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt white' style='background:#aaa;vertical-align:text-bottom' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
+return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt white vertmod' style='background:#aaa' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
 },//fe
 
 level:function(lite,level,rvrc,fid,uid,active,gid,mod){

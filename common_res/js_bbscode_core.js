@@ -422,10 +422,7 @@ ubbcode.checkIframeTable = {
 	}
 }
 
-ubbcode.checkSigImg=function(u){
-if((u+'').match(/^https?:\/\/(pic\d*\.178\.com|img\d*\.nga\.cn|img\d*\.nga\.178\.com|img\d*\.ngacn\.cc|card\.psnprofiles\.com|card\.exophase\.com|steamsignature\.com\/card)/))
-	return 1
-}//
+ubbcode.checkSigImg=commonui.checkSigImg
 
 ubbcode.regexplock = 0
 ubbcode.videonum = 0
@@ -583,7 +580,7 @@ else{
 	
 }//fe
 
-ubbcode.onResizeProto = function(){
+ubbcode.onResizeProto = function onResizeProto(){
 if(this.onResizeQue.length){
 	if(this.onResizeTimeout)
 		clearTimeout(this.onResizeTimeout)
@@ -1481,23 +1478,46 @@ if(commonui.correctAttachUrl)
 //确定显示状态
 var dis, alt='';//  true显示按钮 String显示缩略图 null显示原图
 if (commonui.ifUrlAttach(src) ){//附件
-	var a = this.attach.check(arg.i,src),thumb=a?a.thumb:0, size = a? a.size:10000000//如果not附件则视为大图无缩略图
-	if(src.match(/\.(?:thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)){//用户指定使用缩略图
+	var a = this.attach.check(arg.i,src),thumb=a?a.thumb:0, size = a? a.size:10000000,//如果not附件则视为大图无缩略图
+		dw=0,dh=0,dr = (a.w&&a.h)?a.h/a.w:0, tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
+	if(tmp){//用户指定使用缩略图
+	//	if(tmp[1]=='medium.')dw = 640
+	//	else if(tmp[1]=='thumb.')dw = 320
+	//	else if(tmp[1]=='thumb_s.')dw = 130
+	//	else if(tmp[1]=='thumb_ss.')dw = 60
+	//	dh = dw * dr
 		dis = src
 		src = src.replace(/\.(?:thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/,"")
 		}
 	else{//原图
 		dis = null
+	//	dw = a.w
+	//	dh = a.h
 		if(size>100){//biger than 100k
 			if(++this.imgGen.c>50){//附件原图计数
-				if(thumb&96)
-					dis = src+"."+(	(thumb&64) ? 'medium' : 'thumb'  )+".jpg"
+				if(thumb&96){
+					if(thumb&64){
+						dis = src+'.medium.jpg'
+	//					dw = 640
+	//					dh = dw * dr
+						}
+					else{
+						dis = src+'.thumb.jpg'
+	//					dw = 320
+	//					dh = dw * dr
+						}
+					}
 				else
 					dis = true
 				}
 			}
 		}
-
+	//if(arg.maxWidth && dw>arg.maxWidth){
+	//	dw=arg.maxWidth
+	//	dh = dw * dr
+	//	}
+	//if(dr)
+		//w+="min-width:"+dw+"px;min-height:"+dh+"px;"
 	if(noimg & 2)//调用时强制按钮
 		dis = true
 	else if((arg.opt&2)==0){//不在fixblk中
@@ -1542,14 +1562,13 @@ else{//不是附件
 	}
 
 var img = "<img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+src+"' alt='"+alt+"' onerror='ubbcode.imgError(this)'/>"
-
 if(dis){
 	var ck = this.randDigi('manualLoadImg', 10000)
 	this.manualLoadCache[ck]=img//.replace(/max-width:\d+px/,'max-width:90%')
 	if(dis === true)
 		return "<button type='button' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'>显示图片</button><span style='display:none'></span>"
 	else if(dis)
-		return "<a href='javascript:void(0)' class='thumblink' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'><img src='"+dis+"' onerror=''/></a><span style='display:none'></span>"
+		return "<a href='javascript:void(0)' class='thumblink' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'><img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+dis+"' onerror=''/></a><span style='display:none'></span>"
 	}
 else
 	return img
@@ -1897,6 +1916,7 @@ if(arg.txt.indexOf('[collapse')!=-1){
 		if(!arg.collapseBlock)arg.collapseBlock=[]
 		arg.collapseBlock.push($2)
 		arg.collapseAttach=1
+
 		return "<div class='collapse_btn'><button onclick='ubbcode.collapse.load(this.parentNode.nextSibling,\""+arg.argsId+"\","+(arg.collapseBlock.length-1)+",this);' type='button' name='collapseSwitchButton'>+</button> "+l+"</div><div class='collapse_content' style='display:none'></div>";
 		})
 	}
@@ -1942,7 +1962,7 @@ if(b)
 this.parent.bbsCode(arg)
 },//fe
 
-loadr:function(o,argsId,id,opt){
+loadr:function(o,argsId,id,opt){//&2allow img    &1display content   &4use transition
 var $ = _$
 if((!o.parentNode.className.match(/ubbcode/)||(window.__SETTING.bit&4))//不是最上级block或10寸及以下
 		&& (opt&1)==0  && (this.parent.bbscodeConvArgsSave[argsId].opt&2))
@@ -1968,23 +1988,27 @@ if(!o._selector){
 				for(var i=0,j=this.parentNode.childNodes;i<j.length;i++)
 					j[i].style.background = i==this.name ? __COLOR.border0 : __COLOR.border2
 				o._selected = this.name
-				ubbcode.collapse.loadr(o,argsId,this.name,3)
+				ubbcode.collapse.loadr(o,argsId,this.name,7)
 				})
 			)
 	o.parentNode.insertBefore(rs,o.nextSibling)
 	o._selector = rs
 	o._selected = id
 	}
-if('transition' in document.body.style){
+if((opt&4) && ('transition' in document.body.style) && !o.style.transition){
 	o.style.transition="all 0.2s ease-out 50ms"
 	$(o)._.on('transitionend',function(){
 		if(this.childNodes[1]){
 			this.removeChild(this.firstChild)
 			}
+		//if(arg.opt&256)
+			//arg.onResize()
 		})
 	}
 arg.txt = arg.randomBlock[id]
-arg.c = $('/div').$0('style','transition:all 0.2s ease-out 50ms')
+arg.c = $('/div')//.$0('style','transition:all 0.2s ease-out 50ms')
+if((opt&4) && ('transition' in document.body.style) && !arg.c.style.transition)
+	arg.c.style.transition = 'all 0.2s ease-out 50ms'
 arg.noCov = 1
 arg.isBlock = 1
 arg.opt|=64|256
@@ -2028,7 +2052,7 @@ arg.callBack = function(){
 		pi = arg.c.getBoundingClientRect()
 		pih = pi.bottom-pi.top
 		}
-	o.style.height=Math.round(pih)+'px'
+	//o.style.height=Math.round(pih)+'px'
 	arg.c.style.opacity=1
 	if(arg.opt&256)
 		arg.onResize()
@@ -2251,15 +2275,18 @@ if(!opt)
 return brs+rr($0,e,t,opt,of)+bre
 },
 rr= function($0,e,t,opt,of){
-if($0=='\n'){//在换行处分段如有未结束的tag强行结束
-	var n=''
-	for(var k in b){
-		while(b[k]>0){
-			n+='</span>'
-			b[k]--
+if(t===undefined){
+	if($0.match(/\n+/)){//在换行处分段如有未结束的tag强行结束
+		var n=''
+		for(var k in b){
+			while(b[k]>0){
+				n+='</span>'
+				b[k]--
+				}
 			}
+		return n+'\n'
 		}
-	return n+'\n'
+	return $0
 	}
 t = t.toLowerCase()
 if(!b[t])
@@ -3184,12 +3211,24 @@ if((x=this.cache['attach'+id]) && (x=x.index[n[1]])){//如果在本帖的附件里
 	x.ck=true
 	return x
 	}
-if(x = n[1].match(/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM])([a-z0-9]+)(?:T([a-z0-9]+))?(?:S([a-z0-9]+)-([a-z0-9]+))?/))//如果是其他贴的附件
+
+if(x = n[1].match(/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM][a-z0-9]+)+(?:T([a-z0-9]+))?(?:S([a-z0-9]+)-([a-z0-9]+))?/)){//如果是其他贴的附件
+	var sz = 0
+	x[1].replace(/([A-Z])([a-z0-9]+)/g,function($0,$1,$2){
+			if($1=='K')
+				sz+= parseInt($2,36)
+			else if($1=='Z')
+				sz+= parseInt($2,36)*10
+			else if($1=='X')
+				sz+= parseInt($2,36)*100
+			else if($1=='M')
+				sz+= parseInt($2,36)*1000
+			})
 	return {
-		size:parseInt(x[2],36)*(x[1]=='K' ? 1 : (x[1]=='Z' ? 10 : (x[1]=='X' ? 100 : (x[1]=='M' ? 1000 : 1)))),
-		thumb:x[3] ? parseInt(x[3],36) : 0,
-		w : x[4] ? parseInt(x[4],36) : 0,
-		h : x[5] ? parseInt(x[5],36) : 0,
+		size:sz,
+		thumb:x[2] ? parseInt(x[2],36) : 0,
+		w : x[3] ? parseInt(x[3],36) : 0,
+		h : x[4] ? parseInt(x[4],36) : 0,
 		type : "img",
 		url_utf8_org_name : n[1],
 		url : src,
@@ -3197,7 +3236,7 @@ if(x = n[1].match(/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM])([a-z0-9]+)(?:T([a-z0
 		isThumb : n[3]?1:0,
 		ext : n[2]?n[2]:''
 		}
-	
+	}
 },//fe
 disp:function(id,opt){
 var a = this.cache['attach'+id],

@@ -443,6 +443,12 @@ if(_LESSER){
 
 
 o.appendChild(all)
+var u = location.search.match(/(?:\?|&)reset_email=([a-z0-9A-Z]+)/)
+if(u)
+	commonui.resetEmail(_U.username, _U.uid, u[1])
+
+
+
 },//fe
 _long2ip : function (ip) {
 if(typeof ip =='string' && ip.indexOf('.')!=-1)
@@ -608,6 +614,29 @@ return commonui.genStdBlock_a ('ucp'+id,name,info,o)
 }//fe
 
 }//ce
+
+
+commonui.resetEmail = function(name,uid,tok){
+this.createadminwindow()
+var $ = _$,x = this.adminwindow,y
+x._.addContent(null)
+x._.addTitle('修改账号邮箱')
+x._.addContent(
+	$('/span')._.add(
+		'修改账号 '+name+' 的邮箱',$('/br'),
+		y=$('/input','placeholder','输入新的邮箱'),$('/br'),
+		$('/button','innerHTML','确定','onclick',function(){
+			__NUKE.doRequest({
+				u:{u:__API._base+'__lib=login&__act=reset_email&raw=3',
+					a:{uid:uid,email:y.value,token:tok}
+					},
+				b:this
+				})
+			})
+		)
+	)
+this.adminwindow._.show()
+}//fe
 
 
 commonui.setPhone = function(){
