@@ -22,13 +22,16 @@ $border4 #BD7E6D
 
 
 灰/白
+$gbg8 #000
 $gbg0	#222
 $gbg1	#444
 $gbg2	#888
-$gbg3	#eee
 $gbg4	#bbb
-$gbg5	#fff
+$gbg7 #cacaca
 $gbg6	#ddd
+$gbg3	#eee
+$gbg5	#fff
+
 
 链接默认
 $link #1a3959
@@ -46,6 +49,9 @@ $txt2 #58697b
 深色背景中的浅色字
 $inverttxt1 #fff
 $inverttxt2 #bbb
+$inverttxt3 =$bg1
+$inverttxt4 =$bg0
+$inverttxt5 =$gbg2
 
 正文中的文字块#877e68
 $quote0bg #f2eddf
@@ -93,10 +99,12 @@ $rd = 2.5
 $rdi = 2
 
 块阴影或块边框
-$shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+$shadow1 = 'border: '.$bd.'px solid '.$gbg7.';box-shadow:0 0 5px -3px '.$gbg8.';'
 
 页面主题左右margin
 $mwm = 10
+
+$invertfilter = ''
 */
 
 /*style_define
@@ -124,13 +132,15 @@ $border4 #82a8a6
 
 
 灰/白
+$gbg8 #000
 $gbg0	#222
 $gbg1	#444
 $gbg2	#888
-$gbg3	#eee
 $gbg4	#bbb
-$gbg5	#fff
+$gbg7 #cacaca
 $gbg6	#ddd
+$gbg3	#eee
+$gbg5	#fff
 
 链接默认
 $link #1a3959
@@ -148,6 +158,9 @@ $txt2 #58697b
 深色背景中的浅色字
 $inverttxt1 #fff
 $inverttxt2 #bbb
+$inverttxt3 =$bg1
+$inverttxt4 =$bg0
+$inverttxt5 =$gbg2
 
 正文中的文字块#747b78
 $quote0bg #e6ebe9
@@ -197,10 +210,12 @@ $rd = 2.5
 $rdi = 2
 
 块阴影或块边框
-$shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+$shadow1 = 'border: '.$bd.'px solid '.$gbg7.';box-shadow:0 0 5px -3px '.$gbg8.';'
 
 页面主题左右margin
 $mwm = 10
+
+$invertfilter = ''
 */
 
 /*style_define
@@ -228,13 +243,15 @@ $border4 #a9818c
 
 
 灰/白
+$gbg8 #000
 $gbg0	#222
 $gbg1	#444
 $gbg2	#888
-$gbg3	#eee
 $gbg4	#bbb
-$gbg5	#fff
+$gbg7 #cacaca
 $gbg6	#ddd
+$gbg3	#eee
+$gbg5	#fff
 
 链接默认
 $link #4c333b
@@ -252,6 +269,9 @@ $txt2 #7b6d71
 深色背景中的浅色字
 $inverttxt1 #fff
 $inverttxt2 #bbb
+$inverttxt3 =$bg1
+$inverttxt4 =$bg0
+$inverttxt5 =$gbg2
 
 正文中的文字块#7d7275
 $quote0bg #ece5e7
@@ -300,90 +320,99 @@ $rd = 2.5
 $rdi = 2
 
 块阴影或块边框
-$shadow1 = 'border: '.$bd.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
+$shadow1 = 'border: '.$bd.'px solid '.$gbg7.';box-shadow:0 0 5px -3px '.$gbg8.';'
 
 页面主题左右margin
 $mwm = 10
+
+$invertfilter = ''
 */
 
+
+
+
 /*style_define
-=======================================================
 网页背景色
-$bg0	#1a1912
+$bg0	#11100e
 
 区域背景 尽量用中间四个
-$bg1	#1d1c15
-$bg2	#212019
-$bg3	#26251e
-$bg4	#2a2922
-$bg5	#2d2c25
-$bg6	#302f28
+$bg1	#181614
+$bg2	#201e1b
+$bg3	#2a2724
+$bg4	#322f2b
+$bg5	#3c3833
+$bg6	#34312e
 
 边框 分隔线 深色元素
-$border0 #4a2731
-$border0_h #a27884
-$border1 #915c60
-$border2 #cfafae
-$border3 #9c967a
+$border0	#fbdbb7
+$border0_h	#9c7b58
+$border1	#be8f7e
+$border2	#614839
+$border3	#433227
 
 浅色分隔线
-$border4 #a9818c
+$border4	#926562
 
 
 灰/白
-$gbg0	#222
-$gbg1	#444
-$gbg2	#888
-$gbg3	#eee
-$gbg4	#bbb
-$gbg5	#fff
-$gbg6	#ddd
+$gbg8	#ffffff
+$gbg0	#dddddd
+$gbg1	#bbbbbb
+$gbg2	#777777
+$gbg4	#444444
+$gbg7	#353535
+$gbg6	#222222
+$gbg3	#111111
+$gbg5	#000000
+
 
 链接默认
-$link #ffb400
-$link_h #75515c
+$link	#697e89
+$link_h	#506d7f
 
 次级链接
-$link2 #52474a
-$link2_h #7b6d71
+$link2	#434f56
+$link2_h	#28353d
 
 正文
-$txt #9c967a
+$txt	#77878f
 次级正文
-$txt2 #7b6d71
+$txt2	#525e64
 
 深色背景中的浅色字
-$inverttxt1 #fff
-$inverttxt2 #bbb
+$inverttxt1	#000000
+$inverttxt2	#292929
+$inverttxt3 =$bg1
+$inverttxt4 =$bg0
+$inverttxt5 =$gbg2
 
-正文中的文字块#7d7275
-$quote0bg #ece5e7
-$quote0border #e0d9db
+正文中的文字块#877e68
+$quote0bg	#201f1d
+$quote0border	#2c2b29
 
-$quote1 #6b2d25
-$quote1bg #e1c8a7
-$quote1border #b9986e
+$quote1	#dad0d0
+$quote1bg	#58534f
+$quote1border	#918a86
 
-$quote2bg #F9CAB5
-$quote2border #B63F32
+$quote2bg	#4a4140
+$quote2border	#cdb9ba
 
-$quote3bg #d6dcae
-$quote3border #91b262
+$quote3bg	#51514a
+$quote3border	#9a9d91
 
 
-ui重点文字颜色1
-$uitxt1 #4a2731
-$uitxt1_h #a27884
-ui重点文字颜色2
-$uitxt2 #274349
-$uitxt2_h #79a2a0
-ui次级重点文字颜色1
-$uitxt3 #855965
-$uitxt3_h #a27884
-ui次级重点文字颜色2
-$uitxt4 #598384
-$uitxt4_h #79a2a0
-
+ui重点文字颜色1 ($uitxt1, -0.0039, -0.4930, 0.3725)
+$uitxt1	#976f6b
+$uitxt1_h	#5e3532
+ui重点文字颜色2 ($uitxt2, -0.0375, -0.2126, 0.3490)
+$uitxt2	#708182
+$uitxt2_h	#3b504c
+ui次级重点文字颜色1 ($uitxt1, -0.0039*0.666, -0.4930*0.666, 0.3725*0.666)
+$uitxt3	#774a46
+$uitxt3_h	#5e3532
+ui次级重点文字颜色2 ($uitxt2, -0.0375*0.666, -0.2126*0.666, 0.3490*0.666)
+$uitxt4	#4e6461
+$uitxt4_h	#3b504c
 
 首页 单元高度
 $cellh =48
@@ -403,11 +432,16 @@ $rd = 2.5
 $rdi = 2
 
 块阴影或块边框
-$shadow1 = 'border: '.$bd.'px solid '.$bg5.';box-shadow:0 0 5px -3px #fff;'
+$shadow1 = 'border: '.$bd.'px solid '.$gbg7.';box-shadow:0 0 5px -3px '.$gbg8.';'
 
 页面主题左右margin
 $mwm = 10
+
+$invertfilter = 'filter: invert(1);'
 */
+ 
+ 
+ 
 
 
 html {overflow-y: scroll}
@@ -451,6 +485,7 @@ border: 1px solid $border2;
 box-shadow: 0 0 2px 0 $gbg4 inset;
 border-radius: 0.25em;
 background: $bg0;
+color:$txt;
 padding:0.14em 0.14em;
 margin:0.1em 0.2em
 }
@@ -488,11 +523,11 @@ src: local("Helvetica Black");
 
 @font-face {
   font-family: 'comm_glyphs';
-  src:  url('font/comm_glyphs.eot?fm5o27');
-  src:  url('font/comm_glyphs.eot?fm5o27#iefix') format('embedded-opentype'),
-    url('font/comm_glyphs.ttf?fm5o27') format('truetype'),
-    url('font/comm_glyphs.woff?fm5o27') format('woff'),
-    url('font/comm_glyphs.svg?fm5o27#comm_glyphs') format('svg');
+  src:  url('font/comm_glyphs.eot?fm5o28');
+  src:  url('font/comm_glyphs.eot?fm5o28#iefix') format('embedded-opentype'),
+    url('font/comm_glyphs.ttf?fm5o28') format('truetype'),
+    url('font/comm_glyphs.woff?fm5o28') format('woff'),
+    url('font/comm_glyphs.svg?fm5o28#comm_glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -594,6 +629,7 @@ a .numeric {color:inherit}
 .sienna {color:sienna}
 .chocolate {color:chocolate}
 .ngared {color:$border0}
+
 /*
 .minorcolor {color:#5B4D41}
 .ni {color:#333}
@@ -654,15 +690,15 @@ font-family: Verdana, Tahoma, Arial, sans-serif;
 
 .block_txt_c0 {
 background: $border0;
-color: $bg1;
+color: $inverttxt3;
 }
 .block_txt_c0:hover{
-color: #fff;
+color: $inverttxt1;
 }
 
 .block_txt_c1 {
 background: $border1;
-color: $bg0;
+color: $inverttxt4;
 }
 
 .block_txt_c2 {
@@ -672,7 +708,7 @@ color: $uitxt2;
 
 .block_txt_c3 {
 background: $border3;
-color: $gbg2;
+color: $inverttxt5;
 }
 
 .w5 {width:5%}
@@ -1156,6 +1192,7 @@ text-decoration:none;
 .ubbcode .headline .headlinesel .seled {background:$border0}
 
 .ubbcode .fixblk .apd {display:none}
+.ubbcode .smile_ac,.ubbcode .smile_ac2 {$invertfilter}
 /*.page_nav btn*/
 
 .page_nav .symbol {font-size:27px;font-family:Arial Unicode MS, Verdana, Tahoma, Arial, sans-serif}
@@ -1201,9 +1238,9 @@ text-decoration:none;
 
 
 /*用户信息 声望条*/
-.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:#ccc 1px solid;width:auto}
+.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:$gbg7 1px solid;width:auto}
 .r_container table {border-collapse:separate;border-spacing:1px;width:100%}
-.r_bar {height:2px;line-height:0px;font-size:0px;background:#ccc}
+.r_bar {height:2px;line-height:0px;font-size:0px;background:$gbg7}
 .r_container td {height:2px;font-size:0px;line-height:0px;padding:0}
 .r_container .dot {background:#aaa;height:1px;padding:1px 0 0 0}
 .r_container .blue .r_bar, .r_container .blue .dot {background:#7ea8b8}
@@ -1251,7 +1288,7 @@ text-decoration:none;
 #startmenu .recent .item {border:none}
 #startmenu .recent {background:$bg0;border-radius:0.5em;box-shadow:inset 0 0 3px #444}
 
-#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:#eee;font-family:Verdana, Tahoma, Arial, sans-serif;background:$border0;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
+#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:$inverttxt3;font-family:Verdana, Tahoma, Arial, sans-serif;background:$border0;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
 #usernamebg .chn_bold {font-family:'Microsoft Yahei', simhei;font-size:inhert}
 #usernamebg .title , #usernamebg .id {font-size:12px;line-height:14px}
 #usernamebg span {display:block;float:left;clear:both;padding:0 0 1px 0}
@@ -1455,8 +1492,8 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 .stdbtn a {border-left:1px solid $border3;background:$bg4;font-weight:bold;display:block;padding:0 0.8em;}
 .stdbtn a:hover {background-color:$bg1;text-decoration:none}
 
-.stdbtn .invert {background:$border0;color:#fff}
-.stdbtn .invert:hover {background:$border0_h;color:#fff}
+.stdbtn .invert {background:$border0;color:$inverttxt3;}
+.stdbtn .invert:hover {background:$border0_h;color:$inverttxt1}
 
 .stdbtn .teal {background:#356868;color:#fff}
 .stdbtn .teal:hover {background:#598d8d;color:#fff}

@@ -544,8 +544,8 @@ httpDataGetter.script_muti_get(
 						(__GP['super']||__GP.ubStaff) ? $('/input').$0('type','checkbox','name',d.mid) : null,
 						$('/a').$0('href',self._urlBase+self._rdm()+'#mid='+d.mid+'_1','innerHTML',d.subject,'className','subject','onclick',function(e){commonui.cancelBubble(e);self.read(this._.gV('mid'))})._.sV('mid',d.mid),
 						$('/span').$0('innerHTML',' ('+d.posts+') ','className','silver nobr','title',d.posts+'个回复'),
-						(d.posts > 20) ? $('/a').$0('href',self._urlBase+self._rdm()+'#mid='+d.mid,'innerHTML','>>','title','最后页','className','small_colored_text_btn stxt white nobr','style',{background:'#551200',marginRight:'0.5em'},'onclick',function(e){commonui.cancelBubble(e);self.read(this._.gV('mid'),-1)})._.sV('mid',d.mid) : null,
-						$('/a').$0('innerHTML','x','title','退出对话后将无法再看到对话内容','className','small_colored_text_btn stxt white','style',{background:'#551200'},'href','javascript:void(0)','onclick',function(){if(!window.confirm(this.title))return;self._leaveTopic(this,this._.gV('mid'),(self.asUid ? self.asUid : __CURRENT_UID))})._.sV('mid',d.mid),
+						(d.posts > 20) ? $('/a').$0('href',self._urlBase+self._rdm()+'#mid='+d.mid,'innerHTML','>>','title','最后页','className','small_colored_text_btn stxt block_txt_c0 nobr','style',{marginRight:'0.5em'},'onclick',function(e){commonui.cancelBubble(e);self.read(this._.gV('mid'),-1)})._.sV('mid',d.mid) : null,
+						$('/a').$0('innerHTML','x','title','退出对话后将无法再看到对话内容','className','small_colored_text_btn stxt block_txt_c0','href','javascript:void(0)','onclick',function(){if(!window.confirm(this.title))return;self._leaveTopic(this,this._.gV('mid'),(self.asUid ? self.asUid : __CURRENT_UID))})._.sV('mid',d.mid),
 						'className','c2'
 						),	
 					$('/td').$0('style',y?{fontSize:'0.846em'}:{},'className','c2 time nobr','innerHTML',commonui.time2dis(d.last_modify),'title',commonui.time2date(d.last_modify, 'Y-m-d H:i')),

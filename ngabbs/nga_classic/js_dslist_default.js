@@ -175,7 +175,7 @@ if (a)
 	//		a.file = a.file['default'];
 	//	}
 	t.bbs_ads8_load_new[i] = o
-	_$(o).$0('style',"background:#444;padding:5px;width:"+(a.width|0?(a.width|0)+2|0:192)+"px;textAlign:center;verticalAlign:top;display:;",'className',null)
+	_$(o).$0('style',this.style('adsh')+"width:"+(a.width|0?(a.width|0)+2|0:192)+"px;display:;",'className',null)
 	return 1
 	}
 }//fe
@@ -216,24 +216,31 @@ return ''
 /*论坛全页面上通栏 900×60		bbs_ads1*/
 /*论坛帖子列表页面（版面）中通栏 900*60		bbs_ads9 bbs_ads23*/
 /*-7帖子列表页面（版面）中通栏 900*60		bbs_ads28 */
-function bbs_ads9(){
+ngaAds.bbs_ads9_gen=function(){
 if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
 	return
-var n=ngaAds, w = window.put
+var n=ngaAds, x=''
 if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && __CURRENT_FID==-7)){
-	w("<div style='"+n.style('adsc')+";margin-bottom:8px;'>");
+	x+="<div style='"+n.style('adsc')+";margin-bottom:8px;'>";
 	if(n.bbs_ads1)
-		w(n.genAds(n.bbs_ads1));
+		x+=n.genAds(n.bbs_ads1)
 	if(n.bbs_ads9)
-		w(n.genAds(n.bbs_ads9));
+		x+=n.genAds(n.bbs_ads9)
 	if(n.bbs_ads23)
-		w(n.genAds(n.bbs_ads23));
+		x+=n.genAds(n.bbs_ads23)
 	if(n.bbs_ads28)
-		w(n.genAds(n.bbs_ads28));
-	w("</div>");
+		x+=n.genAds(n.bbs_ads28)
+	x+="</div>"
 	}
-
+if(x){
+	var y = $('toptopics').nextSibling
+	while(y.nodeType!=1)
+		y = y.nextSibling
+	y.innerHTML += x
+	}
 }//fe
+
+
 
 ngaAds.open_69124=function(e,u,h){
 if(!this.open_69124.w){
@@ -279,9 +286,10 @@ else{
 	}
 
 if(x){
-	put("<div style='"+this.style('adsc')+"'>")
-	put(x)
-	put("<div class='clear'></div></div>");
+	var y = $('fast_post_c').nextSibling
+	while(y.nodeType!=1)
+		y = y.nextSibling
+	y.innerHTML = "<div style='"+this.style('adsc')+"'>"+x+"<div class='clear'></div></div>"
 	}
 }
 
@@ -309,7 +317,9 @@ if (ad)
 	return _$('/td').$0('id','bbs_ads16','className','adsh','innerHTML',ad)
 */
 if (this.bbs_ads22)
-	return _$('/td').$0('style', this.style('adsh')+(this.bbs_ads22.width ? 'width:'+this.bbs_ads22.width+'px;' : ''),'innerHTML',this.genAds(this.bbs_ads22))
+	return _$('/td','className','c2','style','verticalAlign:top;padding:0;width:'+((this.bbs_ads22.width|0)+2+12)+'px',
+		_$('/div','style', this.style('adsh')+'verticalAlign:middle;padding:6px;'+(this.bbs_ads22.width ? 'width:'+((this.bbs_ads22.width|0)+2)+'px;' : ''),'innerHTML',this.genAds(this.bbs_ads22))
+		)
 return null
 }
 

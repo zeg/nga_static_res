@@ -717,7 +717,7 @@ this.w._.addContent(
 		$('/br'),
 		$('/input').$0('type','radio','name','color','value',''),t(' 无'),
 		$('/br'),
-		$('/input','type','checkbox','name','nr','checked','checked'),' 同时改变主题的推荐值 ',
+		$('/input','type','checkbox','name','nr','checked',window.__CURRENT_FID==10?'':'checked'),' 同时改变主题的推荐值 ',
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
 				var f = this.parentNode.getElementsByTagName('input'),set=''
@@ -2226,6 +2226,8 @@ this.w._.addContent(
 	$('/br'),
 	h=$('/input','type','checkbox'),$('/span','innerHTML','不同步更新时间'),
 	$('/br'),
+	$('/span','innerHTML','镜像到空合集会自动改变合集的类型'),
+	$('/br'),
 	$('/button')._.attr({innerHTML:'确定',type:'button'})._.on('click',function(){
 		if(y.value = parseInt(y.value,10))
 			__NUKE.doRequest({
@@ -2393,7 +2395,7 @@ commonui.adminwindow._.addContent(
 	)
 var z = function(o,e){
 	var p = __NUKE.position.get(e)
-	var q = o.getClientRects()[0]
+	var q = o.getBoundingClientRect()
 	if(p.px-q.left > q.right-p.px)
 		o.value++
 	else if(o.value>1)

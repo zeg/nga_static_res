@@ -137,7 +137,7 @@ var info = this._span(
 		'用户名&emsp;',this._span(
 				_U.username,
 				(this._currentUid && !_SELF && _LESSER ? 
-						_$('/a').$0('innerHTML',_U.followed ? '已关注' :'关注','onclick',function(){commonui.follow(_U.followed ? 8 :1,_U.uid)},'href','javascript:void(0)','className','small_colored_text_btn white','style','fontFamily:inherit;backgroundColor:'+(_U.followed ?'#aaa':__COLOR.border0))
+						_$('/a').$0('innerHTML',_U.followed ? '已关注' :'关注','onclick',function(){commonui.follow(_U.followed ? 8 :1,_U.uid)},'href','javascript:void(0)','className','small_colored_text_btn block_txt_c0','style','fontFamily:inherit;backgroundColor:'+(_U.followed ?'#aaa':__COLOR.border0))
 						: null)
 				),
 		'邮箱&emsp;&emsp;',_U.email,

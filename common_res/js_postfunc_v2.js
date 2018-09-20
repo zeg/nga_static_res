@@ -1789,7 +1789,7 @@ for (var i=0;i<x.length;i++){
 		z=y[0]
 	else
 		var z = y[0].replace(/<\/?[a-z]+>/g,'').split('<br/>')
-	txt +="<a href='javascript:void(0)' title='"+z[1]+"' class='small_colored_text_btn white' onfocus='this.blur()' onclick='postfunc.uiAddTag(event,"+this.hintTable.length+")'><nobr>"+z[0]+"</nobr></a> &nbsp;";
+	txt +="<a href='javascript:void(0)' title='"+z[1]+"' class='small_colored_text_btn block_txt_c0' onfocus='this.blur()' onclick='postfunc.uiAddTag(event,"+this.hintTable.length+")'><nobr>"+z[0]+"</nobr></a> &nbsp;";
 	this.hintTable.push(y[2])
 	}
 
@@ -1811,17 +1811,18 @@ if(!window.__CURRENT_UID || !window.__CURRENT_FID || __SETTING.bit & 4)
 
 var z = _$('fast_post_c')
 if(!z)return
-
+console.log(fid,tid,stid)
 var w=window, 
-fid = w.__CURRENT_FID,
-tid = w.__CURRENT_TID ? w.__CURRENT_TID : 0,
-stid = w.__CURRENT_STID ? w.__CURRENT_STID : 0,
+//fid = w.__CURRENT_FID,
+//tid = w.__CURRENT_TID ? w.__CURRENT_TID : 0,
+//stid = w.__CURRENT_STID ? w.__CURRENT_STID : 0,
 sfid = tid ? fid : commonui.selectForum.getCurrent(fid)
 
 var $ = _$,t =function(x){return document.createTextNode(x)},b= commonui.stdBtns(),p,sel=null,subject,content,selector
 
 , fbit=0
 , dopost = function(o){
+return console.log(fid,tid,stid);
 commonui.newPost(
 	o,
 	tid?postfunc.__REPLY_BLANK:postfunc.__NEW,//²Ù×÷
@@ -2257,14 +2258,18 @@ if(action == P.__NEW  && (fbit & P._bit.if_force_topickey) && (opt&4)==0 ){
 	if (cache._topic_key){
 		opt|=4
 		var x,y,z
+		console.log(subject)
 		for (var k in cache._topic_key){
 			x = cache._topic_key[k]
 			if(x[1]){
 				y=1
 				if(x[0].indexOf('[')==0) x=x[0]
 				else x='['+x[0]+']'
-				if (subject.indexOf(x)!=-1)
+				console.log(x)
+				if (subject.indexOf(x)!=-1){
 					z=1
+					console.log(9)
+					}
 				}
 			}
 		if (y==1 && z!=1)
@@ -2287,7 +2292,8 @@ if(action == P.__NEW  && (fbit & P._bit.if_force_topickey) && (opt&4)==0 ){
 				unlock()
 				redo()
 				return true
-				}
+				},
+			c:__CHARSET
 			})//doRequest
 		return false;
 		}

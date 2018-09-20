@@ -6,7 +6,7 @@ ubbcode.forum_id = 0;
 
 ubbcode.bbscode_pre = function(arg){
 arg.txt = arg.txt.replace(/p_w_upload/gi,"attachment");//[img]
-arg.txt = arg.txt.replace(/iplaymtg\.com|joyme\.com|duowan\.com|daxuanwo\.info|woweyes\.net|loyogou\.com|52djq\.com|ngasave\.us|tuwan\.com|laimaika\.com|iyingdi\.com/gi,'');
+
 }//fe
 
 ubbcode.bbscode_mid=function(arg)
@@ -45,6 +45,19 @@ function($0,$1)
 
 }//if
 
+
+if(arg.txt.indexOf('[dict')!=-1){
+arg.txt = arg.txt.replace(/\[dict\](.+?)\[\/dict\]/gi,function(b,a){
+var t = ''
+a = a.replace(/^\[(.+?)\]/,function(c,d){t=d;return ''}).replace(/^\s*<br\s*\/?\s*>\s*|\s*<br\s*\/?\s*>\s*$/gi,'')
+if(!t || t.length>20)return b
+if(!ubbcode.bbscodeExplainSave)ubbcode.bbscodeExplainSave={}
+t = '['+t.replace(/\s*<br\s*\/?\s*>\s*/gi,' ').replace(/^\s+|\s+$/gi,'')+']'
+if(a && !ubbcode.bbscodeExplainSave[t])
+	ubbcode.bbscodeExplainSave[t]=a
+return "<a href='javascript:void(0)' class='b' style='color:inherit' onclick='ubbcode.explainShow(event,this,\""+arg.argsId+"\",this.innerHTML)'>"+t+"</a>"
+})
+}//if
 
 if(arg.txt.match(/\[(item|spell|quest|npc|achieve|hsdeck|wowdb|wow|lol|hscard|d3db|crdb)/i)){
 
@@ -94,7 +107,7 @@ if($2)$2 = $2.substr(1)
 return commonui.dbLinkGen.linkGen('[wow,'+$1+($2 ? ','+$2 : '')+'['+$3+']]')
 });//[db]
 
-arg.txt = arg.txt.replace(/\[(?:wow|lol|hscard|d3db|crdb)(?:,[a-z0-9,]+)?\[[^\]]{2,100}\]\]/gi,function($0){
+arg.txt = arg.txt.replace(/\[(?:wow|lol|hscard|d3db|crdb|anydb)(?:,[a-z0-9,]+)?\[[^\]]{2,100}\]\]/gi,function($0){
 return commonui.dbLinkGen.linkGen($0)
 });//[db]
 
@@ -226,9 +239,34 @@ return c
 }
 //fe
 
+ubbcode.explainShow = function(e,o,argsId,name){
+var z=this.bbscodeExplainSave,x=z[name]
+if(typeof x=='string'){
+	var arg = __NUKE.inheritClone(this.bbscodeConvArgsSave[argsId])
+	arg.txt = x
+	arg.c=arg.suffix=null
+	arg.noCov = 1
+	arg.isBlock = 1
+	arg.maxWidth = arg.maxWidth>600?600:((arg.maxWidth*0.9)|0)
+	arg.opt|=64|256
+	this.bbsCode(arg)
+	x=arg
+	z[name] = x
+	}
+if(!this.bbscodeExplainO)
+	this.bbscodeExplainO = commonui.createCommmonWindow()
+var y=this.bbscodeExplainO
+y._.addContent(null)
+y._.addTitle(name)
+y._.addContent(_$('/div','style','maxWidth:'+x.maxWidth+'px','innerHTML',x.txt))
+y._.show(e)
+}//fe
+
+
+
 //发帖内容处理 如错误返回false
 ubbcode.postContentChk = function (c){
-c = c.replace(/\r?\n\[::艾泽拉斯国家地理 BBS.NGACN.CC::\]\r?\n/g,'');
+c = c.replace(/\r?\n\[::艾泽拉斯国家地理 BBS.NGA.CN::\]\r?\n/g,'');
 return c
 }//fe
 
@@ -259,7 +297,7 @@ ubbcode.codeHelpSpecial = [
 			return '[customachieve]'+v.join('\n')+'[/customachieve]'
 		}
 	}
-},
+},/*
 {
 	0:'<b>[[多种游戏数据库]]</b><br/><nobr>游戏数据库</nobr>',
 	1:"<b>插入游戏数据库中的项目</b>\n\
@@ -337,7 +375,7 @@ ubbcode.codeHelpSpecial = [
 			return tmp.replace(/,+/g,',').replace(/,\[/,'[')
 			}
 		}
-},
+},*/
 /*
 {
 	0:'<b>[item]</b><br/><nobr>魔兽世界装备</nobr>',
@@ -507,8 +545,6 @@ ubbcode.codeHelpSpecial = [
 	0:'<b>[armory]</b><br/><nobr>魔兽世界人物信息</nobr>',
 	1:"<b>插入魔兽世界armory的人物信息(因编码不同可能包含特定文字的ID无法获取)</b>\n\
 \n\
-	[cnarmory 服务器名 玩家名] 插入cn.wowarmory.com的人物信息\n\
-\n\
 	[usarmory 服务器名 玩家名] 插入www.wowarmory.com的人物信息\n\
 \n\
 	[twarmory 服务器名 玩家名] 插入tw.wowarmory.com的人物信息\n\
@@ -542,7 +578,7 @@ ubbcode.codeHelpSpecial = [
 \n\
 	[url]http://tw.battle.net/d3/zh/profile/Yuee-3131/hero/344816#armory[/url]\n\
 "
-},
+},/*
 {
 	0:'<b>[wotarmory]</b><br/><nobr>WOT帐号信息</nobr>',
 	1:"<b>插入坦克世界国服的帐号信息</b>\n\
@@ -553,7 +589,7 @@ ubbcode.codeHelpSpecial = [
 \n\
 	[cnwotarmory s 洛拉斯之刺]\n\
 "
-},
+},*/
 {
 	0:'<b>[iframe]</b><br/><nobr>嵌入外站页面</nobr>',
 	1:"<b>发帖中嵌入外站页面</b>\n\
@@ -569,7 +605,7 @@ ubbcode.codeHelpSpecial = [
 \n\
 	[iframe=高度像素数,宽度像素数]http://xxoo.com[/iframe]\n\
 "
-},
+},/*
 {
 	0:'<b>[owarmory]</b><br/><nobr>守望先锋 人物信息</nobr>',
 	1:"<b>插入游戏 守望先锋 的人物信息(因编码不同可能包含特定文字的ID无法获取)</b>\n\
@@ -585,6 +621,18 @@ ubbcode.codeHelpSpecial = [
 	[xbowarmory 玩家的BattleTag] 插入xbox区的人物信息\n\
 \n\
 	[psowarmory 玩家的BattleTag] 插入psn区的人物信息\n\
+"
+},*/
+
+{
+	0:'<b>[dict]</b><br/><nobr>注解</nobr>',
+	1:"<b>插入一个词以及注解</b>\n\
+点击会显示注解的内容\n\
+\n\
+[dict][SCP-087]SCP-087是一个无灯的平台楼梯，每层是斜38度的13阶楼梯，楼层之间是一个180度的大概直径3米的半圆平台，由于在SCP-087里面可见度只有1.5个阶梯，并且没有任何的壁灯和窗户，所以任何去探索SCP-087的人员必须配备照明设备，光源75瓦足够，超过75瓦不会有更好的照明效果，因为SCP-087似乎可以吸收过多的光线[/dict]\n\
+\n\
+注解只需设置一次 同一页内的相同词都使用同一个注解\n\
+[dict][SCP-087][/dict]\n\
 "
 }
 
@@ -767,7 +815,8 @@ if(t0==this.db_wow || t0==this.db_hs){
 		h = 'http://db.178.com/wow/'+lang+'/search.html?name='+key
 		u = 'wow/'+lang+'/search.html?name='+key
 		x = hex_md5(u)
-		x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		//x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		x = 'http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js'
 		}
 	}
 else if(t0==this.db_cr){
@@ -775,7 +824,8 @@ else if(t0==this.db_cr){
 		h = 'http://cr.ptbus.com/db/'
 		u = 'api/crinfo?name='+key
 		x = hex_md5(u)
-		x = ['http://img4.ngacn.cc/proxy/cache_ptbuscom/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=vgdb.ptbus.com&url='+encodeURIComponent(u)]
+		//x = ['http://img4.ngacn.cc/proxy/cache_ptbuscom/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=vgdb.ptbus.com&url='+encodeURIComponent(u)]
+		x ='http://img4.ngacn.cc/proxy/cache_ptbuscom/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js'
 		}
 	}
 else if(t0==this.db_lol){
@@ -789,7 +839,8 @@ else if(t0==this.db_lol){
 		h = 'http://db.178.com/lol/search/s/na:'+key+'&item:on&rune:on&spell:on&hero:on&skin:on'
 		u = 'lol/search/s/na:'+key+'%26item:on%26rune:on%26spell:on%26hero:on%26skin:on%26jsonp:1%26callback:%26lite:1'
 		x = hex_md5(u)
-		x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		//x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		x = 'http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js'
 			
 		}
 	}
@@ -803,7 +854,8 @@ else if(t0==this.db_d3){
 		u = 'd3/'+lang+'/search/s/na:'+key+'%26item:on%26spell:on%26rune:on%26jsonp:1%26callback:%26lite:1'
 		x = hex_md5(u)
 		
-		x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		//x = ['http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js','http://img4.ngacn.cc/proxy/proxy.php?host=db.178.com&url='+encodeURIComponent(u)]
+		x = 'http://img4.ngacn.cc/proxy/cache_db178com/'+i(u)+'/'+x.substr(0,2)+'/'+x.substr(2,2)+'/'+x+'.js'
 		}
 	}
 	

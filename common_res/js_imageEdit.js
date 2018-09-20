@@ -312,7 +312,7 @@ uu = function(im){
 n = function(im){
 	im = uu(im)
 	return im ? [$('/img','title',im[2],'alt',im[1],'src',im[0],'style','border:5px solid '+__COLOR.border0),
-				$('/a',__TXT('close'),'style','marginLeft:-5px;verticalAlign:1em','className','small_colored_text_btn white','href','javascript:void(0)','onclick',function(){
+				$('/a',__TXT('close'),'style','marginLeft:-5px;verticalAlign:1em','className','small_colored_text_btn block_txt_c0','href','javascript:void(0)','onclick',function(){
 					var p = this.previousSibling
 					delete av[p.title]
 					this.parentNode.removeChild(p)

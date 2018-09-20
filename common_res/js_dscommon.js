@@ -203,7 +203,7 @@ else{
 			this.loadQueueInit()
 		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;margin:auto;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
 		}
-	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', ic="<br/><img src='http://gg.stargame.com/images/mark.png' style='margin:-18px 0 auto auto'>"
+	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', ic="<br/><img src='"+__IMG_STYLE+"/admark.png' style='margin:-18px 0 auto auto'>"
 	if(tp && tp[1]=='swf'){
 		img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
 		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")

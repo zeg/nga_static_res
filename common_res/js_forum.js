@@ -485,7 +485,7 @@ if(bgC && (type & 1024)==0){
 	o_replies.style.color='rgb('+x[0]+','+x[1]+','+x[2]+')'
 	}
 else
-	o_replies.style.color='#eee'
+	o_replies.style.color=__COLOR.gbg3
 
 if(!lite && (topicMisc._BIT1 & 8388608))
 	this.loadThreadInfoSetAvatarList.push( o_author )
@@ -504,7 +504,7 @@ if(__SETTING.uA[0]==1 && __SETTING.uA[1]<9)
 for(var i = 0;i<this.loadThreadInfoSetAvatarList.length;i++){
 	var o = this.loadThreadInfoSetAvatarList[i],m
 	if(o.href && (m=o.href.match(/uid=(\d+)/))){
-		var p = o.parentNode, rp = o.parentNode.getClientRects()[0], h = rp.bottom-rp.top, w = rp.right-rp.left, u, s
+		var p = o.parentNode, rp = o.parentNode.getBoundingClientRect(), h = rp.bottom-rp.top, w = rp.right-rp.left, u, s
 		if(w>h*3 && (u=this.userInfo.users[m[1]]) && (s = this.selectUserPortrait( u.avatar , u.buffs, u.uid))){
 			var d = _$('/div').$0(
 				'style',{
@@ -545,21 +545,51 @@ for(var i = 0;i<this.loadThreadInfoSetAvatarList.length;i++){
 }//fe
 
 commonui.loadThreadInfo.bgColor={}
-commonui.loadThreadInfo.count=0
-commonui.loadThreadInfo.p=commonui
-
-commonui.loadThreadInfo.getBgHsv = function(o){
-	var bgC , id = (o.nodeName=='TD' ? o.parentNode.className+' '+o.className : null)
-	if(!id || typeof(this.bgColor[id])=='undefined'){
-		bgC = this.p.getRGBFromStyle(this.p.getStyle(o,'backgroundColor'))
-		if(!bgC)bgC=[0,0,0]
-		this.bgColor[id] = this.p.rgbToHsv(bgC[0], bgC[1], bgC[2])
-		bgC = this.bgColor[id]
+commonui.loadThreadInfo.getBgHsv = function(o){/*
+if(!this.bgColor){
+	if(o.nodeName=='TD'){
+		var bg =[],i,c=commonui
+		bg[0] = c.getRGBFromStyle(c.getStyle(o,'backgroundColor'))
+		var r = o.nextSibling
+		if(r && r.nodeName=='TD')
+			bg.push( c.getRGBFromStyle(c.getStyle(o,'backgroundColor')) )
+		try{
+			r = o.parentNode.nextSibling.firstChild
+		}catch(i){}
+		if(r && r.nodeName=='TD')
+			bg.push( c.getRGBFromStyle(c.getStyle(o,'backgroundColor')) )
+		r = o.nextSibling
+		if(r && r.nodeName=='TD')
+			bg.push( c.getRGBFromStyle(c.getStyle(o,'backgroundColor')) )
+		console.log(bg)
+		for(var i=1;i<bg.length;i++){
+			bg[0][0]+=bg[i][0]
+			bg[0][1]+=bg[i][1]
+			bg[0][2]+=bg[i][2]
+			}
+		bg[0][0]/=i
+		bg[0][1]/=i
+		bg[0][2]/=i
+		this.bgColor = c.rgbToHsv( bg[0])
 		}
 	else
-		bgC = this.bgColor[id]
-	return bgC
-	}//fe
+		this.bgColor = [0,0,0]
+	}
+return this.bgColor*/
+var id = (o.nodeName=='TD' ? o.parentNode.className+' '+o.className : null)
+if(id){
+	if(!this.bgColor || !this.bgColor[id]){
+		var c=commonui
+		bgC = c.getRGBFromStyle(c.getStyle(o,'backgroundColor'))
+		if(!bgC)bgC=[0,0,0]
+		this.bgColor[id] = c.rgbToHsv(bgC[0], bgC[1], bgC[2])
+		return this.bgColor[id]
+		}
+	else
+		return this.bgColor[id]
+	}
+return [0,0,0]
+}//fe
 
 commonui.loadThreadInfo.removeTableHeader = function(){
 	var x = $('topic_table_header')
@@ -651,14 +681,17 @@ commonui.genReplyColorDefault = function(bgC,replies){
 if(replies>100)replies=100
 var ma = 120,//最多变化步数 回复数越多变化步数越多
 mi = 20,//最少变化步数
-Hs = (120/360)/ma,//色调变化步长 总和120度
+Hs = (60/360)/ma,//色调变化步长 总和60度
 Ss = (0.4-bgC[1])/ma,//饱和度变化步长 最大0.4
 h = Hs*(replies+mi), 
 h = bgC[0]+h*(bgC[0]>0.25 ? 1 : -1),//黄色一侧向红色变化 绿色一侧向蓝色变化
-s = bgC[1]+Ss*(replies+mi)
+s = bgC[1]+Ss*(replies+mi),
+v = bgC[2],
+Vv = (0.6-v)/ma,//0.6以下变亮 以上变暗
+v = v+Vv*(replies+mi)
 if(h<0)h+=1
 if(h>1)h-=1
-return this.hsvToRgb(h<=1?h:h-1, s, bgC[2]-0.15)
+return this.hsvToRgb(h, s, v)
 }
 
 //添加来源参数=================
@@ -1058,7 +1091,7 @@ else if(opt & 4)
 	p = minp-1
 
 if(p<1 || (__PAGE[1]>0 && p>__PAGE[1]))
-	return error('page error',1)
+	return error('page error '+p,1)
 
 HTTP.abort()
 HTTP.open('GET', __PAGE[0]+'&page='+p)
@@ -1075,13 +1108,9 @@ HTTP.onreadystatechange = function () {
 			
 	var data = pr(HTTP.responseText,opt)
 	
-	try{
-		eval(data[0])
-		}
-	catch(e){
+	if(commonui.eval.call(window,data[0]))
 		return error('parse data 0 error')
-		}
-	
+
 	progt(6)
 	
 	__PAGE[2] = p
@@ -1137,14 +1166,8 @@ HTTP.onreadystatechange = function () {
 	progt(8)
 	
 	for(var i = 0;i<data[2].length;i++){
-		try{
-			eval(data[2][i])
-			}
-		catch(e){
-			console.log(e)
-			console.log(data[2][i])
+		if(commonui.eval.call(window,data[2][i]))
 			return error('parse data 2 error')
-			}
 		}
 
 	var c= document.getElementsByName('pageball')
@@ -1180,7 +1203,17 @@ HTTP.send()
 
 }//fe
 
-
+commonui.loadReadHidden.reset = function(){
+tmp = null
+minp = null 
+maxp = null
+iPo = null
+iPc = null
+ot = 0
+count = 1
+prog = null
+progv = 0
+}//
 
 var error = function(e,a){
 if(prog)

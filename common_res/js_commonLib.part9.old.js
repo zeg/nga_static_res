@@ -41,8 +41,8 @@ if(!window.console)
 var loader = __LOADER
 
 if(window.__SCRIPTS)
-	__SCRIPTS.load = function(src,callback,charset,sync){
-		return __LOADER.script(this[src],callback,charset,sync)
+	__LOADER.script = function(src,callback,charset,sync){
+		return __SCRIPTS.load(src,callback,charset,sync)
 		}
 
 __NUKE.doRequest = _$.doRequest

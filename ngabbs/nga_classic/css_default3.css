@@ -1,424 +1,458 @@
-/*style_define
-网页背景色
-#1a1912	#fffcee
-
-区域背景 尽量用中间四个
-#1d1c15	#fff8e7
-#212019	#fff6df
-#26251e	#fff3d5
-#2a2922	#fff0cd
-#2d2c25	#ffedc3
-#302f28	#f5e8cb
-
-边框 分隔线 深色元素
-#4a2731 #591804
-#a27884 #b87563
-#915c60 #ac6e41
-#cfafae #e0c19e
-#9c967a #ead5bc
-
-浅色分隔线
-#a9818c #BD7E6D
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#ffb400 #1a3959
-#75515c #2c5787
-
-次级链接
-#52474a #708295
-#7b6d71 #9aadc3
-
-正文
-#9c967a #10273f
-次级正文
-#7b6d71 #58697b
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#877e68
-#ece5e7 #f2eddf
-#e0d9db #e6e1d3
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1 (#4a2731, -0.0039, -0.4930, 0.3725)
-#4a2731 #591804
-#a27884 #b87563
-ui重点文字颜色2 (#274349, -0.0375, -0.2126, 0.3490)
-#274349 #274349
-#79a2a0 #79a2a0
-ui次级重点文字颜色1 (#4a2731, -0.0039*0.666, -0.4930*0.666, 0.3725*0.666)
-#855965 #984e39
-#a27884 #b87563
-ui次级重点文字颜色2 (#274349, -0.0375*0.666, -0.2126*0.666, 0.3490*0.666)
-#598384 #598384
-#79a2a0 #79a2a0
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#1a1912	#f5faf9
-
-区域背景 尽量用中间四个
-#1d1c15	#f0f7f5
-#212019	#ecf5f3
-#26251e	#e6f1ee
-#2a2922	#e1efeb
-#2d2c25	#dcece7
-#302f28	#d3dedb
-
-边框 分隔线 深色元素
-#4a2731 #274349
-#a27884 #79a2a0
-#915c60 #5d8790
-#cfafae #afc6cf
-#9c967a #c8d7de
-
-浅色分隔线
-#a9818c #82a8a6
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#ffb400 #1a3959
-#75515c #2c5787
-
-次级链接
-#52474a #708295
-#7b6d71 #9aadc3
-
-正文
-#9c967a #10273f
-次级正文
-#7b6d71 #58697b
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#747b78
-#ece5e7 #e6ebe9
-#e0d9db #dadfdd
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#4a2731 #274349
-#a27884 #79a2a0
-ui重点文字颜色2
-#274349 #591804
-#79a2a0 #b87563
-ui次级重点文字颜色1
-#855965 #598384
-#a27884 #79a2a0
-ui次级重点文字颜色1
-#598384 #984e39
-#79a2a0 #b87563
-
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#1a1912	#f9f3f4
-
-区域背景 尽量用中间四个
-#1d1c15	#f7eff1
-#212019	#f4e9ec
-#26251e	#f1e2e6
-#2a2922	#efdde2
-#2d2c25	#ebd6dc
-#302f28	#ded1d4
-
-边框 分隔线 深色元素
-#4a2731 #4a2731
-#a27884 #a27884
-#915c60 #915c60
-#cfafae #cfafae
-#9c967a #dec8c7
-
-浅色分隔线
-#a9818c #a9818c
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#ffb400 #4c333b
-#75515c #75515c
-
-次级链接
-#52474a #52474a
-#7b6d71 #7b6d71
-
-正文
-#9c967a #75515c
-次级正文
-#7b6d71 #7b6d71
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#7d7275
-#ece5e7 #ece5e7
-#e0d9db #e0d9db
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#4a2731 #4a2731
-#a27884 #a27884
-ui重点文字颜色2
-#274349 #274349
-#79a2a0 #79a2a0
-ui次级重点文字颜色1
-#855965 #855965
-#a27884 #a27884
-ui次级重点文字颜色2
-#598384 #598384
-#79a2a0 #79a2a0
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#1a1912	#1a1912
-
-区域背景 尽量用中间四个
-#1d1c15	#1d1c15
-#212019	#212019
-#26251e	#26251e
-#2a2922	#2a2922
-#2d2c25	#2d2c25
-#302f28	#302f28
-
-边框 分隔线 深色元素
-#4a2731 #4a2731
-#a27884 #a27884
-#915c60 #915c60
-#cfafae #cfafae
-#9c967a #9c967a
-
-浅色分隔线
-#a9818c #a9818c
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#ffb400 #ffb400
-#75515c #75515c
-
-次级链接
-#52474a #52474a
-#7b6d71 #7b6d71
-
-正文
-#9c967a #9c967a
-次级正文
-#7b6d71 #7b6d71
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#7d7275
-#ece5e7 #ece5e7
-#e0d9db #e0d9db
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#4a2731 #4a2731
-#a27884 #a27884
-ui重点文字颜色2
-#274349 #274349
-#79a2a0 #79a2a0
-ui次级重点文字颜色1
-#855965 #855965
-#a27884 #a27884
-ui次级重点文字颜色2
-#598384 #598384
-#79a2a0 #79a2a0
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff; = 'border: '.1.'px solid '.#2d2c25.';box-shadow:0 0 5px -3px #fff;'
-
-页面主题左右margin
-10 = 10
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
 
 
 html {overflow-y: scroll}
-a {text-decoration:none;color:#ffb400}
-a:hover {text-decoration:underline;color:#75515c;}
+a {text-decoration:none;color:#697e89}
+a:hover {text-decoration:underline;color:#506d7f;}
 body {text-align:left;
 font-family:Verdana, Tahoma, Arial, sans-serif;
 font-size:12px;
-color:#9c967a;
+color:#77878f;
 margin:0px;
-background:#302f28;
+background:#34312e;
 height:100%
 }
 
@@ -429,13 +463,13 @@ vertical-align:text-bottom
 
 p {margin:auto}
 
-.subtxt_color {color:#7b6d71}
-.subtxt_color a {color:#52474a}
-.subtxt_color a:hover {color:#7b6d71}
+.subtxt_color {color:#525e64}
+.subtxt_color a {color:#434f56}
+.subtxt_color a:hover {color:#28353d}
 del {text-decoration:line-through}
 button {
-background: #9c967a;
-color: #444;
+background: #433227;
+color: #bbbbbb;
 line-height: 1.5em;
 border:none;
 border-radius: 0.25em;
@@ -447,16 +481,17 @@ margin:0.1em 0.2em
 textarea, select, input, button, option {font-size:1.083em}
 
 textarea, select, input {
-border: 1px solid #cfafae;
-box-shadow: 0 0 2px 0 #bbb inset;
+border: 1px solid #614839;
+box-shadow: 0 0 2px 0 #444444 inset;
 border-radius: 0.25em;
-background: #1a1912;
+background: #11100e;
+color:#77878f;
 padding:0.14em 0.14em;
 margin:0.1em 0.2em
 }
 
 input[type="file"] {padding:0}
-input[type="checkbox"] , input[type="radio"] {border:none;box-shadow:none;border-radius:0;color:#4a2731}
+input[type="checkbox"] , input[type="radio"] {border:none;box-shadow:none;border-radius:0;color:#fbdbb7}
 select {padding:0 0.1em 0.1em 0.1em;}
 
 form {padding:0px;margin:0px}
@@ -488,11 +523,11 @@ src: local("Helvetica Black");
 
 @font-face {
   font-family: 'comm_glyphs';
-  src:  url('font/comm_glyphs.eot?fm5o27');
-  src:  url('font/comm_glyphs.eot?fm5o27#iefix') format('embedded-opentype'),
-    url('font/comm_glyphs.ttf?fm5o27') format('truetype'),
-    url('font/comm_glyphs.woff?fm5o27') format('woff'),
-    url('font/comm_glyphs.svg?fm5o27#comm_glyphs') format('svg');
+  src:  url('font/comm_glyphs.eot?fm5o28');
+  src:  url('font/comm_glyphs.eot?fm5o28#iefix') format('embedded-opentype'),
+    url('font/comm_glyphs.ttf?fm5o28') format('truetype'),
+    url('font/comm_glyphs.woff?fm5o28') format('woff'),
+    url('font/comm_glyphs.svg?fm5o28#comm_glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -507,17 +542,17 @@ font-family: 'comm_glyphs';
 /* ads
 */
 
-.postrow .bbs_ds32 {background: #888;
+.postrow .bbs_ds32 {background: #777777;
 box-shadow: 0px 2px 2px #777 inset;
 margin-top: -0.4em;}
 .bbs_ds32 a {color:#ddd}
 
 #adsc1 {margin-bottom:8px}
-#adsc10 {border-top:3px solid #4a2731;border-bottom:3px solid #4a2731;}
+#adsc10 {border-top:3px solid #fbdbb7;border-bottom:3px solid #fbdbb7;}
 .adshid, .forumbox tr .adshid {width:0px;height:0px;padding:0px;margin:0px;font-size:0px;line-height:0px;overflow:hidden}
-.adsc {background-color:#444;vertical-align:top;font-family:Verdana, Tahoma, Arial, sans-serif;color:#888;padding:0.25em 0;text-align:center}
+.adsc {background-color:#bbbbbb;vertical-align:top;font-family:Verdana, Tahoma, Arial, sans-serif;color:#888;padding:0.25em 0;text-align:center}
 .adsc * {margin:auto;line-height:1.5em}
-.adsh {background:#444;padding:5px;width:192px;text-align:center;vertical-align:top}
+.adsh {background:#bbbbbb;padding:5px;width:192px;text-align:center;vertical-align:top}
 .adsc .dslabel {line-height:1.1em;font-size:0.583em;letter-spacing:0.25em;}
 .adsc a {color:#ccc}
 .adsc a:hover {color:#eee}
@@ -525,7 +560,7 @@ margin-top: -0.4em;}
 body .fix_position {position: fixed}
 
 .apd {padding:0 2px}
-pre {text-align:left;margin:12px;padding:12px;background:#eee;border:1px solid #CCC;display:block;margin:10px;width:auto;white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;}
+pre {text-align:left;margin:12px;padding:12px;background:#111111;border:1px solid #CCC;display:block;margin:10px;width:auto;white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;}
 .b {font-weight:bold}
 .vam {vertical-align:middle}
 .left {float:left}
@@ -552,26 +587,26 @@ pre {text-align:left;margin:12px;padding:12px;background:#eee;border:1px solid #
 a .numeric {color:inherit}
 .numericl {font-family:georgia;color:#555;letter-spacing:1px}
 /*
-.blocktxt {vertical-align:middle;background:#4a2731;color:#fff;font-size:8px;font-weight:normal;line-height:10px;font-family:small fonts;padding:2px;letter-spacing:1px}
+.blocktxt {vertical-align:middle;background:#fbdbb7;color:#fff;font-size:8px;font-weight:normal;line-height:10px;font-family:small fonts;padding:2px;letter-spacing:1px}
 .blocktxt:hover {color:#f88}
 .blocktxt input {height:10px;line-height:10px;padding:0px;margin:0px;vertical-align:middle}
 */
 .nickname {}
 
-.uitxt1 {color:#4a2731}
-.uitxt1:hover {color:#a27884}
+.uitxt1 {color:#976f6b}
+.uitxt1:hover {color:#5e3532}
 
-.uitxt2 {color:#274349}
-.uitxt2:hover {color:#79a2a0}
+.uitxt2 {color:#708182}
+.uitxt2:hover {color:#3b504c}
 
-.uitxt3 {color:#855965}
-.uitxt3:hover {color:#a27884}
+.uitxt3 {color:#774a46}
+.uitxt3:hover {color:#5e3532}
 
-.uitxt4 {color:#598384}
-.uitxt4:hover {color:#79a2a0}
+.uitxt4 {color:#4e6461}
+.uitxt4:hover {color:#3b504c}
 
 .white {color:#fff}
-.defaultcolor {color:#9c967a}
+.defaultcolor {color:#77878f}
 .skyblue {color:skyblue}
 .royalblue {color:royalblue}
 .darkblue {color:darkblue}
@@ -593,7 +628,8 @@ a .numeric {color:inherit}
 .sandybrown {color:sandybrown}
 .sienna {color:sienna}
 .chocolate {color:chocolate}
-.ngared {color:#4a2731}
+.ngared {color:#fbdbb7}
+
 /*
 .minorcolor {color:#5B4D41}
 .ni {color:#333}
@@ -622,7 +658,7 @@ border-radius: 0.25em;
 padding: 0 0.4em 0.05em 0.4em;
 line-height: 1.5em;
 cursor: hand;
-background: #4a2731;
+background: #fbdbb7;
 font-family: Verdana, Tahoma, Arial, sans-serif;
 display:inline-block;
 }
@@ -638,7 +674,7 @@ border-radius: 0.25em;
 padding: 0 0.4em 0.05em 0.4em;
 line-height: 1.5em;
 cursor: hand;
-background: #4a2731;
+background: #fbdbb7;
 display:inline-block;
 *zoom:1;
 *display:inline;
@@ -653,26 +689,26 @@ font-family: Verdana, Tahoma, Arial, sans-serif;
 }
 
 .block_txt_c0 {
-background: #4a2731;
-color: #1d1c15;
+background: #fbdbb7;
+color: #181614;
 }
 .block_txt_c0:hover{
-color: #fff;
+color: #000000;
 }
 
 .block_txt_c1 {
-background: #915c60;
-color: #1a1912;
+background: #be8f7e;
+color: #11100e;
 }
 
 .block_txt_c2 {
-background: #cfafae;
-color: #274349;
+background: #614839;
+color: #708182;
 }
 
 .block_txt_c3 {
-background: #9c967a;
-color: #888;
+background: #433227;
+color: #777777;
 }
 
 .w5 {width:5%}
@@ -706,18 +742,18 @@ color: #888;
 margin:0.8em 0.8em 0.8em 2.3em;
 padding:0.6em 0.8em;
 }
-.quote {background:#ece5e7;border:1px solid #e0d9db;}
-table.quote, .dice {background:#e1c8a7;border:1px solid #b9986e;color:#6b2d25;}
-.lessernuke {background:#F9CAB5;border:1px solid #B63F32;}
+.quote {background:#201f1d;border:1px solid #2c2b29;}
+table.quote, .dice {background:#58534f;border:1px solid #918a86;color:#dad0d0;}
+.lessernuke {background:#4a4140;border:1px solid #cdb9ba;}
 .lessernuke2 {background:#F9D6B4;border:1px solid #B46631;}
-table.album {background:#d6dcae;border:1px solid #91b262}
+table.album {background:#51514a;border:1px solid #9a9d91}
 .postbox .ceffect1 .postcontent .quote {margin:0.8em;padding:1.6em 0.6em 0.6em 2.3em;background-image:url(quote0.png), url(quote1.png);background-position:top left, bottom right;background-repeat:no-repeat,no-repeat}
 
-.video {border:5px solid #4a2731;background:#444;margin:10px 10px 10px 30px;display:block;clear:both}
-.video .moreinfo {background:#4a2731;color:silver}
+.video {border:5px solid #fbdbb7;background:#bbbbbb;margin:10px 10px 10px 30px;display:block;clear:both}
+.video .moreinfo {background:#fbdbb7;color:silver}
 .video .spacer {background:url(video_spacer_play.gif) no-repeat 50% 50%;}
 .video .spacer .play {display:block;height:75%}
-.textfield {margin:5px;padding:5px;color:#222;line-height:14px;font-size:12px;font-family:Lucida Console, Courier New;background:#eee;border:1px solid #DDD;height:200px;overflow:auto;white-space:nowrap}
+.textfield {margin:5px;padding:5px;color:#222;line-height:14px;font-size:12px;font-family:Lucida Console, Courier New;background:#111111;border:1px solid #DDD;height:200px;overflow:auto;white-space:nowrap}
 
 
 .newpost {font-weight:bold;font-size:14px;line-height:29px;margin-right:10px}
@@ -741,7 +777,7 @@ table.album {background:#d6dcae;border:1px solid #91b262}
 
 .client_icon {display:block;width:32px;height:32px;overflow:hidden;float:right;margin: -6px -6px -6px -14px;text-align:right}
 .client_icon a {display:block;width:18px;height:18px;margin:0px 0px auto auto}
-.client_icon div {width:1px;height:1px;border-top:32px solid #888;border-left:32px solid transparent;margin-bottom:-33px}
+.client_icon div {width:1px;height:1px;border-top:32px solid #777777;border-left:32px solid transparent;margin-bottom:-33px}
 
 .forum_notice a {font-size:14px;color:red}
 .textTitle {font-size:1.166em;font-weight:bold;border-bottom:1px solid #aaa;clear:both;margin:0.5em 0 0 0 }
@@ -750,10 +786,10 @@ table.album {background:#d6dcae;border:1px solid #91b262}
 .item_ui a {font-weight:bold;text-decoration:none}
 
 /*urltip*/
-.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#1d1c15;border:1px solid #915c60;padding:1px;z-index:1}
+.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#181614;border:1px solid #be8f7e;padding:1px;z-index:1}
 .urltip2 {margin-top:-18px;font-size:0.923em;line-height:1.5em}
-.urltip3 {border:2px solid #4a2731}
-.urltip2 * {border-color:#4a2731}
+.urltip3 {border:2px solid #fbdbb7}
+.urltip2 * {border-color:#fbdbb7}
 
 /*navhisurltip*/
 .navhisurltip {margin-top:2.7em}
@@ -771,17 +807,17 @@ table.album {background:#d6dcae;border:1px solid #91b262}
 .nav {text-align:left;line-height:1.667em;font-weight:bold;font-size:1.1667em}
 .nav a.rss {font-size:1.167em}
 
-.nav_root:hover {color:#fff}
+.nav_root:hover {color:#000000}
 
-.nav_link {color:#4a2731}
-.nav_link:hover {color:#a27884}
+.nav_link {color:#fbdbb7}
+.nav_link:hover {color:#9c7b58}
 
 .nav_root_c {display:block;float:left}
 .nav_root_c .nav_root {float:none}
 
 .nav_root, .nav_link, .nav_spr {
 float:left;
-border:1px solid #1a1912;
+border:1px solid #11100e;
 border-radius:2.5px;
 box-shadow:0 0 6px -3px #000;
 -moz-border-radius:0.25em;
@@ -790,13 +826,13 @@ display:block;
 line-height:2.857em;
 margin-right:0.6em;
 margin-bottom:8px;
-background:#2a2922;
+background:#322f2b;
 }
 
 .nav_root  {
-background:#4a2731;
-color:#fff;
-border-color:#4a2731
+background:#fbdbb7;
+color:#000000;
+border-color:#fbdbb7
 }
 
 .nav_spr {
@@ -827,14 +863,14 @@ vertical-align: -0.05em;
 
 
 /*.catenew*/
-.catenew, .cateblock, .forumbox {border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff;;border-radius:2.5px;padding:1px;margin:0 0 8px 0;background-color:#1a1912}
+.catenew, .cateblock, .forumbox {border: 1px solid #353535;box-shadow:0 0 5px -3px #ffffff;;border-radius:2.5px;padding:1px;margin:0 0 8px 0;background-color:#11100e}
 .catenew, .cateblock {font-size:1.083em;line-height:1.385em}
 .catenew .cr,.catenew .c {float:left;text-align:left;width:50%;margin-left:0px;background-position:2px 5px;background-repeat:no-repeat}
-.catenew .b4 {background-color:#212019}
-.catenew .b3 {background-color:#2a2922}
-.catenew .b2 {background-color:#212019}
-.catenew .b1 {background-color:#26251e}
-.catenew .b0 {background-color:#1d1c15}
+.catenew .b4 {background-color:#201e1b}
+.catenew .b3 {background-color:#322f2b}
+.catenew .b2 {background-color:#201e1b}
+.catenew .b1 {background-color:#2a2724}
+.catenew .b0 {background-color:#181614}
 .catenew .cr {float:right}
 .catenew .a {margin:7px 2px 7px 43px}
 .catenew .c {overflow:hidden}
@@ -846,63 +882,63 @@ vertical-align: -0.05em;
 .catenew a {font-weight:bold;white-space:nowrap}
 #indexBlockfollow .catenew a {font-weight:bold;white-space:normal}
 
-.catenew p {display:block;padding:0px 0px 0px 5px;margin:0px;color:#888;font-weight:normal;font-size:0.846em;white-space:nowrap}
+.catenew p {display:block;padding:0px 0px 0px 5px;margin:0px;color:#777777;font-weight:normal;font-size:0.846em;white-space:nowrap}
 
 .catenew .invert {
-background-color:#4a2731;
+background-color:#fbdbb7;
 }
 
-.catenew .invert p {color:#bbb;white-space:nowrap}
+.catenew .invert p {color:#292929;white-space:nowrap}
 
 .catenew .invert .uitxt1 , .catenew .invert .uitxt3 {color:#fff}
 .catenew .invert .uitxt1:hover, .catenew .invert .uitxt3:hover {color:#fff}
 
-#m_cate5 .catenew h2 {padding:0 0.7em;font-size:1.5em;height:36px;line-height:32.4px;background:#212019}
+#m_cate5 .catenew h2 {padding:0 0.7em;font-size:1.5em;height:36px;line-height:32.4px;background:#201e1b}
 #m_cate5 .indexblock .headline {height:140px;margin-top:-8px}
 #m_cate5 .indexblock .headline a {font-size:1.33em;color:#fff;margin:auto;border-radius:4px;display:block;height:130px;line-height:234px;text-indent:0.5em;overflow:hidden;box-shadow:0 0 3px #888}
 
-.cateblock .contentBlock, .catenew .contentBlock {background-color:#212019}
+.cateblock .contentBlock, .catenew .contentBlock {background-color:#201e1b}
 
 /*.forumbox*/
 .forumbox {width:100%;border-spacing:1px;padding:0}
-#toptopics {border-bottom:none;padding:1px;border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff;;width:auto}
+#toptopics {border-bottom:none;padding:1px;border: 1px solid #353535;box-shadow:0 0 5px -3px #ffffff;;width:auto}
 
 .forumbox caption {font-size:1em;font-weight:bold;padding:0px;text-align:left;line-height:2em}
 
-.forumbox h2,.forumbox h1 {font-size:1.333em;display:inline;font-weight:bold;margin:0px;padding:0px 10px 0px 10px;color:#4a2731}
+.forumbox h2,.forumbox h1 {font-size:1.333em;display:inline;font-weight:bold;margin:0px;padding:0px 10px 0px 10px;color:#fbdbb7}
 .forumbox td {padding:6px;line-height:1.83em;word-wrap:break-word;word-break:break-all}
-.forumboxrightlist .box h2, .forumbox th, .forumbox thead td {background:#4a2731;color:#fff;padding:0px 0.5em;line-height: 10px;margin:0px;text-align:center;height:10px}
-.forumbox th a,.forumbox thead td a {color:#bbb}
-.forumbox th a:hover,.forumbox thead td a:hover {color:#fff}
+.forumboxrightlist .box h2, .forumbox th, .forumbox thead td {background:#fbdbb7;color:#000000;padding:0px 0.5em;line-height: 10px;margin:0px;text-align:center;height:10px}
+.forumbox th a,.forumbox thead td a {color:#444444}
+.forumbox th a:hover,.forumbox thead td a:hover {color:#000000}
 .forumbox h3 {font-size:1.166em;display:inline;font-weight:bold;margin:0px;padding:0px;line-height:1.642em}
 
 /*
-.forumbox .row1 .c2 .c1 {background:#212019;}
-.forumbox .row1 .c2 .c3 {background:#1a1912;}
+.forumbox .row1 .c2 .c1 {background:#201e1b;}
+.forumbox .row1 .c2 .c3 {background:#11100e;}
 */
-.row1c1, .forumbox .row1 .c1 {background-color:#212019}
-.forumbox .row1 .c2 {background-color:#1d1c15}
-.row1 .c2 .posterInfoLine {background-color:#212019;border-bottom:1px solid #1a1912}
-.forumbox .row1 .c2 .bgtxt {color:#2a2922} 
-.forumbox .row1 .c3 {background-color:#212019}
-.forumbox .row1 .c4 {background-color:#1d1c15}
-.forumbox .row1 .c5 {background-color:#212019}
-.forumbox .row1 .c6 {background-color:#1d1c15}
-.forumbox .row1 .c7 {background-color:#212019}
+.row1c1, .forumbox .row1 .c1 {background-color:#201e1b}
+.forumbox .row1 .c2 {background-color:#181614}
+.row1 .c2 .posterInfoLine {background-color:#201e1b;border-bottom:1px solid #11100e}
+.forumbox .row1 .c2 .bgtxt {color:#322f2b} 
+.forumbox .row1 .c3 {background-color:#201e1b}
+.forumbox .row1 .c4 {background-color:#181614}
+.forumbox .row1 .c5 {background-color:#201e1b}
+.forumbox .row1 .c6 {background-color:#181614}
+.forumbox .row1 .c7 {background-color:#201e1b}
 
 /*
-.forumbox .row2 .c2 .c1 {background-color:#2d2c25}
-.forumbox .row2 .c2 .c3 {background-color:#26251e}
+.forumbox .row2 .c2 .c1 {background-color:#3c3833}
+.forumbox .row2 .c2 .c3 {background-color:#2a2724}
 */
-.row2c1, .forumbox .row2 .c1 {background-color:#2d2c25}
-.forumbox .row2 .c2 {background-color:#2a2922}
-.row2 .c2 .posterInfoLine {background-color:#2d2c25;border-bottom:1px solid #212019}
-.forumbox .row2 .c2 .bgtxt {color:#1d1c15} 
-.forumbox .row2 .c3 {background-color:#2d2c25}
-.forumbox .row2 .c4 {background-color:#2a2922}
-.forumbox .row2 .c5 {background-color:#2d2c25}
-.forumbox .row2 .c6 {background-color:#2a2922}
-.forumbox .row2 .c7 {background-color:#2d2c25}
+.row2c1, .forumbox .row2 .c1 {background-color:#3c3833}
+.forumbox .row2 .c2 {background-color:#322f2b}
+.row2 .c2 .posterInfoLine {background-color:#3c3833;border-bottom:1px solid #201e1b}
+.forumbox .row2 .c2 .bgtxt {color:#181614} 
+.forumbox .row2 .c3 {background-color:#3c3833}
+.forumbox .row2 .c4 {background-color:#322f2b}
+.forumbox .row2 .c5 {background-color:#3c3833}
+.forumbox .row2 .c6 {background-color:#322f2b}
+.forumbox .row2 .c7 {background-color:#3c3833}
 
 .forumbox .forumrow .c1 {width:5%;text-align:center}
 .forumbox .forumrow .c2 {width:54%;}
@@ -911,8 +947,8 @@ background-color:#4a2731;
 .forumbox .forumrow .c5 {width:12%;text-align:center}
 
 .forumbox .topicrow .c1 {width:5%;text-align:center;padding-left:1px;padding-right:1px;white-space:nowrap}
-.forumbox .set_topic .c1 {border-left:0.25em solid #a9818c}
-.forumbox .set_topic_elm .c1 {border-left:0.5em solid #a9818c}
+.forumbox .set_topic .c1 {border-left:0.25em solid #926562}
+.forumbox .set_topic_elm .c1 {border-left:0.5em solid #926562}
 .forumbox .topicrow .c2 {width:auto;
 word-wrap: break-word;
 word-break:break-all;
@@ -921,18 +957,18 @@ word-break:break-all;
 .forumbox .topicrow .topic {font-size:1.085em;line-height:1.9em}
 
 .forumbox .topicrow .topic_content {margin: 0px 5px 5px 15px;padding: 0 8px 8px 8px;}
-.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #915c60;font-size:1.085em;line-height: 1.9em}
+.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #be8f7e;font-size:1.085em;line-height: 1.9em}
 
 .forumbox .topicrow .replies {letter-spacing:-1px;font-family:'Arial Black',arial-black,'Helvetica Black',helvetica-black,Sans-serif}
-.forumbox .topicrow .c3, .forumbox .topicrow .c4 {width:14%;text-align:center;color:#7b6d71;padding-left:1px;padding-right:1px;font-size:0.923em}
+.forumbox .topicrow .c3, .forumbox .topicrow .c4 {width:14%;text-align:center;color:#525e64;padding-left:1px;padding-right:1px;font-size:0.923em}
 .forumbox .topicrow .postdate, .forumbox .topicrow .replydate {display:block;overflow:hidden}
 
 /*
 * html .forumbox .topicrow .c3 {font-size:12px}
-.forumbox .row1 .c3_ {background-color:#212019}
-.forumbox .row1 .c4_ {background-color:#1d1c15}
-.forumbox .row2 .c3_ {background-color:#2a2922}
-.forumbox .row2 .c4_ {background-color:#26251e}
+.forumbox .row1 .c3_ {background-color:#201e1b}
+.forumbox .row1 .c4_ {background-color:#181614}
+.forumbox .row2 .c3_ {background-color:#322f2b}
+.forumbox .row2 .c4_ {background-color:#2a2724}
 
 .forumbox .topicrow .c3 {width:13%;text-align:center;color:#4f587e}
 .forumbox .topicrow .c3 a {color:#4f587e}
@@ -974,7 +1010,7 @@ margin-bottom: -0.456em;
 
 .forumbox .postrow .portrait img {border:1px solid #000}
 .forumbox .postrow .portrait {margin:2px auto}
-.forumbox .postrow .stat {line-height:22px;padding:1px 3px;margin:2px auto;border:1px solid #1a1912;text-align:left;color:#555}
+.forumbox .postrow .stat {line-height:22px;padding:1px 3px;margin:2px auto;border:1px solid #11100e;text-align:left;color:#555}
 .forumbox .postrow .stat .gimg {float:right;margin-top:2px;clear:right}
 .stat_table td {padding:0}
 .forumbox .postrow .stat .mute_color {color:#bbb}
@@ -987,9 +1023,9 @@ margin-bottom: -0.456em;
 .forumbox .postrow .c2 h5.subtitle {border-color:#ccc}
 /*.forumbox .postrow .postbtnc {padding-top:2px;padding-bottom:2px;padding-right:1px;vertical-align:middle;line-height:37px}*/
 .forumbox .postrow h3 {font-size:1.17em;display:inline;font-weight:bold;margin:0;padding:0;line-height:2em}
-.forumbox .postrow .sigline {clear:both;display:block;width:60%;padding:0px 4em;margin:2.5em auto 0.333em 0px;color:#cfafae;border-bottom:1px dashed #cfafae;line-height:0.667em;letter-spacing:0.25em}
-.forumbox .postrow .borderb {background:#4a2731;font-size:0px;line-height:0px;height:2px}
-.forumbox .postrow .thumblink img {border:2px solid #4a2731}
+.forumbox .postrow .sigline {clear:both;display:block;width:60%;padding:0px 4em;margin:2.5em auto 0.333em 0px;color:#614839;border-bottom:1px dashed #614839;line-height:0.667em;letter-spacing:0.25em}
+.forumbox .postrow .borderb {background:#fbdbb7;font-size:0px;line-height:0px;height:2px}
+.forumbox .postrow .thumblink img {border:2px solid #fbdbb7}
 
 .forumbox .postrow .pc3 {color:#8a46a0}
 .forumbox .postrow .pc4 {color:#18507e}
@@ -1035,7 +1071,7 @@ margin-bottom: -0.456em;
 .forumbox .postrow .posterInfoLine {width: auto;}
 
 .forumbox .postrow .postInfo {float:right;width:auto;line-height:1.4em;text-align:right}
-.forumbox .contentBlock {text-align:left;padding:6px;background:#212019}
+.forumbox .contentBlock {text-align:left;padding:6px;background:#201e1b}
 
 /*.catetitle*/
 .catetitle {height: 36px;
@@ -1045,7 +1081,7 @@ font-size: 1.666em;
 font-weight: bold;
 margin: 0px;
 padding: 0px 10px 0px 10px;
-color: #4a2731;
+color: #976f6b;
 text-align: left}
 
 .catenew .catetitle{
@@ -1090,33 +1126,33 @@ padding-bottom:7px
 .single_ttip2 {position:absolute;
 top:0px;left:0px;z-index:4;
 text-align:left;
-border:1px solid #4a2731;
+border:1px solid #fbdbb7;
 min-width:22em;
 display:none;
-background:#1d1c15;
-box-shadow:0px 0px 15px #444;
+background:#181614;
+box-shadow:0px 0px 15px #bbbbbb;
 word-wrap:break-word;
 word-break:break-all;
 *width:30em;
 }
-/*.single_ttip2 .div1 {border:1px solid #4a2731;margin:1px;border-width:0px 2px 8px 2px}*/
+/*.single_ttip2 .div1 {border:1px solid #fbdbb7;margin:1px;border-width:0px 2px 8px 2px}*/
 
-.single_ttip2 .div2 {background:#212019;padding:5px 10px 10px 10px;border:none}
+.single_ttip2 .div2 {background:#201e1b;padding:5px 10px 10px 10px;border:none}
 .single_ttip2 .div3 {line-height:1.83em;margin:0;padding:0;background:none}
 .single_ttip2 .tip_title {padding:0 0 0 10px;
-background-color:#212019;
-border-bottom:1px solid #2a2922;
+background-color:#201e1b;
+border-bottom:1px solid #322f2b;
 font-size:1.166em;
 font-weight:bold;
-color:#4a2731;
+color:#fbdbb7;
 line-height:2em;
 height:2em;
 *width: expression(this.parentNode.offsetWidth + "px");
 }
 
 .single_ttip2 .colored_text_btn {
-background-color:#2a2922;
-color:#4a2731;
+background-color:#322f2b;
+color:#fbdbb7;
 padding:0 1em;
 float:right;
 height:2em;
@@ -1125,8 +1161,8 @@ transition:color 0.2s linear 0s,background-color 0.2s linear 0s;
 }
 
 .single_ttip2 .colored_text_btn:hover {
-background-color:#4a2731;
-color:#2a2922;
+background-color:#fbdbb7;
+color:#322f2b;
 text-decoration:none;
 }
 
@@ -1141,21 +1177,22 @@ text-decoration:none;
 .ubbcode .headline .leftblock {overflow:auto}
 .ubbcode .headline .headlineelm {line-height:24px;padding:2px 2px 2px 18px;background:url(tri.gif) 2px 5px no-repeat}
 
-.ubbcode .headline .row1 .b1, .ubbcode .headline .row2 .b2 {background-color:#26251e}
-.ubbcode .headline .row1 .b2, .ubbcode .headline .row2 .b1 {background-color:#1d1c15}
+.ubbcode .headline .row1 .b1, .ubbcode .headline .row2 .b2 {background-color:#2a2724}
+.ubbcode .headline .row1 .b2, .ubbcode .headline .row2 .b1 {background-color:#181614}
 .ubbcode .imgmaxwidth {max-width:90%}
 .ubbcode .left .imgmaxwidth, .ubbcode .right .imgmaxwidth {max-width:none}
 
 .ubbcode .tac .video {margin:auto}
 .ubbcode .tar .video {margin-right:0}
 
-.ubbcode .headline .headlinebg .hltxt {color:#eee;width:100%;height:100%;font-size:20px;line-height:1.5em;font-family:"Microsoft Yahei", simhei, Arial, sans-serif;font-weight:bold;padding:0 10px}
+.ubbcode .headline .headlinebg .hltxt {color:#111111;width:100%;height:100%;font-size:20px;line-height:1.5em;font-family:"Microsoft Yahei", simhei, Arial, sans-serif;font-weight:bold;padding:0 10px}
 .ubbcode .headline .headlineimg {border-radius:5px;width:100%;height:100%}
 .ubbcode .headline .headlinesel {width:100%; border-collapse: separate;border-spacing: 2px}
-.ubbcode .headline .headlinesel .nosel {background:#302f28}
-.ubbcode .headline .headlinesel .seled {background:#4a2731}
+.ubbcode .headline .headlinesel .nosel {background:#34312e}
+.ubbcode .headline .headlinesel .seled {background:#fbdbb7}
 
 .ubbcode .fixblk .apd {display:none}
+.ubbcode .smile_ac,.ubbcode .smile_ac2 {filter: invert(1);}
 /*.page_nav btn*/
 
 .page_nav .symbol {font-size:27px;font-family:Arial Unicode MS, Verdana, Tahoma, Arial, sans-serif}
@@ -1163,7 +1200,7 @@ text-decoration:none;
 .page_nav button {font-size:12px;line-height:normal;padding:0px 0px}
 .page_nav button span {}
 .page_nav input {font-size:11px}
-.page_nav .uncertain {color:#888}
+.page_nav .uncertain {color:#777777}
 
 .page_nav {font-size:13px;height:38px;line-height:38px}
 .page_nav a, .page_nav .cell {float:left;display:block;height:38px;line-height:38px;padding:0px;width:27px;overflow:hidden;background-image:url(pager4_alpha_v2.png);text-align:center;background-repeat:no-repeat}
@@ -1196,14 +1233,14 @@ text-decoration:none;
 .page_short .to_level, .page_short .max_page, .page_short .to_page {display:none}
 
 /*post btn*/
-.postbtnsc {position:absolute;padding:0.25em 0.25em 0.1em 0.25em;border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff;;box-shadow:none;border-radius:2.5px;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:none}
+.postbtnsc {position:absolute;padding:0.25em 0.25em 0.1em 0.25em;border: 1px solid #353535;box-shadow:0 0 5px -3px #ffffff;;box-shadow:none;border-radius:2.5px;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:none}
 .postbtnsc .stdbtn td {line-height:1.5em}
 
 
 /*用户信息 声望条*/
-.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:#ccc 1px solid;width:auto}
+.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:#353535 1px solid;width:auto}
 .r_container table {border-collapse:separate;border-spacing:1px;width:100%}
-.r_bar {height:2px;line-height:0px;font-size:0px;background:#ccc}
+.r_bar {height:2px;line-height:0px;font-size:0px;background:#353535}
 .r_container td {height:2px;font-size:0px;line-height:0px;padding:0}
 .r_container .dot {background:#aaa;height:1px;padding:1px 0 0 0}
 .r_container .blue .r_bar, .r_container .blue .dot {background:#7ea8b8}
@@ -1234,8 +1271,8 @@ text-decoration:none;
 #mainmenu {height:55px;overflow:hidden;margin:0 0 168px 0}
 #mainmenu .avatar {width:78px;height:78px;float:right;margin-left:-1px}
 #mainmenu .avatar .bg {width:78px;height:38px;background: url(pager4_v2.png) 0px 0px no-repeat;margin:0 0 -38px 0}
-#mainmenu .avatar .img {width:67px;height:67px;background-color:#1a1912;border:1px solid #915c60;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
-#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #915c60;background:#2a2922;border-radius:0px 0px 5px 5px}
+#mainmenu .avatar .img {width:67px;height:67px;background-color:#11100e;border:1px solid #be8f7e;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
+#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #be8f7e;background:#322f2b;border-radius:0px 0px 5px 5px}
 
 
 #startmenu td {padding:0;font-size:14px;font-weight:bold;color:gray;vertical-align:top;text-align:left;opacity:0.50;}
@@ -1243,30 +1280,30 @@ text-decoration:none;
 #startmenu .item {height:2.5em;padding:0 5px;margin:0 0 0 5px;line-height:2.5em;border-right:1px solid #888;}
 #startmenu .last .item {border-right:none}
 #startmenu .item select, #startmenu .item button {margin-top:7px}
-#mainmenu .select .arrow, #startmenu .select .arrow {color:#4a2731}
+#mainmenu .select .arrow, #startmenu .select .arrow {color:#fbdbb7}
 #mainmenu .arrow, #startmenu .arrow {color:silver}
 #startmenu .select {border:1px solid #888;border-right:none;border-radius: 5px 0 0 5px;margin-top:-1px;margin-bottom:-1px;}
 #startmenu .highLight {border:1px solid #f00;border-radius:5px;}
 
 #startmenu .recent .item {border:none}
-#startmenu .recent {background:#1a1912;border-radius:0.5em;box-shadow:inset 0 0 3px #444}
+#startmenu .recent {background:#11100e;border-radius:0.5em;box-shadow:inset 0 0 3px #444}
 
-#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:#eee;font-family:Verdana, Tahoma, Arial, sans-serif;background:#4a2731;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
+#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:#181614;font-family:Verdana, Tahoma, Arial, sans-serif;background:#fbdbb7;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
 #usernamebg .chn_bold {font-family:'Microsoft Yahei', simhei;font-size:inhert}
 #usernamebg .title , #usernamebg .id {font-size:12px;line-height:14px}
 #usernamebg span {display:block;float:left;clear:both;padding:0 0 1px 0}
 
 #mainmenu .stdbtn .td {line-height: 55px;height:55px;float:left}
 #mainmenu .stdbtn {display:block;padding:0;border:none}
-#mainmenu .stdbtn .innerbg {height:55px;overflow:hidden;background:#2a2922}
+#mainmenu .stdbtn .innerbg {height:55px;overflow:hidden;background:#322f2b}
 #mainmenu .stdbtn a {border-radius:0px;border:none;font-weight:normal;padding:0 1.5em;overflow:hidden;height:55px}
-#mainmenu .stdbtn a:hover {border-bottom:4px solid #4a2731;height:51px}
+#mainmenu .stdbtn a:hover {border-bottom:4px solid #fbdbb7;height:51px}
 #mainmenu .stdbtn .half {padding:10px 0 8px 0;line-height:18px;}
-.mmdefault {color:#4a2731}
-.mmdefault:hover {color:#a27884}
-/*#mainmenu .stdbtn .left td a {border-left:none;border-right:1px solid #9c967a;}*/
+.mmdefault {color:#976f6b}
+.mmdefault:hover {color:#5e3532}
+/*#mainmenu .stdbtn .left td a {border-left:none;border-right:1px solid #433227;}*/
 
-#m_posts {border-bottom:1px solid #915c60}
+#m_posts {border-bottom:1px solid #be8f7e}
 #m_posts .postboxtop {margin-bottom:-1px;display:none}
 #m_posts_c table:first-of-type .postrow td.c1 {border-top-left-radius:2px}
 #m_posts_c table:first-of-type .postrow td.c2 {border-top-right-radius:2px}
@@ -1275,10 +1312,10 @@ text-decoration:none;
 #m_posts_c table:last-of-type .postrow td.c2 {border-bottom-right-radius:2px}
 #m_posts_c table:last-of-type {border-bottom-left-radius:2.5px;border-bottom-right-radius:2.5px}
 #m_posts .postboxtop {display:none}
-#m_posts {border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff;;border-radius:2.5px;padding-bottom:1px}
+#m_posts {border: 1px solid #353535;box-shadow:0 0 5px -3px #ffffff;;border-radius:2.5px;padding-bottom:1px}
 #m_posts .forumbox {border:0;box-shadow:none}
-#m_posts .row2 .postbtnsc .stdbtn a {background-color:#1d1c15}
-#m_posts .row2 .postbtnsc .stdbtn a:hover {background-color:#26251e}
+#m_posts .row2 .postbtnsc .stdbtn a {background-color:#181614}
+#m_posts .row2 .postbtnsc .stdbtn a:hover {background-color:#2a2724}
 #m_posts .adsch {margin:1px}
 
 
@@ -1405,7 +1442,7 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 .invertColor #m_nav .nav_link:hover,
 .invertColor #m_nav .urltip a:hover {color:#fff}
 
-.invertColor #m_nav .urltip {color:#ddd;border:1px solid #eee;background:#222}
+.invertColor #m_nav .urltip {color:#ddd;border:1px solid #eee;background:#dddddd}
 .invertColor #m_posts caption h2 {background:none;text-shadow:1px 1px 0 #ffe,0px 0px 3px #ffe,0px 2px 5px #ffe;}
 .invertColor #m_nav .bbsinfo .gray {color:silver}
 .invertColor .glowThis {text-shadow:1px 1px 0 #ffe,0px 0px 3px #ffe,0px 2px 5px #ffe;}
@@ -1419,14 +1456,14 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 #ucp_block .info {list-style-type: none;display:block;clear:both;max-width:1200px}
 #ucp_block .actions li {display:block;float:left}
 #ucp_block .info li {display:block;float:left;}
-#ucp_block .actions a {font-weight:bold;color:#4a2731}
+#ucp_block .actions a {font-weight:bold;color:#fbdbb7}
 #ucp_block .actions a:hover {color:#b87563}
 
 /* msg_block */
 #msg_block_c a {white-space:normal}
 #msg_block_c .msglist, #msg_block_c .msgread, #msg_block_c .msgpost  {width:100%;border:none}
 #msg_block_c .msglist td {padding:0.7em 0.5em}
-#msg_block_c .msglist .bg0, #msg_block_c .msgread .bg0 {background-color:#2a2922;}
+#msg_block_c .msglist .bg0, #msg_block_c .msgread .bg0 {background-color:#322f2b;}
 #msg_block_c .msglist .time {color:gray;text-align:right;}
 #msg_block_c .msglist .from {min-width:10em;}
 #msg_block_c .msglist .readed a {color:silver}
@@ -1436,14 +1473,14 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 #msg_block_c .msgread .time {color:gray;float:right;margin-bottom:-100%}
 #msg_block_c .subblock {margin-top:0.5em;padding-top:0.5em;border-top:1px dashed #C2A768}
 #msg_block_c .pager, #msg_block_c .members {padding-top:1em}
-#msg_block_c .menu a, #msg_block_c .pager a {font-weight:bold;color:#4a2731}
+#msg_block_c .menu a, #msg_block_c .pager a {font-weight:bold;color:#fbdbb7}
 #msg_block_c .menu a:hover, #msg_block_c .pager a:hover {color:#b87563}
 
 /* .buff_avatar_bg */
 .buff_avatar_bg[class] {background:url(avatarbg.png) 50% 6px no-repeat} 
 
 /* .stdbtn */
-.stdbtn {font-size:1.085em;border-radius:2.5px;background:#1a1912;padding:1px;border: 1px solid #2d2c25;box-shadow:0 0 5px -3px #fff;}
+.stdbtn {font-size:1.085em;border-radius:2.5px;background:#11100e;padding:1px;border: 1px solid #353535;box-shadow:0 0 5px -3px #ffffff;}
 .stdbtn td, .stdbtn .td {line-height:3em;padding:0;text-align:center;white-space:nowrap}
 
 .stdbtn td:last-child a {border-top-right-radius:2px;border-bottom-right-radius:2px;border-right:none;padding-right:0.9em}
@@ -1452,11 +1489,11 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 .stdbtn .last a {border-right:none}
 .stdbtn .first a {border-left:none}
 
-.stdbtn a {border-left:1px solid #9c967a;background:#2a2922;font-weight:bold;display:block;padding:0 0.8em;}
-.stdbtn a:hover {background-color:#1d1c15;text-decoration:none}
+.stdbtn a {border-left:1px solid #433227;background:#322f2b;font-weight:bold;display:block;padding:0 0.8em;}
+.stdbtn a:hover {background-color:#181614;text-decoration:none}
 
-.stdbtn .invert {background:#4a2731;color:#fff}
-.stdbtn .invert:hover {background:#a27884;color:#fff}
+.stdbtn .invert {background:#fbdbb7;color:#181614;}
+.stdbtn .invert:hover {background:#9c7b58;color:#000000}
 
 .stdbtn .teal {background:#356868;color:#fff}
 .stdbtn .teal:hover {background:#598d8d;color:#fff}
@@ -1472,13 +1509,13 @@ vml\:roundrect {behavior:url(#default#VML);display:inline-block;background:trans
 
 .pager_spacer {line-height:3.34em}
 /* avatar */
-.postbox .avatar, .msgread .avatar {margin: 0.25em 0;border:0.0833em solid #4a2731}
+.postbox .avatar, .msgread .avatar {margin: 0.25em 0;border:0.0833em solid #fbdbb7}
 .postbox .ceffect1 .avatar {margin-top:1em}
 .postbox .avatar_noborder {border:none}
 .postbox .ceffect1 .avatar_small, .postbox .avatar_small, .msgread .avatar_small {margin: -0.33em 0 -0.66em 0;width: 1.92em;height: 1.92em;border-radius: 0.416em;}
 /*collapse*/
-.collapse_content {border-top:1px solid #cfafae;border-bottom:1px solid #cfafae}
-.collapse_btn {border-top:1px solid #cfafae;border-bottom:1px solid #cfafae;padding:1px 0}
+.collapse_content {border-top:1px solid #614839;border-bottom:1px solid #614839}
+.collapse_btn {border-top:1px solid #614839;border-bottom:1px solid #614839;padding:1px 0}
 .collapse_btn button {line-height:1.2em;padding:0px 0.2em}
 /*fast view*/
 .fastViewPost .forumbox {border:none}
@@ -1495,12 +1532,12 @@ vml\:roundrect {behavior:url(#default#VML);display:inline-block;background:trans
 .hsdeck .q5 a {color:sienna}
 .hsdeck td table {width:100%}
 .hsdeck .bar {font-family:'arial black';color:silver;width:4em;vertical-align:bottom;text-align:center}
-.hsdeck .bar div {background:#444;margin:auto}
+.hsdeck .bar div {background:#bbbbbb;margin:auto}
 .hsdeck .link {font-size:1.5em;text-align:right}
 .hsdeck .np {padding:0}
-.c2 .hsdeck .bg0 {background:#1d1c15}
+.c2 .hsdeck .bg0 {background:#181614}
 .c2 .hsdeck .bg1,.c1 .hsdeck .bg1 {}
-.c1 .hsdeck .bg0 {background:#2a2922}
+.c1 .hsdeck .bg0 {background:#322f2b}
 
 .smile_ac, .smile_a2, .smile_dt, .smile_pg, .smile_pst {vertical-align:-12px;margin:auto 0.2em}
 .smile {vertical-align:-4px;margin:auto 0.2em}
@@ -1519,11 +1556,11 @@ body .gnavv7 *,.oCv7 *{margin:0;padding:0;list-style:none;text-decoration:none;f
 
 .comment_c .avatar_small {margin-bottom:-1.92em}
 .comment_c .comment_c_0 {margin:0.5em 0.5em 0.5em 2.5em;}
-.comment_c .comment_c_1 {border-top: 1em solid #cfafae;border-left: 1em solid transparent;padding:0}
-.comment_c .comment_c_2 {padding:0.5em;border:0.2em solid #cfafae;border-radius:0 0.5em 0.5em 0.5em}
+.comment_c .comment_c_1 {border-top: 1em solid #614839;border-left: 1em solid transparent;padding:0}
+.comment_c .comment_c_2 {padding:0.5em;border:0.2em solid #614839;border-radius:0 0.5em 0.5em 0.5em}
 
 
-.haveCustomBackground #m_pbtntop .stdbtn {background:#2a2922;border-color:#1a1912;box-shadow: 0 0 6px -3px #000;}
+.haveCustomBackground #m_pbtntop .stdbtn {background:#322f2b;border-color:#11100e;box-shadow: 0 0 6px -3px #000;}
 #m_nav .bbsinfo {color:#555}
 /*
 ----------------------

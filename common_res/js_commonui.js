@@ -1100,9 +1100,10 @@ ww.commonui.aE(window,'DOMContentLoaded',function(){document.body.style.width='a
 },
 
 setIframe:function(){
-if((this.bit & this.bits.iframe)==0)
-	return
-window.loader.script( window.__SCRIPTS.iframeRead2 , function(){iframeRead.init()} )
+if(this.bit & this.bits.iframe)
+	__SCRIPTS.asyncLoad( 'iframeRead2' , function(){iframeRead.init()} )
+//if(window.__DEBUG)
+	//__SCRIPTS.asyncLoad( 'loaderRead' , function(){_LOADERREAD.init()} )
 }
 }//ce
 
@@ -1208,9 +1209,9 @@ return true
  *[url,protocol,host,pathname,search,hash]
  */
 commonui.urlToAry = function(u){
-if(u = u.match(/^(?:(https?|ftp):\/\/)?([^\x00-\x20\/><"']*)([^\x00-\x1f\?><"']*)([^\x00-\x1f#><"']*)([^\x00-\x1f><"']*)$/i)){
-	u = {protocol:u[1]?u[1]:'http',host:(u[2]?unescape(u[2]).toLowerCase():location.host),pathname:u[3]?u[3]:'/',search:u[4]?u[4]:'',hash:u[5]?u[5]:''}
-	u.url = u.protocol+'://'+u.host+u.pathname+u.search+u.hash
+if(u = u.match(/^(?:(https?:|ftp:|)\/\/)?([^\x00-\x20\/><"']*)([^\x00-\x1f\?><"']*)([^\x00-\x1f#><"']*)([^\x00-\x1f><"']*)$/i)){
+	u = {protocol:u[1]?u[1]:'https:',host:(u[2]?unescape(u[2]).toLowerCase():location.host),pathname:u[3]?u[3]:'/',search:u[4]?u[4]:'',hash:u[5]?u[5]:''}
+	u.url = u.protocol+'//'+u.host+u.pathname+u.search+u.hash
 	return u
 	}
 }//fe
@@ -1615,6 +1616,32 @@ for(var k in m){
 	}
 }//fe
 
+
+
+
+commonui.eval = function(script){
+try{
+	console.log(script)
+	eval.call(window,script)
+	//Function("with(window){\n"+script+"\n}")()
+	}
+catch(e){
+	console.log(e,script)
+	}
+}//fe
+
+commonui.parentAHerf = function(o){
+if(o.nodeName=='A')
+	return o
+for(var i =0;i<4;i++){
+	o=o.parentNode
+	if(!o)return
+	if(o.nodeName=='A')return o
+	}
+}//fe
+
+
+
 }//be
 
 
@@ -1855,7 +1882,7 @@ if(!window.addEventListener || !('onmessage' in window)){
 	}
 
 var F={},CB={},CALL = function(opt,act,tar){
-//	d = this.urlToAry(document.referrer),d = d.protocol+'://'+d.host
+//	d = this.urlToAry(document.referrer),d = d.protocol+'//'+d.host
 if(opt & 1)
 	return window.parent.postMessage(act, tar)
 var a = arguments
@@ -1901,7 +1928,7 @@ return CALL(opt, callname+' '+(callback?k:'null')+' '+arg, host)
 commonui.crossDomainCall.setCallBack=function(k,v){CB[k] = v}
 
 window.addEventListener("message", function(e){
-if(!e.origin.match(/(?:nga\.cn|ngacn\.cc|nga\.178\.com|bigccq\.cn)(?::\d+)?$/))
+if(!e.origin.match(/(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs.com|bigccq\.cn)(?::\d+)?$/))
 	return
 var call,callback,a = e.data.replace(/^([^\s]+)\s+([^\s]+)\s+/,function($0,$1,$2){call=$1;callback=$2;return ''})
 if(call){
@@ -1917,7 +1944,7 @@ if(call){
 //本地缓存=====================
 ;(function(){
 var co = commonui, C = {}, CH = false, P = 'userCache_'+(window.__CURRENT_UID ? __CURRENT_UID+'_' : '0_') , PO = location.protocol ,S = domStorageFuncs, CK = __COOKIE, H=co.crossDomainCall,
-HS = ['http://bbs.ngacn.cc','http://nga.donews.com','http://bbs.nga.cn','http://nga.178.com','http://bbs.bigccq.cn','https://bbs.ngacn.cc','https://bbs.donews.com','https://bbs.nga.cn','https://nga.178.com','https://bbs.bigccq.cn'],
+HS = ['http://bbs.ngacn.cc','http://nga.donews.com','http://bbs.nga.cn','http://nga.178.com','http://bbs.bigccq.cn','https://bbs.ngacn.cc','https://bbs.donews.com','https://bbs.nga.cn','https://nga.178.com','https://bbs.bigccq.cn','http://ngabbs.com','https://ngabbs.com'],
 CH = location.protocol+'//'+location.host
 
 commonui.userCache ={
@@ -1944,7 +1971,7 @@ this.set(k,null,-1,o)
 },//fe
 
 hostGet:function (host,k,call){
-if(!window.__DEBUG)
+//if(!window.__DEBUG)
 	return this.asyncGet(host,k,call)
 k = P+k
 //console.log('host '+host+' usercache get '+k)
@@ -1952,7 +1979,7 @@ return H(0, host, 'getStorage', function(x){ call(CK.json_decode(x)) }, k)
 },//fe
 
 hostSet:function (host,k,v,t,call){
-if(!window.__DEBUG)
+//if(!window.__DEBUG)
 	return this.asyncSet(host,k,v,t,call)
 k = P+k
 return H(0, host, 'setStorage', call?function(x){ call(x) }:null, k+' '+t+' '+CK.json_encode(v))
@@ -1980,12 +2007,19 @@ t = $('/div').$0(
 	'className','tip_title'+((opt&2)?' x':''),
 	'draggable',true,
 	'ondragstart' , function(e){
-		this._p = {x:e.screenX,y:e.screenY}
+		var x = this.parentNode.parentNode, b = x.getBoundingClientRect(), p= __NUKE.position.get()
+		this._p = {x:e.screenX,y:e.screenY,l:b.left+p.xf,t:b.top+p.yf}
+		},
+	'ondrag' , function(e){
+		if(e.screenX || e.screenY){
+			this._p.x1 = e.screenX
+			this._p.y1 = e.screenY
+			}
 		},
 	'ondragend' , function(e){
 		var x = this.parentNode.parentNode
-		x.style.left = (e.screenX - this._p.x + parseInt(x.style.left,10)) + 'px'
-		x.style.top = (e.screenY - this._p.y + parseInt(x.style.top,10)) + 'px'
+		x.style.left = Math.round(this._p.x1 - this._p.x + this._p.l) + 'px'
+		x.style.top = Math.round(this._p.y1 - this._p.y + this._p.t) + 'px'
 		},
 	
 	$('/a','className','colored_text_btn','href','javascript:void(0)',__TXT('close')._.css('line-height:1.85em'),'onclick',function(){this.parentNode.parentNode.parentNode._.hide()}),
@@ -2525,6 +2559,7 @@ if(f)f.call(imgo)
 }//fe
 }//ce
 
+
 }//be
 
 
@@ -2791,6 +2826,7 @@ else
 *l 长度限制(一中文字符为单位)
 */
 commonui.htmlName = function(name,l){
+
 var o = 0
 if(name.charAt(0)=='#' && name.match(/^#anony_[a-f0-9]{32}$/))
 	var n = this.anonyName(name)[0],o=o|1
@@ -2823,7 +2859,7 @@ c[2] = c[2]/255/2+0.25
 c = this.hsvToRgb(c[0],c[1],c[2])
 hex = "<b class='block_txt' "+(o?"title='"+( (o&2)?name+' ':''  )+(  (o&1)?'这是一个匿名用户 ':'' )+"'":'')+" style='padding-left:0.2em;padding-right:0.2em;min-width:1em;text-align:center;background:#"+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))+";color:#ffffff'>"
 
-if(n.match(/UID:?\d+/i)){
+if(n.match(/^UID:?\d+/i)){
 	if(n.length>6)
 		return n.substr(0,n.length-4)+hex+n.substr(n.length-4)+"</b>"
 	else
@@ -2909,7 +2945,7 @@ if(buff){
 				buff[102] ? 'a_sheep_b.png' : (
 					buff[99] ? 'a_sheep.png' : (
 						buff[119] ? 'a_sheep_d.png' : (
-							buff[120] ? 'http://img.ngacn.cc/attachments/mon_201709/30/9Q2h-7ammKkToS2o-2n.png' : 'a_sheep_c.png'
+							buff[120] ? 'bronya1.png' : 'a_sheep_c.png'
 							)
 						)
 					)
@@ -2917,7 +2953,7 @@ if(buff){
 			)
 		y.noborder=1
 		if(buff[120])
-			y.func='testavatar'
+			y.func='avatarBlockrain'
 		return y
 		}
 	if(buff[111])
@@ -2981,7 +3017,7 @@ if(a && a.l && a[0])
 return ''
 }//
 commonui.avatarReal2Short=function(im,uid){//完整的本站头像地址还原成缩写
-if(im.match(/^https?:\/\/.+?(?:ngacn\.cc|nga\.cn|178\.com|nga\.donews\.com)\//) && (m = im.match(/\/[0-9a-z]{3}\/[0-9a-z]{3}\/[0-9a-z]{3}\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)$/i))){
+if(im.match(_ALL_IMG_HOST_REG) && (m = im.match(/\/[0-9a-z]{3}\/[0-9a-z]{3}\/[0-9a-z]{3}\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)$/i))){
 	if(m[1]==uid)
 		im = '.a/'+m[1]+'_'+m[2]+'.'+m[3]+'?'+m[4]
 	}
@@ -2990,8 +3026,8 @@ return im
 commonui.avatarUrl=function(y,uid){
 if(y.charAt(0)=='.' && (i=y.match(/^\.a\/(\d+)_(\d+)\.(jpg|png|gif)\?(\d+)/)))
 	y= __AVATAR_BASE_VIEW+'/'+('000000000'+(i[1]|0).toString(16)).replace(/.+?([0-9a-z]{3})([0-9a-z]{3})([0-9a-z]{3})$/,'$3/$2/$1')+'/'+i[1]+'_'+i[2]+'.'+i[3]+'?'+i[4]
-else if(y.charAt(0)=='h' && (i = y.match(/^https?:\/\/([^\/]+)\//))){
-	if(!i[1].match(/\.(ngacn\.cc|nga\.cn|178\.com|nga\.donews\.com)$/) && uid!=window.__CURRENT_UID)
+else if(y.charAt(0)=='h' && y.match(/^https?:\/\/([^\/]+)\//)){
+	if(!y.match(_ALL_IMG_HOST_REG) && uid!=window.__CURRENT_UID)
 		y=''
 	}
 else if(y)
@@ -3351,6 +3387,8 @@ for(var i=0;i<s.length;i++){
 
 for(var i=0;i<a.length;i++){
 	var z = a[i], m=z.href.match(/\wfid=(-?\d+)/)
+	if(z.parentNode.nodeName=='H1')
+		z.parentNode.parentNode.replaceChild(z,z.parentNode)
 	if(m && m[1] && (m[2]=this.domainSelect(m[1])))
 		z.href = m[2]+z.getAttribute("href")
 	if(z.className=='nav_root'){
@@ -4283,6 +4321,10 @@ for(var i=0;i<txt.length;i++){
 commonui.selectForum = {
 _ALL:null,
 _NO_CURRENT:null,
+reset:function(){
+this._ALL = null
+this._NO_CURRENT=null
+},
 init:function(){
 var y = window.__CURRENT_FID
 if(z=window.__SUB_AND_UNION_FORUM_AND_SET){
@@ -4489,7 +4531,7 @@ if(sub){
 				$('/div', 'class', 'a',
 					$('/div', 'class', 'b',
 						$('/a', 'href', f.herf, 'innerHTML', f[1]),
-						(f[4]&48)&&(__GP.admincheck&14)? $('/a', 'href', '/read.php?tid='+f[3], 'class', 'small_colored_text_btn white nobr', 'style', 'backgroundColor:silver;fontFamily:inherit', 'innerHTML', (f[4]&16) ? '合集' : '版面') : null,
+						(f[4]&48)&&(__GP.admincheck&14)? $('/a', 'href', '/read.php?tid='+f[3], 'class', 'small_colored_text_btn block_txt_c0 nobr', 'style', 'backgroundColor:silver;fontFamily:inherit', 'innerHTML', (f[4]&16) ? '合集' : '版面') : null,
 						$('/br'),
 						$('/p')._.add(f[2], f.ck ? $('/input','type','checkbox','checked',f[4]&4?'checked':'', 'value', ((f[4]&16)||f[3] ? 't': '')+(f[3]?f[3]:f[0]), 'title','显示/不显示此版面主题','onclick',function(){commonui.selectForum.select(this,this.value,this.checked?1:0,ff)}) : null)
 						)
@@ -4940,14 +4982,20 @@ this.adminwindow._.addContent(
 		$('/br'),
 		$('/input').$0('type','radio','name','opt2','checked',1),'不扣减声望 ',
 		n1 = $('/input').$0('type','radio','name','opt2'),'扣减声望',$('/span','className','silver','innerHTML','(150) '),
-		n2 = $('/input').$0('type','radio','name','opt2'),'加倍扣减声望',$('/span','className','silver','innerHTML','(300) '),
+		n2 = $('/input').$0('type','radio','name','opt2'),'加倍扣减声望',
 		$('/br'),
 		n3 = $('/input').$0('type','checkbox'),'同时扣减威望',$('/span','className','silver','innerHTML','(150:1 仅在有正式声望的版面)'),
 		$('/br'),
 		n4 = $('/input').$0('type','checkbox'),'延时',$('/span','className','silver','innerHTML','(从下次发言开始禁言)'),
 		$('/br'),
 		$('/br'),
-		is = $('/input').$0('placeholder','操作说明(将显示在帖子中)','maxlength','20','onfocus',function(){if(isl.style.display=='none')isl.style.display=''}),
+		is = $('/input').$0('placeholder','操作说明(将显示在帖子中)','maxlength','20','onfocus',function(e){if(isl.style.display=='none'){
+				isl.style.display=''
+				this.blur()
+				this.placeholder='使用攻击性言辞将被禁止填写'
+				commonui.cancelEvent(e)
+				}
+			}),
 		 f ? (isl = $('/span','style','display:none',$('/br'))) :null,
 		$('/br'),
 		$('/br'),
@@ -5281,7 +5329,7 @@ var f = function(e){
 		x.innerHTML='on',x.style.backgroundColor='#551200',x.title='是';
 	}, 
 	ck=function(k){
-	return $('/a').$0('href','javascript:void(0)','title','保持当前设置','className','small_colored_text_btn stxt white','name',k,'onclick',f,'innerHTML','--','style',{backgroundColor:'gray'})
+	return $('/a').$0('href','javascript:void(0)','title','保持当前设置','className','small_colored_text_btn stxt block_txt_c0','name',k,'onclick',f,'innerHTML','--','style',{backgroundColor:'gray'})
 	},
 g=function(all){
 	for(var i=0;i<all[0].length;i++)
@@ -5297,7 +5345,7 @@ this.adminwindow._.addContent(
 		de,
 		p,
 		pid ? null : t,
-		$('/br'),$('/span').$0('className','small_colored_text_btn stxt white','innerHTML','--','style',{backgroundColor:'gray'}),' 意为"保持当前状态"',
+		$('/br'),$('/span').$0('className','small_colored_text_btn stxt block_txt_c0','innerHTML','--','style',{backgroundColor:'gray'}),' 意为"保持当前状态"',
 		$('/br'),'*隐藏且锁定的回复在列表中不可见',
 		$('/br'),'**隐藏的状态标记作者仅在编辑时可见',
 		$('/br'),$('/br'),

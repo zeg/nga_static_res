@@ -381,8 +381,10 @@ if(x.time && (tt || x.timeout)){
 	if(!t)
 		t = Math.floor((new Date).getTime()/1000)
 	
-	if(t-x.time > (tt ? tt : x.timeout))
+	if(t-x.time > (tt ? tt : x.timeout)){
+		console.log('doReqDataTimeout')
 		return true
+		}
 	}
 }//fe
 

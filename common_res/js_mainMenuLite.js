@@ -141,19 +141,19 @@ else{
 
 var menuItem = {
 	left:{
-		1:{h:'http://ngacn.cc/',t:'首页'},
-		2:{h:'http://bbs.ngacn.cc/',t:'论坛'},
-		3:{h:'http://game.ngacn.cc/',t:'评分'},
+		1:{h:'http://nga.cn/',t:'首页'},
+		2:{h:'http://bbs.nga.cn/',t:'论坛'},
+		3:{h:'http://game.nga.cn/',t:'评分'},
 		4:{h:'https://shop482085632.taobao.com',t:'商城'},
-		5:{h:'http://tv.ngacn.cc',t:'赛事'},
-		6:{h:'http://www.ngacn.cc/special/',t:'专题'},
-		7:{h:'http://app.nga.donews.com/',t:'移动端'}
+		5:{h:'http://tv.nga.cn',t:'赛事'},
+		6:{h:'http://www.nga.cn/special/',t:'专题'},
+		7:{h:'http://app.nga.cn/',t:'移动端'}
 		},
 	right:{
-		1:{u:1, b:1, h:'http://bbs.ngacn.cc/nuke.php?func=ucp&uid='+uid, t:'<div style="zoom:1;display:inline;display:inline-block;font-size:2.307em;font-weight:bold;background:#'+d(uname)+';color:#fff;line-height: 1em;vertical-align: -0.3em;border-radius: 0.5em;overflow: hidden;transform:rotate(10deg);width:1em;text-align:center">'+uname.substr(0,1).toUpperCase()+'</div> '+c(uname,7,6,'...')},
-		2:{u:1, b:1, h:'https://bbs.ngacn.cc/nuke.php?__lib=login&__act=account&logout', t:'<nobr>'+OUT+' 登出</nobr>'},
-		3:{u:0, b:1, h:'https://bbs.ngacn.cc/nuke.php?__lib=login&__act=account&login', t:'<nobr>'+IN+' 登录</nobr>'},
-		4:{u:0, b:1, h:'https://bbs.ngacn.cc/nuke.php?__lib=login&__act=account&register', t:'<nobr>'+REG+' 注册</nobr>'}
+		1:{u:1, b:1, h:'http://bbs.nga.cn/nuke.php?func=ucp&uid='+uid, t:'<div style="zoom:1;display:inline;display:inline-block;font-size:2.307em;font-weight:bold;background:#'+d(uname)+';color:#fff;line-height: 1em;vertical-align: -0.3em;border-radius: 0.5em;overflow: hidden;transform:rotate(10deg);width:1em;text-align:center">'+uname.substr(0,1).toUpperCase()+'</div> '+c(uname,7,6,'...')},
+		2:{u:1, b:1, h:'https://bbs.nga.cn/nuke.php?__lib=login&__act=account&logout', t:'<nobr>'+OUT+' 登出</nobr>'},
+		3:{u:0, b:1, h:'https://bbs.nga.cn/nuke.php?__lib=login&__act=account&login', t:'<nobr>'+IN+' 登录</nobr>'},
+		4:{u:0, b:1, h:'https://bbs.nga.cn/nuke.php?__lib=login&__act=account&register', t:'<nobr>'+REG+' 注册</nobr>'}
 		}
 	}
 

@@ -27,7 +27,8 @@ actTimout:null,
 toUrl:null,
 clickSound:null,
 aInit:null,
-
+atext:null,
+gopt:0,//&1 nosavehis
 //initGoUrl:null,
 
 go:function(u){
@@ -41,7 +42,7 @@ s.show(u)
 
 
 //---------------------------
-initA:function(o){
+initA:function(o){//外页面init
 if(this.off)return
 if(this.aInit)return
 this.aInit=true
@@ -53,11 +54,11 @@ if(window.Audio){
 	}
 
 var s = this, l= location, p = /^(?:https?:\/\/[^\/]+?)?(\/(?:read|nuke)\.php)/;
+
 document.body.addEventListener('mousedown',function(e){
 	//console.log('down '+e.timeStamp)
-	var h = e.target || e.srcElement
-	if(h.nodeName!='A')
-		return
+	var h = commonui.parentAHerf(e.target || e.srcElement)
+	if(!h)return
 	if(h.href.indexOf('/read.php')!=-1 || h.href.indexOf('/nuke.php')!=-1){
 		h.__mousedowntime = e.timeStamp
 		//console.log('h.__mousedowntime '+h.__mousedowntime)
@@ -77,19 +78,23 @@ document.body.addEventListener('click',function(e){
 	var h = e.target || e.srcElement
 	if(h==s.c)
 		return s.show()
-	if(h.nodeName!='A')h=h.parentNode
-	if(h.nodeName!='A')
+	h = commonui.parentAHerf(e.target || e.srcElement)
+	if(!h)
 		return s.hide()
 	//console.log('h.__mousedowntime '+h.__mousedowntime)
 	if(h.__mousedowntime && e.timeStamp-h.__mousedowntime>=500)
 		return h.__mousedowntime=0
 	var m = h.href.match(p)
+	
 	if(m && (m[1]=='/read.php' || m[1]=='/nuke.php') && l.pathname != m[1]){
+
+
+		s.atext = h.nodeValue ? h.nodeValue : h.innerHTML
 		e.returnValue = false
 		e.cancelBubble = true;
 		e.preventDefault()
 		e.stopPropagation()
-		iframeRead.go(h.href)
+		s.go(h.href)
 		return false
 		}
 	else
@@ -100,14 +105,13 @@ document.body.addEventListener('click',function(e){
 //	this.go(this.initGoUrl)
 },//fe
 
-initB : function(){
+initB : function(){//内页面init
 var p = /^(?:https?:\/\/[^\/]+?)?(\/(?:read|nuke)\.php)/;
 commonui.aE(window,'bodyInit',function(){
 	document.body.addEventListener('click',function(e){
 		//console.log('click '+e.timeStamp)
-		var h = e.target || e.srcElement
-		if(h.nodeName!='A')h=h.parentNode
-		if(h.nodeName!='A')
+		var h = commonui.parentAHerf(e.target || e.srcElement)
+		if(!h)
 			return
 		//console.log('h.__mousedowntime '+h.__mousedowntime)
 		if(h.href.match(p))
@@ -245,10 +249,15 @@ s.actionTimeout1 = setTimeout(function(){
 				s.actionTimeout2 = setTimeout(function(){
 					s.f.style.display=''
 					try{
-						s.f.contentWindow.location.assign( s.toUrl )
+						if((s.gopt&1)==0)
+							history.pushState({'ifr':1,'url':s.toUrl,'purl':l.href,'til':s.atext},s.atext,l.href)
+						if(s.f.contentWindow._LOADERREAD)
+							s.f.contentWindow._LOADERREAD.assign( s.toUrl )
+						else
+							s.f.contentWindow.location.assign( s.toUrl )
 						s.f.contentWindow.focus()
 						//l.assign(l.href.replace(/#.+$/,'')+'#do:ifr:'+s.toUrl.replace(/https?:\/\/[^\/]+/,''))
-					}catch(er){}
+					}catch(er){console.log(er)}
 					},550)
 			}
 		else{
@@ -261,12 +270,17 @@ s.actionTimeout1 = setTimeout(function(){
 		s.f.style.display=''
 
 		try{
-			s.f.contentWindow.location.assign( s.toUrl )
+			if((s.gopt&1)==0)
+				history.pushState({'ifr':1,'url':s.toUrl,'purl':l.href,'til':s.atext},s.atext,l.href)
+			if(s.f.contentWindow._LOADERREAD)
+				s.f.contentWindow._LOADERREAD.assign( s.toUrl )
+			else
+				s.f.contentWindow.location.assign( s.toUrl )
 			s.f.contentWindow.focus()
 			//l.assign(l.href.replace(/#.+$/,'')+'#do:ifr:'+s.toUrl.replace(/https?:\/\/[^\/]+/,''))
-			}catch(er){}
+			}catch(er){console.log(er)}
 		}
-		
+	s.gopt=0
 	s.actTimout=null
 	},100)
 }//fe
@@ -277,6 +291,13 @@ var sameWindowOpen={
 initA : function(o){iframeRead.initA(o)}
 }
 
+commonui.aE(window,'popstate',function(e){
+	console.log(e.state)
+	if(e.state && e.state.ifr){
+		iframeRead.gopt |=1
+		iframeRead.go(e.state.url)
+		}
+	})
 
 if(!domExtPrototype.aniSize){
 domExtPrototype.aniSize = function(to,f,h,ff){
@@ -328,5 +349,5 @@ else{
 	}
 	
 }//fe
-}
+}//if
 

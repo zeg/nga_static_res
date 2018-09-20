@@ -217,7 +217,7 @@ if (s){
 		}
 	this.c_._.add(
 			$('/div')._.cls('item')._.add(
-				$('/a').$0('href','javascript:void(0)','title','清除最近访问的菜单项目记录','className','small_colored_text_btn stxt white','onclick',function(){commonui.userCache.del('startMenuHis');alert('记录清除 请刷新页面')},'innerHTML','清除','style',{backgroundColor:'gray',fontWeight:'normal'})
+				$('/a').$0('href','javascript:void(0)','title','清除最近访问的菜单项目记录','className','small_colored_text_btn stxt block_txt_c0','onclick',function(){commonui.userCache.del('startMenuHis');alert('记录清除 请刷新页面')},'innerHTML','清除','style',{backgroundColor:'gray',fontWeight:'normal'})
 				)
 			)
 	}

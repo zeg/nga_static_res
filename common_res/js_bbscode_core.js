@@ -320,107 +320,9 @@ pg:{
 		  
 }//s
 
-
-;(function(){
-var d1 = function(){
-	return (window.__CURRENT_FID==570) ? 1 : -2
-	}
-//1未知 2可信
-ubbcode.checkLinkTable = {
-'ngacn.cc':{_:2,'bbs.ngacn.cc':3},// _ 指无更多前缀的域名 2为保持原链接 3为替换成当前host
-'nga.cn':{_:2,'bbs.nga.cn':3},
-'donews.com':{_:2,'nga.donews.com':{_:3,'img.nga.donews.com':2,'img4.nga.donews.com':2}},
-'bigccq.cn':{_:4,'bbs.bigccq.cn':4},
-'178.com':{_:2,'nga.178.com':{_:3,'img.nga.178.com':2,'img4.nga.178.com':2},'club.178.com':3,'wb.178.com':-2},
-'ngacn.com':{_:4,'bbs.ngacn.com':4},
-_:1,
-'worldofwarcraft.com':2,
-'ofcard.com':2,
-'uusee.com':2,
-'youtube.com':2,
-'youku.com':2,
-'weplay.cn':2,
-'tudou.com':2,
-'uencn.com':2,
-'sc2.cc':2,
-'wowchina.com':2,
-'microsoft.com':2,
-'dmzj.com':2,
-'com.cn':{_:1,'sina.com.cn':2},
-'pixiv.net':{_:1,'embed.pixiv.net':2},
-'loli.my':{_:1,'static.loli.my':2},//bilibili视频
-'hdslb.com':2, //bilibili视频
-'plures.net':{_:1,'r.plures.net':2},//v.longzhu.com视频
-'bilibili.us':2,
-'bilibili.com':2,
-'bilibili.tv':2,
-'66play.com':2,
-'acg.tv':2,
-'acfun.com':2,//acfun视频
-'acfun.cn':2,
-'acfun.tv':2,//acfun视频
-'173.com':2,
-'aixifan.com':{_:1,'cdn.aixifan.com':2},//acfun视频
-'pdim.gs':{_:1,'s3.pdim.gs':2},//熊猫TV
-'huomaotv.cn':{_:1,'www.huomaotv.cn':2},//熊猫TV
-'letv.com':2,
-'qq.com':{_:2,'jq.qq.com':-2},
-'766.com':2,
-'iqiyi.com':2,
-'qiyi.com':2,
-'pptv.com':2,
-'feixiong.tv':2,
-'163.com':2, //网易视频
-'126.net':2, //网易视频
-'netease.com':{_:1,'cc.netease.com':{_:1,'res.cc.netease.com':2}}, //网易视频
-'douyu.tv':2, // 斗鱼
-'douyutv.com':2, // 斗鱼
-'douyucdn.cn':2,
-'douyu.com':2, 
-'zhanqi.tv':2, // 
-'bogou.tv':2, // 播狗
-'steampowered.com':2,
-'www.iyingdi.cn':-2,
-'2zhk.com':d1,
-'t.cn':d1,
-'sina.lt':d1,
-'url.cn':d1,
-'t.co':d1,
-'goo.gl':d1,
-'hiurl.me':d1,
-'dwz.cn':d1,
-'985.so':d1,
-'980.so':d1,
-'9.cn':d1,
-'qyub.cn':d1,
-'ppt.cc':d1,
-'qr.net':d1,
-'tinyurl.com':d1,
-'bocaidj.com':d1,
-'bit.ly':d1,
-'xici800.cn':d1,
-'jiaoyimao.com':d1,
-'suo.im':d1,
-'hupu.com':function(u){
-	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485 || window.__CURRENT_FID==-7) ? 1 : -2
-	},
-'taobao.com':function(u){
-	if(u.url.match(/coupon\.|taoquan\.|click\.|activity_id/))
-		return d1(u)
-	else
-		return 1
-	}
-}
-})();
-
-ubbcode.checkIframeTable = {
-'wow.178.com/':2,
-'challonge.com/':2,
-'music.163.com':function(u){
-	var m = u.match(/height=(\d+)/i)
-	return [u.replace(/(\W)auto=.+?(\W|$)/i,'$1$2'), m[1]>=90?330:298, (m[1]|0)+20]//[url,width,height]
-	}
-}
+//_ 指无更多前缀的域名 1未知 2可信保持原链接 3为替换成当前host
+ubbcode.checkLinkTable = commonui.checkLinkTable ? commonui.checkLinkTable : {_:1}
+ubbcode.checkIframeTable = commonui.checkIframeTable ? commonui.checkIframeTable : {}
 
 ubbcode.checkSigImg=commonui.checkSigImg
 
@@ -484,7 +386,7 @@ var arg = {
 	i:123, 帖子的楼层 0开始 贴条为-1 非帖子时没有
 	tId
 	pId
-	opt &1解析style &2在fixsize的折叠或随机块中(自动设置) &4fixsize限高 &8在快速阅读的弹出窗口中 &16在置顶中 &32在较长的置顶中 &64同isBlock(自动设置) &128在签名中 &256渲染完成后发生长宽变化需调用onResize
+	opt &1解析style &2在fixsize的折叠或随机块中(自动设置) &4fixsize限高 &8在快速阅读的弹出窗口中 &16在置顶中 &32在较长的置顶中 &64同isBlock(自动设置) &128在签名中 &256渲染完成后发生长宽变化需调用onResize  &512显示视频
 	authorId
 	c 要解析内容的元素
 	txt 或者要解析的文字
@@ -760,7 +662,7 @@ arg.txt = arg.txt.replace(/\[(?:\/?)color(?:\d?)(?:=(bg)?(skyblue|royalblue|blue
 	else{
 		tmp++
 		if($1)
-			return "<span class='small_colored_text_btn white' style='font-family:inherit;background-color:"+$2+"'>"
+			return "<span class='small_colored_text_btn block_txt_c0' style='font-family:inherit;background-color:"+$2+"'>"
 		else
 			return "<span class='"+$2+"'>"
 		}
@@ -875,7 +777,7 @@ arg.txt = arg.txt.replace(/\[s:(.{1,10}?)\]/gi,function($0,$1){
 		}
 
 	if(noimg&2)//小图片只有在调用指定时不显示
-		return "<button alt='"+x+"' onclick='var tmp = _$(\"/img\").$0(\"className\",\"smile"+z+"\",\"src\",\""+x+"\");this.parentNode.replaceChild(tmp,this)'/>"+y+"</button>"
+		return "<button alt='"+x+"' onclick='var tmp = _$(\"/img\",\"className\",\"smile"+z+"\",\"src\",\""+x+"\");this.parentNode.replaceChild(tmp,this)'/>"+y+"</button>"
 	else
 		return "<img class='smile"+z+"' src='"+x+"' alt='"+y+"'/>"
 	} );//[smile]
@@ -1433,7 +1335,6 @@ ubbcodeParseFixMousemove = function(e){
 //=============================
 
 ubbcode.imgGen = function(opt,src,noimg,arg){
-
 //处理选项
 if(opt=='-1'){//-1 生成QR码
 	var id = 'qr'+Math.random()
@@ -1479,7 +1380,7 @@ if(commonui.correctAttachUrl)
 var dis, alt='';//  true显示按钮 String显示缩略图 null显示原图
 if (commonui.ifUrlAttach(src) ){//附件
 	var a = this.attach.check(arg.i,src),thumb=a?a.thumb:0, size = a? a.size:10000000,//如果not附件则视为大图无缩略图
-		dw=0,dh=0,dr = (a.w&&a.h)?a.h/a.w:0, tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
+		dw=0,dh=0,dr = (a&&a.w&&a.h)?a.h/a.w:0, tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
 	if(tmp){//用户指定使用缩略图
 	//	if(tmp[1]=='medium.')dw = 640
 	//	else if(tmp[1]=='thumb.')dw = 320
@@ -2327,7 +2228,7 @@ else if(t=='color'){
 	var c
 	if(opt && (c = opt.match(/^(bg)?(skyblue|royalblue|blue|darkblue|orange|orangered|crimson|red|firebrick|darkred|green|limegreen|seagreen|teal|deeppink|tomato|coral|purple|indigo|burlywood|sandybrown|sienna|chocolate|silver|gray)\s*$/i))){
 		if(c[1])
-			return "<span class='small_colored_text_btn white' style='font-family:inherit;background-color:"+c[2]+"'>"
+			return "<span class='small_colored_text_btn block_txt_c0' style='font-family:inherit;background-color:"+c[2]+"'>"
 		else
 			return "<span class='"+c[2]+"'>"
 		}
@@ -2510,14 +2411,14 @@ if(x){
 					u=u[1]
 				}
 			}
-			
+
 		if(u)u='<span class=hltxt>'+u+'</span>'
 		var i = x[k].match(/\[img\](.+?)\[\/img\]/i)
 		if(i){
 			if (arg.noImg)
-				u = self.writelink(i[1]), i=null
+				u = self.writelink(commonui.correctAttachUrl(i[1])), i=null
 			else
-				i=i[1], z._Img=1
+				i=commonui.correctAttachUrl(i[1]), z._Img=1
 			}
 		z.push({'i':i,'u':u})
 		}
@@ -2550,39 +2451,38 @@ return null
 ubbcode.parseFlash = function(arg){
 var self = this
 arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,function($0,$1,$2){
-	var w=0, h=0,x,i,uu,para,u=
+	var w=0, h=0,x,i,uu,p0='http:',po=location.protocol=='https:'?'https:':'http:',para,u=
 			  $2.replace(/\.bilibili\.(?:us|tv)/,'.bilibili.com')
 			  .replace(/(is)?Auto(Play)?=.+?(&|$)/ig,'')
 			  .replace('static.acfun.tv','cdn.aixifan.com')
 	if(u.substr(0,2)=='./')
 		u = commonui.getAttachBase(u)+'/'+u.substr(2);
-	if(!u.match(/^https?:\/\//))
-		u = 'http://'+u
 	var ua = self.urlToAry(u),u=ua.url
-	if(x=u.match(/^http:\/\/v\.youku\.com\/v_show\/id_(.+?)\.html/i))
-		uu = u,	u='http://player.youku.com/player.php/sid/'+x[1]+'/v.swf';
-	else if(x=u.match(/^http:\/\/www\.bilibili\.com\/video\/av(\d+)/i))
-		uu = u,	u='http://share.acg.tv/flash.swf?aid='+x[1]+'&page=1', w=544, h=415;
-	else if(x=u.match(/^http:\/\/live\.bilibili\.com\/live\/(\d+)/i))
-		uu = u,	u='http://static.hdslb.com/live/LivePlayerEx.swf?room_id='+x[1]+'&state=LIVE', w=892, h=499;
-	else if(x=u.match(/^http:\/\/www\.acfun\.(?:com|tv|cn)\/v\/ac(\d+(?:_\d+)?)/i))
-		uu = u,	u='http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.com/v/ac'+x[1];
-	else if(x=u.match(/^http:\/\/www\.letv\.com\/ptv\/vplay\/(\d+)\.html/i))
-		uu = u,	u='http://i7.imgs.letv.com/player/swfPlayer.swf?id='+x[1]+'&autoplay=0';
-	else if(x=u.match(/^http:\/\/v\.qq\.com\/(?:cover|page)\/[a-zA-Z0-9\/]+\/([a-zA-Z0-9]+)\.html(?:\?vid=([a-zA-Z0-9]+))?/i))
-		uu = u,	u = 'http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+(x[2] ? x[2] : x[1]), i=1, w=640, h=498
-	else if(x=u.match(/^http:\/\/v\.pptv\.com\/show\/(.+?)\.html/i))
-		uu = u,	u='http://player.pptv.com/v/'+x[1]+'.swf';
-	else if(x=u.match(/^http:\/\/v\.163\.com\/paike\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)\.html/i))
-		uu = u,	u = 'http://v.163.com/swf/video/NetEaseFlvPlayerV3.swf?topicid=1000&vid='+x[2]+'&sid='+x[1];
-	else if(x=u.match(/^http:\/\/www\.huomaotv\.cn\/live\/(\d+)/i))
-		uu = u, u = 'http://www.huomaotv.cn/index.php?c=outplayer&live_id='+x[1], w=510, h=498, i=1
-	else if(x=u.match(/^http:\/\/www\.zhanqi\.tv\/(\d+)/i))
-		uu = u, u = 'http://www.zhanqi.tv/live/embed?roomId='+x[1]+'&fhost=NGA', w=700, h=394, i=1
-	else if(x=u.match(/^http:\/\/www\.66play\.com\/Home\/share\/(?:video|match)(?:\/|\?)id(?:\/|=)(\d+)/i))
-		uu = u, u = 'http://www.66play.com/home/VideoPlay/index?id='+x[1], w=640, h=400, i=1	
-	else if(x=u.match(/^http:\/\/(?:www\.)?feixiong\.tv\/Video\/(?:play\/id\/|fx_)(\d+)/i))
-		uu = 'http://www.feixiong.tv/Video/fx_'+x[1], u = 'http://www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
+	u = u.replace(/^https?:\/\//,'//')
+	if(x=u.match(/^\/\/v\.youku\.com\/v_show\/id_(.+?)\.html/i))
+		uu = u,	u='//player.youku.com/player.php/sid/'+x[1]+'/v.swf';
+	else if(x=u.match(/^\/\/www\.bilibili\.com\/video\/av(\d+)/i))
+		uu = u,	u='//player.bilibili.com/player.html?aid='+x[1]+'&season_type=1&page=1', w=892, h=499 ,i=1;
+	else if(x=u.match(/^\/\/live\.bilibili\.com\/live\/(\d+)/i))
+		uu = u,	u='//static.hdslb.com/live/LivePlayerEx.swf?room_id='+x[1]+'&state=LIVE', w=892, h=499;
+	else if(x=u.match(/^\/\/www\.acfun\.(?:com|tv|cn)\/v\/ac(\d+(?:_\d+)?)/i))
+		uu = u,	u='//cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.com/v/ac'+x[1];
+	else if(x=u.match(/^\/\/www\.letv\.com\/ptv\/vplay\/(\d+)\.html/i))
+		uu = u,	u='//i7.imgs.letv.com/player/swfPlayer.swf?id='+x[1]+'&autoplay=0';
+	else if(x=u.match(/^\/\/v\.qq\.com\/.+?\/([a-zA-Z0-9_]+)\.html(?:\?vid=([a-zA-Z0-9]+))?/i))
+		uu = u,	u = '//v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+(x[2] ? x[2] : x[1]), i=1, w=640, h=498
+	else if(x=u.match(/^\/\/v\.pptv\.com\/show\/(.+?)\.html/i))
+		uu = u,	u='//player.pptv.com/v/'+x[1]+'.swf';
+	else if(x=u.match(/^\/\/v\.163\.com\/paike\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)\.html/i))
+		uu = u,	u = '//v.163.com/swf/video/NetEaseFlvPlayerV3.swf?topicid=1000&vid='+x[2]+'&sid='+x[1];
+	else if(x=u.match(/^\/\/www\.huomaotv\.cn\/live\/(\d+)/i))
+		uu = u, u = '//www.huomaotv.cn/index.php?c=outplayer&live_id='+x[1], w=510, h=498, i=1
+	else if(x=u.match(/^\/\/www\.zhanqi\.tv\/(\d+)/i))
+		uu = u, u = '//www.zhanqi.tv/live/embed?roomId='+x[1]+'&fhost=NGA', w=700, h=394, i=1
+	else if(x=u.match(/^\/\/www\.66play\.com\/Home\/share\/(?:video|match)(?:\/|\?)id(?:\/|=)(\d+)/i))
+		uu = u, u = '//www.66play.com/home/VideoPlay/index?id='+x[1], w=640, h=400, i=1	
+	else if(x=u.match(/^\/\/(?:www\.)?feixiong\.tv\/Video\/(?:play\/id\/|fx_)(\d+)/i))
+		uu = '//www.feixiong.tv/Video/fx_'+x[1], u = '//www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
 
 	var x=self.mediaBlk(arg,ua)
 	if(x)
@@ -2591,54 +2491,55 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 	if (self.checklink(ua,1)<2)
 		return $0
 
-
 	if(!uu){
-		if(x=u.match(/^http:\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
-			uu = 'http://live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
-		else if(x=u.match(/^http:\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
-			uu = 'http://live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
-		else if(x=u.match(/^http:\/\/static\.hdslb\.com\/miniloader\.swf\?aid=(\d+)/i))
-			uu = 'http://www.bilibili.com/video/av'+x[1], w=544, h=415;
-		else if(x=u.match(/^http:\/\/share\.acg\.tv\/flash\.swf\?aid=(\d+)/i))
-			uu = 'http://www.bilibili.com/video/av'+x[1];
-		else if(x=u.match(/^http:\/\/player\.youku\.com\/player\.php.*\/sid\/([a-zA-Z0-9=]+)\/v\.swf/i))
-			uu = 'http://v.youku.com/v_show/id_'+x[1]+'.html';
-		else if(x=u.match(/^http:\/\/player\.pptv\.com\/v\/(.+?)\.swf/i))
-			uu = 'http://v.pptv.com/show/'+x[1]+'.html';
-		else if(x=u.match(/^http:\/\/cdn\.aixifan\.com\/player\/ACFlashPlayer\.out\.swf\?type=page&(?:amp;)?url=http:\/\/www\.acfun\.com\/v\/ac(\d+)/i))
-			uu = 'http://www.acfun.com/v/ac'+x[1];
-		else if(x=u.match(/^http:\/\/i\d+\.imgs\.letv\.com\/player\/swfPlayer\.swf\?id=(\d+)/i))
-			uu = 'http://www.letv.com/ptv/vplay/'+x[1]+'.html';
-		else if(x=u.match(/^http:\/\/static\.video\.qq\.com\/TPout\.swf\?vid=([a-zA-Z0-9]+)/i))
-			u= 'http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+x[1], uu = 'http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+x[1], w=640, h=498,i=1
-		else if(x=u.match(/^http:\/\/v\.163\.com\/swf\/video\/NetEaseFlvPlayerV\d+\.swf\?(?:topicid=\d+&(?:amp;)?)?vid=([a-zA-Z0-9]+)&(?:amp;)?sid=([a-zA-Z0-9]+)/i))
-			uu = 'http://v.163.com/paike/'+x[2]+'/'+x[1]+'.html';
-		else if(x=u.match(/^http:\/\/player\.video\.qiyi\.com\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\/v_([a-zA-Z0-9]+)\.swf/i))
-			uu = 'http://www.iqiyi.com/v_'+x[1]+'.html';
-		else if(x=u.match(/^http:\/\/s3\.pdim\.gs\/static\/[a-zA-Z0-9]+\.swf.+?roomUrl=http:\/\/www\.panda\.tv\/room\/(\d+)/i))
-			uu = 'http://www.panda.tv/room/'+x[1],	w=928, h=587
+		if(x=u.match(/^\/\/player\.bilibili\.com\/.+?aid=(\d+)/i))
+			uu = '//www.bilibili.com/video/av'+x[1], w=892, h=499, i=1;
+		if(x=u.match(/^\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
+			uu = '//live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
+		else if(x=u.match(/^\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
+			uu = '//live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
+		else if(x=u.match(/^\/\/static\.hdslb\.com\/miniloader\.swf\?aid=(\d+)/i))
+			uu = '//www.bilibili.com/video/av'+x[1], w=544, h=415;
+		else if(x=u.match(/^\/\/share\.acg\.tv\/flash\.swf\?aid=(\d+)/i))
+			uu = '//www.bilibili.com/video/av'+x[1];
+		else if(x=u.match(/^\/\/player\.youku\.com\/player\.php.*\/sid\/([a-zA-Z0-9=]+)\/v\.swf/i))
+			uu = '//v.youku.com/v_show/id_'+x[1]+'.html';
+		else if(x=u.match(/^\/\/player\.pptv\.com\/v\/(.+?)\.swf/i))
+			uu = '//v.pptv.com/show/'+x[1]+'.html';
+		else if(x=u.match(/^\/\/cdn\.aixifan\.com\/player\/ACFlashPlayer\.out\.swf\?type=page&(?:amp;)?url=http:\/\/www\.acfun\.com\/v\/ac(\d+)/i))
+			uu = '//www.acfun.com/v/ac'+x[1];
+		else if(x=u.match(/^\/\/i\d+\.imgs\.letv\.com\/player\/swfPlayer\.swf\?id=(\d+)/i))
+			uu = '//www.letv.com/ptv/vplay/'+x[1]+'.html';
+		else if(x=u.match(/^\/\/static\.video\.qq\.com\/TPout\.swf\?vid=([a-zA-Z0-9]+)/i))
+			u= '//v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+x[1], uu = '//v.qq.com/iframe/player.html?tiny=0&auto=0&vid='+x[1], w=640, h=498,i=1
+		else if(x=u.match(/^\/\/v\.163\.com\/swf\/video\/NetEaseFlvPlayerV\d+\.swf\?(?:topicid=\d+&(?:amp;)?)?vid=([a-zA-Z0-9]+)&(?:amp;)?sid=([a-zA-Z0-9]+)/i))
+			uu = '//v.163.com/paike/'+x[2]+'/'+x[1]+'.html';
+		else if(x=u.match(/^\/\/player\.video\.qiyi\.com\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\/v_([a-zA-Z0-9]+)\.swf/i))
+			uu = '//www.iqiyi.com/v_'+x[1]+'.html';
+		else if(x=u.match(/^\/\/s3\.pdim\.gs\/static\/[a-zA-Z0-9]+\.swf.+?roomUrl=http:\/\/www\.panda\.tv\/room\/(\d+)/i))
+			uu = '//www.panda.tv/room/'+x[1],	w=928, h=587
 		else if(x=u.match(/^https?:\/\/(?:staticlive|www)\.(douyu\.tv|douyutv\.com|douyu\.com|douyucdn\.cn)/i)){
 			var y =u.match(/((?:fromuid=)?\d{2,10})/gi)
 			if(y)
-				u = 'http://staticlive.'+x[1]+'/common/share/play.swf?room_id='+y[0], w=640, h=360,uu='http://www.douyu.com/'+y.join('?')
+				u = '//staticlive.'+x[1]+'/common/share/play.swf?room_id='+y[0], w=640, h=360,uu='//www.douyu.com/'+y.join('?')
 			else
 				return $0
 			}
-		else if(x=u.match(/^http:\/\/bogou\.tv/i)){
+		else if(x=u.match(/^\/\/bogou\.tv/i)){
 			x=u.match(/(\d{2,10})/i)
 			if(x)
-				u = 'http://bogou.tv/swfs/BogouPlayer.swf?cId='+x[1], w=640, h=360
+				u = '//bogou.tv/swfs/BogouPlayer.swf?cId='+x[1], w=640, h=360
 			else
 				return $0
 			}
-		else if(x=u.match(/^http:\/\/www\.66play\.com/i)){
+		else if(x=u.match(/^\/\/www\.66play\.com/i)){
 			x=u.match(/(\d{3,10})/i)
-			uu = 'http://www.66play.com/Home/share/video/id/'+x[1], w=640, h=400, i=1
+			uu = '//www.66play.com/Home/share/video/id/'+x[1], w=640, h=400, i=1
 			}
-		else if(x=u.match(/^http:\/\/www\.huomaotv\.cn\/index\.php\?c=outplayer&(?:amp;)?live_id=(\d+)/i))
-			uu = 'http://www.huomaotv.cn/live/'+x[1], w=510, h=498, i=1
-		else if(x=u.match(/^http:\/\/www.feixiong.tv\/Public\/static\/swf\/FXPlayerManager\.swf\?id=(\d+)/i))
-			uu = 'http://www.feixiong.tv/Video/fx_'+x[1], u = 'http://www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
+		else if(x=u.match(/^\/\/www\.huomaotv\.cn\/index\.php\?c=outplayer&(?:amp;)?live_id=(\d+)/i))
+			uu = '//www.huomaotv.cn/live/'+x[1], w=510, h=498, i=1
+		else if(x=u.match(/^\/\/www.feixiong.tv\/Public\/static\/swf\/FXPlayerManager\.swf\?id=(\d+)/i))
+			uu = '//www.feixiong.tv/Video/fx_'+x[1], u = '//www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
 		}
 
 	if(!para)
@@ -2650,15 +2551,16 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 		else
 			w=480,	h=400;
 		}
-
 	self.videonum++
 	var id = self.randDigi('manualLoadSwf', 10000)
 	self.manualLoadCache[id]= i ? 
-	"<iframe height="+h+" width="+w+" src='"+u+"' frameborder=0 allowfullscreen></iframe>"
-	: "<object width='"+w+"' height='"+h+"' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0'>"+para+"<embed src='"+u+"' quality='high' type='application/x-shockwave-flash' width='"+w+"' height='"+h+"' allowfullscreen='true' allownetworking='all' allowscriptaccess='always' base='.'></embed></object>"
-	//var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='javascript:void(0)' class='play' onclick='this.parentNode.style.background=\"none\";this.parentNode.innerHTML=ubbcode.manualLoadCache[\""+id+"\"]'></a></div><div class='moreinfo'>"+(uu? "<a href='"+uu+"' class='xtxt silver' target='_blank'>"+uu+"</a><br/>":'')
-	var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='"+(uu?uu:u)+"' class='play' target='_blank'></a></div><div class='moreinfo'>"+(uu? "<a href='"+uu+"' class='xtxt silver' target='_blank'>"+uu+"</a><br/>":'')
-	+"<i class='silver'>如在以上内容中出现任何广告性信息并不代表本站支持其立场</i></div></div>"
+	"<iframe height="+h+" width="+w+" src='"+po+u+"' frameborder=0 allowfullscreen></iframe>"
+	: "<object width='"+w+"' height='"+h+"' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0'>"+para+"<embed src='"+po+u+"' quality='high' type='application/x-shockwave-flash' width='"+w+"' height='"+h+"' allowfullscreen='true' allownetworking='all' allowscriptaccess='always' base='.'></embed></object>"
+	if(arg.opt&512)
+		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='javascript:void(0)' class='play' onclick='this.parentNode.style.background=\"none\";this.parentNode.innerHTML=ubbcode.manualLoadCache[\""+id+"\"]'></a></div><div class='moreinfo'>"+(uu? "<a href='"+p0+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
+	else
+		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='"+(uu?p0+uu:p0+u)+"' class='play' target='_blank'></a></div><div class='moreinfo'>"+(uu? "<a href='"+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
+	x+="<i class='silver'>如在以上内容中出现任何广告性信息并不代表本站支持其立场</i></div></div>"
 	if(arg.noImg || self.videonum>1){
 		var id = self.randDigi('manualLoadSwf', 10000)
 		self.manualLoadCache[id]=x
@@ -2968,14 +2870,14 @@ var c='#D0D0D0', s = this.checklink(v), u
 if(s==4)
 	v.host = location.host
 if(s==3){
-	if(location.protocol=='https:' && v.protocol=='http')
-		v.protocol = 'https'
+	if(location.protocol=='https:' && v.protocol=='http:')
+		v.protocol = 'https:'
 	u = v.pathname+v.search+v.hash
 	if(u.charAt(0)=='/')
-		u = v.protocol+'://'+location.host+u
+		u = v.protocol+'//'+location.host+u
 	}
 else{
-	u = v.protocol+'://'+v.host+v.pathname+v.search+v.hash
+	u = v.protocol+'//'+v.host+v.pathname+v.search+v.hash
 	if(s==0 || s==2)
 		c = '#C0C0C0'
 	else if(s==1)

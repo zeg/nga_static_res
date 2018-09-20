@@ -928,6 +928,8 @@ if(!this._ui)this.open()
 var self = this
 var callerArg=arguments
 this._get(f,arg,function(data){
+	if(!data.itemInfo)
+		data.itemInfo = {}
 	self.listCache = data
 	for(var k in data){
 		if(isNaN(parseInt(k,10)))continue

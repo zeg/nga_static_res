@@ -48,10 +48,11 @@ armory.get = function(realm,name,o,host,update,todo)
 	var k = hex_md5(u)
 	//var d = new Date
 	cachepath = cachepath+'/'+k.substr(0,2)+'/'+k.substr(2,2);
-	if (update)
-		var urls = [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
-	else
-		var urls = [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
+	//if (update)
+	//	var urls = [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
+	//else
+	//	var urls = [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
+var urls = proxypath+"/"+cachepath+"/" + k + ".js"
 
 	if (todo)
 	{
@@ -769,11 +770,11 @@ genUrl : function(hosthost,proxypath,cachepath,u,update){
 
 var k = hex_md5(u)
 cachepath = cachepath+'/'+k.substr(0,2)+'/'+k.substr(2,2);
-if (update)
-	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
-else
-	return [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
-
+//if (update)
+//	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
+//else
+//	return [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
+return proxypath+"/"+cachepath+"/" + k + ".js"
 },//fe
 
 error :function(c,a)
@@ -978,11 +979,11 @@ genUrl : function(hosthost,proxypath,cachepath,u,update){
 
 var k = hex_md5(u)
 cachepath = cachepath+'/'+k.substr(0,2)+'/'+k.substr(2,2);
-if (update)
-	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
-else
-	return [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
-
+//if (update)
+//	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
+//else
+//	return [proxypath+"/"+cachepath+"/" + k + ".js",proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
+return proxypath+"/"+cachepath+"/" + k + ".js"
 },//fe
 
 error :function(c,a)
@@ -1615,11 +1616,11 @@ if(ext)
 	ext = u.match(/\.([a-zA-Z0-9]{1,5})(?:\?|$)/)
 ext = ext ? ext[1] : 'js'
 cachepath = cachepath+'/'+k.substr(0,2)+'/'+k.substr(2,2);
-if (update)
-	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
-else
-	return [proxypath+"/"+cachepath+"/" + k + "."+ext,proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
-
+//if (update)
+//	return [proxypath+"/proxy.php?update=1&host="+hosthost+"&url=" + encodeURIComponent(u) + "&rand=" +Math.random()+(window.__DEBUG?'&debug=1':'')]
+//else
+//	return [proxypath+"/"+cachepath+"/" + k + "."+ext,proxypath+"/proxy.php?host="+hosthost+"&url=" + encodeURIComponent(u)];
+return proxypath+"/"+cachepath+"/" + k + "."+ext
 },//fe
 
 error :function(c,a)

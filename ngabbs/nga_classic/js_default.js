@@ -164,15 +164,17 @@ commonui.aE(window,'DOMContentLoaded',commonui.hashAction);//aE
 
 //全屏中专广告==================
 (function(){
+var l=location
+if(l.host=='bbs.ngacn.cc')
+	l.replace(l.protocol+'//'+'bbs.nga.cn'+l.pathname+l.search+l.hash)
 
 if(!ngaAds || !ngaAds.bbs_ads12 || (window.__GP && window.__GP.greater && !window.__GP['super'] ) || __SETTING.uA[6]==2)
 	return
-var l=location
+
 if(l.pathname!='/' && l.pathname!='/thread.php' && l.pathname!='/read.php')
 	return
 
-if(l.host=='bbs.nga.cn')
-	l.replace(l.protocol+'//'+'nga.donews.com'+l.pathname+l.search+l.hash)
+
 
 var C = __COOKIE,n = ngaAds,v = __NUKE.toInt(C.getMiscCookie('insad_views')), c = C.getMiscCookie('pv_count_for_insad')
 if (n.bbs_ads12.refreshid && C.getMiscCookie('insad_refreshid')!=n.bbs_ads12.refreshid){
@@ -206,6 +208,19 @@ if(__NUKE.toInt(c)>0){
 	else
 		l.replace( l.protocol+'//'+l.host+'/misc/adpage_insert_2.html?'+l.href );
 	}
+/*
+(function(){
+var x=0,j=false,y=''
+for(var	i=0;i<10000;i++){
+if(j===false){j=0
+	continue}
+if(j>0){x++
+	j=0-x*x*48
+	y+=i+','}
+j++}
+console.log(y)
+})()
+ */
 })()
 //fe
 
@@ -218,12 +233,12 @@ commonui.loadNotiScript=function(f){loader.script(__SCRIPTS.notification,f)}
 
 ;(function (){
 
-var e = null,c=commonui,g,h,m,vgg,vg,vc
+var e = null,c=commonui,g,h,m,vgg,vg,vc,bs=true
 
 d = function(){
 	if(e==0)return
 	e=0
-	this.document.body.style.height=this.document.body.style.overflowY=g.style.marginTop=''
+	bs.position=bs.overflowY=bs.top =bs.width=g.style.marginTop=document.body.parentNode.style.overflowY=''
 	if(vg)
 		vg.style.marginTop = vgg.style.marginTop = vc.style.marginTop = ''
 	scrollTo(m,h)
@@ -245,11 +260,17 @@ c.crossDomainCall.setCallBack('iframeReadNoScroll', function(){
 		return
 	e=1
 	var q = __NUKE.position.get()
-	document.body.style.height = (q.ch-1)+'px'
-	document.body.style.overflowY = 'hidden'
-	g.style.marginTop = '-'+q.yf+'px'
+	if(bs===true)
+		 bs= document.body.style
+	bs.position = 'fixed'
+	bs.overflowY = 'scroll'
+	bs.top =  '-'+q.yf+'px'
+	bs.width='100%'
+	document.body.parentNode.style.overflowY='visible'
+	//g.style.marginTop = '-'+q.yf+'px'
 	if(vg)
 		vg.style.marginTop = vgg.style.marginTop = vc.style.marginTop = '-'+q.yf+'px'
+	
 	h = q.yf
 	m = q.xf
 	})
@@ -308,13 +329,7 @@ commonui.touchMoveInit()
 {
 //补api=======================
 __API.indexForumList=function(){
-var r = Math.floor(__NOW/7200)
-if(location.protocol=='https:')
-	return '/nuke.php?__lib=nga_index&__act=get_all_forums&raw=1'
-return [
-	__IMG_BASE+'/proxy/cache_attach/67/6f/676f37d60a946f8b1ca2375c59512539.js?1_'+r,
-	__IMG_BASE+'/proxy/proxy.php?r=1_'+r+'&host=bbs.ngacn.cc&url=nuke.php%3F__lib%3Dnga_index%26__act%3Dget_all_forums%26raw%3D1'
-	]
+return __IMG_BASE+'/proxy/cache_attach/bbs_index_data.js?'+Math.floor(__NOW/7200)
 }//fe
 
 
@@ -629,7 +644,11 @@ switch (fid){
 	case -6194253:
 		return [1,w.__IMGPATH +'/head/20140115-6194253.jpg',0,190]
 	case -152678:
-		return [1,w.__IMGPATH +'/head/20180502.jpg',0,190]
+	case 545:
+	case 479:
+	case 594:
+	case 418:
+		return [1,w.__IMGPATH +'/head/20180920.jpg',0,190]
 	case -985658:
 		return [1,w.__IMGPATH +'/head/-985658.jpg',0,190]
 	case 431:
@@ -685,12 +704,14 @@ switch (fid){
 		return [1,w.__IMGPATH +'/head/20171205.jpg',0,190]
 	case 560:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180205':'20180206')+'.jpg',0,190,w.__IMGPATH +'/head/20180210.mp4',Math.random()>0.99?0:1,'474747']
+		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180205':'20180206')+'.jpg',0,190,w.__IMGPATH +'/head/20180919.mp4',Math.random()>0.99?0:1,'474747']
 	case 549:
 		var r = Math.random()
 		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180424':'20180425')+'.jpg',0,190]
 	case 540:
 		return [1,w.__IMGPATH +'/head/20171013.jpg',0,190]
+	case 587:
+		return [1,w.__IMGPATH +'/head/20180803.jpg',0,190]
 	case -47218:
 		return [1,w.__IMGPATH +'/head/20180209.jpg',0,190]
 	case -4567100:
@@ -700,9 +721,11 @@ switch (fid){
 		return [1,w.__IMGPATH +'/head/20180615.jpg',0,190]
 	case 617:
 		return [1,w.__IMGPATH +'/head/20180724.jpg',0,190]
+	case 603:
+		return [1,w.__IMGPATH +'/head/20180906.jpg',0,190]
 	case 538:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180525':'201805251'):'201805252'):'201805253'):'201805254'):'201805255')+'.jpg',0,190]
+		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180910_1':'20180910_2'):'20180910_3'):'20180910_4'):'20180910_5'):'20180910_6')+'.jpg',0,190]
 	case -8180483:
 		var r = Math.random()
 		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180526':'201805261')+'.jpg',0,190,w.__IMGPATH +'/head/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
@@ -716,135 +739,137 @@ return [1,w.__IMGPATH+'/head/20160831_'+(Math.ceil(Math.random()*20))+'.jpg',0,1
 }//fe
 
 
-var bbs_ads9_old = window.bbs_ads9 ? bbs_ads9 : function(){}
-bbs_ads9 = function (){
+ngaAds.bbs_ads9_gen_old = ngaAds.bbs_ads9_gen ? ngaAds.bbs_ads9_gen : function(){}
+ngaAds.bbs_ads9_gen = function (){
 if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
 	return;
-var x
+var x, p =location.protocol
 switch(__CURRENT_FID){
 	case 7:
-		x = 'http://ccq.178.com/iframe/index.html?fid=7'
+		x = p+'//ccq.178.com/iframe/index.html?fid=7'
 		break;
 	case -152678:
-		x = 'http://ccq.178.com/iframe/-152678/index.html'
+		x = p+'//ccq.178.com/iframe/-152678/index.html'
 		break;
 	case 321:
-		x = 'http://ccq.178.com/iframe/index.html?fid=321'
+		x = p+'//ccq.178.com/iframe/index.html?fid=321'
 		break;
 	case -362960:
-		x = 'http://ccq.178.com/201411/t_209179391466.html'
+		x = p+'//ccq.178.com/201411/t_209179391466.html'
 		break;
 	case 422:
-		x = 'http://ccq.178.com/201411/t_209252535303.html'
+		x = p+'//ccq.178.com/201411/t_209252535303.html'
 		break;
 	case 431:
-		x = 'http://ccq.178.com/201412/t_212811964561.html'
+		x = p+'//ccq.178.com/201412/t_212811964561.html'
 		break;
 	case 318:
-		x = {0:'http://ccq.178.com/iframe/index.html?fid=318',1:190}
+		x = {0:p+'//ccq.178.com/iframe/index.html?fid=318',1:190}
 		break;
 	case 469:
-		x = {0:'http://game.stargame.com/play/startgame?id=144',1:741}
+		x = {0:p+'//game.stargame.com/play/startgame?id=144',1:741}
 		break;
 	case 488:
-		x = {0:'http://s1.czdtx.178.com/nga_game.php?game=czdtx',1:950}
+		x = {0:p+'//s1.czdtx.178.com/nga_game.php?game=czdtx',1:950}
 		break;
 	case 474:
-		x = {0:'http://s1.xjwy.178.com/nga_game.php?game=xjwy',1:750}
+		x = {0:p+'//s1.xjwy.178.com/nga_game.php?game=xjwy',1:750}
 		break;
 	case 484:
-		x = {0:'http://game.stargame.com/play/startgame?id=87',1:750}
+		x = {0:p+'//game.stargame.com/play/startgame?id=87',1:750}
 		break;
 	case 487:
-		x = {0:'http://s1.djmy.178.com/nga_game.php?game=djmy',1:760}
+		x = {0:p+'//s1.djmy.178.com/nga_game.php?game=djmy',1:760}
 		break;
 
 	case 452:
-		x = 'http://ccq.178.com/201507/t_230506050628.html'
+		x = p+'//ccq.178.com/201507/t_230506050628.html'
 		break;
 	case 459:
-		x = 'http://ccq.178.com/iframe/459/index.html'
+		x = p+'//ccq.178.com/iframe/459/index.html'
 		break;
 	case -7861121:
-		x = 'http://ccq.178.com/iframe/-7861121/index.html'
+		x = p+'//ccq.178.com/iframe/-7861121/index.html'
 		break;
 	case 492:
-		x = 'http://ccq.178.com/iframe/index.html?fid=492'
+		x = p+'//ccq.178.com/iframe/index.html?fid=492'
 		break;
 	case 538:
-		x = 'http://ccq.178.com/iframe/index.html?fid=538'
+		x = p+'//ccq.178.com/iframe/index.html?fid=538'
 		break;
 	case 414:
-		x = 'http://ccq.178.com/201711/t_304208553480.html'
+		x = p+'//ccq.178.com/201711/t_304208553480.html'
 		break;
 	case -81981:
-		x = 'http://ccq.178.com/iframe/index.html?fid=-81981'
+		x = p+'//ccq.178.com/iframe/index.html?fid=-81981'
 		break;
 	case 503:
-		x = {0:'http://s1.zqsd.178.com/nga_game.php?game=zqsd',1:750}
+		x = {0:p+'//s1.zqsd.178.com/nga_game.php?game=zqsd',1:750}
 		break;
 	case 537:
-		x = {0:'http://game.stargame.com/play/startgame?id=80',1:750}
+		x = {0:p+'//game.stargame.com/play/startgame?id=80',1:750}
 		break;
 	case 543:
-		x = {0:'http://wgapi.178.com/nga_game.php?game=dzz',1:750}
+		x = {0:p+'//wgapi.178.com/nga_game.php?game=dzz',1:750}
 		break;
 	case 493:
-		x = {0:'http://s1.zszx.178.com/nga_game.php?game=zszx&id=1',1:750}
+		x = {0:p+'//s1.zszx.178.com/nga_game.php?game=zszx&id=1',1:750}
 		break
 	case 546:
-		x = {0:'http://wgapi.178.com/nga_game.php?game=gty',1:750}
+		x = {0:p+'//wgapi.178.com/nga_game.php?game=gty',1:750}
 		break
 	case 516:
-		x = 'http://ccq.178.com/iframe/index.html?fid=516'
+		x = p+'//ccq.178.com/iframe/index.html?fid=516'
 		break;
 	case 563:
-		x = 'http://ccq.178.com/iframe/index.html?fid=563'
+		x = p+'//ccq.178.com/iframe/index.html?fid=563'
 		break;
 	case 482:
-		x = 'http://ccq.178.com/iframe/index.html?fid=482'
+		x = p+'//ccq.178.com/iframe/index.html?fid=482'
 		break;
 	case 568:
-		x = 'http://tools.ngacn.cc/iframe/index.php?fid=568'
+		x = p+'//tools.178.com/iframe/index.php?fid=568'
 		break;
 	case 540:
-		x = 'http://tools.ngacn.cc/iframe/index.php?fid=540'
+		x = p+'//tools.178.com/iframe/index.php?fid=540'
 		break;
 	case -149110:
-		x = '<span style="text-align:center"><table class=" stdbtn" style="margin-left:auto;margin-right:auto"><tbody><tr><td><a href="javascript:void(0)" class="b teal" onclick="ngaAds.open_69124(event,\'http://js.ntwikis.com/?nologin=1\',600)"><nobr><span style="font-size:1.5em">战舰少女资料库</span></nobr></a></td></tr></tbody></table></span>'
+		x = '<span style="text-align:center"><table class=" stdbtn" style="margin-left:auto;margin-right:auto"><tbody><tr><td><a href="javascript:void(0)" class="b teal" onclick="ngaAds.open_69124(event,\''+p+'//js.ntwikis.com/?nologin=1\',600)"><nobr><span style="font-size:1.5em">战舰少女资料库</span></nobr></a></td></tr></tbody></table></span>'
 	}
 if(x){
 	var h=190
 	if(x.constructor == Object)
 		h = x[1],x = x[0]
-	document.write(
-		"<div id='bbs_ads9_add' class='catenew'>"+
-		(x.substr(0,7) == 'http://' ? 
+	var y = $('toptopics').nextSibling
+	while(y.nodeType!=1)
+		y = y.nextSibling
+	y.innerHTML += "<div id='bbs_ads9_add' class='catenew'>"+
+		(x.substr(0,4) == 'http' ? 
 		"<ifra"+"me src='"+x+"' style='margin:0px;overflow:hidden;width:100%;height:"+h+"px;border:none' scrolling='no' frameborder='0' allowTransparency='true'></ifr"+"ame>":
 		x)+
 		"</div>"
-		)
 	}
-bbs_ads9_old()
+this.bbs_ads9_gen_old()
 }//fe
-var bbs_ds9 = bbs_ads9
+
 
 
 
 
 //获取附件地址==================
 ;(function(){
+var HTTPS = location.protocol=='https:'?1:0
+
 if(__ATTACH_BASE == 'http://test.attach.ngacn.cc'){
 	_P_ATTACH_BASE_VIEW = 'http://test.attach.ngacn.cc/attachments'
 	__AVATAR_BASE_VIEW = _P_AVATAR_BASE_VIEW = 'http://test.attach.ngacn.cc/avatars'
 	}
 else{
-	_P_ATTACH_BASE_VIEW = /*location.protocol =='https:' ? __ATTACH_BASE_VIEW_SEC : */ 'http://'+__ATTACH_BASE_VIEW
+	_P_ATTACH_BASE_VIEW = HTTPS ? 'https://'+__ATTACH_BASE_VIEW_SEC : 'http://'+__ATTACH_BASE_VIEW
 	__AVATAR_BASE_VIEW = _P_AVATAR_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/avatars/2002'
 	_P_ATTACH_BASE_VIEW = _P_ATTACH_BASE_VIEW+'/attachments'
 	}
 
-var HTTPS = location.protocol=='https:'?1:0
 
 commonui.getAttachBase=function(u){//相对地址
 return _P_ATTACH_BASE_VIEW
@@ -873,7 +898,7 @@ return ''*/
 }
 
 commonui.ifSelfDomain==function(d){
-if(d=='bbs.ngacn.cc' || d=='nga.178.com' || d=='nga.donews.com' || d=='bbs.nga.cn' || d=='bbs.bigccq.cn')
+if(d=='bbs.ngacn.cc' || d=='nga.178.com' || d=='nga.donews.com' || d=='bbs.nga.cn' || d=='bbs.bigccq.cn' || d=='ngabbs.com')
 	return 1
 }
 /*
@@ -882,7 +907,7 @@ if(d=='bbs.ngacn.cc' || d=='nga.178.com' || d=='nga.donews.com' || d=='bbs.nga.c
 commonui.correctAttachUrl = function(u){
 if(u.charAt(0)=='.')
 	return _P_ATTACH_BASE_VIEW+u.substr(1)
-u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,function($0,$1){return HTTPS||$1 ? 'https://'+__ATTACH_BASE_VIEW_SEC+'/' : 'http://'+__ATTACH_BASE_VIEW+'/'})
+u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs\.com)\//,function($0,$1){return HTTPS||$1 ? 'https://'+__ATTACH_BASE_VIEW_SEC+'/' : 'http://'+__ATTACH_BASE_VIEW+'/'})
 return u
 //if(__ATTACH_BASE == 'http://img6.nga.178.com:8080')
 //	return u.replace(/^http:\/\/(img\d?)\.ngacn\.cc\//,'http://$1.nga.178.com/')
@@ -891,12 +916,12 @@ return u
 }//fe
 
 commonui.toRelAthUrl = function(u){
-u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,'./')
+u= u.replace(/^http(s)?:\/\/img7?\.(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs\.com)\//,'./')
 return u
 }//fe
 
 commonui.toRelUrl = function(u){
-u= u.replace(/^http(s)?:\/\/(?:bbs\.nga\.cn|bbs\.ngacn\.cc|nga\.178\.com|nga\.donews\.com)\//,'/')
+u= u.replace(/^http(s)?:\/\/(?:bbs\.nga\.cn|bbs\.ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs\.com)\//,'/')
 return u
 }//fe
 
@@ -906,6 +931,130 @@ if(commonui.ifUrlAttach(u+'') )
 if((u+'').match(/^https?:\/\/(card\.psnprofiles\.com|card\.exophase\.com|steamsignature\.com\/card)/))
 	return 1
 }//
+
+
+
+_ALL_IMG_HOST_REG = /^https?:\/\/img\d*\.(?:ngacn\.cc|nga\.cn|nga\.178\.com|nga\.donews\.com|nga\.bnbsky\.com)\//
+
+
+
+
+
+
+
+
+
+
+
+var d1 = function(){
+	return (window.__CURRENT_FID==570) ? 1 : -2
+	}
+//1未知 2可信
+commonui.checkLinkTable = {
+'ngacn.cc':{_:2,'bbs.ngacn.cc':3},// _ 指无更多前缀的域名 2为保持原链接 3为替换成当前host
+'nga.cn':{_:2,'bbs.nga.cn':3},
+'donews.com':{_:2,'nga.donews.com':{_:3,'img.nga.donews.com':2,'img4.nga.donews.com':2}},
+'bigccq.cn':{_:4,'bbs.bigccq.cn':4},
+'178.com':{_:2,'nga.178.com':{_:3,'img.nga.178.com':2,'img4.nga.178.com':2},'club.178.com':3,'wb.178.com':-2},
+'ngabbs.com':{_:3},
+'ngacn.com':{_:4,'bbs.ngacn.com':4},
+_:1,
+'worldofwarcraft.com':2,
+'ofcard.com':2,
+'uusee.com':2,
+'youtube.com':2,
+'youku.com':2,
+'weplay.cn':2,
+'tudou.com':2,
+'uencn.com':2,
+'sc2.cc':2,
+'wowchina.com':2,
+'microsoft.com':2,
+'dmzj.com':2,
+'com.cn':{_:1,'sina.com.cn':2},
+'pixiv.net':{_:1,'embed.pixiv.net':2},
+'loli.my':{_:1,'static.loli.my':2},//bilibili视频
+'hdslb.com':2, //bilibili视频
+'plures.net':{_:1,'r.plures.net':2},//v.longzhu.com视频
+'bilibili.us':2,
+'bilibili.com':2,
+'bilibili.tv':2,
+'66play.com':2,
+'acg.tv':2,
+'acfun.com':2,//acfun视频
+'acfun.cn':2,
+'acfun.tv':2,//acfun视频
+'173.com':2,
+'aixifan.com':{_:1,'cdn.aixifan.com':2},//acfun视频
+'pdim.gs':{_:1,'s3.pdim.gs':2},//熊猫TV
+'huomaotv.cn':{_:1,'www.huomaotv.cn':2},//熊猫TV
+'letv.com':2,
+'qq.com':{_:2,'jq.qq.com':-2},
+'766.com':2,
+'iqiyi.com':2,
+'qiyi.com':2,
+'pptv.com':2,
+'feixiong.tv':2,
+'163.com':2, //网易视频
+'126.net':2, //网易视频
+'netease.com':{_:1,'cc.netease.com':{_:1,'res.cc.netease.com':2}}, //网易视频
+'douyu.tv':2, // 斗鱼
+'douyutv.com':2, // 斗鱼
+'douyucdn.cn':2,
+'douyu.com':2, 
+'zhanqi.tv':2, // 
+'bogou.tv':2, // 播狗
+'steampowered.com':2,
+
+'iyingdi.cn':-2,
+'skyline.top':-2,
+'iplaymtg.com':-2,
+'joyme.com':-2,
+'duowan.com':-2,
+'woweyes.net':-2,
+'laoyuegou.com':-2,
+'tuwan.com':-2,
+'laimaika.com':-2,
+
+'2zhk.com':d1,
+'t.cn':d1,
+'sina.lt':d1,
+'url.cn':d1,
+'t.co':d1,
+'goo.gl':d1,
+'hiurl.me':d1,
+'dwz.cn':d1,
+'985.so':d1,
+'980.so':d1,
+'9.cn':d1,
+'qyub.cn':d1,
+'ppt.cc':d1,
+'qr.net':d1,
+'tinyurl.com':d1,
+'bocaidj.com':d1,
+'bit.ly':d1,
+'xici800.cn':d1,
+'jiaoyimao.com':d1,
+'suo.im':d1,
+'hupu.com':function(u){
+	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485 || window.__CURRENT_FID==-7) ? 1 : -2
+	},
+'taobao.com':function(u){
+	if(u.url.match(/coupon\.|taoquan\.|click\.|activity_id/))
+		return d1(u)
+	else
+		return 1
+	}
+}
+
+commonui.checkIframeTable = {
+'wow.178.com/':2,
+'challonge.com/':2,
+'music.163.com':function(u){
+	var m = u.match(/height=(\d+)/i)
+	return [u.replace(/(\W)auto=.+?(\W|$)/i,'$1$2'), m[1]>=90?330:298, (m[1]|0)+20]//[url,width,height]
+	}
+}
 
 })();
 
@@ -974,27 +1123,29 @@ if(window.getMatchedCSSRules){
 		//y[0].parentStyleSheet.disabled=1		
 	}
 */
-
+/*
 if(w.__DEBUG)
-
-if ('serviceWorker' in navigator){
-	navigator.serviceWorker.register(__SCRIPTS.service,{scope: '/'}).then(function(reg) {
-		if(reg.installing)
-		  console.log('Service worker installing');
-		else if(reg.waiting)
-		  console.log('Service worker installed');
-		else if(reg.active) 
-		  console.log('Service worker active');
-	 })['catch'](function(err) {
-		console.log('Registration failed with ' + err);
-	 });
-  }
-
+	if ('serviceWorker' in navigator){
+		navigator.serviceWorker.register(__SCRIPTS.service,{scope: '/'}).then(function(reg) {
+			if(reg.installing)
+			  console.log('Service worker installing');
+			else if(reg.waiting)
+			  console.log('Service worker installed');
+			else if(reg.active) 
+			  console.log('Service worker active');
+		 })['catch'](function(err) {
+			console.log('Registration failed with ' + err);
+		 });
+	  }
+*/
 if(ngaAds && ngaAds.bbs_ads12 && ngaAds.bbs_ads12.o && ngaAds.bbs_ads12.o!==true)
 	document.body.insertBefore(ngaAds.bbs_ads12.o,document.body.firstChild)
 
-commonui.aE(window,'DOMContentLoaded',function(){commonui.mobanner()})
-
+commonui.aE(window,'DOMContentLoaded',function(){
+	commonui.mobanner()
+	__SCRIPTS.syncLoad = __SCRIPTS.asyncLoad
+	loader.script = function(s,f,c,y){__SCRIPTS.load(s,f,c,0)}
+	})
 if(this.loginlog)
 	this.loginlog()
 }//fe
@@ -1320,7 +1471,27 @@ var g={
 		link:'\u271a',
 		up:'\u25b2',
 		label:'\u23fa'
-		}/*
+		}
+var s = {
+	close:["214 43.3 596 596","M810 579.3l-238-238 238-238-60-60-238 238-238-238-60 60 238 238-238 238 60 60 238-238 238 238z","close","d7"],
+	menu:["86 107.3 852 512","M86 619.3h852v-86H86v86zm0-214h852v-86H86v86zm0-214h852v-84H86v84z","dehaze","2261"],
+	help:["86 -255.3 852 852","M642 138.7c24-24 40-58 40-96 0-94-76-170-170-170s-170 76-170 170h84c0-46 40-86 86-86s86 40 86 86c0 24-10 44-26 60l-52 54c-30 32-50 74-50 120v22h84c0-64 20-88 50-120zm-88 330v-84h-84v84h84zm-42-724c236 0 426 190 426 426s-190 426-426 426-426-190-426-426 190-426 426-426z","help","2370"],
+	turned_in:["214 -213.3 596 768","M726-213.3c46 0 84 40 84 86v682l-298-128-298 128v-682c0-46 38-86 84-86h428z","turned_in","23f9"],
+	label:["128 43.3 810 596","M752 603.3l186-262-186-262c-16-22-42-36-70-36H214c-46 0-86 38-86 84v428c0 46 40 84 86 84h468c28 0 54-14 70-36z","label","23fa"],
+	up:["256 0.7 512 316","M316 316.7l-60-60L512 .7l256 256-60 60-196-196z","keyboard_arrow_up","25b2"],
+	right:["366 95.3 316 512","M366 155.3l196 196-196 196 60 60 256-256-256-256z","keyboard_arrow_right","25b6"],
+	down:["256 -7.3 512 316","M316-7.3l196 196 196-196 60 60-256 256-256-256z","keyboard_arrow_down","25bc"],
+	left:["342 107.3 316 512","M658 167.3l-60-60-256 256 256 256 60-60-196-196z","keyboard_arrow_left","25c0"],
+	star:["86 -255.3 852 810","M512 394.7l-264 160 70-300-232-202 306-26 120-282 120 282 306 26-232 202 70 300z","star","2605"],
+	gear:["96.5 -255.3 831 852","M512 320.7c82 0 150-68 150-150s-68-150-150-150-150 68-150 150 68 150 150 150zm318-108l90 70c8 6 10 18 4 28l-86 148c-6 10-16 12-26 8l-106-42c-22 16-46 32-72 42l-16 112c-2 10-10 18-20 18H426c-10 0-18-8-20-18l-16-112c-26-10-50-24-72-42l-106 42c-10 4-20 2-26-8l-86-148c-6-10-4-22 4-28l90-70c-2-14-2-28-2-42s0-28 2-42l-90-70c-8-6-10-18-4-28l86-148c6-10 16-12 26-8l106 42c22-16 46-32 72-42l16-112c2-10 10-18 20-18h172c10 0 18 8 20 18l16 112c26 10 50 24 72 42l106-42c10-4 20-2 26 8l86 148c6 10 4 22-4 28l-90 70c2 14 2 28 2 42s0 28-2 42z","settings","2699"],
+	link:["12.2 -308 999.5 1000","M440.2 315.8a52.2 52.2 0 0 1-36.8-15.2 244.4 244.4 0 0 1 0-345.1l192-192c46.1-46.1 107.4-71.5 172.5-71.5s126.4 25.4 172.5 71.5a244.4 244.4 0 0 1 0 345.1l-87.8 87.8a52 52 0 1 1-73.5-73.5l87.8-87.8a140.1 140.1 0 0 0-99-239c-37.4 0-72.6 14.6-99 41l-192 192a140.1 140.1 0 0 0 0 198 52 52 0 0 1-36.8 88.7zM256 692a242.1 242.1 0 0 1-172.5-71.5 244.4 244.4 0 0 1 0-345.1l87.8-87.8a52 52 0 1 1 73.5 73.5L157 348.9a140.1 140.1 0 0 0 99 239c37.4 0 72.6-14.6 99-41l192-192a140.1 140.1 0 0 0 0-198 52 52 0 1 1 73.5-73.5 244.4 244.4 0 0 1 0 345.1l-192 192A242.4 242.4 0 0 1 256 692z","link","271a"],
+	good:["42 -299.3 940 854","M982 84.7l-2 4h2v82c0 12-2 22-6 32l-130 300c-12 30-42 52-78 52H384c-46 0-86-40-86-86v-426c0-24 10-44 26-60l280-282 46 46c12 12 18 26 18 44v14L626 .7h270c46 0 86 38 86 84zm-940 470v-512h172v512H42z","thumb_up","2bc5"],
+	bad:["42 -213.3 940 854","M810-213.3h172v512H810v-512zm-170 0c46 0 86 40 86 86v426c0 24-10 44-26 60l-280 282-46-46c-12-12-18-26-18-44v-14l42-196H128c-46 0-86-38-86-84l2-4h-2v-82c0-12 2-22 6-32l130-300c12-30 42-52 78-52h384z","thumb_down","2bc6"],
+	img:["86 -255.3 852 852","M170 212.7v300h300v84H170c-46 0-84-38-84-84v-300h84zm684 300v-300h84v300c0 46-38 84-84 84H554v-84h300zm0-768c46 0 84 38 84 84v300h-84v-300H554v-84h300zm-128 276c0 36-28 64-64 64s-64-28-64-64 28-64 64-64 64 28 64 64zm-300 192l128 158 86-114 128 170H256zm-256-384v300H86v-300c0-46 38-84 84-84h300v84H170z","wallpaper","e1bc"],
+	tbody:["128 -213.3 768 768","M810 128.7v-256H554v256h256zm0 340v-256H554v256h256zm-340-340v-256H214v256h256zm0 340v-256H214v256h256zm-342-682h768v768H128v-768z","border_all","e228"],
+	smile:["86 -255.3 852 852","M512 340.7c64 0 118-34 148-84h70c-34 88-118 148-218 148s-184-60-218-148h70c30 50 84 84 148 84zm0 172c188 0 342-154 342-342s-154-342-342-342-342 154-342 342 154 342 342 342zm0-768c236 0 426 190 426 426s-190 426-426 426-426-190-426-426 190-426 426-426zm-214 320c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64zm300 0c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64z","sentiment_satisfied","e813"]
+	}		
+/*
 if(__SETTING.uA[0]==1 && __SETTING.uA[1]<9 || __SETTING.uA[4]==2 && __SETTING.uA[5]<9)
 	g={
 		star:['&#9733;','fontFamily:SimHei,Verdana, Tahoma,Arial,sans-serif'],
@@ -1336,6 +1507,11 @@ if(__SETTING.uA[0]==1 && __SETTING.uA[1]<9 || __SETTING.uA[4]==2 && __SETTING.uA
 		}*/
 		
 __TXT = function(k,opt){
+//var sp=opt&1?'':'\u00A0', v = '<svg xmlns="http://www.w3.org/2000/svg" viewbox="'+s[k][0]+'" style="height:1em;line-height:1em;vertical-align:-0.1em;fill:'+(c?c:'#ffffff')+';"><path d="'+s[k][1]+'"></path></svg>'
+//if(opt&2)	return '<span>'+sp+v+sp+'</span>'
+//return _$('/span','innerHTML',sp+v+sp)
+
+
 if(opt&2)
 	return "<span style=\""+g._c+"\">"+(g[k]?g[k]:'notfound')+"</span>"
 return _$('/span')._.add((opt&1) ? null:'\u00A0',_$('/span','style',g._c)._.add(g[k]),(opt&1) ? null:'\u00A0')
@@ -1373,13 +1549,13 @@ commonui.mainMenuItems={
 				}//
 			}))},//头像预留
 		*/
-	5:{href:'http://ngacn.cc',innerHTML:'首页'},
+	5:{href:'http://nga.cn',innerHTML:'首页'},
 	6:{href:'/',innerHTML:'论坛',className:'active'},
 	7:{disableDefault:1,arg:['style','padding:0.2em 0.5em','href','/',
 			'innerHTML',typeof SVGRect === 'function' ? '<svg xmlns="http://www.w3.org/2000/svg" style="height:50px;fill:'+__COLOR.border0+'" viewBox="129.22 30.208 1120.58 411.795"><path fill-rule="evenodd" d="M1192.47 335.038L1165.6 219.78l-8.62-2.889 7.7 118.147h-59V82.75l5.75-5.853 46.75-5.5L1188.6 189.6l8.78 2.567L1189.93 83l3.33-5.884 56.54-5.449v263.371h-57.33zm-234.661-.538l-10.352-8.734-9.16-57.937.053-11.09 9.291-167.1 9.631-9.9 92.158-13.713 28.49 34.508 5.5 40.053v30.233h-53.2l-11.51-55.48-17.86 3.149-5.1 149.449 5.1 23.035 22.05-3.722 6.73-52.221 53.79.011v73l-19.46 26.438zM898.5 288.715h34.044V335H898.5v-46.285zm-75.236-.39h-25.438l-4.276 46.713h-62.614l30.132-248.484 10.408-9.636 81.144-9.271 36.232 267.391h-61.771zm-10.229-158.973L807.128 133 796.92 242.254h24.48zM669.371 316.417l-16.115 18.059-64.447.019-10.352-8.734-9.16-57.937.053-11.09 9.291-167.1 9.631-9.9 92.156-13.713 28.5 34.508 5.491 40.053v30.238h-53.2l-11.5-55.48-17.861 3.149-5.1 149.449 5.1 23.035 22.047-3.722 3.07-21.4 3.667-30.821h-19.488v-39.489h73.261v139.5H675.15zm-122.9 18.621h-57.337L462.271 219.78l-8.629-2.889 7.7 118.147h-58.993V82.75l5.751-5.85 46.75-5.5 30.414 118.2 8.787 2.567L486.593 83l3.336-5.884 62.208-7.468L546.47 101v234.038zm-142.462 30.815h-13.692v6.678h-11.5v-6.678H359.4v6.678h-11.3v-6.678h-14.093v-8.071H348.1v-6.795h11.3v6.795h19.408v-6.795h11.5v6.795H404v8.071zm-234.822-79.74l-39.967-2.864V30.208h225.066l-3.241 45.227 27.772 1.99v257.637H165.681zm29.651-207.861l-11.5 3.113-10.947 19.082 17.7 12.294 18.836-5.649.721-2.125-2.778-23.806 3.658-26.774zm44.005 3.472l-10.358 17.594 5.886 19.985 8.53-4.207 8.773-3.079 4.846-23.094L264.7 51.8zm41.569 6.755L269.1 112.263l4.08 15.258 18.785-4.063 3.972-16.213 2.875-14.007 3.659-26.774zm32.2 19.806l-15.772 23.489 4.1 11.71 15.617-4.165 9.09-21.65 5.375-27.933zm37.24 34.067l-.822-9.27 1.881-14.973-13.04 19.749-13.62 3.757 5.87 16.816 14.175.083zM261.48 302.875l27.273 10.638 19.234-35.658-12.241-31.208-50.99-7.719-2.656 34.283zm-58.357-137.367l31.5 1.976 68.321 52.41 12.569 3.58 20.868-11.174-2.187-24.364-76.618-50.41-71.294-8.139-34.841 33.519-3.041 27.824s11.908 24.2 20.466 36.516c11.464.276 40.155 1.029 40.155 1.029l-11.2-54.534zm-31.088 190.144l2.528 18.455-6.16-.328L166.2 356.4zm17.6 18.455l2.92-18.455 4.43.743-3.28 17.712h-4.07zm-22.264 16.526v-8.926h9.51v-30.674h9.846v30.654h8.295v8.925h-8.445l11.585 24.528-4.428 6.715-2.972-7.967-3.631-8.1-.383 36.212h-9.883v-.02l.219-36.193-4.218 11.253-4.146 10.139-5.72-8.493 13.676-28.053h-9.306zm48.164-12.764h-12.589v-5.7h12.591v-8.023h-13.413v-6.463h13.413v-6.653h11.284v6.653h13.416v6.463h-13.416v8.023H239.3v5.7h-12.479v8.242h15.246v7.3h-40.86v-7.3h14.33v-8.242zm23.765 64.093h-9.744l1.019-2.1V429.1h-18.904v12.865h-8.725v-41.524H239.3v41.521zm-20.7-34.279h-6.931v14.663h6.931v-14.663zm11.975 0h-6.725v14.663h6.725v-14.663zm-1.028 34.279h.009l-.009.018v-.018zm112.912-58.531H362.9v-8.48h12.4v8.48h20.436v20.362h7.352v9.35h-22.676l3.2 3.638a83.019 83.019 0 0 0 19.446 16.241l-7.2 8.964a102.793 102.793 0 0 1-24.7-23.443l-1.581-2.09-1.856 1.741c-2.756 3.544-12.461 15.428-25.067 23.792l-7.316-9.022a88.52 88.52 0 0 0 19.352-16.183l3.27-3.638h-23.053v-9.35h7.554v-20.362zm32.841 20.362h10.75V391.1H375.3v12.7zm-23.158 0H362.9V391.1h-10.756v12.7zm154.719-9.99h-6.031v-11.515h6.031v-18.44h-6.776v-11.717H525.5v11.739h-6.224v18.44h5.262v11.512h-5.262v22l7.854-.556v11.944l-28.869 2.058V417.3l8.6-.575V393.8zM572.519 351v11.164h-37.257V351h37.257zm5.048 36.737h-7.426V430.5h8.23l.924-.761v11.245h-21v-53.267h-8.329l-3.634 54.254-11.782-.721 3.555-53.514h-6.933V376.8h46.39v10.934zm120.066-36.749h14.28v7.472h28.62v20.007h-10.527V367h-50.464v11.464h-10.529v-20.005h28.62v-7.472zm4.76 56.974l-.342-3.379-28.037 16.129-4.174-6.221 31.019-16.937-1.753-6.97-24.326 13.1-4.193-6.758 23.536-11.792-1.048-4.05h-5.931v-6.761h35.276v6.761h-14.1l1.372 2.993a79.408 79.408 0 0 1 3.427 9.237l.906 2.88 16.319-11.232 5.83 7.641-16.923 11.139L741 428.468l-8.187 7.144-16.665-20.512-.564 5.377a64.2 64.2 0 0 1-6.294 21.526l-13.471-2.8.381-.212.283-.673a76.951 76.951 0 0 0 3.974-11.348l1.271-5.069-26.885 15.975-4.741-6.7 32.413-18.3v-1.228a34.229 34.229 0 0 0-.122-3.687zm158.148-54.115l-5.289 11.553v75.63H844.87L845 387l-4.024 9.42-2.476 5.38-6.816-8.076 20.046-42.668zm6.174 1.359h36.763v56.57h6.136v9.163h-48.135v-9.163h5.236v-56.57zm10.088 56.57h16.479v-7.959H876.8v7.959zm0-13.823h16.479V389.9H876.8v8.056zm0-13.3h16.479V376.7H876.8v7.959zm0-13.609h16.479v-8.056H876.8v8.056zm4.352 59.775l-11.849 11.161-6.705-7.454 12.05-11.065zm29.581 3.727l-6.56 7.434-11.924-11.16 6.394-7.358zm113.7-18.671l-15.67 21.9-7.5-7.324 15.66-21zm6.89-13.681h-28.57v-10.31h5.93v-35.441L1061.64 351l1.16 9.087-42.62 4.439v27.362h11.14v-20.58h13.82v20.58h26.28V402.2h-26.28V442h-16.42l2.61-3.313V402.2zm44.2 28.233l-7.59 7.324-15.58-21.779 7.51-6.434zm98.44-61.071h-3.86v-8.624h13.53v-9.684h11.27v9.684h14.16v8.624h-4.68v17.619h5.72v9.606h-42.18v-9.606h6.04v-17.618zm9.81 17.619h11.02v-17.618h-11.02v17.619zM1207.51 442h-35.63v-35.2h35.63V442zm-10.22-25.3h-14.86v15.694h14.86V416.7zm42.26-26.851l.46.748a46.807 46.807 0 0 1 6.55 23.472c0 10.293-4.02 21.372-12.86 21.372h-7.22v6.459h-10.25V353H1247zm-13.11-26.616v24.79h.02l4.2.413 4.64-25.2h-8.86zm4.01 28.9l-3.99 1.061v30.6h2.94c3.96 0 6.5-4.576 6.5-11.667 0-5.841-2.18-13.876-5.45-20.003z" data-name="Color Fill 5"/></svg>' :'<img src="'+__IMG_STYLE+'/logo11-1.png" style="height:50px"/>']},
-	8:{href:'http://game.ngacn.cc/',innerHTML:'评分'},
-	9:{href:'http://g.ngacn.cc/',innerHTML:'聚聚'},
-	10:{href:'http://app.nga.donews.com/',innerHTML:'移动端'},
+	8:{href:'http://game.nga.cn/',innerHTML:'评分'},
+	9:{href:'http://g.nga.cn/',innerHTML:'聚聚'},
+	10:{href:'http://app.nga.cn/',innerHTML:'移动端'},
 
 	22:{ innerHTML:'用户脚本',on:{event:'click',func:function(e){commonui.loadUserScript(__NUKE.position.dummyEvent(e))} }, check:function(){if(__CURRENT_UID)return true} },
 
@@ -1483,7 +1659,7 @@ commonui.mainMenuItems={
 	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159]},
 	//159:{u:1,innerHTML:'绑定手机号'  ,on:{event:'click',func:function(e){__SCRIPTS.load('ucp',function(){commonui.setPhone()})}}},
 	159:{arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1},
-	160:{href:'http://tv.ngacn.cc/',innerHTML:'赛事'},
+	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
 	162:{u:1,tagName:'span',disableDefault:1,innerHTML:function(){
 		return ['\u00A0',
@@ -1605,6 +1781,7 @@ his:null,
 data:null,
 
 load:function (l,r,c,rr){
+
 var self = this
 if(this.data===null){
 	var ee=1
@@ -1612,7 +1789,7 @@ if(this.data===null){
 	return __NUKE.doRequest({
 		u:window.__API.indexForumList(),
 		f:function(d){
-			var e = __NUKE.doRequestIfErr(d,7200)
+			var e = __NUKE.doRequestIfErr(d)
 			if(e===true && ee){
 				ee=false
 				return;
@@ -1625,7 +1802,7 @@ if(this.data===null){
 			}
 		})
 	}
-	
+
 if(this.his===null){
 	this.his=false
 	return commonui.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){self.his=x?x:false; commonui.indexBlock.load(l,r,c,rr)})
@@ -1875,7 +2052,7 @@ httpDataGetter.script_muti_get({u:__API._base+"__lib=follow&__act=get_push&raw=3
 							isSig:0,
 							isLesser:0,
 							isNukePost:(pp[_P_TYPE] & 2048) ? 1 : 0
-							})+" <a href='javascript:void(0)' class='small_colored_text_btn white xtxt' style='font-weight:normal' title='在弹出窗口中浏览这个帖子' onclick='ubbcode.fastViewPost(event,"+d[_QPK_TID]+","+d[_QPK_PID]+")'>&nbsp;+&nbsp;</a> <a href='/read.php?tid="+d[_QPK_TID]+(d[_QPK_PID]?"&pid="+d[_QPK_PID]+"&to=1":'')+"' class='small_colored_text_btn white xtxt' target='_blank' style='font-weight:normal'>&nbsp;*&nbsp;</a>"
+							})+" <a href='javascript:void(0)' class='small_colored_text_btn block_txt_c0 xtxt' style='font-weight:normal' title='在弹出窗口中浏览这个帖子' onclick='ubbcode.fastViewPost(event,"+d[_QPK_TID]+","+d[_QPK_PID]+")'>&nbsp;+&nbsp;</a> <a href='/read.php?tid="+d[_QPK_TID]+(d[_QPK_PID]?"&pid="+d[_QPK_PID]+"&to=1":'')+"' class='small_colored_text_btn block_txt_c0 xtxt' target='_blank' style='font-weight:normal'>&nbsp;*&nbsp;</a>"
 						)
 					)
 				b._.add($('/tr').$0('className','row'+(1+((i++)&1)), r ))

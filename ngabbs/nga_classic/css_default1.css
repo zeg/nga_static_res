@@ -1,413 +1,447 @@
-/*style_define
-网页背景色
-#f5faf9	#fffcee
-
-区域背景 尽量用中间四个
-#f0f7f5	#fff8e7
-#ecf5f3	#fff6df
-#e6f1ee	#fff3d5
-#e1efeb	#fff0cd
-#dcece7	#ffedc3
-#d3dedb	#f5e8cb
-
-边框 分隔线 深色元素
-#274349 #591804
-#79a2a0 #b87563
-#5d8790 #ac6e41
-#afc6cf #e0c19e
-#c8d7de #ead5bc
-
-浅色分隔线
-#82a8a6 #BD7E6D
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#1a3959 #1a3959
-#2c5787 #2c5787
-
-次级链接
-#708295 #708295
-#9aadc3 #9aadc3
-
-正文
-#10273f #10273f
-次级正文
-#58697b #58697b
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#877e68
-#e6ebe9 #f2eddf
-#dadfdd #e6e1d3
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1 (#274349, -0.0039, -0.4930, 0.3725)
-#274349 #591804
-#79a2a0 #b87563
-ui重点文字颜色2 (#591804, -0.0375, -0.2126, 0.3490)
-#591804 #274349
-#b87563 #79a2a0
-ui次级重点文字颜色1 (#274349, -0.0039*0.666, -0.4930*0.666, 0.3725*0.666)
-#598384 #984e39
-#79a2a0 #b87563
-ui次级重点文字颜色2 (#591804, -0.0375*0.666, -0.2126*0.666, 0.3490*0.666)
-#984e39 #598384
-#b87563 #79a2a0
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#f5faf9	#f5faf9
-
-区域背景 尽量用中间四个
-#f0f7f5	#f0f7f5
-#ecf5f3	#ecf5f3
-#e6f1ee	#e6f1ee
-#e1efeb	#e1efeb
-#dcece7	#dcece7
-#d3dedb	#d3dedb
-
-边框 分隔线 深色元素
-#274349 #274349
-#79a2a0 #79a2a0
-#5d8790 #5d8790
-#afc6cf #afc6cf
-#c8d7de #c8d7de
-
-浅色分隔线
-#82a8a6 #82a8a6
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#1a3959 #1a3959
-#2c5787 #2c5787
-
-次级链接
-#708295 #708295
-#9aadc3 #9aadc3
-
-正文
-#10273f #10273f
-次级正文
-#58697b #58697b
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#747b78
-#e6ebe9 #e6ebe9
-#dadfdd #dadfdd
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#274349 #274349
-#79a2a0 #79a2a0
-ui重点文字颜色2
-#591804 #591804
-#b87563 #b87563
-ui次级重点文字颜色1
-#598384 #598384
-#79a2a0 #79a2a0
-ui次级重点文字颜色1
-#984e39 #984e39
-#b87563 #b87563
-
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#f5faf9	#f9f3f4
-
-区域背景 尽量用中间四个
-#f0f7f5	#f7eff1
-#ecf5f3	#f4e9ec
-#e6f1ee	#f1e2e6
-#e1efeb	#efdde2
-#dcece7	#ebd6dc
-#d3dedb	#ded1d4
-
-边框 分隔线 深色元素
-#274349 #4a2731
-#79a2a0 #a27884
-#5d8790 #915c60
-#afc6cf #cfafae
-#c8d7de #dec8c7
-
-浅色分隔线
-#82a8a6 #a9818c
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#1a3959 #4c333b
-#2c5787 #75515c
-
-次级链接
-#708295 #52474a
-#9aadc3 #7b6d71
-
-正文
-#10273f #75515c
-次级正文
-#58697b #7b6d71
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#7d7275
-#e6ebe9 #ece5e7
-#dadfdd #e0d9db
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#274349 #4a2731
-#79a2a0 #a27884
-ui重点文字颜色2
-#591804 #274349
-#b87563 #79a2a0
-ui次级重点文字颜色1
-#598384 #855965
-#79a2a0 #a27884
-ui次级重点文字颜色2
-#984e39 #598384
-#b87563 #79a2a0
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid #cacaca;box-shadow:0 0 5px -3px #000;'
-
-页面主题左右margin
-10 = 10
-*/
-
-/*style_define
-=======================================================
-网页背景色
-#f5faf9	#1a1912
-
-区域背景 尽量用中间四个
-#f0f7f5	#1d1c15
-#ecf5f3	#212019
-#e6f1ee	#26251e
-#e1efeb	#2a2922
-#dcece7	#2d2c25
-#d3dedb	#302f28
-
-边框 分隔线 深色元素
-#274349 #4a2731
-#79a2a0 #a27884
-#5d8790 #915c60
-#afc6cf #cfafae
-#c8d7de #9c967a
-
-浅色分隔线
-#82a8a6 #a9818c
-
-
-灰/白
-#222	#222
-#444	#444
-#888	#888
-#eee	#eee
-#bbb	#bbb
-#fff	#fff
-#ddd	#ddd
-
-链接默认
-#1a3959 #ffb400
-#2c5787 #75515c
-
-次级链接
-#708295 #52474a
-#9aadc3 #7b6d71
-
-正文
-#10273f #9c967a
-次级正文
-#58697b #7b6d71
-
-深色背景中的浅色字
-#fff #fff
-#bbb #bbb
-
-正文中的文字块#7d7275
-#e6ebe9 #ece5e7
-#dadfdd #e0d9db
-
-#6b2d25 #6b2d25
-#e1c8a7 #e1c8a7
-#b9986e #b9986e
-
-#F9CAB5 #F9CAB5
-#B63F32 #B63F32
-
-#d6dcae #d6dcae
-#91b262 #91b262
-
-
-ui重点文字颜色1
-#274349 #4a2731
-#79a2a0 #a27884
-ui重点文字颜色2
-#591804 #274349
-#b87563 #79a2a0
-ui次级重点文字颜色1
-#598384 #855965
-#79a2a0 #a27884
-ui次级重点文字颜色2
-#984e39 #598384
-#b87563 #79a2a0
-
-
-首页 单元高度
-48 =48
-首页 块间距
-8 =8 
-首页 块边框
-1 =1
-首页 块padding
-1 =1
-首页 图片头条的高度
-140 =48*3-(1+1)*2
-首页 块标题高度
-36 =48-8-(1+1)*2
-
-圆角
-2.5 = 2.5
-2 = 2
-
-块阴影或块边框
-border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000; = 'border: '.1.'px solid '.#dcece7.';box-shadow:0 0 5px -3px #fff;'
-
-页面主题左右margin
-10 = 10
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
 
 
 html {overflow-y: scroll}
@@ -451,6 +485,7 @@ border: 1px solid #afc6cf;
 box-shadow: 0 0 2px 0 #bbb inset;
 border-radius: 0.25em;
 background: #f5faf9;
+color:#10273f;
 padding:0.14em 0.14em;
 margin:0.1em 0.2em
 }
@@ -488,11 +523,11 @@ src: local("Helvetica Black");
 
 @font-face {
   font-family: 'comm_glyphs';
-  src:  url('font/comm_glyphs.eot?fm5o27');
-  src:  url('font/comm_glyphs.eot?fm5o27#iefix') format('embedded-opentype'),
-    url('font/comm_glyphs.ttf?fm5o27') format('truetype'),
-    url('font/comm_glyphs.woff?fm5o27') format('woff'),
-    url('font/comm_glyphs.svg?fm5o27#comm_glyphs') format('svg');
+  src:  url('font/comm_glyphs.eot?fm5o28');
+  src:  url('font/comm_glyphs.eot?fm5o28#iefix') format('embedded-opentype'),
+    url('font/comm_glyphs.ttf?fm5o28') format('truetype'),
+    url('font/comm_glyphs.woff?fm5o28') format('woff'),
+    url('font/comm_glyphs.svg?fm5o28#comm_glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -594,6 +629,7 @@ a .numeric {color:inherit}
 .sienna {color:sienna}
 .chocolate {color:chocolate}
 .ngared {color:#274349}
+
 /*
 .minorcolor {color:#5B4D41}
 .ni {color:#333}
@@ -1156,6 +1192,7 @@ text-decoration:none;
 .ubbcode .headline .headlinesel .seled {background:#274349}
 
 .ubbcode .fixblk .apd {display:none}
+.ubbcode .smile_ac,.ubbcode .smile_ac2 {*/}
 /*.page_nav btn*/
 
 .page_nav .symbol {font-size:27px;font-family:Arial Unicode MS, Verdana, Tahoma, Arial, sans-serif}
@@ -1201,9 +1238,9 @@ text-decoration:none;
 
 
 /*用户信息 声望条*/
-.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:#ccc 1px solid;width:auto}
+.r_container {height:auto;line-height:0px;font-size:0px;padding:0;border:#cacaca 1px solid;width:auto}
 .r_container table {border-collapse:separate;border-spacing:1px;width:100%}
-.r_bar {height:2px;line-height:0px;font-size:0px;background:#ccc}
+.r_bar {height:2px;line-height:0px;font-size:0px;background:#cacaca}
 .r_container td {height:2px;font-size:0px;line-height:0px;padding:0}
 .r_container .dot {background:#aaa;height:1px;padding:1px 0 0 0}
 .r_container .blue .r_bar, .r_container .blue .dot {background:#7ea8b8}
@@ -1251,7 +1288,7 @@ text-decoration:none;
 #startmenu .recent .item {border:none}
 #startmenu .recent {background:#f5faf9;border-radius:0.5em;box-shadow:inset 0 0 3px #444}
 
-#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:#eee;font-family:Verdana, Tahoma, Arial, sans-serif;background:#274349;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
+#usernamebg {clear:both;text-align:left;margin:0;height:auto;line-height:40px;font-size:40px;font-weight:bold;color:#f0f7f5;font-family:Verdana, Tahoma, Arial, sans-serif;background:#274349;overflow:hidden;text-transform:uppercase;padding:6px 6px 0 6px}
 #usernamebg .chn_bold {font-family:'Microsoft Yahei', simhei;font-size:inhert}
 #usernamebg .title , #usernamebg .id {font-size:12px;line-height:14px}
 #usernamebg span {display:block;float:left;clear:both;padding:0 0 1px 0}
@@ -1455,7 +1492,7 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 .stdbtn a {border-left:1px solid #c8d7de;background:#e1efeb;font-weight:bold;display:block;padding:0 0.8em;}
 .stdbtn a:hover {background-color:#f0f7f5;text-decoration:none}
 
-.stdbtn .invert {background:#274349;color:#fff}
+.stdbtn .invert {background:#274349;color:#f0f7f5;}
 .stdbtn .invert:hover {background:#79a2a0;color:#fff}
 
 .stdbtn .teal {background:#356868;color:#fff}

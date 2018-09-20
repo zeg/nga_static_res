@@ -88,7 +88,7 @@ else{
 	}
 m.correctNode = m.i==0?true:false
 m.atItem = m.atItem?commonui.atItems._CREATE(m.atItem) : null//此贴所含有的道具(obj) .length .id(i)获取第i个道具的id  .count(i)获取第i个的数量  .i(id)返回特定id的index .info(i)获取第i个道具的info
-m.recommendO = _$('/span','className','white','title',(m.__GP.ubMod ? m.score+'支持 '+m.score_2+'反对' : ''),'innerHTML',m.recommend ? m.recommend :'')
+m.recommendO = _$('/span','className','white','title',(m.__GP.ubMod ? m.score+'支持 '+m.score_2+'反对 (版主可见)' : ''),'innerHTML',m.recommend ? m.recommend : (m.__GP.ubMod ? 0 :''))
 
 this.data[ m.i ] = m
 
@@ -165,18 +165,18 @@ $(a.pInfoC)._.add(
 	$('/span').$0('id','postdate'+a.i,'style',{marginLeft:'0.7em'},'className','silver b stxt',
 		'innerHTML',this.time2date(a.postTime,'Y-m-d H:i')),
 		
-	(a.i==0 && a.visit && a.__GP.admincheck && a.__GP.greater) ? $('/a','href','javascript:void(0)','innerHTML',(a.tmBit1 & _TM_BIT1_COUNT_VIEW) ? '??' : a.visit[0],'style',{marginLeft:'0.7em'},'className','small_colored_text_btn white stxt',
+	(a.i==0 && a.visit && a.__GP.admincheck && a.__GP.greater) ? $('/a','href','javascript:void(0)','innerHTML',(a.tmBit1 & _TM_BIT1_COUNT_VIEW) ? '??' : a.visit[0],'style',{marginLeft:'0.7em'},'className','small_colored_text_btn block_txt_c0 stxt',
 		'onclick',function(){if(a.tmBit1 & _TM_BIT1_COUNT_VIEW) adminui.forumStat(null,null,a.tid); else alert('本日访问'+a.visit[0]+'次 其中用户'+a.visit[1]+'次 第一页'+a.visit[2]+'次')}) : null,
 	
 	$('/nobr')._.add(
-		$('/a','style',{marginLeft:a.small?'1.5em':'0.7em'},'className','small_colored_text_btn white stxt','href','javascript:void(0)',
+		$('/a','style',{marginLeft:a.small?'1.5em':'0.7em'},'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
 			'title','收藏','onclick',function(e){commonui.favor(e,this,a.tid,a.pid)},
 			__TXT('star')
 			),
  
 		a.comment ?  good._.css('marginLeft',a.small?'1.5em':'0.7em') : null,
 
-		$('/a').$0('style',{marginLeft:a.small?'1.5em':'0.7em'},'className','small_colored_text_btn white stxt','href','javascript:void(0)',
+		$('/a').$0('style',{marginLeft:a.small?'1.5em':'0.7em'},'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
 			'title','操作菜单','onclick',function(e){commonui.postBtn.allBtn(e,argid)},
 			__TXT('gear')
 			)
@@ -268,9 +268,9 @@ if(a.atItem && a.atItem.sp && a.atItem){
 	}
 
 	
-if(uI.buffs[99] || uI.buffs[102] || uI.buffs[107]){
+if(uI.buffs[99] || uI.buffs[102] || uI.buffs[107] || uI.buffs[120]){
 	this.postDispAvatarBg(a.uInfoC.parentNode, __IMG_STYLE+'/avatarbg.png')
-	a.contentC.innerHTML+=' [color=gray]……'+(uI.buffs[102] ? '咕' : (uI.buffs[107]?'poi': '咩'))+'~[/color]'
+	a.contentC.innerHTML+=' [color=gray]……'+(uI.buffs[102] ? '咕' : (uI.buffs[107]?'poi': (uI.buffs[120]?'待机中': '咩')))+'~[/color]'
 	}
 
 
@@ -295,7 +295,7 @@ if(a.contentC.nodeName=='P' && a.ie8){//ie8 not allow nest p
 w.ubbcode.bbsCode({
 	i:a.i,
 	c:a.contentC,
-	opt:((a.tmBit1&255) ? 1 : 0),
+	opt:((a.tmBit1&255) ? 1 : 0)  | ((a.atItem && a.atItem.i(26)!==false)?512:0),
 	noImg:a.noimg,
 	fId:a.fid,
 	tId:a.tid,
@@ -635,7 +635,7 @@ var s = function(o){
 			} )
 	var y = tid+'\t'+(pid?pid:0)+'\t0'
 	var io = new_ITEM_inset(o)
-	io.storeBuyAndUse(1,5,'21,23,24,25',y,null)//类别5 对贴道具
+	io.storeBuyAndUse(1,5,'21,23,24,25,26',y,null)//类别5 对贴道具
 	}//fe
 s(x)
 this.adminwindow._.show(e)
@@ -937,8 +937,10 @@ return ''
 
 },//fe
 
-testavatar:function(o){
+avatarBlockrain:function(o){
+	
 var x = _$('/canvas')
+if(!x.getContext)return
 x.width = (o.width*1.25)|0
 x.height = (o.height*1.25)|0
 x.className = o.className
@@ -1074,11 +1076,11 @@ else
 floor:function(i,pid){
 if(!i)
 	return ''
-return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt white vertmod'>#"+i+"</a></span>"
+return "<span class='right'>&nbsp;<a name='l"+i+"' href='"+this.c.genPidLink(pid,i)+"' class='small_colored_text_btn stxt block_txt_c0 vertmod'>#"+i+"</a></span>"
 },//fe
 
 uid:function(uid){
-return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt white vertmod' style='background:#aaa' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
+return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt block_txt_c0 vertmod' style='background:#aaa' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
 },//fe
 
 level:function(lite,level,rvrc,fid,uid,active,gid,mod){
@@ -1335,8 +1337,6 @@ for (var k in x){
 			vsum+=y[1]|0
 		}
 	}
-
-console.log(x)
 
 var name = x.type==TYPE_SCORE ? '评分' :(x.type==TYPE_BET?'投注':'投票'), atv=!x.end || w.__NOW<=x.end, txt="<table id='"+id+"'><tbody>", info = "", btn='', i=0,savg=0
 
