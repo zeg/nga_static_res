@@ -946,16 +946,18 @@ if(arg.txt.length>24)//常见符号连续25个加空格
 		return x
 		})
 }//fe
+
+ubbcode.errorHint = function(t){
+return "<span class='small_colored_text_btn stxt' style='position:absolute;margin:"+Math.random()+"em 0 0 "+Math.random()+"em;color:white;background:red'>/*bbscode "+t+" not match*/</span>"
+}//
 //=============================
 //table
 //=============================
-;(function(){
-var table,tr,td,noboder,align,width,colspan,rowspan,space
 
-function init(){
-table=/(?:<br \/>\s*)?\[table\s*([^\]]*)\](.+?)\[\/table\]\s*(?:<br \/>)?/gi
-tr=/(?:<br \/>\s*)?\[tr\](.+?)\[\/tr\]\s*(?:<br \/>)?/gi
-td=/(?:<br \/>\s*)?\[td\s*([^\]]*)\](.*?)\[\/td\]\s*(?:<br \/>)?/gi
+;(function(){
+var table,tr,td,noboder,align,width,colspan,rowspan,space,bdrCo,bdrWd,ST,STACK,SPIT
+init=function(){
+table=/(?:\s*<br \/>\s*)?\[(\/?)(table|tr|td)(\s*[^\]]*)?\](?:\s*<br \/>\s*)?/gi
 noboder=/noborder/
 align=/top/g
 width=/width=?(auto|\d{0,2})/
@@ -963,54 +965,240 @@ width=/width=?(auto|\d{0,2})/
 colspan=/colspan=?(\d{0,2})/
 rowspan=/rowspan=?(\d{0,2})/
 space=/^(?:<br \/>|\s)+|(?:<br \/>|\s)+$/g
-}
+bdrCo=__COLOR.border3
+bdrWd = 1
+},//
+
+tagTable = function(ops,er){
+ST={
+	tablec:1,
+	trc:0,
+	tdc:0,
+	tableid:'',
+	trid:'',
+	tdid:'',
+	idc:0,
+	row:0,
+	col:0
+	}
+ST.idc += Math.floor(Math.random()*1000)
+ST.tableid = 'tagTB'+ST.idc
+STACK.push(ST)
+
+var y,z=''
+if (y = parseFloat(ops)){
+	if(y<=100)
+		z += 'width:'+y+'%;'
+	}
+else{
+	if (y = ops.match(width))
+		z+='width:'+y[1]+(y[1]=='auto'?';':'%;')
+	else
+		z+='width:99.95%'
+	}
+
+return "<div><table id='"+ST.tableid+"' cellspacing='0px' style='border:"+bdrWd+"px solid "+bdrCo+";border-left:none;border-bottom:none;"+z+";-add-style:here' lastId='"+ST.tableid+"'>"+(er?err('table'):'')
+},//
+
+tagTableEnd = function(ops,er){
+ST.tablec--
+var r = (er?err('table'):'')+"</table lastId='"+ST.tableid+"'></div>"
+STACK.pop()
+ST = STACK.length ? STACK[STACK.length-1] : {}
+
+return r
+},//
+
+tagTr = function(ops,er){
+ST.trc++
+ST.row++
+ST.col=0
+ST.idc += Math.floor(Math.random()*1000)
+ST.trid = 'tagTB'+ST.idc
+return "<tr id='"+ST.trid+"'>"+(er?err('tr'):'')
+},//
+
+tagTrEnd = function(ops,er){
+ST.trc--
+return (er?err('tr'):'')+"</tr lastId='"+ST.trid+"'>"
+},//
+
+tagTd = function(ops,er){
+ST.tdc++
+ST.col++
+ST.idc += Math.floor(Math.random()*1000)
+ST.tdid = 'tagTB'+ST.idc
+
+var x,c,r,w='',u=''
+if (x = parseFloat(ops)){
+	if(x<100)
+		w = 'width:'+x+'%;'
+	}
+else{
+	if (x = ops.match(width))
+		w+='width:'+x[1]+(x[1]=='auto'?';':'%;')
+	if (x = ops.match(align)){
+		for(var i=0;i<x.length;i++)
+			if(x[i]=='top')
+				w+='vertical-align:top;'
+			//else if(x[i]=='justify')
+			//	w+='text-align:justify-all;text-align-last:justify;text-justify:inter-word;'
+		}
+	if (c = ops.match(colspan))
+		u+=' colspan='+c[1]
+	if (r = ops.match(rowspan))
+		u+=' rowspan='+r[1]
+	}
+if(SPIT && STACK.length==1)//只把最外层的table加入拆分
+	mrx(ST.tableid,ST.tdid,ST.col,ST.row,c?(c[1]|0):1,r?(r[1]|0):1)
+
+return "<td id='"+ST.tdid+"' style='border-left:"+bdrWd+"px solid "+bdrCo+";border-bottom:"+bdrWd+"px solid "+bdrCo+";"+w+";-add-style:here' "+u+" lastId='"+ST.tdid+"'>"+(er?err('td'):'')
+},//
+
+tagTdEnd = function(ops,er){
+ST.tdc--
+return (er?err('td'):'')+"<div class='clear'></div></td lastId='"+ST.tdid+"'>"
+},//
+
+mrx = function(tbid,id,c,r,cp,rp){//tableid tdid, left top col/row, colspan, rowspan
+	console.log(id, r,c,cp,rp)
+if(!SPIT[tbid])//td占据格子的索引
+	SPIT[tbid]={maxr:0,maxc:0}
+var m = SPIT[tbid]
+while(m[r+','+c]){//找到第一个未占据的格子
+	c++
+	//while(m[c+','+r]){
+		//r++
+		//}
+	}
+for(var i=0;i<cp;i++){//计算solspan和rowspan
+	for(var j=0;j<rp;j++){
+		m[(r+j)+','+(c+i)] = id//将覆盖到的格占据
+		if(r+j>m.maxr)
+			m.maxr = r+j
+		}
+	if(c+i>m.maxc)
+		m.maxc = c+i
+	}
+},//
+
+err =function(t){
+return ubbcode.errorHint(t)
+}//
+
 ubbcode.parseTable=function(arg){
 if(table===undefined)
 	init()
-arg.txt = arg.txt.replace(table,function ($0,$1,$2){
-	var t = $2.replace(space,''),y,z="'",b=1,d='',m,bc=__COLOR.border3
-	//if ($1.match(noboder))
-		//b=0
-	
-	t = t.replace(tr,function($0,$1){return '<tr>'+$1.replace(space,'')+'</tr>'});//[tr]
-	t = t.replace(td,function($0,$1,$2){
-		var x,w="'"
-		if (x = parseFloat($1)){
-			if(x<100)
-				w = 'width:'+x+'%;'+w
-			}
+
+if(arg.opt&16){
+	if((__SETTING.bit&8) && !arg.txt.match(/\[span[\s=]aligntable\]/))
+		SPIT={}
+	}
+STACK = []
+ST={}
+
+arg.txt = arg.txt.replace(table,function ($0,end,tag,ops){
+var r = ''
+if(end){
+	var r = ''
+	if(tag=='table'){
+		if(ST.tdc) r+= tagTdEnd(null,1)
+		if(ST.trc) r+= tagTrEnd(null,1)
+		if(!ST.tablec) return err('table')
+		return r+tagTableEnd()
+		}
+	else if(tag == 'tr'){
+		if(ST.tdc)r+= tagTdEnd(null,1)
+		if(!ST.trc) return err('tr')
+		if(!ST.tablec) return err('table')
+		return r+tagTrEnd()
+		}
+	else if(tag =='td'){
+		if(!ST.tdc)	return err('td')
+		if(!ST.trc)	return err('tr')
+		if(!ST.tablec)	return err('table')
+		return r+tagTdEnd()
+		}
+	}
+else{
+	if(!ops)ops=''
+	if(tag=='table'){
+		if(ST.tdc){}// r+= tagTdEnd('',1)
 		else{
-			if (x = $1.match(width))
-				w='width:'+x[1]+(x[1]=='auto'?';':'%;')+w
-			if (x = $1.match(colspan))
-				w+=' colspan='+x[1]
-			if (x = $1.match(rowspan))
-				w+=' rowspan='+x[1]
-			if (x = $1.match(align)){
-				for(var i=0;i<x.length;i++)
-					if(x[i]=='top')
-						w='vertical-align:top;'+w
-					//else if(x[i]=='justify')
-					//	w='text-align:justify-all;text-align-last:justify;text-justify:inter-word;'+w
-				}
+			if(ST.trc) r+= tagTrEnd('',1)
+			if(ST.tablec) r+= tagTableEnd('',1)
 			}
-		return "<td style='border-left:"+b+"px solid "+bc+";border-bottom:"+b+"px solid "+bc+"; "+w+">"+$2.replace(space,'')+"</td>"
-		});//[td]
-	if (y = parseFloat($1)){
-		if(y<=100)
-			z = 'width:'+y+'%;'+z
+		return r+tagTable(ops)
 		}
-	else{
-		if (y = $1.match(width))
-			z='width:'+y[1]+(y[1]=='auto'?';':'%;')+z
-		else
-			z='width:99.95%'+z
+	else if(tag == 'tr'){
+		if(ST.tdc) r+= tagTdEnd('',1)
+		if(ST.trc) r+= tagTrEnd('',1)
+		if(!ST.tablec) r+= tagTable('',1)
+		return r+tagTr(ops)
 		}
-	return "<div><table cellspacing='0px' style='border:"+b+"px solid "+bc+";border-left:none;border-bottom:none;"+z+"'>"+t+"</table></div>"
-	});//[table]
+	else if(tag == 'td'){
+		if(ST.tdc) r+= tagTdEnd('',1)
+		if(!ST.tablec) r+= tagTable('',1)
+		if(!ST.trc) r+= tagTr('',1)
+		return r+tagTd(ops)
+		}
+	}
+})
+
+if(STACK.length){
+	console.log(STACK)
+	var j = STACK.length
+	ST = STACK[j-1]
+	while(ST && ST.tableid){
+		last = ST.tdc ? ST.tdid : (ST.trc ? ST.trid : (ST.tablec ? ST.tableid : ''))
+		if(last)
+			arg.txt = arg.txt.replace(new RegExp(" lastId='"+last+"'>"),function($0){
+				var r=''
+				if(ST.tdc) r+= tagTdEnd('',1)
+				if(ST.trc) r+= tagTrEnd('',1)
+				if(ST.tablec) r+= tagTableEnd('',1)
+				return $0+r
+				})
+		if(STACK.length==j){
+			arg.txt+=tagTableEnd('',1)
+			if(STACK.length==j)
+				break//防止意外死循环
+			}
+		}
+	}
+
+if(SPIT){
+	for(var tableid in SPIT){
+		arg.txt = arg.txt.replace(new RegExp("<table id='"+tableid+"'.+?<\\/table lastId='"+tableid+"'>"),function($0){//把表格切出来
+				var tb = SPIT[tableid], r='', x={}
+				for(var i=1;i<=tb.maxc;i++){//把td按照从上到下从左到右的顺序重排成一列
+					for(var j=1;j<=tb.maxr;j++){
+						var id = tb[j+','+i]
+						if(x[id])
+							continue
+						else{
+							x[id] = 1
+							$0 = $0.replace(new RegExp("<td id='"+id+"'.+?<\\/td lastId='"+id+"'>"),function($0){
+								r+=$0.replace(/-add-style:here/,'display:block;width:auto')
+								return ''
+								})
+							}
+						}
+					}
+				var m = $0.match(new RegExp("<table id='"+tableid+"'.+? lastId='"+tableid+"'>"))
+				$0 = m[0].replace(/-add-style:here/,'display:block')+"<tbody style='display:inline'><tr style='display:inline'>"+r+"</tr></tbody></table>"
+				return $0
+			})
+		}
+	}
+
 }//fe
 
+
+
 })();
+
+
 //=============================
 ubbcode.drawChartRadar=function(x){
 
@@ -1294,7 +1482,7 @@ ubbcode.parseFix = function(arg){
 		})*/
 	
 	while(tg.length)
-		arg.txt +=tg.pop()+'<!--[fixsize][style]not match-->'
+		arg.txt +=tg.pop()+ubbcode.errorHint('fixsize,style')
 
 	arg.txt = arg.txt.replace(/\[omit\s?(\d+)\](.+?)\[\/omit\]/g,function($0,$1,$2){return "<span title='"+$2+"'>"+commonui.cutstrbylen($2,$1|0,$1-1,'…')+"</span>"})
 	arg.txt = arg.txt.replace(/\[symbol (.+?)\]/g,function($0,$1){return __TXT($1,2)})
@@ -2103,14 +2291,15 @@ else{
 
 ubbcode.fastViewPostLink = function(u,tid,pid,t,more,opt){
 if(!t)t=pid?'R':'T'
-return (opt&1 ? '' : "<a href='"+u+"' class='block_txt block_txt_c2' style='font-weight:normal;line-height:1.2em;margin-right:-0.25em' title='打开链接' target='_blank'>+</a>")+"<a href='javascript:void(0)' class='block_txt block_txt_c0' style='line-height:1.2em' onclick='commonui.cancelBubble(event);commonui.cancelEvent(event);ubbcode.fastViewPost(event,"+tid+","+pid+","+(more?1:0)+")' title='快速浏览这个帖子'>"+t+"</a>"
+return (opt&1 ? '' : "<a href='"+u+"' class='block_txt block_txt_c2' style='font-weight:normal;line-height:1.2em;margin-right:-0.25em' title='打开链接' target='_blank'>+</a>")+"<a href='javascript:void(0)' class='block_txt block_txt_c0' style='line-height:1.2em' onclick='commonui.cancelBubble(event);commonui.cancelEvent(event);ubbcode.fastViewPost(event,"+tid+","+pid+","+((more?16:0)|(pid?0:2))+")' title='快速浏览这个帖子'>"+t+"</a>"
 }//fe
 
 ;(function(){
 var p,pc,$=_$,c = commonui
-ubbcode.fastViewPost = function(e,tid,pid,more){
+ubbcode.fastViewPost = function(e,tid,pid,opt){
+	console.log(tid,pid,opt)
 __NUKE.doRequest({
-	u:'/read.php?lite=js&tid='+tid+'&pid='+(pid?pid:0)+(more?'&opt=4':''),
+	u:'/read.php?lite=js&tid='+tid+'&pid='+(pid?pid:0)+(opt?'&opt='+opt:''),
 	f:function(o){
 		if(__NUKE.doRequestIfErr(o))
 			return alert('data error')
@@ -2129,7 +2318,7 @@ __NUKE.doRequest({
 					)
 				)
 			}
-		if(pc.childNodes.length>1 || !more){
+		if(pc.childNodes.length>1 || (opt&16)==0){
 			pc.innerHTML = ''
 			pc.ip = null
 			}
@@ -2196,7 +2385,7 @@ if(e){
 	if(b[t]>0)
 		b[t]--
 	else
-		return '/* bbscode '+t+' not match */'
+		return ubbcode.errorHint(t)
 	}
 else
 	b[t]++
@@ -2322,7 +2511,7 @@ else
 	n = arg.replace(g,r)
 for(var k in b){
 	while(b[k]>0){
-		n +='/* bbscode '+k+' not match */'
+		n +=ubbcode.errorHint(k)
 		n +='</span>'
 		b[k]--
 		}
@@ -2348,7 +2537,7 @@ for(var i=0;i<o.childNodes.length;i++){
 	}
 if(j>8)j=8
 for(var i=0;i<tc.length;i++){
-	$(tc[i],'style','cssFloat:left;width:'+(100/j)+'%;maxWidth:'+(100/j)+'%;minWidth:24em;overflow:hidden;marginRight:-1px;marginBottom:-1px;borderTop:1px solid '+__COLOR.border3+';borderRight:1px solid '+__COLOR.border3)
+	$(tc[i],'style','cssFloat:left;width:'+(100/j)+'%;maxWidth:'+(100/j)+'%;minWidth:20em;overflow:hidden;marginRight:-1px;marginBottom:-1px;borderTop:1px solid '+__COLOR.border3+';borderRight:1px solid '+__COLOR.border3)
 	$(tc[i].firstChild,'style','width:100.1%;borderTop:none;borderRight:none')
 	}
 o.appendChild($('/div','className','clear'))
@@ -3381,6 +3570,10 @@ ubbcode.codeHelpCommon = [
 	2:{
 		0:{'hint':'请输入图片地址'},
 		1:function(v){
+			if(!v[0].match(/^http/)){
+				alert('请先使用 上传附件 功能将图片上传至服务器')
+				return ''
+				}
 			return '[img]'+v[0]+'[/img]'
 		}
 	}

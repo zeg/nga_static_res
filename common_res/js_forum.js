@@ -203,6 +203,7 @@ avatar,admin,ath
 
 var $ = _$, self = this, w = window, __GP=w.__GP, document=w.document, lite = w.__SETTING.bit & 16, now = w.__NOW, selBox
 
+o_topic._useloadread=1
 //==================================
 var x = this.htmlName(o_author.innerHTML,lite?6:7), y=this.htmlName(o_replier.innerHTML,lite?6:7)
 if(x!=o_author.innerHTML)
@@ -262,17 +263,16 @@ if(ds){
 
 //page===================
 if (replies+1>20){//每页20
-	var pn = Math.ceil((replies+1)/20), pc=o_topic.target?" target='_blank' ":'', pb = ds+'/read.php?tid='+(quote_from ? quote_from : tid) , ph = ''
-	ph +=" <span class='pager'> &nbsp; [ ";
+	var pn = Math.ceil((replies+1)/20), pc=o_topic.target?1:0, pb = ds+'/read.php?tid='+(quote_from ? quote_from : tid) , ph = $('/span','className','pager')._.add('\u2003[ ')
 	for(var i=1; i<=pn; i++){
 		if (i==6){
 			i=pn
-			ph +=" ... "
+			ph._.add(" ... ")
 			}
-		ph +=" <a style='color:gray' "+pc+"href='"+pb+"&page="+i+"'>"+i+"</a>"
+		ph._.add(' ',$('/a','href',pb+"&page="+i,'className','silver','_useloadread',1,pc?{target:'_blank'}:null)._.add(i))
 		}
-	ph +=' ]</span>'
-	o_pagelinks.innerHTML = ph
+	ph._.add(' ]')
+	o_pagelinks.appendChild(ph)
 	}
 
 //add from forum ===================
@@ -632,7 +632,6 @@ __NUKE.doRequest({
 		var D = d.data,M = commonui.topicMiscVar.unpack(D.__T.topic_misc),c = D.__R__ROWS,c = c>6?6:c
 		commonui.userInfo.setAll(D.__U)
 		commonui.postArg.setDefault(D.__T.fid,D.__T.stid,D.__T.tid,D.__T.authorid,M._bit1,'',0,'')
-		console.log(c)
 		for(var i=1;i<c;i++){
 			var R = D.__R[i]
 			if(!R.pid)
@@ -843,14 +842,11 @@ else{
 			}
 		}
 	}
-
-
 for (var k=0;k<l.length;k++){
 	if(xx=this.genA(arg,l[k],1))
 		oo._.__add(xx)
 	}
 o.innerHTML=''
-
 if(!oo._.__length)
 	return
 
@@ -974,9 +970,6 @@ else{
 	}
 }//fe
 
-
-
-
 ;(function(){
 if(!XMLHttpRequest)
 	return
@@ -988,19 +981,11 @@ iPo, //当前第一条
 iPc,
 ot = 0,
 count = 1,//当前显示的总页数
-prog,
-progv = 0,
 progr = function(){
-	progv = 0
-	prog.style.transition=''
-	prog.style.borderLeftWidth=0
-	prog.style.display = 'none'
 	commonui.loadReadHidden.lock = 0
 	},
-progt = function(v){
-	//console.log(v)
-	if(v!=progv)
-		progv = v, prog.style.borderLeftWidth = (prog.offsetWidth*v/10)+'px'
+progt = function(v,o){
+	commonui.progbar(v*10,o?o:5000,v==10?progr:null)
 	},
 cs = document.characterSet || document.defaultCharset || document.charset;
 
@@ -1010,7 +995,6 @@ HTTP.onerror = function(e){
 	
 HTTP.onload = HTTP.onabout = function(e){
 	progt(10)
-	window.setTimeout(function(){progr()},300)
 	}
 
 HTTP.onprogress = function(e){
@@ -1070,8 +1054,6 @@ if(!iPc){
 		iPc = $('topicrows')
 		ot |= 1024
 		}
-	prog = $('/div','style','position:fixed;display:none;bottom:0;left:0;right:0;height:1em;background:silver;fontSize:0.6em;borderLeft:0 solid '+__COLOR.border0)
-	document.body.appendChild(prog)
 	}
 
 opt|=ot
@@ -1107,7 +1089,7 @@ HTTP.onreadystatechange = function () {
 	progt(5)
 			
 	var data = pr(HTTP.responseText,opt)
-	
+
 	if(commonui.eval.call(window,data[0]))
 		return error('parse data 0 error')
 
@@ -1148,6 +1130,9 @@ HTTP.onreadystatechange = function () {
 		else if(opt & 4)
 			iPo = pageStat[minp][0], minp = p
 		commonui.topicArg.opt |=1
+		//console.log('replacehis '+p)
+		//if(history.replaceState)
+			//history.replaceState('object or string', document.title, __PAGE[0]+'&page='+p)
 		}
 
 	progt(7)
@@ -1193,8 +1178,6 @@ HTTP.onreadystatechange = function () {
 
 HTTP.overrideMimeType("text/html; charset="+cs);  
 
-prog.style.display = ''
-prog.style.transition='border-left-width 0.3s linear 0s,0.3s'
 progt(1)
 
 	
@@ -1211,13 +1194,10 @@ iPo = null
 iPc = null
 ot = 0
 count = 1
-prog = null
-progv = 0
 }//
 
 var error = function(e,a){
-if(prog)
-	progr()
+progt(10)
 if(!a)
 	alert(e)
 console.log(e)
@@ -1245,4 +1225,3 @@ return r
 }//fe
 
 })();
-

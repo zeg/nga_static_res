@@ -55,17 +55,26 @@ if(commonui.customBackgroundLogo===undefined)
  *l 背景图宽度 (无用
  *s 背景图高度
  *v video
- *opt &1 noautoplay
+ *opt &1 noautoplay &4big image cut to 190
  */
-commonui.customBackground=function(u,l,s,v,opt,vbgc){
+commonui.customBackground=function(u,l,os,v,opt,vbgc){
 var w= window,c=w.commonui
 if(c.customBackground.loaded || !document.body)return
 c.customBackground.loaded=true
 
-var $ = _$,x = $('custombg'),z=55,y,vo,voc,vog
+var $ = _$,x = $('custombg'),z=55,y,vo,voc,vog,s
 
 if (x)x.parentNode.removeChild(x)
 //if(parseInt(cookieFuncs.getMiscCookie('notLoadPAndS'),10))s=130
+
+if(opt&4){
+	if(os==190)
+		opt&=~4
+	s=190
+	}
+else
+	s=os
+	
 
 
 if(w.__UA && w.__UA[0]==1 && w.__UA[1]<=6){
@@ -95,18 +104,29 @@ else{
 		l1 = tmp(1, s+1, 0, c.hexToRgb(__COLOR.bg0))
 		c.userCache.set(cok, l1, 86400*30)
 		}
-	var x = $('/div','style',{height:(s+1)+'px',background:"url(data:image/png;base64,"+l1+")"},
-					(commonui._ifCanCustomBackground ? $('/a','href','javascript:void(0)','style','color:#fff;font-size:20px;opacity:0.33;float:right',__TXT('gear'),'onclick',function(e){commonui.mainMenu.data[95].on.func(e)}) : null)
+	var x = $('/div','style','height:'+(s+1)+'px;boxShadow:inset 0 0 1.5em 0 black'+(opt&4 ? ';transform:translateY(0px)':''),'style',{background:'url(data:image/png;base64,'+l1+')'},
+					(commonui._ifCanCustomBackground ? $('/a','href','javascript:void(0)','style','color:#fff;font-size:20px;opacity:0.33;float:right'+(opt&4 ? ';transform:translateY(0px)':''),__TXT('gear'),'onclick',function(e){commonui.mainMenu.data[95].on.func(e)}) : null)
 					)
 //	var x = _$('<div/>')._.css({height:(s+1)+'px',background:"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/P//PwMTAwODGkCAAQAYLAMn19xlOwAAAABJRU5ErkJggg==)"})._.aC(     _$('<div/>')._.css({height:(s+1)+'px',background:"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAC/CAYAAAA/1baMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAENJREFUeNpi+P//PwMTAxCMEqMEucTf90wgFjaCGU6gcdEIFlwsbFxsBCthMUq4OMVY8LoUp9+wEdgCDBsBCXaAAAMAc4cHZX7oZPoAAAAASUVORK5CYII=) bottom left repeat-x"})    )
 	}
 
 c.customBackgroundHeight=s
 
-y = $('<div/>')._.css({height:s+'px',overflow:'hidden',boxShadow:'inset 0 0 1.5em 0 black',background:"url('"+u+"') left center repeat"})
-	
+var bgImgObj = $('/div','_moveY',os-s,'style','height:'+os+'px;margin:-'+(os-s)+'px 0 -'+s+'px 0;overflow:hidden;background:url("'+u+'") bottom left repeat'+((opt&4)?';transform:translateY(0px);transition:transform 45s linear':''))
+y = $('/div','style','height:'+s+'px;overflow:hidden;',bgImgObj)
+
+if(opt&4){
+	this.customBackgroundUseTrans = 1
+	x._.on('click',function(){
+		bgImgObj.style.transform='translateY('+bgImgObj._moveY+'px)'
+		})
+	//commonui.aE(window,'DOMContentLoaded',function(){
+	//	bgImgObj.style.transform='translateY('+bgImgObj._moveY+'px)'
+	//	})
+	}
+
 if(v){
-	this.customBackgroundHasVideo = 1
+	this.customBackgroundUseTrans = 1
 	opt = opt|0
 	var ts = __NUKE.cpblName(document.body.style,'transition',1)
 	if(ts){
@@ -173,7 +193,7 @@ if(l==1){
 	}
 else if(l==2){*/
 if(this.customBackgroundLogo){
-	var l = _$('<div/>')._.css({margin:'auto auto auto 70px',width:'451px',height:'57px'})
+	var l = _$('/div','style','margin:auto auto auto 70px;width:451px;height:57px'+(opt&4 ? ';transform:translateY(0px)':''))
 	if(w.__UA && w.__UA[0]==1 && w.__UA[1]<=6)
 		l._.css({filter:f( this.customBackgroundLogo )})
 	else
@@ -201,6 +221,8 @@ if(vo){
 	document.body.appendChild(vo)
 	document.body.appendChild(voc)
 	}
+if(this.customBackgroundUseTrans)
+	__NUKE.addCss("\n #m_pbtntop, #m_nav {transform:translateY(0px)} \n")
 }//fe
 
 commonui.receiveBase64Data = function(base64){

@@ -133,8 +133,15 @@ __NUKE.doPost(__API.notiTopicIgnore(tid,pid))
 
 },//fe
 
-load:function(z,y){
-if(!parseInt(z) || commonui.userCache.get('notificationDisabled'))return
+load:function(z,y,ti){//z&1是弹出提示 z&2是用户主动打开
+z=z|0
+
+if(z&1){
+	if((window.sessionStorage && sessionStorage.getItem('notipop')==ti) || commonui.userCache.get('notificationDisabled'))
+		return
+	sessionStorage.setItem('notipop',ti) 
+	}
+
 var self = this
 
 __NUKE.doRequest({
@@ -195,7 +202,7 @@ if(commonui.userCache.get('notificationDisabled'))
 //	this.closeBox()
 this.stat = 2
 
-this.load(1,1)
+this.load(2,1)
 
 },//fe
 

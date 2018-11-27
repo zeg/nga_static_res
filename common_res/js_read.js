@@ -162,8 +162,9 @@ $(a.pInfoC)._.add(
 	$('/a').$0('style',{marginLeft:'0.7em'},'className','silver',
 		'href','/thread.php?fid='+a.orgFid,'innerHTML',"["+a.orgForum+"]") : null,
 	
-	$('/span').$0('id','postdate'+a.i,'style',{marginLeft:'0.7em'},'className','silver b stxt',
-		'innerHTML',this.time2date(a.postTime,'Y-m-d H:i')),
+	$('/span','id','postdate'+a.i,'style',{marginLeft:'0.7em'},'className','silver b stxt',
+		'innerHTML',this.time2date(a.postTime,'Y-m-d H:i'), 
+		a.__GP.admincheck?'onclick':null,a.__GP.admincheck?function(){if(this.style.color){adminui.selectPid(a.tid,a.pid,1);this.style.color=''}else{adminui.selectPid(a.tid,a.pid,0);this.style.color='darkred'}}:null),
 		
 	(a.i==0 && a.visit && a.__GP.admincheck && a.__GP.greater) ? $('/a','href','javascript:void(0)','innerHTML',(a.tmBit1 & _TM_BIT1_COUNT_VIEW) ? '??' : a.visit[0],'style',{marginLeft:'0.7em'},'className','small_colored_text_btn block_txt_c0 stxt',
 		'onclick',function(){if(a.tmBit1 & _TM_BIT1_COUNT_VIEW) adminui.forumStat(null,null,a.tid); else alert('本日访问'+a.visit[0]+'次 其中用户'+a.visit[1]+'次 第一页'+a.visit[2]+'次')}) : null,
@@ -268,9 +269,15 @@ if(a.atItem && a.atItem.sp && a.atItem){
 	}
 
 	
-if(uI.buffs[99] || uI.buffs[102] || uI.buffs[107] || uI.buffs[120]){
+if(uI.buffs[99] || uI.buffs[102] || uI.buffs[107] || uI.buffs[120] || uI.buffs[119] || uI.buffs[124]){
 	this.postDispAvatarBg(a.uInfoC.parentNode, __IMG_STYLE+'/avatarbg.png')
-	a.contentC.innerHTML+=' [color=gray]……'+(uI.buffs[102] ? '咕' : (uI.buffs[107]?'poi': (uI.buffs[120]?'待机中': '咩')))+'~[/color]'
+	a.contentC.innerHTML+=' [color=silver]……'+(
+		uI.buffs[102] ? '咕' : (
+		uI.buffs[107] ? 'poi': (
+		uI.buffs[120] ? '待机中': (
+		uI.buffs[99] ? '咩': (
+		''))))
+		)+'~[/color]'
 	}
 
 
@@ -775,7 +782,6 @@ c:commonui,
 uI:commonui.userInfo,
 pA:commonui.postArg.data,
 mI:commonui.modInfo,
-__PORTRAIT_PATH:window.__PORTRAIT_PATH,
 __IMG_STYLE:window.__IMG_STYLE,
 __IMGPATH:window.__IMGPATH,
 sb:window.__SETTING.bit,
@@ -1928,13 +1934,19 @@ d:{
 	ck:function(a){if(__SETTING.uA[2]==4 || __SETTING.uA[2]==2)return 1} },
 16:{n1:'调查',n2:'当前主题内相关操作记录',n3:'调查操作',
 	on:function(e,a){adminui.viewLog(0, 0, 0, a.tid)},
-	ck:function(a){if(a.admin&2)return 1} } 
+	ck:function(a){if(a.admin&2)return 1} },
+17:{n1:'统计',n2:'主题近期统计',n3:'统计数据',
+	on:function(e,a){adminui.forumStat(null,null,a.tid,commonui.time2date(__NOW,'Y-m-d'),10)},
+	ck:function(a){if(a.admin&2)return 1} },
+18:{n1:'PID',n2:'记录PID',n3:'记录PID',
+	on:function(e,a){adminui.selectPid(0,0,2)},
+	ck:function(a){if(a.admin)return 1}}
 },
 
 replaceUrl:commonui.buttonBase.replaceUrl,
 
 def:[11,12,10,15],
-all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14,16]},
+all:{'主题操作':[1,2,3,4,5,6,7,8,9,13,14,16,17,18]},
 
 genU:commonui.buttonBase.genU,
 

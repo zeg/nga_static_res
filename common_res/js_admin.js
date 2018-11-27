@@ -313,6 +313,39 @@ this.w._.addContent(
 			),
 		$('/br'),
 		$('/br'),
+		__GP.superlesser ? [
+			'批量加分 填入本主题内要加分的pid 每行一个',$('/br'),
+			$('/textarea'),$('/br'),
+			$('/button').$0('innerHTML','批量加分','type','button','onclick',function(){
+					var x = this.parentNode.getElementsByTagName('input'),opt=0
+					for (var i=0;i<x.length;i++)
+						if (x[i].checked) opt |= x[i].value
+					var pids = this.previousSibling.previousSibling.value.match(/\d+/g), results='',
+					mas = function(pids){
+						if(pids.length){
+							var pp = pids.shift()
+							__NUKE.doRequest({
+								u:{u:__API._base,
+										a:{__lib:"add_point_v3",__act:"add",opt:opt,fid:fid,tid:tid,pid:pp,info:ni.value,value:ri.value,raw:3}
+										},
+								f:function(d){
+									if(d.error)
+										return alert('pid:'+pp+' '+d.error[0])
+									var result = 'pid:'+pp+' '+d.data[0]
+									results += result+'\n'
+									console.log(result)
+									mas(pids)
+									}
+								})
+							}
+						else
+							alert('操作完毕\n'+results)
+						}//
+					if(confirm('请检查加分参数并继续\n加分过程中不要关闭窗口或离开本页面\n出现错误时会中断'))
+						mas(pids)
+					}
+				),$('/br'),$('/br')
+			] : null,
 		de('* 150声望合1威望<br/>** 100声望合1金币 扣减声望时可以扣除金钱<br/><br/>'),n = de('')
 		)
 	)
@@ -375,7 +408,7 @@ this.w._.addContent(
 		y = $('/textarea').$0('name','info','rows','5','cols','40'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
-
+console.log('go')
 				x = y.value.split("\n")
 				for(var i=0;i<x.length;i++){
 					if(x[i]){
@@ -1654,7 +1687,7 @@ __NUKE.doRequest({
 				),_$('/br'),
 			_$('/br'),
 			
-			'访问权限*(i 为继承上层版面设置',_$('/br'),
+			'访问权限*(i 为继承上层版面设置 声望0为使用新建的声望',_$('/br'),
 			'其他参考lib_privilege::format_str_to_ary',_$('/br'),
 			t[_ALLOW_VISIT] = _$('/input').$0('value',y(_ALLOW_VISIT)),_$('/br'),
 			_$('/br'),
@@ -1985,6 +2018,70 @@ this.w._.show(e)
 
 }//fe
 
+
+adminui.setSubSets = function(e,fid){
+	
+if(!fid)fid=0;
+
+var $=_$,w = $('/span'),f,s,newnod = function(id,opt,name){
+return $('/tr',
+	$('/td', $('/input','value',id,'placeholder','版面id/合集或版面镜像id'), $('/input','type','hidden','value','\t')),//id
+	$('/td')._.add( $('/input','type','checkbox','value','t','checked',opt.indexOf('t')!=-1?'checked':''),'是合集或版面镜像 '),//if set/quoteforum
+	$('/td')._.add( $('/input','type','checkbox','value','s','checked',opt.indexOf('s')!=-1?'checked':''),'显示为子版面 '),//display as sub
+	$('/td')._.add( $('/input','type','checkbox','value','q','checked',opt.indexOf('q')!=-1?'checked':''),'显示为主题合集 '),//display as quote
+	$('/td')._.add( $('/input','type','hidden','value','\t'), $('/button','innerHTML','删除','onclick',function(){this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)}), $('/b')._.add(name))//id
+	)
+}//
+
+this.createadminwindow()
+this.w._.addTitle('子版面列表设置')
+this.w._.addContent(null)
+this.w._.addContent(w)
+
+__NUKE.doRequest({
+	u:__API._base+'__lib=modify_forum&__act=get_sub_list_v2&raw=1&fid='+fid,
+	f:function(d){//如有.error则显示.error 否则显示.data
+
+		var e = __NUKE.doRequestIfErr(d)
+		if(e)
+			return alert(e)
+		var d =  d.data,tb = $('/table')
+
+		if(d[0]){
+			var y = d[0].split(/[\t\n]/)
+			console.log(y)
+			for(var i=0;i<y.length;i+=3){
+				tb._.add(
+					newnod(y[i],y[i+1],y[i+2])
+					)
+				}
+			}
+		w._.add(tb, $('/br'), $('/button','innerHTML','添加一个','onclick',function(){tb._.add(newnod('','',''))}) )
+
+		w._.add(	$('/br'),	$('/br'),  $('/button').$0('innerHTML','提交','onclick',function(){
+				var x='',y = tb.getElementsByTagName('input')
+				for(var i=0;i<y.length;i++){
+					if(y[i].type=='checkbox'){
+						if(y[i].checked)
+							x+=y[i].value
+						}
+					else{
+						x+=y[i].value
+						}
+					}
+				__NUKE.doRequest({
+					u:{u:__API._base+'__lib=modify_forum&__act=set_sub_list_v2&raw=3&fid='+fid,
+						a:{ids:x}
+						},
+					b:this
+					})
+				})	)
+		return true
+		}
+	})
+this.w._.show(e)
+
+}//fe
 /**
 延时关键字检查
  */
@@ -2305,7 +2402,7 @@ __NUKE.doRequest({
 	})
 }//fe
 
-adminui.forumStat = function(e,fid,tid){
+adminui.forumStat = function(e,fid,tid,fr,da){
 this.createadminwindow()
 this.w._.addContent(null)
 this.w._.addTitle('访问统计')
@@ -2314,8 +2411,8 @@ this.w._.addContent(
 	c=$('/input','type','radio','name','yjhbn6t3','checked',(fid?'1':'')),'版面 ',
 	b=$('/input','type','radio','name','yjhbn6t3','checked',(tid?'1':'')),'主题 ',
 	f=$('/input','placeholder','版面或主题ID','value',tid?tid:fid),' (不超过10个 需要全部正式版主权限) . ',
-	t=$('/input','placeholder','起始日期'),' (年-月-日) . ',
-	a=$('/input','placeholder','天数'),' (不超过三个月) . ',
+	t=$('/input','placeholder','起始日期','value',fr?fr:''),' (年-月-日) . ',
+	a=$('/input','placeholder','天数(向前数)','value',da?da:''),' (不超过三个月) . ',
 	$('/button')._.attr({innerHTML:'确定',type:'button'})._.on('click',function(){
 			__NUKE.doRequest({
 				u:{u:__API._base,a:{__lib:'admin_stat',__act:'forum_stat',raw:3,act:1,tid:(b.checked ? f.value :''),fid:(c.checked ? f.value :''),date:t.value,day:a.value}},
@@ -2365,6 +2462,31 @@ this.w._.show(e)
 
 }//fe
 
+
+adminui.selectPid = function(tid,pid,opt){
+var x = sessionStorage.getItem('selectPid')
+if(opt&2){
+	x = x.substr(11)
+	var y = x.match(/\d+/g),z={},u
+	this.createadminwindow()
+	this.w._.addContent(null)
+	this.w._.addTitle('记录选择的帖子pid')
+	this.w._.addContent('点击发帖时间选择',_$('/br'),'可以翻页',_$('/br'),'关闭浏览器窗口/打开其他主题会清空',_$('/br'),u=_$('/textarea'))
+	for(var i=0;i<y.length;i++)
+		z[y[i]]=1
+	for(var i in z)
+		u.value+=i+','
+	this.w._.show()
+	return
+	}
+if(!x || (x.substr(0,11)|0)!=tid)
+	x=tid+'           '
+if(opt&1)
+	x = x.replace(new RegExp('\\s'+pid+'\\s'),' ')
+else
+	x+=pid+' '
+sessionStorage.setItem('selectPid',x);
+}//
 
 adminui.viewLog = function(tou,fromu,id,about){
 
@@ -2484,7 +2606,7 @@ x = x.replace(
 		if($1==0)
 			return $0;
 		else 
-			return "<a href='/read.php?tid="+$1+"' target='_blank' title='主题'>[T:"+$1+"]</a>";
+			return "<a href='/read.php?tid="+$1+"' target='_blank' title='主题' onclick=\"if(ubbcode){commonui.cancelBubble(event);commonui.cancelEvent(event);ubbcode.fastViewPost(event,"+$1+",0,2)}\">[T:"+$1+"]</a>";
 		})
 
 x = x.replace(
@@ -2493,7 +2615,7 @@ x = x.replace(
 		if($1==0)
 			return $0; 
 		else 
-			return "<a href='/read.php?pid="+$1+"' target='_blank' title='回复'>[P:"+$1+"]</a>";
+			return "<a href='/read.php?pid="+$1+"' target='_blank' title='回复' onclick=\"if(ubbcode){commonui.cancelBubble(event);commonui.cancelEvent(event);ubbcode.fastViewPost(event,0,"+$1+",0)}\">[P:"+$1+"]</a>";
 		})
 
 x = x.replace(

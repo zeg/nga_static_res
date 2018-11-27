@@ -682,12 +682,7 @@ if (!cookieFuncs.getMiscCookie('simplemode'))
 //fe
 */
 
-commonui.getquest = function(id)
-{
-document.domain = __AJAX_DOMAIN;
-return("<span id='questget"+id+"'>loading...</span>")
-}
-//fe
+
 
 //----------------------------------------
 //

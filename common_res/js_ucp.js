@@ -123,9 +123,10 @@ var info = this._span(
 			}),
 		this._a(_ADMIN, '更改头衔','/nuke.php?func=settitle&uid='+_U.uid),
 		this._a(_ADMIN, 'buff',null, function(e){adminui.addBuff(e,_U.uid)}),
-		this._a(_SELF, '<span class="teal">更改密码</span>', 'https://account.178.com/?p=flogin&to=https%3A%2F%2Faccount.178.com%2F%3Fp%3Drenew_pass',function(){alert('在178用户中心登录并修改密码')}),
-		this._a(_SELF, '<span class="teal">邮箱重置密码</span>', 'https://account.178.com/?p=reset_pass'),
-		this._a(_SELF, '<span class="teal">绑定手机号</span>', null,function(){commonui.setPhone()}),
+		this._a(_SELF, '<span class="teal">更改密码</span>', null,function(){commonui.accountAction('changepass')}),
+		this._a(_SELF, '<span class="teal">重置密码</span>', null,function(){commonui.accountAction('resetpass')}),
+		this._a(_SELF, '<span class="teal">绑定手机号</span>', null,function(){commonui.accountAction('setphone')}),
+		this._a(_SELF, '<span class="teal">更换手机号</span>', null,function(){commonui.accountAction('changephone')}),
 		this._a(_SELF, '<span class="teal">账号关联</span>', null,function(){commonui.userLink(_U.uid,_U.bit)}),
 		window.reM_54354 ? reM_54354(_U.uid) : null,
 		window.reL_76376 ? reL_76376(_U.uid) : null,
@@ -240,7 +241,7 @@ if( _U.bit & this._if_forum_admin || _U._admin || _U._super || _U._greater || _U
 	if(_U.adminForums){
 		var u = this._ul()._.cls('actions')
 		for(var k in _U.adminForums)
-			this._ul(u, _$('<li/>')._.aC( this._a(true, _U.adminForums[k],'/thread.php?fid='+k) ))
+			this._ul(u, _$('/li', this._a(true, _U.adminForums[k],'/thread.php?fid='+k), __GP.admin?_$('/a',__TXT('gear'),'href','javascript:void(0)','_fid',k,'onclick',function(e){adminui.modifyForum(e,this._fid)}):null ))
 		}
 	else
 		var u=null

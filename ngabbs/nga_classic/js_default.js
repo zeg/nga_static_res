@@ -226,6 +226,10 @@ console.log(y)
 
 
 //内嵌窗口阅读==================
+var iframeReadSetWindowTitle = function(til){document.title=til}
+
+
+
 commonui.loadNotiScript=function(f){loader.script(__SCRIPTS.notification,f)}
 //commonui.checkIfInIframe =function(){return commonui.checkIfInIframe.check};
 
@@ -608,7 +612,7 @@ commonui.triggerEventDOMContentLoadedAct ()
 * @param int 当前页面宽度
  */
 commonui.getForumBg=function(fid){
-var w = window,noV = (w.__UA && w.__UA[0]==1 && w.__UA[1]<=6) || __SETTING.currentClientWidth<1400
+var w = window,noV = (w.__UA && w.__UA[0]==1 && w.__UA[1]<=6) || __SETTING.currentClientWidth<1400, h = w.__IMGPATH +'/head',r = 0
 //if(Math.random()>0.5)
 //	return [1,w.__IMGPATH +'/head/20171121.jpg',0,190]
 switch (fid){
@@ -628,7 +632,7 @@ switch (fid){
 	case 470:
 	case 471:
 	case 547:
-		return [1,w.__IMGPATH +'/head/20161110.jpg',0,190]
+		return [1,h+'/20161110.jpg',0,190]
 		
 	//case -65653:
 	//	if(!noV)
@@ -640,97 +644,101 @@ switch (fid){
 			return noV ? [1,0,1600,190] : [2,0,190,1600]
 		break;
 	case -46468:
-		return [1,w.__IMGPATH +'/head/20140115-46468.jpg',0,190]
+		return [1,h+'/20140115-46468.jpg',0,190]
 	case -6194253:
-		return [1,w.__IMGPATH +'/head/20140115-6194253.jpg',0,190]
+		return [1,h+'/20140115-6194253.jpg',0,190]
 	case -152678:
 	case 545:
 	case 479:
 	case 594:
 	case 418:
-		return [1,w.__IMGPATH +'/head/20180920.jpg',0,190]
+		return [1,h+'/20181109.jpg',0,190]
 	case -985658:
-		return [1,w.__IMGPATH +'/head/-985658.jpg',0,190]
+		return [1,h+'/-985658.jpg',0,190]
 	case 431:
-		return [1,w.__IMGPATH +'/head/20180627.jpg',0,190]
+		return [1,h+'/20180627.jpg',0,190]
 	case 321:
-		return [1,w.__IMGPATH +'/head/20170412.jpg',0,190]
+		return [1,h+'/20170412.jpg',0,190]
 	case 452:
-		return [1,w.__IMGPATH +'/head/20140617.jpg',0,190]
+		return [1,h+'/20140617.jpg',0,190]
 	case 422:
-		return [1,w.__IMGPATH +'/head/20180718.jpg?7',0,190]
+		return [1,h+'/20181121.jpg',0,190]
 	case -51095:
-		return [1,w.__IMGPATH +'/head/20140915a.png',0,190]
+		return [1,h+'/20140915a.png',0,190]
 	case -7202235:
-		return [1,w.__IMGPATH +'/head/20180310.jpg',0,190]
+		return [1,h+'/20180310.jpg',0,190]
 	case 426:
-		return [1,w.__IMGPATH +'/head/2015030604.jpg',0,190]
+		return [1,h+'/2015030604.jpg',0,190]
 	case -362960:
-		return [1,w.__IMGPATH +'/head/20180515.jpg',0,190]
+		return [1,h+'/20180515.jpg',0,190]
 	case -7861121:
-		return [1,w.__IMGPATH +'/head/20180616.jpg',0,190]
+		return [1,h+'/20180616.jpg',0,190]
 	case 482:
-		return [1,w.__IMGPATH +'/head/20170414.jpg',0,190]
+		return [1,h+'/20170414.jpg',0,190]
 	case 414:
-		return [1,w.__IMGPATH +'/head/20161123.jpg',0,190]
+		return Math.random()>0.5 ? [1,h+'/20161123.jpg',0,190]	: [1,h+'/20181025.jpg',0,280,null,4]
 	case 427:
 	case 489:
-		return [1,w.__IMGPATH +'/head/20151231.jpg',0,190]
+		return [1,h+'/20151231.jpg',0,190]
 	case 124:
-		return [1,w.__IMGPATH +'/head/20160202.jpg',0,190]
+		return [1,h+'/20160202.jpg',0,190]
 	case 441:
-		return [1,w.__IMGPATH +'/head/20151112.jpg',0,190,w.__IMGPATH +'/head/wows_e3.mp4',Math.random()>0.99?0:1,'054e57']
+		return [1,h+'/20151112.jpg',0,190,h+'/wows_e3.mp4',Math.random()>0.99?0:1,'054e57']
 	case 497:
-		return [1,w.__IMGPATH +'/head/20160314.jpg',0,190]
+		return [1,h+'/20160314.jpg',0,190]
 	case 459:
-		return [1,w.__IMGPATH +'/head/20180725.jpg',0,190]
+		return [1,h+'/'+(Math.random()>0.5?'20180725':'20181103d')+'.jpg',0,190]
 	case 492:
-		return [1,w.__IMGPATH +'/head/20160418.jpg',0,190]
+		return [1,h+'/20160418.jpg',0,190]
 	case -149110:
-		return [1,w.__IMGPATH +'/head/20160519.jpg',0,190]
+		return [1,h+'/20160519.jpg',0,190]
 	case 555:
-		return [1,w.__IMGPATH +'/head/20170406.jpg',0,190,w.__IMGPATH +'/head/20180202.mp4',Math.random()>0.99?0:1,'474747']
+		return [1,h+'/20170406.jpg',0,190,h+'/20180202.mp4',Math.random()>0.99?0:1,'474747']
 	//case -447601:
-		//return [1,w.__IMGPATH +'/head/20180212.jpg',0,190,w.__IMGPATH +'/head/20180213.mp4',Math.random()>0.99?0:1,'474747']
+		//return [1,h+'/20180212.jpg',0,190,h+'/20180213.mp4',Math.random()>0.99?0:1,'474747']
 	case 516:
-		return [1,w.__IMGPATH +'/head/20170419.jpg',0,190]
+		return [1,h+'/20170419.jpg',0,190]
 	case -15219445:
-		return [1,w.__IMGPATH +'/head/20170609.jpg',0,190]
+		return [1,h+'/20170609.jpg',0,190]
 	case 568:
-		return [1,w.__IMGPATH +'/head/20170804.jpg',0,190]
+		return [1,h+'/20170804.jpg',0,190]
 	case 564:
-		return [1,w.__IMGPATH +'/head/20180328.jpg',0,190]
+		return [1,h+'/20180328.jpg',0,190]
 	case 563:
-		return [1,w.__IMGPATH +'/head/20171205.jpg',0,190]
+		return [1,h+'/20171205.jpg',0,190]
 	case 560:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180205':'20180206')+'.jpg',0,190,w.__IMGPATH +'/head/20180919.mp4',Math.random()>0.99?0:1,'474747']
+		return [1,h+'/'+(r>0.5?'20180205':'20180206')+'.jpg',0,190,h+'/20180919.mp4',Math.random()>0.99?0:1,'474747']
 	case 549:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180424':'20180425')+'.jpg',0,190]
+		return [1,h+'/'+(r>0.5?'20180424':'20180425')+'.jpg',0,190]
 	case 540:
-		return [1,w.__IMGPATH +'/head/20171013.jpg',0,190]
+		return [1,h+'/20171013.jpg',0,190]
 	case 587:
-		return [1,w.__IMGPATH +'/head/20180803.jpg',0,190]
+		return [1,h+'/20180803.jpg',0,190]
 	case -47218:
-		return [1,w.__IMGPATH +'/head/20180209.jpg',0,190]
+		return [1,h+'/20180209.jpg',0,190]
 	case -4567100:
-		return [1,w.__IMGPATH +'/head/20180410.jpg',0,190]
-	case -7:
+		return [1,h+'/20180410.jpg',0,190]
+	//case -7:
 	case -81981:
-		return [1,w.__IMGPATH +'/head/20180615.jpg',0,190]
+		return [1,h+'/20180615.jpg',0,190]
 	case 617:
-		return [1,w.__IMGPATH +'/head/20180724.jpg',0,190]
+		return [1,h+'/20180724.jpg',0,190]
+	case 631:
+	case 632:
+		var r = Math.random()
+		return [1,h+'/'+(r>0.25?(r>0.5?(r>0.75?'20181103':'20181103a'):'20181103b'):'20181103c')+'.jpg',0,190]
 	case 603:
-		return [1,w.__IMGPATH +'/head/20180906.jpg',0,190]
+		return [1,h+'/20180906.jpg',0,190]
 	case 538:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180910_1':'20180910_2'):'20180910_3'):'20180910_4'):'20180910_5'):'20180910_6')+'.jpg',0,190]
+		return [1,h+'/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180910_1':'20180910_2'):'20180910_3'):'20180910_4'):'20180910_5'):'20180910_6')+'.jpg',0,190]
 	case -8180483:
 		var r = Math.random()
-		return [1,w.__IMGPATH +'/head/'+(r>0.5?'20180526':'201805261')+'.jpg',0,190,w.__IMGPATH +'/head/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
+		return [1,h+'/'+(r>0.5?'20180526':'201805261')+'.jpg',0,190,h+'/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
 	//default:
-	//	return [1,w.__IMGPATH +'/head/20170725.jpg',0,190]
+	//	return [1,h+'/20170725.jpg',0,190]
 	}
 //if(typeof bit=='number' && fid && (bit & 512))
 	//return [1,w.__IMG_BASE +'/proxy/cache_attach/_f/or/_forum_bg'+fid,0,190]
@@ -1123,7 +1131,7 @@ if(window.getMatchedCSSRules){
 		//y[0].parentStyleSheet.disabled=1		
 	}
 */
-/*
+
 if(w.__DEBUG)
 	if ('serviceWorker' in navigator){
 		navigator.serviceWorker.register(__SCRIPTS.service,{scope: '/'}).then(function(reg) {
@@ -1137,7 +1145,7 @@ if(w.__DEBUG)
 			console.log('Registration failed with ' + err);
 		 });
 	  }
-*/
+
 if(ngaAds && ngaAds.bbs_ads12 && ngaAds.bbs_ads12.o && ngaAds.bbs_ads12.o!==true)
 	document.body.insertBefore(ngaAds.bbs_ads12.o,document.body.firstChild)
 
@@ -1656,8 +1664,7 @@ commonui.mainMenuItems={
 	155:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGA.CN',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.nga.cn')}}},
 	156:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGACN.CC',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.ngacn.cc')}}},
 	157:{u:1,check:function(){if(__GP['super'])return true},innerHTML:'设置版面图标',on:{event:'click',func:function(e){adminui.fIconGen()}}},
-	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159]},
-	//159:{u:1,innerHTML:'绑定手机号'  ,on:{event:'click',func:function(e){__SCRIPTS.load('ucp',function(){commonui.setPhone()})}}},
+	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159,166]},
 	159:{arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1},
 	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
@@ -1722,15 +1729,14 @@ commonui.mainMenuItems={
 				})
 			}}},
 	165:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'new post',on:{event:'click',func:function(e){adminui.new_post()}}},
+	166:{arg:['innerHTML','更换手机号','onclick',function(){commonui.accountAction('changephone')}],disableDefault:1,u:1},
+	
+	
+	
+	999:null
 	}
 
-if((__NOW/3600)&1){
-commonui.mainMenuItems[159]={arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1}
-commonui.mainMenuItems[149]={arg:['innerHTML','修改密码','onclick',function(){commonui.accountAction('changepass')}],disableDefault:1,u:1}
-commonui.mainMenuItems[150]={arg:['innerHTML','重置密码','onclick',function(){commonui.accountAction('resetpass')}],disableDefault:1,u:1}
-commonui.mainMenuItems[116]={arg:['innerHTML','注册','onclick',function(){commonui.accountAction('register')}],disableDefault:1,u:0}
-commonui.mainMenuItems[115]={arg:['innerHTML','登录','onclick',function(){commonui.accountAction('login')}],disableDefault:1,u:0}
-}
+
 //============================
 //版面icon====================
 ;(function(){

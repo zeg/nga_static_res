@@ -458,7 +458,9 @@ style0:65536, //Ê¹ÓÃÑùÊ½0
 style1:131072, //Ê¹ÓÃÑùÊ½1
 style2:262144, //Ê¹ÓÃÑùÊ½2
 autoPic:524288,//¸ù¾ÝÉè±¸³ß´çÑ¡ÔñÍ¼Æ¬ ½öÔÚlessPicÊ±ÓÐÐ§
-style3:1048576 //Ê¹ÓÃÑùÊ½3
+style3:1048576, //Ê¹ÓÃÑùÊ½3
+fontBig:2097152, //¼Ó´ó×ÖÌå
+fixWidth:4194304 //ÏÞÖÆ¿í¶È
 },
 width:null,
 cName:'uisetting',
@@ -541,28 +543,30 @@ window.__UA = a//old
 
 ui:function(){
 var bit = __NUKE.toInt(__COOKIE.getMiscCookie(this.cName));
+
 this.save(this.bits.auto,7)
 this.o = commonui.createCommmonWindow()
 this.o._.addContent(null)
 var $ = window._$, self=this
 this.o._.addTitle('½çÃæÉèÖÃ');
-var size24 = $('/input').$0('type','radio','checked',0,'name','ssize'),
+var size24 = $('/input','type','radio','checked',0,'name','ssize'),
 size24_10 = size24.cloneNode(),
 size10_7 = size24.cloneNode(),
 size7_4 = size24.cloneNode(),
 size4 = size24.cloneNode(),
-style = $('/input').$0('type','radio','checked',0,'name','style__'),
+style = $('/input','type','radio','checked',0,'name','style__'),
 style0 = style.cloneNode(),
 style1 = style.cloneNode(),
 style2 = style.cloneNode(),
 style3 = style.cloneNode(),
 sizeauto = size24.cloneNode(),
-lessPic = $('/input').$0('type','checkbox','checked',0),
+lessPic = $('/input','type','checkbox','checked',0),
 iframe = lessPic.cloneNode(),
-fontDef = $('/input').$0('type','radio','checked',0,'name','font'),
+fontDef = $('/input','type','radio','checked',0,'name','font'),
 fontHei = fontDef.cloneNode(),
-fontAuto = fontDef.cloneNode()
-
+fontAuto = fontDef.cloneNode(),
+fontBig = lessPic.cloneNode(),
+fixWidth = lessPic.cloneNode()
 
 
 if(bit & this.bits.size24)
@@ -602,7 +606,8 @@ else{
 		fontAuto.checked=true
 	}
 
-
+fontBig.checked = (bit & this.bits.fontBig) ? true : false
+fixWidth.checked = (bit & this.bits.fixWidth) ? true : false
 
 if(bit & this.bits.style0)
 	style0.checked = true
@@ -620,7 +625,12 @@ this.o._.addContent(
 	size24.$0('onchange',function(){if(this.checked){iframe.checked=true;lessPic.checked=false}}),
 	'ÎÒµÄÆÁÄ»Ì«ËûÂè´óÁË',
 	$('/br'),
-
+	'¡¡',fontBig,
+	'¼Ó´ó×ÖÌå',
+	$('/br'),
+	'¡¡',fixWidth,
+	'ÏÞÖÆÒ³Ãæ¿í¶È',
+	$('/br'),
 	$(size24_10).$0('onchange',function(){if(this.checked){lessPic.checked=false}}),
 	'×Ô¶¯ÅÐ¶Ï³ß´ç ',
 	$('/span').$0('className','silver','innerHTML','ÆÕÍ¨µçÄÔ ÊÖ»ú/Æ½°åºá/ÊúÆÁ'),
@@ -670,6 +680,7 @@ this.o._.addContent(
 		$('/br')
 		),
 	$('/br'),
+
 
 	[ '½çÃæÉ«µ÷',
 	$('/br'),
@@ -724,6 +735,10 @@ this.o._.addContent(
 			if(style3.checked)
 				bit = bit | self.bits.style3
 			
+			if(fontBig.checked)
+				bit = bit | self.bits.fontBig
+			if(fixWidth.checked)
+				bit = bit | self.bits.fixWidth		
 			self.save(bit)
 			alert('±£´æÍê±Ï£¬Äã¿ÉÒÔÔÚ Ö÷²Ëµ¥>ÂÛÌ³ÉèÖÃ>½çÃæÉèÖÃ ÖÐÐÞ¸Ä')
 			window.location.reload()
@@ -823,7 +838,7 @@ var w=window, ci=commonui, n = w.__NUKE, bits = this.bits, c=w.__COOKIE, bit = c
 //	w.__LITE.embed=true//old
 //	}
 this.defS = defS;
-if(__GP._bit & 4){
+if((__GP._bit & 4)||(__CURRENT_UID & 3)==3){
 	if(bit===null){
 		c.setMiscCookieInSecond(this.cName,'a',300)
 		bit=bits.auto
@@ -1058,16 +1073,24 @@ return w
 },
 
 setfont:function(){
-if((this.bit & (this.bits.fontHei | this.bits.fontdef))==0){
+var bit = this.bit, bs = this.bits
+if((bit & (bs.fontHei | bs.fontdef))==0){
 	if (this.uA[2]==1){
 		if (this.uA[3]>=6)
-			this.bit = this.bit | this.bits.fontHei
+			bit = bit | bs.fontHei
 		}
 	else
-		this.bit = this.bit | this.bits.fontDef
+		bit = bit | bs.fontDef
 	}
+if((bit & (bs.size10 | bs.size7 | bs.size4)) == 0 ){
+	if(bit & bs.fontBig)
+		this.css+='\nbody {font-size:14px}'
+	}
+	
+if( (bit & bs.fixWidth) && window.innerWidth>1920)
+	this.css+='\n#mc {width:1900px}'
 
-if(this.bit & this.bits.fontHei){
+if(bit & bs.fontHei){
 	//this.css+='body, textarea, select, input, button {font-family:Microsoft Yahei, Î¢ÈíÑÅºÚ, Verdana, Tahoma, Arial, sans-serif}'
 	if(this.uA[2]==3 || this.uA[2]==4)
 		this.css+='\nbody, textarea, select, input, button {font-family:"Helvetica Neue", Helvetica, Verdana, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif}'
@@ -1076,13 +1099,13 @@ if(this.bit & this.bits.fontHei){
 	}
 if(this.uA[4]==3 || this.uA[4]==1){//webkit/edge
 	if(this.uA[0]==5){//safari
-		if(this.bit & this.bits.size10)//small screen tablet or phone
+		if(bit & bs.size10)//small screen tablet or phone
 			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-bottom:0.15em;} \n .stdbtn a {padding-bottom:0.15em;}'
 		else
 			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.35;padding-top:0.05em;padding-bottom:0} \n .vertmod{}'
 		}
 	else{
-		if(this.bit & this.bits.size10)//small screen tablet or phone
+		if(bit & bs.size10)//small screen tablet or phone
 			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-top:0.15em;} \n .stdbtn a {padding-top:0.15em;}'
 		else
 			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
@@ -1097,13 +1120,14 @@ var h = document.getElementsByTagName('head')[0], ww = window, fz = this.bit & t
 h.appendChild(_$('</meta>')._.attr({name:'viewport',content:'width='+w}))
 this.css+='\n@-ms-viewport {width:'+w+'px}\nbody {font-size:'+(fz?19:16)+'px} \nbody * {max-height:50000em;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%; -ms-text-size-adjust:100%}\n.posterInfoLine {font-size:0.85em}\nbody , #minWidthSpacer {width:'+w+'px} \n #adsc1, #_178NavAll_110906_765453, #mc , #custombg {width:'+w+'px;overflow:hidden} \n .urltip, .urltip2, .default_tip {font-size:1em} \n .notLoadImg #mainmenu {margin-bottom:0px} \n .single_ttip2 {max-width:'+w+'px}\n.postrow td.c1 {display:none} \n.module_wrap {margin-left:3px;margin-right:3px}\n.adsc {max-width:'+w+'px;overflow:hidden}\n.navhisurltip {line-height:2em;margin-top:2.5em}\n.navhisurltip .star {margin-top:0.5em} \n #m_nav .bbsinfo {display:none} \n #iframereadc {border-left-width:1px} \n #m_cate5 {font-size:0.736em} \n #postsubject {display:none}'
 ww.commonui.aE(window,'DOMContentLoaded',function(){document.body.style.width='auto',$('mc').style.overflow='visible'})
+
 },
 
 setIframe:function(){
 if(this.bit & this.bits.iframe)
 	__SCRIPTS.asyncLoad( 'iframeRead2' , function(){iframeRead.init()} )
-//if(window.__DEBUG)
-	//__SCRIPTS.asyncLoad( 'loaderRead' , function(){_LOADERREAD.init()} )
+if( window.__DEBUG/* || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)*/)
+	__SCRIPTS.asyncLoad( 'loaderRead' , function(){_LOADERREAD.init()} )
 }
 }//ce
 
@@ -1121,19 +1145,20 @@ if(this.bit & this.bits.iframe)
 //==================================
 {
 //ÊÂ¼þ×¢²á=====================
+;(function(){
+var F_BDI=[],F_BPO=[]
 commonui.aE=function(obj,e,fn) {
 if (e=='DOMContentLoaded' || e=='bodyInit'){
-	var x = this._addEventOnDOMContentLoadedFuncs
-	if(!x){
-		x = {length:0}
-		this._addEventOnDOMContentLoadedFuncs = x
-		}
-	x[x.length++]=fn
-	if(x.done)fn()
+	F_BDI.push(fn)
+	if(F_BDI.done)fn()
 	return
 	}
 else if (e=='beforeunload' || e=='pagehide')
 	e= ('onpagehide' in window) ? 'pagehide' : 'beforeunload'
+else if (e=='beforepost'){
+	F_BPO.push(fn)
+	return
+	}
 
 if (obj.addEventListener)
 	obj.addEventListener(e,fn,false)
@@ -1144,18 +1169,16 @@ commonui.dE=function(obj,e,fn){
 if (obj.removeEventListener)
 	obj.removeEventListener(e,fn,false)
 }//fe
-//commonui._addEventOnbodyInitFucns={length:0}
-//commonui._addEventOnDOMContentLoadedFucns={length:0}
 commonui.triggerEventDOMContentLoadedAct = function(){
-var x
-if(x = this._addEventOnDOMContentLoadedFuncs){
-	for (var i=0;i< x.length;i++)
-		x[i]()
-	x.done=true
-	}
-else
-	this._addEventOnDOMContentLoadedFuncs={done:true,length:0}
+for (var i=0;i< F_BDI.length;i++)
+	F_BDI[i]()
+F_BDI.done=true
 }//fe
+commonui.triggerEventBeforePost = function(){
+for (var i=0;i< F_BPO.length;i++)
+	F_BPO[i]()
+}//fe
+})();
 
 //ÊÂ¼þÈ¡Ïû=====================
 commonui.cancelBubble=function(e){
@@ -1618,17 +1641,25 @@ for(var k in m){
 
 
 
+;(function(){
+var o = document.write, w = function(x){
+commonui.eval.documentWrite+=x+''
+}//
 
 commonui.eval = function(script){
+this.eval.documentWrite = ''
+document.write = w
 try{
-	console.log(script)
 	eval.call(window,script)
 	//Function("with(window){\n"+script+"\n}")()
 	}
 catch(e){
 	console.log(e,script)
 	}
+document.write = o
 }//fe
+
+})();
 
 commonui.parentAHerf = function(o){
 if(o.nodeName=='A')
@@ -1860,15 +1891,17 @@ else{
 },//fe
 checkTo:function (e,o,oo){
 if (!e) var e = window.event;
-var to = e.relatedTarget || e.toElement;
-if (to && to != o && to.parentNode != o && to.parentNode.parentNode != o && to.parentNode.parentNode.parentNode != o){
-	if (oo){
-		if(to != oo && to.parentNode != oo && to.parentNode.parentNode != oo && to.parentNode.parentNode.parentNode != oo)
-			return to
-		}
-	else
-		return to
+var to = e.relatedTarget || e.toElement, j=to
+for(var i=0;i<4;i++){
+	if(j==o)
+		return
+	if(oo && j==oo)
+		return
+	j=j.parentNode
+	if(!j)
+		break
 	}
+return to
 }//fe
 
 }//ce
@@ -1881,7 +1914,11 @@ if(!window.addEventListener || !('onmessage' in window)){
 	return
 	}
 
-var F={},CB={},CALL = function(opt,act,tar){
+var F={},CB={
+locationReload : function(){
+	window.location.reload()
+	}
+},CALL = function(opt,act,tar){
 //	d = this.urlToAry(document.referrer),d = d.protocol+'//'+d.host
 if(opt & 1)
 	return window.parent.postMessage(act, tar)
@@ -2218,10 +2255,6 @@ if (!o.checked){
 	}
 else{
 	this._check(o,id)
-	if(this.l>=16){
-		this._uncheck(o,id)
-		return window.alert('Äã²»ÄÜÑ¡Ôñ¸ü¶àÁË')
-		}
 	}
 },//fe
 _check:function(o,id){
@@ -2940,17 +2973,16 @@ return n;
 //{t:(int)type, l:(int)length, 0:{0:(str)avatar,cX:(int)centerX,cY:(int)centerY}, 1:(str)avatar  }
 commonui.selectUserPortrait = function(a,buff,uid){
 if(buff){
-	if(buff[99] || buff[102] || buff[107] || buff[119] || buff[120]){
-		var y = new String(__PORTRAIT_PATH+'/'+(
-				buff[102] ? 'a_sheep_b.png' : (
-					buff[99] ? 'a_sheep.png' : (
-						buff[119] ? 'a_sheep_d.png' : (
-							buff[120] ? 'bronya1.png' : 'a_sheep_c.png'
-							)
-						)
-					)
-				)
-			)
+	var y = (
+		buff[102] ? 'a_sheep_b.png' : (
+		buff[99] ? 'a_sheep.png' : (
+		buff[119] ? 'a_sheep_d.png' : (
+		buff[124] ? 'a_sheep_e.png' : (
+		buff[120] ? 'bronya1.png' : (
+		buff[107] ? 'a_sheep_c.png': (
+		null)))))))
+	if(y){
+		y = new String(__IMGPATH+'/face/'+y)
 		y.noborder=1
 		if(buff[120])
 			y.func='avatarBlockrain'
@@ -3031,7 +3063,7 @@ else if(y.charAt(0)=='h' && y.match(/^https?:\/\/([^\/]+)\//)){
 		y=''
 	}
 else if(y)
-	y= __PORTRAIT_PATH+'/'+y
+	y= __IMGPATH+'/face/'+y
 else
 	y= ''
 if(this.correctAttachUrl)
@@ -3067,144 +3099,7 @@ return this.avatarUrl(a,uid)
 //ÉèÖÃÍ·Ïñ=====================
 commonui.setAvatar = function (e,uid,ad){
 	__SCRIPTS.load('imgEdit',function(){commonui.setAvatar2(e,uid,ad)})
-	/*
-if(!__CURRENT_UID)
-	return alert('ÐèÒªÏÈµÇÂ½')
-var x,y,y1,y2,y3,$=_$,n = function(u){return $('/input').$0('value',u?u:'','size','50')}
-this.createadminwindow()
-this.adminwindow._.addContent(null)
-this.adminwindow._.addTitle('ÉèÖÃÍ·Ïñ'+(uid==__CURRENT_UID?'':' UID:'+uid))
-this.adminwindow._.addContent(x = $('/span'),
-	y=$('/span').$0('style','display:none')._.add(
-		'¶à¸öÍ·ÏñµÄÏÔÊ¾·½Ê½ ',
-		y1=$('/input').$0('type','radio','name','sa1234','checked','checked'),
-		'Ëæ»ú ',
-		y2=$('/input').$0('type','radio','name','sa1234'),
-		'Ê±¶Î ',
-		$('/br')
-		),
-	(ad && uid!=__CURRENT_UID)?$('/span')._.add(
-		'½ûÓÃÍ·Ïñ ',
-		y3=$('/select')._.add(
-			$('/option').$0('innerHTML','--','value',0),
-			$('/option').$0('innerHTML','3Ìì','value',3),
-			$('/option').$0('innerHTML','7Ìì','value',7),
-			$('/option').$0('innerHTML','15Ìì','value',15),
-			$('/option').$0('innerHTML','30Ìì','value',30),
-			$('/option').$0('innerHTML','60Ìì','value',60)
-			),
-		'Ìì ',
-		$('/br')
-		):null,
-	$('/button').$0('innerHTML','Ôö¼ÓÒ»¸ö','title','Äã¿ÉÒÔÉèÖÃ¶à¸öÍ·Ïñ µ«ÊÇµØÖ·µÄ×Ü³¤¶È²»ÄÜ³¬¹ý1000×Ö½Ú','type','button','onclick',
-		function(){
-			if( x.getElementsByTagName('input').length>=5)
-				return alert('²»ÄÜ³¬¹ý5¸ö')
-			y.style.display=''
-			x._.add(
-				n(),$('/br')
-				)
-			}),
-	$('/button').$0('innerHTML','È·¶¨','type','button','onclick',
-		function(){
-			var a = (y2&&y2.checked)?'2':'',b = x.getElementsByTagName('input'),z=[],j=0
-			for(var i=0;i<b.length;i++){
-				if(!b[i].value)
-					continue;
-				var hp = b[i].value.match(/^https?:\/\/([^\/]+)\//)
-				if(!hp || !hp[1].match(/\.(ngacn\.cc|nga\.cn|178\.com)$/))
-					return alert('Ö»ÄÜÊ¹ÓÃÕ¾ÄÚÍ¼Æ¬ (ngacn.cc/nga.cn/178.com)')
-				for(var l=0;l<b.length;l++){
-					if(i!=l && b[i].value==b[l].value){
-						b[l].style.backgroundColor='#fee'
-						return alert('µØÖ·ÖØ¸´')
-						}
-					}
-				j++
-				z[i] = new Image()
-				z[i]._pi = b[i]
-				z[i].onerror = function(){
-					this._pi.style.backgroundColor='#fee'
-					alert('Í¼Æ¬ÎÞ·¨¶ÁÈ¡')
-					}
-				z[i].onload = function(){
-					if(this.width>180 || this.height>255){
-						this._pi.style.backgroundColor='#fee'
-						alert('Í·Ïñ³ß´ç¹ý´ó')
-						}
-					else{
-						this._pi.style.backgroundColor='#efe'
-						j--
-						if(j==0){
-							for(var i=0;i<b.length;i++){
-								if(b[i].value)
-									a+='\t'+b[i].value+'\t\t'
-								}
-							__NUKE.doRequest({
-								u:__API.setAvatar(uid,a,y3?y3.options[y3.selectedIndex].value:''),
-								b:this,
-								f:function(d){
-									var e = __NUKE.doRequestIfErr(d)
-									if(e)
-										return alert(e)
-									alert(d.data[0])
-									}
-								})
-							}
-						}
-					}
-				}
-			if(j==0){
-				__NUKE.doRequest({
-					u:__API.setAvatar(uid,'',y3?y3.options[y3.selectedIndex].value:''),
-					b:this,
-					f:function(d){
-						var e = __NUKE.doRequestIfErr(d)
-						if(e)
-							return alert(e)
-						alert(d.data[0])
-						}
-					})
-				}
-			for(var i=0;i<b.length;i++){
-				if(b[i].value)
-					z[i].src = b[i].value
-				}
-			})
-	)
 
-__NUKE.doRequest({
-	u:__API.getAvatar(uid),
-	f:function(d){
-		var e = __NUKE.doRequestIfErr(d)
-		if(e)
-			return alert(e)
-		try{
-		eval('var d='+(d.data[0].charAt(0)=='{'?d.data[0]:'"'+d.data[0]+'"'))
-		}catch(e){return}
-		if(d && d.l){
-			if(d.l>1){
-				y.style.display=''
-				if(d.t==2){
-					y2.checked='checked'
-					y1.checked=''
-					}
-				}
-			for(var i=0;i<d.l;i++)
-				x._.add(
-					n(d[i].constructor==String?d[i]:d[i][0]),$('/br')
-					)
-			}
-		else{
-			x._.add(
-				n(),$('/br')
-				)			
-			}
-
-		}
-	})
-
-this.adminwindow._.show(e)*/
 }//fe
 
 
@@ -3249,9 +3144,9 @@ else if(a==-1)
 else if(a==-5)
 	y = ['gray','LOCKED','Ëø¶¨','ÒòÎ¥¹æ×¢²á»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö¶ø±»½ûÓÃ','²»ÄÜ½âËø']
 else if(a==-4)
-	y = ['sienna','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','ÐÞ¸ÄÃÜÂë½âËø','https://account.178.com/?p=renew_pass']
+	y = ['sienna','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','ÐÞ¸ÄÃÜÂë½âËø','/nuke.php?__lib=login&__act=account&changepass']
 else if(a==-3)
-	y = ['deeppink','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','Ê¹ÓÃ[ÓÊÏäÖØÖÃÃÜÂë]½âËø, »òÊ¹ÓÃÂÛÌ³appÖÐµÄ[Íü¼ÇÃÜÂë]ÖØÖÃÃÜÂë½âËø(°ó¶¨ÊÖ»úÊ±¼äÐèÔÚËø¶¨Ê±¼äÖ®Ç°)','https://account.178.com/?p=reset_pass']
+	y = ['deeppink','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','Ê¹ÓÃ[ÓÊÏäÖØÖÃÃÜÂë]½âËø, »òÊ¹ÓÃÂÛÌ³appÖÐµÄ[Íü¼ÇÃÜÂë]ÖØÖÃÃÜÂë½âËø(°ó¶¨ÊÖ»úÊ±¼äÐèÔÚËø¶¨Ê±¼äÖ®Ç°)','/nuke.php?__lib=login&__act=account&resetpass']
 else if(a==-2)
 	y = ['darkred','LOCKED','Ëø¶¨','ÒòÕËºÅ±»µÁ»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö±»½ûÓÃ','Ö»ÄÜÈË¹¤½âËø ²ÎÔÄ°æÎñÇøÏà¹ØËµÃ÷']
 else if(a<0)
@@ -3293,6 +3188,42 @@ return $('/span').$0('id',id,
 		)
 	)
 }
+
+
+//½ø¶ÈÌõ
+;(function(){
+var prog,progv=0,ti,cal
+function init(){
+prog = _$('/div','style','position:fixed;display:none;bottom:0;left:0;right:0;height:1em;background:silver;fontSize:0.3em;borderLeft:0 solid '+__COLOR.border0+';transition:border-left-width 0.3s linear 0s,0.3s')
+document.body.appendChild(prog)	
+}//
+function progr(){
+progv = 0
+prog.style.borderLeftWidth=0
+prog.style.display = 'none'
+if(cal)cal()
+}//
+commonui.progbar = function(v,o,f){//progress/% hidetimeout/ms
+if(!prog)
+	init()
+if(v!=progv){
+	if(progv==0){
+		prog.style.display = ''
+		cal = null
+		}
+	progv = v, prog.style.borderLeftWidth = (prog.offsetWidth*v/100)+'px'
+	if(ti)
+		clearTimeout(ti)
+	if(v==100)
+		ti = window.setTimeout(function(){progr()},300)
+	else if(o)
+		ti = window.setTimeout(function(){progr()},o)
+	if(f)
+		cal = f
+	}
+}//
+
+})();
 
 
 }//be
@@ -3397,6 +3328,7 @@ for(var i=0;i<a.length;i++){
 		}
 	else if(z.className!='nav_link')
 		continue
+	z._useloadread=1
 	m = (z.dataset ? z.dataset.fb : z.getAttribute("data-fb"))|0
 	if(m&262144){
 		if(__GP.admincheck)
@@ -3441,19 +3373,7 @@ var x = $('/div').$0(
 		y.style.display='none'
 		},
 y = $('/div','style','position:absolute;float:left;background:'+__COLOR.bg1+';border:0.0769em solid '+__COLOR.border4+';padding:0 0.3em;textAlign:left;marginTop:0;fontSize:1.083em;lineHeight:1.8em;zIndex:1;display:none','onmouseout',out)
-if(this.customBackgroundHasVideo)
-	/*y.style.transform=*/o.style.transform='scale(1)'
-	
-/*
-if(this.customBackgroundVideoPlay){
-	var vp = _$('/a').$0('innerHTML',' &#9654; ','href','javascript:void(0)','className','nav_link','onclick',function(){
-		var o = this
-		o.innerHTML=' Loading... '
-		commonui.customBackgroundVideoPlay(function(){o.parentNode.removeChild(o)})
-		})
-	a[0].parentNode.insertBefore(vp,a[a.length-1].nextSibling)
-	}
-*/
+
 p.replaceChild(x,u)
 x.parentNode.parentNode.parentNode.insertBefore(y,x.parentNode.parentNode)
 $(x.parentNode).$0(
@@ -3508,32 +3428,35 @@ var $ = _$, x = $('/span'), self= this, t1='µã»÷½â³ýËø¶¨', t2='Ëø¶¨Õâ¸öÁ´½Ó (¿ÉÌ
 for (var k in H){
 	var y = H[k]
 	x._.add(
-		$('/span')._.add(
+		$('/span',
+			'_hisdata',y,
 			$('/a',
 				//'name',y[0]+','+(y[5]?y[5]:''),
 				'href','javascript:void(0)',
-				'onclick',function(){sw(this,this.parentNode._.gV('data'))},
+				'onclick',function(){sw(this,this.parentNode._hisdata)},
 				'title',(y[2] ? t1:t2),
 				__TXT('label',1)._.add('\u00A0'),
 				'style',(y[2] ? 'color:'+__COLOR.border0 : 'color:gray')
 				),
 			$('/a').$0(
 				'className','b',
-				'href',this.domainSelect(y[0])+'/thread.php?fid='+y[0],
+				'href',f?'javascript:void(0)' : this.domainSelect(y[0])+'/thread.php?fid='+y[0],
 				'innerHTML',y[1],
+				'_useloadread',1,
 				f?'onclick':null,
-				f? function(e){var z = this.parentNode._.gV('data');z['a']=z[5];delete z[5];var w= f(e,z);z[5]=z['a'];return w} : null
+				f? function(e){var z = __NUKE.simpleClone(this.parentNode._hisdata);delete z[5];commonui.cancelEvent(e);commonui.cancelBubble(e);f(e,z);return false} : null
 				),
 			y[5] ? $('/br') : null,
 			y[5] ? $('/a').$0(
 				'className','teal b',
 				'style','marginLeft:1.3em',
-				'href',this.domainSelect(y[0])+'/thread.php?stid='+y[5],
+				'href',f?'javascript:void(0)' : this.domainSelect(y[0])+'/thread.php?stid='+y[5],
 				'innerHTML',y[6],
+				'_useloadread',1,
 				f?'onclick':null,
-				f? function(e){f(e,this.parentNode._.gV('data'))} : null
+				f? function(e){f(e,this.parentNode._hisdata)} : null
 				) : null
-			)._.sV('data',y),
+			),
 		$('/br')
 		)
 	}
@@ -3692,21 +3615,47 @@ if((opt&1) && this.pageBtn.cache && this.pageBtn.cache.nodeName=='TABLE'){
 */
 
 
-var bit = __SETTING.bit, more = bit & 8 ? 1 : (bit & 4 ? 3 : 5),url=p[0], max=p[1], cur=p[2], postPerPage=p[3], e = max, s = cur-more, hl
+var hl,hln,hlp, s, bit = __SETTING.bit, more = (bit & 8) ? 1 : ((bit & 4) ? 3 : 5),url=p[0], max=p[1], cur=p[2], postPerPage=p[3], cur2 =p[4], e = max
 
-if(commonui.loadReadHidden && (__SETTING.uA[6]&3))
-	hl = function(e){commonui.loadReadHidden(this.value,1);commonui.cancelBubble(e);commonui.cancelEvent(e)}
+if(cur2){
+	if(cur2<cur){
+		cur = cur2
+		cur2 = p[2]
+		}
+	}
+else
+	cur2 = cur
+
+s = opt&2 ? cur2-more : cur-more 
+if(s<1)
+	s=1
+
+if(commonui.loadReadHidden){
+	if(__SETTING.uA[6]&3)
+		hl = function(e){commonui.loadReadHidden(this.value,1);commonui.cancelBubble(e);commonui.cancelEvent(e)}
+	hlp = function(e){commonui.cancelBubble(e);commonui.cancelEvent(e);commonui.loadReadHidden(0,4)}
+	hln = function(e){commonui.cancelBubble(e);commonui.cancelEvent(e);commonui.loadReadHidden(0,2)}
+	}
+else if(commonui.htmlLoader)
+	hl=hlp=hln=function(){}
 
 if(max < 1){//¿ÉÄÜÓÐÏÂÒ³
 	if(max<0)//ÏÔÊ¾Ö¸¶¨µÄÒ³Êý
-		e = cur-max
+		e = cur2-max
 	else//ÏÔÊ¾ÏÂÒ»Ò³
-		e = cur+1
+		e = cur2+1
 	}
-if(e>cur+more)
-	e = cur+more
-if(s<1)
-	s=1
+
+if(opt&4){
+	if(e>cur+more)
+		e = cur+more
+	}
+else{
+	if(e>cur2+more)
+		e = cur2+more
+	}
+
+
 
 if(e<s)
 	return
@@ -3718,29 +3667,32 @@ for(var i=s;i<=e;i++){
 	//	continue
 	//if((opt&4) && i>cur)
 	//	continue
-	if(i==cur && i>1 && (opt&16) && commonui.loadReadHidden)
-		oo._.__add( _$('/a').$0(
-				'href','javascript:void(0)',
+	if(i==cur && i>1 && (opt&16) && hlp)
+		oo._.__add( _$('/a',
+				'href',url+'&page='+(i-1),
 				'innerHTML','&lt;',
 				'title','¼ÓÔØÉÏÒ»Ò³',
 				'className','uitxt1',
-				'onclick',function(e){commonui.loadReadHidden(0,4)}
+				'_useloadread',9,
+				'onclick',hlp
 				) )
-	oo._.__add( _$('/a').$0(
+	oo._.__add( _$('/a',
 			'href',url+(i!=1 ? '&page='+i : ''),
 			'innerHTML','&nbsp;'+i+(i==max? '.' : '&nbsp;'),
-			'className',(i>cur ? (max>1 ? 'uitxt1' : 'silver') : (i<cur ? 'uitxt1' : 'invert') ),
+			'className',(i>cur2 ? (max>1 ? 'uitxt1' : 'silver') : (i<cur ? 'uitxt1' : ((i==cur || i==cur2)?'invert':'silver')) ),
 			'title',(i>cur && max<=1 ? '¿ÉÄÜÓÐµÚ'+i+'Ò³' : (i==max? '×îºóÒ³' : '') ),
 			'value',i,
+			'_useloadread',1,
 			hl ? {onclick:hl} : null
 			) )
-	if(i==cur && i<e && (opt&8) && commonui.loadReadHidden)
-		oo._.__add( _$('/a').$0(
-				'href','javascript:void(0)',
+	if(i==cur2 && i<e && (opt&8) && hln)
+		oo._.__add( _$('/a',
+				'href',url+'&page='+(i+1),
 				'innerHTML','&gt;',
 				'title','¼ÓÔØÏÂÒ»Ò³',
 				'className','uitxt1',
-				'onclick',function(e){commonui.loadReadHidden(0,2)}
+				'_useloadread',9,
+				'onclick',hln
 				) )
 		
 	}
@@ -3753,49 +3705,53 @@ if(cur>1 && (bit&4)==0 && (opt&2)==0){
 			'title','ÉÏÒ»Ò³',
 			'className','uitxt1',
 			'value',(cur-1),
+			'_useloadread',1,
 			hl ? {onclick:hl} : null
 			),1
 		)
 	}
 if(s>1){
 	oo._.__ins(
-		_$('/a').$0(
+		_$('/a',
 			'href',url,
 			'innerHTML',bit & 8 ? 'Ê×' : 'Ê×Ò³',
 			'title','µÚÒ»Ò³',
 			'className','uitxt1',
 			'value',1,
+			'_useloadread',1,
 			hl ? {onclick:hl} : null
 			),1
 		)
 	}
-if(cur<max && (bit&4)==0 && (opt&4)==0){
+if(cur2<max && (bit&4)==0 && (opt&4)==0){
 	oo._.__add(
-		_$('/a').$0(
+		_$('/a',
 			'href',url+'&page='+(cur+1),
 			'innerHTML','ºóÒ³',
 			'title','ÏÂÒ»Ò³',
 			'className','uitxt1',
 			'value',(cur+1),
+			'_useloadread',1,
 			hl ? {onclick:hl} : null
 			),1
 		)
 	}
 if(e<max && (url.substr(0,9)=='/read.php' || __GP.admincheck)){
 	oo._.__add(
-		_$('/a').$0(
+		_$('/a',
 			'href',url+'&page='+max,
 			'innerHTML',bit & 8 ? 'Î²' : 'Ä©Ò³',
 			'title','×îºóÒ³ µÚ'+max+'Ò³',
 			'className','uitxt1',
 			'value',max,
+			'_useloadread',1,
 			hl ? {onclick:hl} : null
 			)
 		)
 	}
 if(max>1 || max<1){
 	oo._.__add(
-		_$('/a').$0(
+		_$('/a',
 			'href','javascript:void(0)',
 			'innerHTML','µ½',
 			'name','topage',
@@ -4132,20 +4088,27 @@ c.adminwindow._.show(e)
 
 
 selTxt:function(o){
+window.setTimeout(function(){
 	var d = window.document, s, r
 	if (window.getSelection && d.createRange) {
-	  // non-ie
-	  s = window.getSelection()
-	  r = d.createRange()
-	  r.selectNodeContents(o)
-	  s.removeAllRanges()
-	  s.addRange(r)
+		s = window.getSelection()
+		if(!s.isCollapsed && 
+			(s.containsNode(o.firstChild) || 
+			(o.lastChild.lastChild && s.containsNode(o.lastChild.lastChild))
+				)
+			)
+			return
+		r = d.createRange()
+		r.selectNodeContents(o)
+		s.removeAllRanges()
+		s.addRange(r)
 	} else if (d.body.createTextRange) {
-	  // ie
-	  r = d.body.createTextRange()
-	  r.moveToElementText(o)
-	  r.select()
-	}
+		// ie
+		r = d.body.createTextRange()
+		r.moveToElementText(o)
+		r.select()
+		}
+	},50)
 },//
 
 saveHis:function(id){
@@ -5600,20 +5563,7 @@ for(var i=0;i<a.length;i++)
 commonui.fastPostUi =function(){}
 
 
-//ÂÛÌ³²Ëµ¥µ±Ç°ÓÃ»§Í·ÏñÑ¡Ôñ=======
-/*
-commonui.loadCurUserPortrait = function(p){
-if (p){
-	p = this.selectUserPortrait(p)
-		if (p.substr(0,4) != 'http')
-			return (__PORTRAIT_PATH+'/'+p);
-		else
-			return (p);
-	}
-else
-	return (__IMG_STYLE+'/nobody.gif');
-}
-*/
+
 }//be
 
 

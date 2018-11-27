@@ -1161,6 +1161,9 @@ if(typeof(u)=='string'){
 	return
 	}
 
+if(window.commonui && commonui.triggerEventBeforePost)
+	commonui.triggerEventBeforePost()
+
 if(a.xr){
 	var fd = new FormData()
 	for(var k in a.u.a)

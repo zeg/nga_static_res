@@ -89,7 +89,7 @@ document.body.addEventListener('click',function(e){
 	if(m && (m[1]=='/read.php' || m[1]=='/nuke.php') && l.pathname != m[1]){
 
 
-		s.atext = h.nodeValue ? h.nodeValue : h.innerHTML
+		s.atext = h.textContext  ? h.textContext : (h.innerText?h.innerText:h.innerHTML)
 		e.returnValue = false
 		e.cancelBubble = true;
 		e.preventDefault()
@@ -116,10 +116,17 @@ commonui.aE(window,'bodyInit',function(){
 		//console.log('h.__mousedowntime '+h.__mousedowntime)
 		if(h.href.match(p))
 			return
-		h.target='_parent'
+		if(h.target!='_blank')
+			h.target='_parent'
 		},
 		true)
 	})
+try{
+	window.parent.iframeRead.complete(document.title,location.href,1|(this.gopt&4))	
+}catch(e){
+	console.log(e)
+	//commonui.crossDomainCall(1, '*', "iframeReadSetWindowTitle", null, document.title)
+	}
 },//fe
 
 //---------------------------
@@ -161,14 +168,6 @@ else
 var w=window, p = __SETTING.currentClientWidth, c=w.commonui, $=_$, s=this
 
 if(commonui.checkIfInIframe()){
-	try{
-		window.parent.iframeReadSetWindowTitle(document.title)
-		window.parent.iframeReadShow()
-		}
-	catch(x){
-		commonui.crossDomainCall(1, '*', "iframeReadSetWindowTitle", null, document.title)
-		commonui.crossDomainCall(1, '*', "iframeReadShow", null, null)
-		}
 	s.off=true
 	s.initB()
 	return
@@ -204,6 +203,21 @@ c.aE(w,'DOMContentLoaded',function(){
 	})
 
 },//fe
+
+complete:function(til,url,opt){// &1 call from page load,  &2 call from ajax load, &4 pop from his
+
+		console.log('til his 1',til, url)
+		if((this.gopt&4)==0){
+			//if(!history.state)
+				//history.pushState({'from':'ifr','url':null,'purl':location.href,'til':document.title},document.title,location.href)
+			var u = commonui.urlToAry(url), l =location
+			
+			history[opt&2 ? 'pushState' : 'replaceState']({'from':'ifr','url':url,'purl':l.href,'til':til},til,l.protocol+'//'+l.hostname+l.pathname+l.search+'#ifr:'+u.pathname+u.search)
+			}
+		document.title = til
+		this.gopt = 0
+
+},//
 
 /**
 *点击事件是否是发生在操作按钮或窗口边框上 
@@ -249,8 +263,6 @@ s.actionTimeout1 = setTimeout(function(){
 				s.actionTimeout2 = setTimeout(function(){
 					s.f.style.display=''
 					try{
-						if((s.gopt&1)==0)
-							history.pushState({'ifr':1,'url':s.toUrl,'purl':l.href,'til':s.atext},s.atext,l.href)
 						if(s.f.contentWindow._LOADERREAD)
 							s.f.contentWindow._LOADERREAD.assign( s.toUrl )
 						else
@@ -270,8 +282,6 @@ s.actionTimeout1 = setTimeout(function(){
 		s.f.style.display=''
 
 		try{
-			if((s.gopt&1)==0)
-				history.pushState({'ifr':1,'url':s.toUrl,'purl':l.href,'til':s.atext},s.atext,l.href)
 			if(s.f.contentWindow._LOADERREAD)
 				s.f.contentWindow._LOADERREAD.assign( s.toUrl )
 			else
@@ -280,7 +290,6 @@ s.actionTimeout1 = setTimeout(function(){
 			//l.assign(l.href.replace(/#.+$/,'')+'#do:ifr:'+s.toUrl.replace(/https?:\/\/[^\/]+/,''))
 			}catch(er){console.log(er)}
 		}
-	s.gopt=0
 	s.actTimout=null
 	},100)
 }//fe
@@ -292,9 +301,9 @@ initA : function(o){iframeRead.initA(o)}
 }
 
 commonui.aE(window,'popstate',function(e){
-	console.log(e.state)
-	if(e.state && e.state.ifr){
-		iframeRead.gopt |=1
+	if(e.state && e.state.from=='ifr'){
+		console.log('pop2',e.state)
+		iframeRead.gopt |=4
 		iframeRead.go(e.state.url)
 		}
 	})

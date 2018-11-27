@@ -708,6 +708,7 @@ xhr.onload = function(e) {
 			8:'附件说明过长',
 			9:'附件过大',
 			10:'无法创建临时文件，请重试或回报管理员',
+			13:'发帖数超过5方可上传附件',
 			100:'未知错误，请回报管理员'}
 		self.o_attachBtn.disabled=null
 		return alert(errs[y.error_code])
@@ -1141,7 +1142,7 @@ var o_main = $('/span').$0(
 										}),
 									$('/div')
 									)
-							self.dialog.w._.show(e)
+							self.dialog.w._.show(e,null,2)
 							},
 						__TXT('smile')._.css('fontSize','1.15em')
 						),
@@ -1428,7 +1429,7 @@ var o_ath = $('/table').$0(
 				this.o_fileSelector = this.attachNewFileSelect(),
 				this.o_attachBtn = $('/button').$0(
 					'type','button',
-					'innerHTML','上传',
+					'innerHTML','上传图片/文件附件',
 					'onclick',function(){this.disabled=true;postfunc.attachUpload()} ),
 				this.ifMultiple ? t(' (可一次选多个文件 可拖放) ') : null,
 				$('/a','href','javascript:void(0)','onclick',function(){this.style.display='none',this.nextSibling.style.display=''},__TXT('gear')),
@@ -1811,7 +1812,6 @@ if(!window.__CURRENT_UID || !window.__CURRENT_FID || __SETTING.bit & 4)
 
 var z = _$('fast_post_c')
 if(!z)return
-console.log(fid,tid,stid)
 var w=window, 
 //fid = w.__CURRENT_FID,
 //tid = w.__CURRENT_TID ? w.__CURRENT_TID : 0,
@@ -1822,7 +1822,6 @@ var $ = _$,t =function(x){return document.createTextNode(x)},b= commonui.stdBtns
 
 , fbit=0
 , dopost = function(o){
-return console.log(fid,tid,stid);
 commonui.newPost(
 	o,
 	tid?postfunc.__REPLY_BLANK:postfunc.__NEW,//操作
