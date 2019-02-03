@@ -1670,7 +1670,7 @@ commonui.mainMenuItems={
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
 	162:{u:1,tagName:'span',disableDefault:1,innerHTML:function(){
 		return ['\u00A0',
-			_$('/input','style','width:8em','placeholder','\u2003\u2003\u2003\u2003\u2003 搜索','_on',function(){
+			_$('/input', 'name', 'search', 'type', 'text', 'style', 'width:8em','placeholder','\u2003\u2003\u2003\u2003\u2003 搜索', '_on',function(){
 				var o= this.__w
 				if(!o){
 					o = (this.__w = commonui.createCommmonWindow(2))
