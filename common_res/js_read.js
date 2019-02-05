@@ -1925,7 +1925,7 @@ d:{
 		if(__SETTING.uA[2]==2){
 			var st=e.timeStamp,to= setTimeout(function() {
 				if (!st || (Date.now() - st) < 800)
-					 window.location.assign('http://app.nga.cn/dl');
+					 window.location.assign('http://app.nga.cn/#application');
 				}, 600)
 			commonui.aE(window,'blur',function() {if(to)clearTimeout(to)})
 			}

@@ -1176,7 +1176,7 @@ if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
 		if(now===false)now = this.mobanner.getMi()
 		if(now-t.time_b>r && !ads){
 			var $ = _$,x = $('/div','style','position:fixed;backgroundColor:rgba(255, 252, 238, 0.95);bottom:0px;color:#fff;width:100%;lineHeight:3em;textAlign:center;zIndex:6',
-				$('/a','style','margin:0 0.5em 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border0+';color:'+__COLOR.inverttxt2,'href','http://app.nga.cn/dl','target','_blank','innerHTML','下载NGA客户端'),
+				$('/a','style','margin:0 0.5em 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border0+';color:'+__COLOR.inverttxt2,'href','http://app.nga.cn/#application','target','_blank','innerHTML','下载NGA客户端'),
 				$('/a','style','margin:0 auto 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border2+';color:'+__COLOR.inverttxt1,'href','javascript:void(0)','innerHTML','继续访问','onclick',function(){x.style.display='none';t.time_b = now;t.count_b++;__COOKIE.setMiscCookieInSecond('mobanner1',commonui.mobanner.pack(t),(1440-now+5)*60)})
 				)
 			document.body.appendChild(x)
