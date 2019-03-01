@@ -166,6 +166,7 @@ switch (typeof(v)) {
 	case 'number':
 		return v.toString(10);
 	case 'boolean':
+	case 'function':
 		return v.toString();
 	case 'object':
 		if(v==null)return 'null'

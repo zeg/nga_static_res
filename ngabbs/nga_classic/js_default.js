@@ -15,10 +15,11 @@ written by zeg 2006-4-27
 //var test
 //小屏幕隐藏顶部菜单 下拉时显示
 ;(function(){
-if((__SETTING.bit & 8) && (location.pathname=='/read.php' || location.pathname=='/thread.php')){}else return
+if((location.pathname=='/read.php' || location.pathname=='/thread.php')){}else return
 
-var t = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',3), x, y = __NUKE.position.get, i=0, p=null, j=0, prog, c = commonui, l,m,n,
-d = function(o,r){
+var t = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',3), x, y = __NUKE.position.get, i=0, p=null, j=0, c = commonui, 
+prog = _$('/div','style','position:fixed;bottom:-2.5em;height:2em;lineHeight:2em;left:calc(50% - 1.25em);right:auto;width:auto;fontSize:1em;border-radius:1em;boxShadow: 0 0 0.5em '+__COLOR.gbg8+';background:'+__COLOR.bg0+';color:'+__COLOR.inverttxt2+';fontWeight:bold;padding:0 0.5em','innerHTML','>>>'),
+d = function(o,r){//屏幕上端向下
 	if(o){
 		i+=o
 		if(i>=r){
@@ -33,12 +34,15 @@ d = function(o,r){
 	},
 z = function(e){
 	x = y(e)
-	if(x.yf==0 && (e.detail<0 || e.wheelDelta>0)){
+	if(x.yf==0 && (e.detail<0 || e.wheelDelta>0)){//屏幕上端向下
 		d(1,7)
 		f(0)
 		}
-	else if(x.ph-x.yf-x.ch<10 && (e.detail>0 || e.wheelDelta<0)){
-		f(1,15,5)
+	else if(x.ph-x.yf-x.ch<10 && (e.detail>0 || e.wheelDelta<0)){//屏幕下端向上
+		f(1,20)
+		if(flr)
+			clearTimeout(flr)
+		flr = setTimeout(fcl,500)
 		d(0)
 		}
 	else{
@@ -49,63 +53,62 @@ z = function(e){
 w = function(e){
 	x = y(e)
 	p = x.cy-p
-	if(x.yf<=0){
-		if(p)
-			d(p,m)
+	if(p>0 && x.yf<=0){
+		d(1,7)
 		f(0)
-		p=x.cy
 		}
-	else if(x.ph-x.yf-x.ch<5){
-		if(p)
-			f(-p,l,m)
+	else if(p<0 && x.ph-x.yf-window.innerHeight<5){
+		f(1,15)
 		d(0)
-		p=x.cy
 		}
 	else{
 		f(0)
 		d(0)
-		p=x.cy
 		}
+	p=x.cy
 	},
 u = function(e){
-	if(p===null){
-		if(!c.loadReadHidden)
-			f=function(){}
-		//if(!test){test = _$('/input','style','position:fixed;bottom:100px;left:0;right:0');document.body.appendChild(test)}
-		}
-	p = y(e)
-	l = (p.ch/3)|0
-	m = (l/4)|0
-	p = p.cy
+	//if(p===null){
+	//	if(!c.loadReadHidden)
+	//		f=function(){}
+	//	}
+	p = y(e).cy
 	},
-f = function(o,r,s){
-	if(o){
-		if(c.loadReadHidden.lock)return
-		j+=o
-		if(j>=s){
-			prog.style.borderLeftWidth = ((j-s)/(r-s)*prog.offsetWidth+1)+'px'
-			if(j>=r){
-				prog.style.borderLeftWidth='1px'
-				j=0
-				c.loadReadHidden(0,2)
-				}
-			}
+f = function(o,r){//屏幕下端向上
+	if(fcd)
+		return
+	if(o==0){
+		if(j)
+			fcl()
+		return
 		}
-	else{
-		prog.style.borderLeftWidth='1px'
-		j=0
+	j+=o
+	prog.style.bottom= j>0 ? (j*0.5-2)+'em' : '-2.5em'
+	if(j>=r){
+		prog.style.color = __COLOR.border0
+		fcd = 1
+		setTimeout(function(){fcd=0},3000)
+		if(c.pageBtn.continueNext)
+			c.pageBtn.continueNext()
 		}
-	}
+
+	},
+fcl = function(){
+	j=0
+	i=0
+	if(prog){
+		prog.style.color = __COLOR.inverttxt2
+		prog.style.bottom='-2.5em'
+		}
+	},flr,
+fcd=0
 
 __NUKE.addCss('#mainmenu {margin-top:-50px; '+(t?t[0]+':margin-top 0.3s linear 0s,0.3s':'')+' }')
+c.aE(window,'touchend',fcl)
 c.aE(window,'touchstart',u)
 c.aE(window,'touchmove',w)
 c.aE(window,'mousewheel',z)
-commonui.aE(window,'DOMContentLoaded',
-function(){
-prog = _$('/div','style','position:fixed;bottom:0px;left:-1px;right:0;height:1em;fontSize:0.6em;borderLeft:1px solid '+__COLOR.border0)
-document.body.appendChild(prog)
-})
+commonui.aE(window,'DOMContentLoaded',function(){document.body.appendChild(prog)})
 })();
 
 
@@ -666,13 +669,17 @@ switch (fid){
 	case -51095:
 		return [1,h+'/20140915a.png',0,190]
 	case -7202235:
-		return [1,h+'/20180310.jpg',0,190]
+		return [1,h+'/20190227.jpg',0,190]
 	case 426:
 		return [1,h+'/2015030604.jpg',0,190]
 	case -362960:
 		return [1,h+'/20180515.jpg',0,190]
 	case -7861121:
-		return [1,h+'/20180616.jpg',0,190]
+		return [1,h+'/20190114.jpg',0,190]
+	case -235147:
+		return [1,h+'/20190211.jpg',0,190]
+	case 640:
+		return [1,h+'/20190212.jpg',0,190]
 	case 482:
 		return [1,h+'/20170414.jpg',0,190]
 	case 414:
@@ -956,6 +963,9 @@ _ALL_IMG_HOST_REG = /^https?:\/\/img\d*\.(?:ngacn\.cc|nga\.cn|nga\.178\.com|nga\
 
 var d1 = function(){
 	return (window.__CURRENT_FID==570) ? 1 : -2
+	},
+d2 = function(){
+	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485) ? 1 : -2
 	}
 //1未知 2可信
 commonui.checkLinkTable = {
@@ -1044,9 +1054,9 @@ _:1,
 'xici800.cn':d1,
 'jiaoyimao.com':d1,
 'suo.im':d1,
-'hupu.com':function(u){
-	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485 || window.__CURRENT_FID==-7) ? 1 : -2
-	},
+'hoopchina.com.cn':d2,
+'hoopchina.com':d2,
+'hupu.com':d2,
 'taobao.com':function(u){
 	if(u.url.match(/coupon\.|taoquan\.|click\.|activity_id/))
 		return d1(u)
@@ -1113,14 +1123,8 @@ if((__SETTING.bit & (4|8|16))==0 && __SETTING.uA[0]==2 && w.getComputedStyle){//
 		__NUKE.addCss('.xtxt , .stxt , .xxtxt {display:inline-block;font-size:inherit;transform: scale(0.75) translateY(8%);} \n .stxt {transform: scale(0.83) translateY(8%);} \n .xxtxt {transform: scale(0.583) translateY(8%);} ')
 	}
 
-var x=null
-if(x = this._addEventOnbodyInitFuncs){//commonui.aE : onbodyInit
-	for (var i=0;i< x.length;i++)
-		x[i]()
-	x.done=true
-	}
-else
-	this._addEventOnbodyInitFuncs={done:true}
+if(this.triggerEventBodyInit)//commonui.aE : onbodyInit
+	this.triggerEventBodyInit()
 /*
 //commonui.storageSync()
 if(window.getMatchedCSSRules){
@@ -1176,7 +1180,7 @@ if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
 		if(now===false)now = this.mobanner.getMi()
 		if(now-t.time_b>r && !ads){
 			var $ = _$,x = $('/div','style','position:fixed;backgroundColor:rgba(255, 252, 238, 0.95);bottom:0px;color:#fff;width:100%;lineHeight:3em;textAlign:center;zIndex:6',
-				$('/a','style','margin:0 0.5em 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border0+';color:'+__COLOR.inverttxt2,'href','http://app.nga.cn/dl','target','_blank','innerHTML','下载NGA客户端'),
+				$('/a','style','margin:0 0.5em 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border0+';color:'+__COLOR.inverttxt2,'href','http://app.nga.cn/','target','_blank','innerHTML','下载NGA客户端'),
 				$('/a','style','margin:0 auto 0 auto;padding:0.1em 1em 0.2em 1em;border-radius:1.2em;background:'+__COLOR.border2+';color:'+__COLOR.inverttxt1,'href','javascript:void(0)','innerHTML','继续访问','onclick',function(){x.style.display='none';t.time_b = now;t.count_b++;__COOKIE.setMiscCookieInSecond('mobanner1',commonui.mobanner.pack(t),(1440-now+5)*60)})
 				)
 			document.body.appendChild(x)
@@ -1535,7 +1539,7 @@ return _$('/span')._.add((opt&1) ? null:'\u00A0',_$('/span','style',g._c)._.add(
 //主菜单=======================
 commonui.mainMenuItems={
 	//hisAddon:[100],
-	hisDefLeft:[7,5,6,8,151,10],
+	hisDefLeft:[7,5,6,8,10],
 	hisDef:[0,115,116,119,146,162],
 	0:{subKeys:[144,18,118,147],
 		title:(__GP.userBit&256) ? '移动验证成功' : '点此打开主菜单',
@@ -1626,15 +1630,13 @@ commonui.mainMenuItems={
 	//		}
 	//	}}},
 
-	115:{arg:['innerHTML','登录','href','javascript:void(0)','onclick',function(){commonui.accountAction('login')}],disableDefault:1,u:0},
-//116:{u:0,href:'http://account.178.com/?p=register', innerHTML:'注册',disableDefault:1},
+	115:{arg:['innerHTML','登录','href','/nuke.php?__lib=login&__act=account&login','onclick',function(e){commonui.accountAction('login');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:0},
 	//117:{u:1,href:'/nuke.php?func=message', innerHTML:'短消息',disableDefault:1},
-	116:{arg:['innerHTML','注册','onclick',function(){commonui.accountAction('register')}],disableDefault:1,u:0},
+	116:{arg:['innerHTML','注册','href','/nuke.php?__lib=login&__act=account&register','onclick',function(e){commonui.accountAction('register');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:0},
 	118:{u:1,innerHTML:'搜索',on:{event:'click',func:function(e){commonui.uniSearchWindow(e)}},disableDefault:1},
-
 	119:{u:1,disableDefault:1,arg:['title','登出: 若你的帐号在其他终端登录本站, 亦可一并登出' ,'innerHTML','登出',
-		'href','javascript:void(0)',
-		'onclick',function(e){commonui.accountAction('logout')}]
+		'href','/nuke.php?__lib=login&__act=account&logout',
+		'onclick',function(e){commonui.accountAction('logout');commonui.cancelBubble(e);commonui.cancelEvent(e)}]
 		},
 	//120~140 for custom
 	141:{ innerHTML:'界面设置',on:{event:'click', func:function(e){__SETTING.ui()} }},
@@ -1643,7 +1645,7 @@ commonui.mainMenuItems={
 	144:{u:1,innerHTML:'我的',subKeys:[25,158,146,1,2,3,104,93,107,101,102,154]},
 	18:{innerHTML:'设置',subKeys:[97,95,141,22,108,142,109,110,111,112,113,152,153,155,156,157,164]},
 	146:{innerHTML:'消息',subKeys:[26,27,148,161,163]},
-	147:{ innerHTML:'商店',color:'gray',check:function(){
+	147:{ innerHTML:'道具',color:'gray',check:function(){
 			if(window.__CURRENT_UID)
 				return true
 			},on:{event:'click',func:function(e){
@@ -1653,10 +1655,8 @@ commonui.mainMenuItems={
 			loader.script(__SCRIPTS.userItem,function(){commonui.userItem.storeUi()} )
 		} } },
 	148:{u:1,check:function(){if(__GP.ubSecAct)return true},href:'/nuke.php?func=message&asuid=34909933',innerHTML:'公共收件箱(帐号安全)',disableDefault:1,color:'sandybrown'},
-//149:{u:1,href:'https://account.178.com/?p=renew_pass',innerHTML:'修改密码',disableDefault:1},
-	149:{arg:['innerHTML','修改密码','onclick',function(){commonui.accountAction('changepass')}],disableDefault:1,u:1},
-//150:{href:'https://account.178.com/?p=reset_pass',innerHTML:'重置密码',disableDefault:1},
-	150:{arg:['innerHTML','重置密码','onclick',function(){commonui.accountAction('resetpass')}],disableDefault:1,u:1},
+	149:{arg:['innerHTML','修改密码','href','/nuke.php?__lib=login&__act=account&changepass','onclick',function(e){commonui.accountAction('changepass');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
+	150:{arg:['innerHTML','重置密码','href','/nuke.php?__lib=login&__act=account&resetpass','onclick',function(e){commonui.accountAction('resetpass');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	151:{href:'https://shop482085632.taobao.com',innerHTML:'商城'},
 	152:{u:1,check:function(){if(__GP.ubMod)return true},innerHTML:'debug',on:{event:'click',func:function(e){commonui.userDebug()}}},
 	153:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'update src',on:{event:'click',func:function(e){adminui.updateSrc()}}},
@@ -1665,12 +1665,12 @@ commonui.mainMenuItems={
 	156:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGACN.CC',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.ngacn.cc')}}},
 	157:{u:1,check:function(){if(__GP['super'])return true},innerHTML:'设置版面图标',on:{event:'click',func:function(e){adminui.fIconGen()}}},
 	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159,166]},
-	159:{arg:['innerHTML','绑定手机号','onclick',function(){commonui.accountAction('setphone')}],disableDefault:1,u:1},
+	159:{arg:['innerHTML','绑定手机号','href','/nuke.php?__lib=login&__act=account&setphone','onclick',function(e){commonui.accountAction('setphone');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
 	161:{u:1,check:function(){if(__GP.ubStaff || __GP.lesser)return true},href:'/nuke.php?func=message&asuid=42686479',innerHTML:'公共收件箱(主题推荐)',disableDefault:1,color:'sandybrown'},
 	162:{u:1,tagName:'span',disableDefault:1,innerHTML:function(){
 		return ['\u00A0',
-			_$('/input','style','width:8em','placeholder','\u2003\u2003\u2003\u2003\u2003 搜索','_on',function(){
+			_$('/input','name','unisearchinput','style','width:8em','placeholder','\u2003\u2003\u2003\u2003\u2003 搜索','_on',function(){
 				var o= this.__w
 				if(!o){
 					o = (this.__w = commonui.createCommmonWindow(2))
@@ -1729,7 +1729,7 @@ commonui.mainMenuItems={
 				})
 			}}},
 	165:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'new post',on:{event:'click',func:function(e){adminui.new_post()}}},
-	166:{arg:['innerHTML','更换手机号','onclick',function(){commonui.accountAction('changephone')}],disableDefault:1,u:1},
+	166:{arg:['innerHTML','更换手机号','href','/nuke.php?__lib=login&__act=account&changephone','onclick',function(e){commonui.accountAction('changephone');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	
 	
 	
@@ -1740,7 +1740,7 @@ commonui.mainMenuItems={
 //============================
 //版面icon====================
 ;(function(){
-var f = [320,181,182,183,184,185,186,187,188,189,255,'10',306,'10',336,'10',190,213,218,258,272,191,200,240,274,315,333,327,318,332,321,7,-7,'354',354,310,323,264,10,335,18,13,16,12,8,102,254,355,116,193,201,230,334,335,29,387,388,390,391,-46468,393,394,395,396,397,398,399,-152678,403,-447601,-2371813,-65653,411,412,414,311,'414',-235147,420,422,-8725919,425,428,427,-7861121,-6194253,-84,431,430,435,432,442,444,445,426,-362960,452,-187579,-47218,-51095,-452227,-532408,459,-7202235,464,441,-1437546,469,463,474,406,446,-343809,476,477,486,'s8702375',492,-149110,124,494,490,501,482,480,497,-5080470,465,526,489,-81981,485,529,-547859,537,538,540,418,479,'418',545,'418',550,549,516,555,551,484,-4567100,'-4567100b',-353371,-608808,556,559,-15219445,560,563,-8180483,493,'493_1',564,568,0],
+var f = [320,181,182,183,184,185,186,187,188,189,255,'10',306,'10',336,'10',190,213,218,258,272,191,200,240,274,315,333,327,318,332,321,7,-7,'354',354,310,323,264,10,335,18,13,16,12,8,102,254,355,116,193,201,230,334,335,29,387,388,390,391,-46468,393,394,395,396,397,398,399,-152678,403,-447601,-2371813,-65653,411,412,414,311,'414',420,422,-8725919,425,428,427,-7861121,-6194253,-84,431,430,435,432,442,444,445,426,-362960,452,-187579,-47218,-51095,-452227,-532408,459,-7202235,464,441,-1437546,469,463,474,406,446,-343809,476,477,486,'s8702375',492,-149110,124,494,490,501,482,480,497,-5080470,465,526,489,-81981,485,529,-547859,537,538,540,418,479,'418',545,'418',550,549,516,555,551,484,-4567100,'-4567100b',-353371,-608808,556,559,-15219445,560,563,-8180483,493,'493_1',564,568,0],
 s= [8702375],
 uf = window.__UFICON ? __UFICON : [],
 us = window.__USICON ? __USICON : [],

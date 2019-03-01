@@ -121,11 +121,15 @@ if(arg.txt.indexOf('armory')!=-1){
 var armory_limit = arg.isSig ? 1 : 5,
 armory_count = 0
 
-var d3arm = function($0,$1,$2,$3){
+if(!ubbcode.armoryArg)
+	ubbcode.armoryArg=[]
+var amA = ubbcode.armoryArg,
+d3arm = function($0,$1,$2,$3){
 	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720;
 	++armory_count
-	$2=decodeURIComponent($2).replace("'",'&#39;')
-	var v = '{battleTag:"'+$2+'",nameOrId:"'+$3+'",o:this.previousSibling,host:"'+$1.toLowerCase()+'"}'
+	amA.push(decodeURIComponent($2))
+	amA.push($3)
+	var v = '{battleTag:ubbcode.armoryArg['+(amA.length-2)+'],nameOrId:ubbcode.armoryArg['+(amA.length-1)+'],o:this.previousSibling,host:"'+$1.toLowerCase()+'"}'
 	if (armory_count>armory_limit)
 		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='d3armory.get("+v+",-1)'/>"
 	else
@@ -140,12 +144,12 @@ arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[url\]http:\/\/(tw|eu|us|cn)\.batt
 arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[(us|cn|tw|eu)armory (.{1,50}?) ([^ ]{1,50}?)\s*\]\s*(?:<br\s*\/?>)?/gi,function($0,$1,$2,$3){
 	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720;
 	++armory_count
-	$2=$2.replace("'",'&#39;')
-	$3=$3.replace("'",'&#39;')
+	amA.push($2)
+	amA.push($3)
 	if (armory_count>armory_limit)
-		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='armory.get(\""+$2+"\",\""+$3+"\",this.previousSibling,\""+$1.toLowerCase()+"\",-1)'/>"
+		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='armory.get(ubbcode.armoryArg["+(amA.length-2)+"],ubbcode.armoryArg["+(amA.length-1)+"],this.previousSibling,\""+$1.toLowerCase()+"\",-1)'/>"
 	else
-		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='armory.get(\""+$2+"\",\""+$3+"\",this.previousSibling,\""+$1.toLowerCase()+"\",0)'/>"
+		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='armory.get(ubbcode.armoryArg["+(amA.length-2)+"],ubbcode.armoryArg["+(amA.length-1)+"],this.previousSibling,\""+$1.toLowerCase()+"\",0)'/>"
 	});
 	//[armory]
 
@@ -153,9 +157,9 @@ arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[(us|cn|tw|eu)d3armory (.{1,50}?)\
 	++armory_count
 	$2 = $2.split(' ')
 	if(!$2[1])$2[1]=''
-	$2[0]=$2[0].replace("'",'&#39;')
-	$2[1]=$2[1].replace("'",'&#39;')
-	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720, v = '{battleTag:"'+$2[0]+'",nameOrId:"'+$2[1]+'",o:this.previousSibling,host:"'+$1.toLowerCase()+'"}'
+	amA.push($2[0])
+	amA.push($2[1])
+	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720, v = '{battleTag:ubbcode.armoryArg['+(amA.length-2)+'],nameOrId:ubbcode.armoryArg['+(amA.length-1)+'],o:this.previousSibling,host:"'+$1.toLowerCase()+'"}'
 	if (armory_count>armory_limit)
 		return "<span><b>["+$2[0]+" "+$2[1]+"]</b></span><img src='about:blank' style='display:none' onerror='d3armory.get("+v+",-1)'/>"
 	else
@@ -170,39 +174,44 @@ arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[(us|cn|kr|eu|xb|ps)owarmory (.{1,
 		$1 = '', plt='xbox'
 	else if($1=='ps')
 		$1 = '', plt='psn'
+	//$2=ubbcode.secureText($2)
 	var k = owarmory.insert({battleTag:$2,host:$1,plt:plt})
 	if (armory_count>armory_limit)
 		return "<span id='"+k+"'><b>["+$2[0]+" "+$2[1]+"]</b></span><img src='about:blank' style='display:none' onerror='owarmory.get(\""+k+"\",-1)'/>"
 	else
 		return "<div id='"+k+"' style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='owarmory.get(\""+k+"\",0)'/>"
 	});
-	//[d3armory]
+
 
 arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[(cn)wotarmory (.{1,50}?) (.{1,50}?)\]\s*(?:<br\s*\/?>)?/gi,function($0,$1,$2,$3){
 	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720;
 	++armory_count
-	$2=$2.replace(/^\s+|\s+$/g,'').replace("'",'&#39;')
-	$3=$3.replace(/^\s+|\s+$/g,'').replace("'",'&#39;')
+	$2=$2.replace(/^\s+|\s+$/g,'')
+	$3=$3.replace(/^\s+|\s+$/g,'')
+	amA.push($2)
+	amA.push($3)
 	if (armory_count>armory_limit)
-		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='wotArmory.get({host:\""+$1+"\",realm:\""+$2+"\",name:\""+$3+"\",o:this.previousSibling},-1)'/>"
+		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='wotArmory.get({host:\""+$1+"\",realm:ubbcode.armoryArg["+(amA.length-2)+"],name:ubbcode.armoryArg["+(amA.length-1)+"],o:this.previousSibling},-1)'/>"
 	else
-		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='wotArmory.get({host:\""+$1+"\",realm:\""+$2+"\",name:\""+$3+"\",o:this.previousSibling},0)'/>"
+		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='wotArmory.get({host:\""+$1+"\",realm:ubbcode.armoryArg["+(amA.length-2)+"],name:ubbcode.armoryArg["+(amA.length-1)+"],o:this.previousSibling},0)'/>"
 	});
 
 arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[(cn)?jnarmory (.{1,50}?) (.{1,50}?)\]\s*(?:<br\s*\/?>)?/gi,function($0,$1,$2,$3){
 	var w = __SETTING.width ? Math.floor(__SETTING.width*0.9) : 720;
 	++armory_count
 	if(!$1)$1 = 'cn'
-	$2=$2.replace(/^\s+|\s+$/g,'').replace("'",'&#39;')
-	$3=$3.replace(/^\s+|\s+$/g,'').replace("'",'&#39;')
+	$2=$2.replace(/^\s+|\s+$/g,'')
+	$3=$3.replace(/^\s+|\s+$/g,'')
+	amA.push($2)
+	amA.push($3)
 	if (armory_count>armory_limit)
-		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='jnArmory.get({host:\""+$1+"\",realm:\""+$2+"\",name:\""+$3+"\",o:this.previousSibling},-1)'/>"
+		return "<span><b>["+$2+" "+$3+"]</b></span><img src='about:blank' style='display:none' onerror='jnArmory.get({host:\""+$1+"\",realm:ubbcode.armoryArg["+(amA.length-2)+"],name:ubbcode.armoryArg["+(amA.length-1)+"],o:this.previousSibling},-1)'/>"
 	else
-		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='jnArmory.get({host:\""+$1+"\",realm:\""+$2+"\",name:\""+$3+"\",o:this.previousSibling},0)'/>"
+		return "<div style='width:"+w+"px'></div><img src='about:blank' style='display:none' onerror='jnArmory.get({host:\""+$1+"\",realm:ubbcode.armoryArg["+(amA.length-2)+"],name:ubbcode.armoryArg["+(amA.length-1)+"],o:this.previousSibling},0)'/>"
 	});
 
 }//if
-
+/*
 if(arg.fId && (arg.fId==400 || arg.fId==318 || arg.fId==395 || arg.fId==396 || arg.fId==446 || arg.fId==397 || arg.fId==398 || arg.fId==399)){
 arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[diablo3charsim\]([^\x00]+?)\[\/diablo3charsim\]\s*(?:<br\s*\/?>)?/gi,function($0,$1){
 
@@ -218,7 +227,7 @@ arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[diablo3charsim\]([^\x00]+?)\[\/di
 	return "<div><iframe style='width:100%;height:1500px;border:none' frameborder=0 allowtransparency='true' src='/misc/d3selector.html' onload='ubbcode.cache.d3sim_24456(this,\""+a+"\")'></iframe></div>"
 	});
 }//if
-
+*/
 }//fe
 
 ubbcode.bbscode_aft=function(arg){

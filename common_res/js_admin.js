@@ -1976,7 +1976,8 @@ __NUKE.doRequest({
 
 
 adminui.setSets = function(e,fid){
-	
+	return this.setSubSets(e,fid)
+	/*
 if(!fid)fid=0;
 
 var $=_$,w = $('/span'),f,s
@@ -2015,7 +2016,7 @@ __NUKE.doRequest({
 		}
 	})
 this.w._.show(e)
-
+*/
 }//fe
 
 
@@ -2023,13 +2024,13 @@ adminui.setSubSets = function(e,fid){
 	
 if(!fid)fid=0;
 
-var $=_$,w = $('/span'),f,s,newnod = function(id,opt,name){
+var $=_$,w = $('/span'),tb,newnod = function(id,opt,name){
 return $('/tr',
 	$('/td', $('/input','value',id,'placeholder','版面id/合集或版面镜像id'), $('/input','type','hidden','value','\t')),//id
-	$('/td')._.add( $('/input','type','checkbox','value','t','checked',opt.indexOf('t')!=-1?'checked':''),'是合集或版面镜像 '),//if set/quoteforum
-	$('/td')._.add( $('/input','type','checkbox','value','s','checked',opt.indexOf('s')!=-1?'checked':''),'显示为子版面 '),//display as sub
-	$('/td')._.add( $('/input','type','checkbox','value','q','checked',opt.indexOf('q')!=-1?'checked':''),'显示为主题合集 '),//display as quote
-	$('/td')._.add( $('/input','type','hidden','value','\t'), $('/button','innerHTML','删除','onclick',function(){this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)}), $('/b')._.add(name))//id
+	$('/td')._.add( $('/input','type','checkbox','value','t','checked',opt.indexOf('t')!=-1?'checked':''),'是合集/版面镜像 '),//if set/quoteforum
+	$('/td')._.add( $('/input','type','checkbox','value','s','checked',opt.indexOf('s')!=-1?'checked':''),'子版面 '),//display as sub
+	$('/td')._.add( $('/input','type','checkbox','value','q','checked',opt.indexOf('q')!=-1?'checked':''),'加载主题 '),//display as quote
+	$('/td')._.add( $('/input','type','hidden','value','\t'), $('/button','innerHTML','添加','onclick',function(){tb.insertBefore(newnod('','',''),this.parentNode.parentNode.nextSibling)}), $('/button','innerHTML','删除','onclick',function(){this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)}), $('/b')._.add(name))//id
 	)
 }//
 
@@ -2045,7 +2046,8 @@ __NUKE.doRequest({
 		var e = __NUKE.doRequestIfErr(d)
 		if(e)
 			return alert(e)
-		var d =  d.data,tb = $('/table')
+		var d =  d.data
+		tb = $('/table')
 
 		if(d[0]){
 			var y = d[0].split(/[\t\n]/)
@@ -2312,6 +2314,44 @@ this.adminwindow._.addContent(
 this.adminwindow._.show(e)
 }//fe
 
+
+/**
+
+  */
+adminui.keywordStat = function (e,fid){
+this.createadminwindow()
+this.w._.addContent(null)
+this.w._.addTitle('关键词提取统计(每周')
+this.w._.show()
+var y,$=_$,z=function(){return $('/td','style','padding:0 0.5em')}
+__NUKE.doRequest({
+	u:{u:__API._base,a:{__lib:'admin_stat',__act:'thread_keyword_stat',raw:3,act:4,fid:fid}},
+	f:function(d){
+		var e = __NUKE.doRequestIfErr(d)
+		if(e)
+			return alert(e)
+		x=$('/table',
+			$('/tr',
+				z(),
+				z()._.add('出现次数'),
+				z()._.add('统计时间')
+				)
+			)
+		for(var k in d.data[0]){
+			y = d.data[0][k]
+			x._.add(
+				$('/tr',
+					z()._.add(y[1]),
+					z()._.add(y[2]),
+					z()._.add(commonui.time2date(y[3]*86400,'Y-m-d'))
+					)
+				)
+			}
+		adminui.w._.addContent(x)
+		}
+	})
+}//fe
+
 adminui.quoteForum = function(e,fid){
 this.createadminwindow()
 this.w._.addContent(null)
@@ -2450,6 +2490,25 @@ this.w._.addContent(
 							}
 						x._.add(z)
 						}
+					x.firstChild.firstChild.$0('innerHTML','',$('/button','innerHTML','复制表格','onclick',function(){
+						var x = this.parentNode.parentNode.parentNode, y=x.getElementsByTagName('div')
+						for(var i=0;i<y.length;i++)
+							y[i].style.display='none'
+						r = document.createRange();
+						s = window.getSelection();
+						s.removeAllRanges();
+						try {
+							r.selectNodeContents(x);
+							s.addRange(r);
+							} 
+						catch (e) {
+							r.selectNode(x);
+							s.addRange(r);
+							}
+						try {
+							document.execCommand('copy')
+							} catch (err) {}
+						}))
 					y.innerHTML = ''
 					y._.add(d.all,$('/br'),x)
 					}//fe
@@ -2792,7 +2851,38 @@ this.fIconGen.load=1
 loader.script(__SCRIPTS.imgEdit,function(){adminui.fIconGen()})
 }
 
+if(window.__GP && __GP.userBit&4){//mod
+adminui.bbscode_min_admin = function(arg){
+if(arg.tId == 16403728 && !arg.pId){
+	arg.txt= arg.txt+'<br/><img src="about:blank" class="x" onerror="adminui.bbscode16403728(this)"/>'
+	adminui.bbscode16403728 = function(o){
+		__NUKE.doRequest({
+			u:{u:__API._base+'__lib=load_topic&__act=load_topic_reply_ladder',
+				a:{all:1,raw:3}
+				},
+			f:function(d){
+				var e = __NUKE.doRequestIfErr(d)
+				if(e)
+					return alert(e)
+				var t= d.data[0],f=d.data[1],tx=''
+				for(var i in t){
+					tx+='[tid]'+t[i].tid+'[/tid] <a href="/read.php?tid='+t[i].tid+'" class="b" target="_blank">'+t[i].subject+'</a> <span class="silver">['+f[t[i].fid]+']</span><br/><br/>'
+					}
+				o.parentNode.replaceChild(_$('/span','innerHTML',tx,_$('/button','type','button','innerHTML','清除缓存','onclick',function(){
 
+					__NUKE.doRequest({
+						u:{u:__API._base+'__lib=load_topic&__act=load_topic_reply_ladder_clear_cache',
+							a:{all:1,raw:3}
+							}})
+
+					})),o)
+				}
+			})
+		}
+	}
+}//
+
+}//if
 
 /**
  * 设置版面背景图

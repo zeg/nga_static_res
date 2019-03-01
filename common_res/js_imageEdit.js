@@ -5,7 +5,7 @@ if(window.adminui){
 if(!window.adminui)
 	var adminui = {}
 adminui.fIconGen = function(){
-var $ = _$ , cv, cv1, ff,bb,tt,im,pos,om,lw,lh,nb,
+var $ = _$ , cv, cv1, ff,bb,tt,im,pos,om,lw,lh,nb, sp1,
 lys = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpERjFFNkE2NjVERERFNjExOTBCMUZBREQxOUFFOEI0MiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGMDJBQUQ2NDcxMTIxMUU3OTNCQkQzQTQyODAzNzIyQSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGMDJBQUQ2MzcxMTIxMUU3OTNCQkQzQTQyODAzNzIyQSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkNDMTBBNkZENTQ3MEU3MTFCQTRFQzQ2MjlCQTQ3MDU2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRGMUU2QTY2NUREREU2MTE5MEIxRkFERDE5QUU4QjQyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+W+q3+AAAAydJREFUeNrMmVtIFGEUx1e7YW0XoovSRcul2h6yIsk0yYqKJQp9Len2IN2pl16i3nsJgi72UE/ZSw8rBClBLhW2BEIUaEm1pV22G920hAKn/6H/0Dh9s7PuuvPNgZ+fzOzs/D3f953vnGOeYRgBP9to+bGtaIwvxV1N/v4rMAMrARWgDCwGxaAIFPD+AHgLXoIn4AGIg1cZeTANGwXWgzoQoSDTPoJn4A74wmtTwSywGtRaPpsArSAK2sBgtgIngiOgAczmtU5wBsRAB3jj8h3yXDmoAZvAftILzoNzoN/p4TzZJA5rcCu4BKZxuuT3JtCd5dIKg3qwm8viHdgDWlRrMN/hS7aAZjAWHADzwMkRECf2GBznOj4EguA62JyuByeBp5z+Ki7yXNoScA98ByHw082Dh8EMcMIDcWKPODsy3fvcPCheeyHXwXzwy6OQV8BN84PvHXTy4DruusseijPj5jWGr2rrDbvAOo5NGg6OKxxrUwncwF3WrUFgnMsr4iRwOigFNzUdvQbfvRAUqgSu5HhbY34Q47hKJbCc432NAjs4lqkELgWfeKzpsgQDdlglsJgniE4zKLJEJbAwk3wtB/YazFQJDNK9uu0b84H/BBo84vxghkpgPxNU3TYZ9KkESuI41wcC54CkSmAPWKBZnJlF9agEdrHYCWkUGOIy61IJfMixUqPAFTYtQwTGfSCwxqZliMBepjtrNArcyHTvg1M+KKXfInYLvLZlPOJaUiWszRy3axBYzzGaSuAtTrUU1eM8FDce7GCy0p5KoFRTjSwBGzwUeJAdjEbrMedUuE8Az+nBKmtMypEtB3fBZx4UA26Fu9SmuxgwJbs+GvjXVhvpWvgYxYkzdlrFOU2xaa3slcihfZrr8ixjZDYZjzwrLbkLzPtO0XNSTbYNt7tlLl5pHu3lGRlgrIxxMcfZHnHqI+czZFWStZaERHqK0nq7qPKcOcVuAq0vqmZRHWFpaE0wE/RyH70UZAlRakvhJAjfYDhrT/GHDVug3WSXV7DQCtMr0nCawvtfwXuK7mSDKM5raVs2PeokA2o05/mX3/8N8UeAAQCcJ9B5GAPkkAAAAABJRU5ErkJggg=='
 mks = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpERjFFNkE2NjVERERFNjExOTBCMUZBREQxOUFFOEI0MiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGQUMyRjBBRDcxMUIxMUU3QTQ0M0E1MzZBMEY5MTEzQiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGQUMyRjBBQzcxMUIxMUU3QTQ0M0E1MzZBMEY5MTEzQiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkNDMTBBNkZENTQ3MEU3MTFCQTRFQzQ2MjlCQTQ3MDU2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRGMUU2QTY2NUREREU2MTE5MEIxRkFERDE5QUU4QjQyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+ThnU1wAAA2VJREFUeNrsmM2P0lAUxSmfMnxF1KADibgYNboZXYwb/3tXjgvcqEGiM8kEI1Ew0BEoMK3nJeclN09KW2gJMU5y0sRg76/n3vfevc/yPC91yH/p1IH/HTxgdtcXWJZVwaMGlaE8/3kB2dAEJWTvFRBALTweQg2oDlWhI8Jl+LMbyIFm+P0EzxE0gC4B3I8dEEGKeJxCJ1ATukPXSlCRcFlRMi60IuQc+g2NoZ94lwLsQR3AOoGxg1YxXvgcjzPoMXQM3YYqBCsIOOWexf/m0cUV061AptA13fwGfYbOEf/j1g4C7hUer6FnUIspVbV2i2A5gmXongR0Cam0JOiMbj7QJYIYJUC+iwxI5xTcS6gN3RNwOZHStEitBNSpNkHnrNuSXlSIdQ3IT6EBWXNndK7N1NYIJ8Esv+8ztjHtaIHv0B+ZYvqHiPkFkIuwDp6y5lp0rsaVmmNwK+riF2UgHV+yLlWsF9DbsBv1CV2rG2lNbwG3DjTLd1YY45gxg08S7nNNrtaySKsV4wGR5jsLjKEgm4h9P4yDbe5zlRidW+dkmu/WTqqYj8IANlhz6zbgVEIuFhmzEQawzi0gKff86lGn2h+QB78+JXIJume6qFNdVRv3Jgdr4uDPGltCKmEX8zSmvAmwbJytSfeLlgFZYAZ9AfPGuWolVH8moF7VGUIedEftbQJc8FB3+UPP/A8JwHhG9+NsArzmD1YCNGm3XNE7OmTwBRyzZ9sXpCe67wWbWtsXkAPOhD3bYg+AEk4ZY4NhGrRIRux6HbZDNwnVoSeaWIcxh2GOugFTPU3YRTO1Y8YOBLxQ0xeLdcYvdGN2UdeeHgFsxrwMBEQNqImrL1I955e6Mbun4ZQRv1RMxP4etqPucTQc8evmYlV7MdTdSsCNaEgvylTXgZ6yPyuJASfs0OSXUumcqrkf0BVn5E5oQDXxo+05Z3+WFwOOOXb6ndvrToiVkVYF9xX6oIYlxFxGmovVxC96M73Drxvc1znqGenUg7tM6xXh3iBWd6ubBTXxq6GaK+yJcfVxtMXVh60XBNTl1Ud3p7sZdtp54/LobsjLI3ndMeaH9llz7/3SGhnQgG1w8mtwEqsaXbi8ftOuDbkJXyDeIFK8Xe+oeU1SZW0WmGZda3+drZHf//8S/V8H/CPAAGF2Uozm5VyZAAAAAElFTkSuQmCC',
 mk1s='data:image/png;base64,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',
@@ -52,12 +52,53 @@ if(t){
 		xc[i]*=t
 	}
 return x
-}//fe
+},//fe
+output = function(im){
+var ii = new Image
+ii.onload = function(){
+	var x = this
+	while(x.width<limit)
+		var x = downSize(x,limit)
+	var y=merge(x, nb.checked?null:mk1, nb.checked?null:ly1, 0.9) 
+	cv1.width=y.width
+	cv1.height=y.height
+	cv1.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
+	cv1.style.display=''
 
-commonui.createadminwindow()
-commonui.adminwindow._.addContent(null)
-commonui.adminwindow._.addTitle('生成图标')
-commonui.adminwindow._.addContent(
+	var y=merge(x, nb.checked?null:mk2, nb.checked?null:ly2, 0.9) 
+	cv2.width=y.width
+	cv2.height=y.height
+	cv2.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
+	cv2.style.display=''
+
+	while(x.width>limit2)
+		var x = downSize(x,limit2)
+	var sp = parseFloat(sp1.value)
+	if(sp<0 || sp>1)
+		sp=0.3
+	commonui.imageSharpen(x.getContext('2d'),x.width,x.height,sp)
+	var y=merge(x, nb.checked?null:mk, nb.checked?null:ly, 0.9) 
+	cv.width=y.width
+	cv.height=y.height
+	cv.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
+	cv.style.display=''
+
+	bb.disabled = false			
+	}
+ii.src=im
+var p = ui.parentNode
+p.removeChild(ui)
+p.appendChild(ui)
+},//
+limit=180,//huiklhu
+limit2=40//ftgyftu
+
+if(!this.fIconGen.ui)
+	this.fIconGen.ui = commonui.createCommmonWindow()
+var ui = this.fIconGen.ui
+ui._.addContent(null)
+ui._.addTitle('生成图标')
+ui._.addContent(
 	$('/span')._.add('选择图片 > 剪裁合适的区域 > 观察效果 > 提交(有最多15分钟延时)'),
 	$('/br'),
 	mk = $('/img','style','display:none','src',mks),
@@ -76,44 +117,43 @@ commonui.adminwindow._.addContent(
 				return alert('文件大小不能超过1536k');
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				var limit=180,limit2=40
-				commonui.cutImage(null,e.target.result,7,limit,limit,function(im){
-					var ii = new Image
-					ii.onload = function(){
-						var x = this
-						while(x.width<limit)
-							var x = downSize(x,limit)
-						var y=merge(x, nb.checked?null:mk1, nb.checked?null:ly1, 0.9) 
-						cv1.width=y.width
-						cv1.height=y.height
-						cv1.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
-						cv1.style.display=''
-						
-						var y=merge(x, nb.checked?null:mk2, nb.checked?null:ly2, 0.9) 
-						cv2.width=y.width
-						cv2.height=y.height
-						cv2.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
-						cv2.style.display=''
-
-						while(x.width>limit2)
-							var x = downSize(x,limit2)
-						commonui.imageSharpen(x.getContext('2d'),x.width,x.height,0.3)
-						var y=merge(x, nb.checked?null:mk, nb.checked?null:ly, 0.9) 
-						cv.width=y.width
-						cv.height=y.height
-						cv.getContext('2d').putImageData(y.getContext('2d').getImageData(0, 0, y.width, y.height),0,0)
-						cv.style.display=''
-						
-						bb.disabled = false			
-						}
-					ii.src=im
-					})
-
+				commonui.cutImage(null,e.target.result,7,limit,limit,output)
 				}//
 			reader.readAsDataURL(f);
 			}
 		),
 	nb = $('/input','type','checkbox'),'不加框',
+	sp1 = $('/input','size','5','value','0.3'),'锐化',
+	$('/br'),
+	$('/button','innerHTML','或使用文字','onclick',function(){
+		commonui.textInputer(null,'输入文字',function(t){
+			t = t.replace(/^\s+|\s+$/,'')
+			if(!t)return
+			var cv = $('/canvas','style','display:none','width',512,'height',512), ll = cv.getContext('2d')
+
+			var c=[],hex = Math.abs(DJBHash(t)).toString(16)+'000000'
+			for(var i=0;i<6;i+=2)
+				c.push( ('0x'+hex.substr(i,2))-0 )
+
+			c[0] = c[1]/255
+			c[1] = c[1]/255/2+0.25
+			c[2] = c[2]/255/2+0.25
+
+			c = commonui.hsvToRgb(c[0],c[1],c[2])
+			ll.fillStyle='#'+( ("0" + c[0].toString(16)).slice(-2) + ("0" + c[1].toString(16)).slice(-2) + ("0" + c[2].toString(16)).slice(-2))
+			ll.fillRect(0, 0, cv.width, cv.height);
+
+
+			ll.font = "bold 128px 'Microsoft YaHei', Sans-serif";
+			ll.fillStyle='#ffffff'
+			//ll.strokeStyle = ll.fillStyle=='#ffffff' ? '#000000' : '#ffffff'
+			//ll.lineWidth = brush.getSize()/5*2
+			//ll.strokeText(t,64,256)
+
+			ll.fillText(t,64,256)
+			commonui.cutImage(null,cv.toDataURL(),7,limit,limit,output)
+			})
+		}),
 	$('/br'),
 	ff = $('/input','size','10','placeholder','版面ID'),
 	tt = $('/input','size','10','placeholder','或合集ID'),
@@ -126,7 +166,7 @@ commonui.adminwindow._.addContent(
 			})
 		})
 	)
-commonui.adminwindow._.show()
+ui._.show()
 }//fe
 
 
@@ -783,21 +823,23 @@ this.imageEditorW._.show()
 }//fe
 
 if(!commonui.textInputer)
-	commonui.textInputer = function(e,h,f){
-		var x
-		this.createadminwindow()
-		this.adminwindow._.addContent(null)
-		this.adminwindow._.addTitle(h)
-		this.adminwindow._.addContent(
-			x = _$('/textarea'),
-			_$('/button','innerHTML','确定','onclick',function(){
-				f(x.value)
-				commonui.adminwindow._.hide()
-				})
-			)
-		this.adminwindow._.show(e)
-		x.focus()
-		}//
+commonui.textInputer = function(e,h,f){
+	var x
+	if(!this.textInputer.ui)
+		this.textInputer.ui = this.createCommmonWindow()
+	var y = this.textInputer.ui
+	y._.addContent(null)
+	y._.addTitle(h)
+	y._.addContent(
+		x = _$('/textarea'),
+		_$('/button','innerHTML','确定','onclick',function(){
+			f(x.value)
+			y._.hide()
+			})
+		)
+	y._.show(e)
+	x.focus()
+	}//
 
 
 //===============================================================

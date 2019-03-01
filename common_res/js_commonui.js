@@ -470,7 +470,7 @@ uA:{},// 0:浏览器 1ie 2chrome 3ff 1:浏览器版本 2:操作系统 1windows 2android 3osx
 
 UAInit:function (){
 var u = window.navigator.userAgent.toLowerCase(), x,
-a={0:0, // 1 ie, 2 chrome, 3 firefox, 4 opera, 5 safari, 6 edge
+a={0:0, // 1 ie, 2 chrome, 3 firefox, 4 opera, 5 safari, 6 edge, 7 micromessenger, 8 QQ
 1:0,//.ver
 2:0,//1 windows, 2 android, 3 osx, 4 ios, 5 windows phone
 3:0,//.ver
@@ -478,14 +478,18 @@ a={0:0, // 1 ie, 2 chrome, 3 firefox, 4 opera, 5 safari, 6 edge
 5:0,//.ver
 6:0//bit 1 tablet, 2 phone
 }
-x = u.match(/(msie|opr|opera|chromium|chrome|safari|firefox)\/?\s*(\.?[\d\.]+)/i)
+x = u.match(/(msie|opr|opera|chromium|chrome|safari|firefox|micromessenger|MQQBrowser\s*QQ)\/?\s*(\.?[\d\.]+)/i)
 if(x){
 	a[1] = parseInt(x[2],10)
 	a[0] = x[1]=='msie' ? 1 : (
 				(x[1]=='chromium' || x[1]=='chrome') ? 2 : (
 					x[1]=='firefox' ? 3 : (
-						x[1]=='safari' ? 5 : (
-							(x[1]=='opera' || x[1]=='opr') ? 4 : 0
+						x[1]=='micromessenger' ? 7 : (
+							x[1]=='safari' ? 5 : (
+								(x[1]=='MQQBrowser QQ' || x[1]=='MQQBrowserQQ') ? 8 : (
+									(x[1]=='opera' || x[1]=='opr') ? 4 : 0
+									)
+								)
 							)
 						)
 					)
@@ -838,7 +842,7 @@ var w=window, ci=commonui, n = w.__NUKE, bits = this.bits, c=w.__COOKIE, bit = c
 //	w.__LITE.embed=true//old
 //	}
 this.defS = defS;
-if((__GP._bit & 4)||(__CURRENT_UID & 3)==3){
+//if((__GP._bit & 4)||(__CURRENT_UID & 3)==3){
 	if(bit===null){
 		c.setMiscCookieInSecond(this.cName,'a',300)
 		bit=bits.auto
@@ -852,9 +856,9 @@ if((__GP._bit & 4)||(__CURRENT_UID & 3)==3){
 		c.setMiscCookieInSecond(this.cName,String.fromCharCode(bit.toString().charCodeAt(0)+1),300)
 		bit=bits.auto
 		}
-	}
-else if(bit===null)
-	bit=bits.auto
+//	}
+//else if(bit===null)
+//	bit=bits.auto
 
 bit = n.toInt(bit)
 
@@ -1126,8 +1130,8 @@ ww.commonui.aE(window,'DOMContentLoaded',function(){document.body.style.width='a
 setIframe:function(){
 if(this.bit & this.bits.iframe)
 	__SCRIPTS.asyncLoad( 'iframeRead2' , function(){iframeRead.init()} )
-if( window.__DEBUG/* || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)*/)
-	__SCRIPTS.asyncLoad( 'loaderRead' , function(){_LOADERREAD.init()} )
+//if( window.__DEBUG/* || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)*/)
+//	__SCRIPTS.asyncLoad( 'loaderRead' , function(){_LOADERREAD.init()} )
 }
 }//ce
 
@@ -1146,9 +1150,14 @@ if( window.__DEBUG/* || (window.matchMedia && matchMedia('(display-mode: standal
 {
 //事件注册=====================
 ;(function(){
-var F_BDI=[],F_BPO=[]
+var F_BDL=[],F_BDI=[],F_BPO=[]
 commonui.aE=function(obj,e,fn) {
-if (e=='DOMContentLoaded' || e=='bodyInit'){
+if (e=='DOMContentLoaded'){
+	F_BDL.push(fn)
+	if(F_BDL.done)fn()
+	return
+	}
+else if(e=='bodyInit'){
 	F_BDI.push(fn)
 	if(F_BDI.done)fn()
 	return
@@ -1170,6 +1179,11 @@ if (obj.removeEventListener)
 	obj.removeEventListener(e,fn,false)
 }//fe
 commonui.triggerEventDOMContentLoadedAct = function(){
+for (var i=0;i< F_BDL.length;i++)
+	F_BDL[i]()
+F_BDL.done=true
+}//fe
+commonui.triggerEventBodyInit = function(){
 for (var i=0;i< F_BDI.length;i++)
 	F_BDI[i]()
 F_BDI.done=true
@@ -1891,17 +1905,17 @@ else{
 },//fe
 checkTo:function (e,o,oo){
 if (!e) var e = window.event;
-var to = e.relatedTarget || e.toElement, j=to
+var j = e.relatedTarget || e.toElement
 for(var i=0;i<4;i++){
+	if(!j)
+		break
 	if(j==o)
 		return
 	if(oo && j==oo)
 		return
 	j=j.parentNode
-	if(!j)
-		break
 	}
-return to
+return 1
 }//fe
 
 }//ce
@@ -1917,6 +1931,9 @@ if(!window.addEventListener || !('onmessage' in window)){
 var F={},CB={
 locationReload : function(){
 	window.location.reload()
+	},
+closeAccountUi : function(){
+	commonui.accountAction.close()
 	}
 },CALL = function(opt,act,tar){
 //	d = this.urlToAry(document.referrer),d = d.protocol+'//'+d.host
@@ -3629,14 +3646,15 @@ else
 s = opt&2 ? cur2-more : cur-more 
 if(s<1)
 	s=1
-
-if(commonui.loadReadHidden){
+if(commonui.htmlLoader)
+	hl=hlp=hln=function(){}
+else if(commonui.loadReadHidden){
 	if(__SETTING.uA[6]&3)
 		hl = function(e){commonui.loadReadHidden(this.value,1);commonui.cancelBubble(e);commonui.cancelEvent(e)}
 	hlp = function(e){commonui.cancelBubble(e);commonui.cancelEvent(e);commonui.loadReadHidden(0,4)}
 	hln = function(e){commonui.cancelBubble(e);commonui.cancelEvent(e);commonui.loadReadHidden(0,2)}
 	}
-else if(commonui.htmlLoader)
+else
 	hl=hlp=hln=function(){}
 
 if(max < 1){//可能有下页
@@ -3686,7 +3704,7 @@ for(var i=s;i<=e;i++){
 			hl ? {onclick:hl} : null
 			) )
 	if(i==cur2 && i<e && (opt&8) && hln)
-		oo._.__add( _$('/a',
+		oo._.__add( commonui.pageBtn.continueNextO = _$('/a',
 				'href',url+'&page='+(i+1),
 				'innerHTML','&gt;',
 				'title','加载下一页',
@@ -3772,6 +3790,11 @@ if(oo._.__vml)
 //this.pageBtn.cache =o.firstChild
 
 }//fe
+
+commonui.pageBtn.continueNext = function(){
+if(this.continueNextO)
+	__NUKE.fireEvent(this.continueNextO,'click')
+}//
 
 //翻页跳转 select==============
 commonui.jumpToForm = function (e,postPerPage,cp,mp){
@@ -4126,17 +4149,26 @@ for (var k=0;k<this.his.length;k++){
 	}
 this.his=x
 commonui.userCache.set(this.saveKey,this.his,86400*30);
-for (var k in this.btnCache)
-	this.btnCache[k]=null
+this.clearCache(1)
 },//fe
 
 clearHis:function(){
 commonui.userCache.del(this.saveKey)
 this.his=[]
-for (var k in this.btnCache)
-	this.btnCache[k]=null
-}//fe
+this.clearCache(1)
+},//fe
 
+btnCache:{},
+
+clearCache:function(){
+if(this.btnCache){
+	var x = []
+	for (var k in this.btnCache)
+		x.push(k)
+	for (var i=0;i<x.length;i++)
+		delete this.btnCache[x[i]]
+	}
+}//
 
 }//ce
 
@@ -5548,7 +5580,7 @@ if(!this.ucp)
 else
 	commonui.ucp.accountAction(act)
 }//fe
-
+commonui.accountAction.close = function(){commonui.adminwindow._.hide()}
 
 //178直播======================
 commonui.loadLiveIframe = function(tid){

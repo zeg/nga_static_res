@@ -144,7 +144,7 @@ var menuItem = {
 		1:{h:'http://nga.cn/',t:'首页'},
 		2:{h:'http://bbs.nga.cn/',t:'论坛'},
 		3:{h:'http://game.nga.cn/',t:'评分'},
-		4:{h:'https://shop482085632.taobao.com',t:'商城'},
+		4:{h:'http://nga.cn/201812/t_338770223602.html',t:'收费资讯'},
 		5:{h:'http://tv.nga.cn',t:'赛事'},
 		6:{h:'http://www.nga.cn/special/',t:'专题'},
 		7:{h:'http://app.nga.cn/',t:'移动端'}

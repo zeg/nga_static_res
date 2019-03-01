@@ -57,17 +57,14 @@ return h
 },//fe
 
 _stat:function(_U){
-var r
-if(_U.verified===undefined)
-	return null
-
-	r = commonui.activeInfo(_U.verified,_U.uid)
-	console.log(_U.verified)
-	var r= _$('<a/>').$0('className', r[0]+' b', 'innerHTML', r[2], 'href', r[5] ? r[5] : 'javascript:void(0)', 'onclick', function(){alert(this.title)}, 'title', r[3]+' '+r[4])
-
-
-
-return r
+var y = []
+if(_U.verified!==undefined){
+	var r = commonui.activeInfo(_U.verified,_U.uid)
+	y.push(_$('/a','className', r[0]+' b', 'innerHTML', r[2], 'href', r[5] ? r[5] : 'javascript:void(0)', 'onclick', function(){alert(this.title)}, 'title', r[3]+' '+r[4]))
+	}
+if(_U.bit & 16777216)
+	y.push(_$('/span','className','b','innerHTML',' ÒÑ×¢Ïú'))
+return y
 },//fe
 
 _echo:function(_U,o){
@@ -514,14 +511,8 @@ return x
 _span : function(){
 if(!arguments[0])return
 var u = _$('<span/>')
-for(var i=0;i<arguments.length;i++){
-	var v = arguments[i]
-	if(!v)continue
-	if(typeof(v)=='string')
-		v = u._.aC(document.createTextNode(v+' '))
-	else
-		v = u._.aC(v,document.createTextNode(' '))
-	}
+for(var i=0;i<arguments.length;i++)
+	u._.add(arguments[i])
 return u
 },//fe
 

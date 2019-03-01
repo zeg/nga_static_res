@@ -8,11 +8,28 @@ FOR NGACN ONLY
 written by zeg 2007/12/14
 ========================
 */
-ngaAds.nowTime = new Date;
-ngaAds.nowDay = (ngaAds.nowTime.getMonth()+1)+'/'+ngaAds.nowTime.getDate()+'/'+ngaAds.nowTime.getFullYear()
-ngaAds.nowDayTime = Date.parse(ngaAds.nowDay)
-ngaAds.rateSum = []
-ngaAds.rnd = []
+if(!window.ngaAds)
+	ngaAds = [];
+
+ngaAds.reset = function(ni){
+if(!ni)ngaAds.clear()
+this.nowTime = new Date;
+this.nowDay = (this.nowTime.getMonth()+1)+'/'+this.nowTime.getDate()+'/'+this.nowTime.getFullYear()
+this.nowDayTime = Date.parse(this.nowDay)
+this.rateSum = []
+this.rnd = []
+}//
+
+ngaAds.clear = function (){
+for(var k in this){
+	if(typeof k =='number' ||k.match(/^bbs_ads\d+$/))
+		delete this[k]
+	}
+this.length=0
+}//
+
+ngaAds.reset(1)
+
 ngaAds.genadslist = function (id)
 {
 //console.log('genadslist')
@@ -76,14 +93,55 @@ for (var k=0;k<this.length;k++){
 
 
 //-------------------------------
-ngaAds.genadslist();//<-------------------
+//<-------------------
+if(ngaAds.wait){
+	ngaAds._push = ngaAds.push
+	ngaAds.push = function ngaAdsPush(x){
+		//console.log('ngaAds.push '+x.id)
+		var caller = ngaAdsPush.caller ? ngaAdsPush.caller : arguments.caller , n = 'adslazyload_'+x.id , y = ''//domStorageFuncs.get(n)
+		domStorageFuncs.set(n, y+"\n\n;("+caller.toString().replace('ngaAds.push(','ngaAds.add(')+")();" , 3600)
+		}//
+	ngaAds.add = function(x){
+		//console.log('ngaAds.add '+x.id)
+		this._push(x)
+		this.genadslist(x.id)
+		}//
+	ngaAds.cacheLoadByName = function(n){
+		//console.log('ngaAds.cacheLoadByName '+n)
+		if(this.wait.length){
+			var y=this.wait
+			this.wait=[]
+			for(var i=0;i<y.length;i++)
+				this.cacheLoadByName(y[i])
+			}
+		if(!n)return
+		var k = 'adslazyload_'+n
+		var x = domStorageFuncs.get(k)
+		if(x)
+			eval(x)
+		//domStorageFuncs.remove(k)
+		__SCRIPTS.asyncLoad('dsid_'+n,2)
+		}//
 
-ngaAds._push = ngaAds.push
-ngaAds.push = function(x){
-this._push(x)
-this.genadslist(x.id)
-}//
-
+	if(navigator.userAgent.match(/iphone|mobile|IEMobile/i))
+		ngaAds.loadGroup('mobi')
+	else{
+		if(location.pathname=='/read.php')
+			ngaAds.loadGroup('read')
+		else if(location.pathname=='/thread.php')
+			ngaAds.loadGroup('thread')
+		else
+			ngaAds.loadGroup('other')
+		}
+	}
+else{
+	ngaAds.genadslist()
+	ngaAds._push = ngaAds.push
+	ngaAds.push = function(x){
+		this._push(x)
+		this.genadslist(x.id)
+		}//
+	}
 //-------------------------------
 
 ngaAds.genAdsCount = function (obj,u)
@@ -171,7 +229,7 @@ qu.insert=function(o,id){
 	}
 }//
 
-ngaAds.genAds = function (a){
+ngaAds.genAds = function (a,maxw){
 if(this[a.id+'_perproc'])
 	a = this[a.id+'_perproc'](a)	
 if (a.type=='js')
@@ -197,21 +255,21 @@ else if (a.type=='txt'){
 	return "<span style='"+(a.style?a.style:'')+"'>"+a.file+"</span>"
 	}
 else{
-	var ww = a.width|0 ? (a.width|0)+'px' : 'auto',hh = a.height|0 ? (a.height|0)+'px' : 'auto'
+	var ww = (a.width|=0) ? a.width+'px' : 'auto',hh = (a.height|=0) ? a.height+'px' : 'auto', aw=maxw && a.width>maxw ? maxw+'px' : ww, iml = maxw && a.width>maxw ?'-'+((a.width-maxw)/2)+'px':'auto'
 	if(a.placeholder){
 		if(!this.loadQueue)
 			this.loadQueueInit()
 		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;margin:auto;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
 		}
-	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', ic="<br/><img src='"+__IMG_STYLE+"/admark.png' style='margin:-18px 0 auto auto'>"
-	if(tp && tp[1]=='swf'){
+	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/), img='', ic="<br/><img src='"+__IMG_STYLE+"/admark.png' style='margin:-18px 0 auto calc(100% - 48px)'>"
+	/*if(tp && tp[1]=='swf'){
 		img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
-		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
+		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
 		return img
 		}
-	else if(tp){
-		img = "<img src='"+a.file+"' title='"+a.title+"' style='"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"'/>";
-		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+" style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+"px;margin:auto;text-align:right;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
+	else */if(tp){
+		img = "<img src='"+a.file+"' title='"+a.title+"' style='"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+";margin:auto;margin-left:"+iml+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"'/>";
+		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+" style='display:block;border:1px solid #000000;width:"+aw+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
 		return img;
 		}
 	else{
@@ -245,7 +303,9 @@ else{
 				}
 			rr = " onmouseenter='window[\""+rd+"\"].mouseenter(this)'  onmouseout='window[\""+rd+"\"].mouseout(this)' "
 			}
-		return "<ifr"+"ame scrolling='no' frameborder='0' style='border:1px solid #000000;margin:0px;width:"+ww+";height:"+hh+";overflow:hidden;"+(a.style?a.style:'')+"' src='"+a.file+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"' "+rr+"></ifr"+"ame>";
+		img =  "<ifr"+"ame scrolling='no' frameborder='0' style='border:1px solid #000000;margin:0px;width:"+ww+";height:"+hh+";overflow:hidden;margin:auto;margin-left:"+iml+";"+(a.style?a.style:'')+"' src='"+a.file+"' onload='"+(a.onload?'ngaAds["'+a.id+'"].onload.apply(this)':'')+"' "+rr+"></ifr"+"ame>";
+		img = "<div style='display:block;border:1px solid #000000;width:"+aw+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+"</div>"
+		return img;
 		}
 
 	}

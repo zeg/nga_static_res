@@ -50,6 +50,11 @@ postfunc.tmBit1 = {
 _TM_BIT1_REPLY_ONCE:1073741824,//
 }
 
+postfunc.postOptBit = {
+_OPT_VOTE_REPLY_VIEW:2048,//
+_OPT_VOTE_END_VIEW:4096,//
+}
+
 /**
  *发帖操作（action
  */
@@ -914,8 +919,35 @@ return t;
 
 }//fe
 
-//生成发帖输入窗口
 
+
+
+
+//
+postfunc.genFormFromApiData=function(d){
+var ift=function(x){
+	if((typeof x=='string' || typeof x=='number') && x!=='')
+		return true
+	}
+return this.genForm(
+	d.action,d.fid,d.tid,d.pid,d.__ST?d.__ST.tid:null,
+	d.__F.bit_data|0,
+	d.post_type|0,
+	ift(d.subject) ? d.subject+'':'' ,
+	ift(d.content) ? d.content+'':'' ,
+	d.attachs,
+	d.auth,
+	d.modify_append,
+	d.if_moderator,
+	(d.__T && d.__T.post_misc_var) ? d.__T.post_misc_var.vote : null,
+	(d.__P && d.__P.post_misc_var) ? d.__P.post_misc_var.vote : null,
+	(d.__T && d.__T.topic_misc_var) ? d.__T.topic_misc_var[1]|0 : 0,//tmbit1
+	d.type|0
+	)
+ }//fe
+
+
+//生成发帖输入窗口
 postfunc.genForm = function(mode,//新帖new 回复reply 引用quote 修改modify
 fid,//所在版面id
 tid,//回复的主题id
@@ -928,16 +960,18 @@ content,//内容 仅编辑时
 attach,//附件  仅编辑时
 auth,//附件上传验证码
 modifyAppend,//只能续写内容不能修改
-if_mod,//当前用户是否版主
+if_mod,//当前用户是否版主 lib_privilege::if_forum_admin
 topic_vote,//主题的vote数据 仅编辑或回复时
 post_vote,//回复的vote数据 仅编辑
-tmbit1
+tmbit1,
+tbit//主题的bit位
 			){
 var self=this,
 _GP = __GP,
 $ = _$,
 t =function(x){return window.document.createTextNode(x)}, 
-i=1, 
+i=1,
+otherData='',
 s = function(y,o,f,i){
 	var x = $('/select').$0('onchange',function(){if(this.options[this.selectedIndex].value)f.call(this); this.selectedIndex=0},$('/option').$0('value','','innerHTML','默认'),'style',{width:'5em',marginRight:'1em'})
 	for(var k in o)
@@ -949,7 +983,7 @@ s = function(y,o,f,i){
 ss = function(){
 	return $('button')
 	}
-	
+
 bit|=0
 tmbit1|=0
 
@@ -992,53 +1026,63 @@ this.o_setTopic={}
 this.o_liveTopic={}
 this.o_replyAnony={}
 this.o_replyOnce={}
+this.o_voteView={}
 
 var f_post = function(ob){
-			if(self.o_replyOnce.checked)
-				tmbit1 |= self.tmBit1._TM_BIT1_REPLY_ONCE
-			else
-				tmbit1 &= ~self.tmBit1._TM_BIT1_REPLY_ONCE
-			commonui.newPost(
-				ob,
-				mode,//操作
-				fbit,//版面bit type
-				fid,//版面id
-				tid,//主题id
-				pid,//回复id
-				mode==self.__NEW ? (self.o_setTopic.checked ? -1 : stid ) : null,//o_setTopic
-				self.o_subject.value,//标题
-				self.o_content.value,//内容
-				self.o_hidden.checked ? 1 : 0,//隐藏帖子 仅版主可见
-				self.o_selfReply.checked ? 1 : 0,//只有作者和版主可回复
-				self.o_attach.value,//附件
-				self.o_attachChk.value,//附件校验
-				self.o_vote.value,//投票内容
-				self.o_voteType.value,// 0投票 1投注铜币
-				self.o_voteMax.value,//每人最多可投 0不限
-				self.o_voteEnd.value,//小时后结束
-				self.o_voteBetMax.value,//投注最大值
-				self.o_voteBetMin.value,//投注最小值
-				self.o_voteLimit.value,//投票的声望限制
-				self.o_modifyAppend ? self.o_modifyAppend.value : null,
-				null,//self.o_comment ? (self.o_comment.checked ? 1 :0) : null
-				self.o_anony.checked ? 1 : 0,//匿名
-				self.o_liveTopic.checked ? 1 : 0,//live
-				self.o_replyAnony.checked ? 1 : 0,//匿名huifu
-				self.o_topicVote ? (function(o){
-					var u = o.getElementsByTagName('input'),w={}
-					for(var i=0;i<u.length;i++){
-						u[i].value = u[i].value.replace(/\s*/g,'')
-						if(u[i].value)
-							w[u[i].name] = u[i].value
-						else
-							return ''
-						}
-					return __NUKE.scEn(w)
-					})(self.o_topicVote) : null,
-				tmbit1
-				)
-			}
-var vo0,vo1,vo2,vo3,vo4,vo5,vo6,vo7,vo8,vo9
+	if(self.o_replyOnce.checked)
+		tmbit1 |= self.tmBit1._TM_BIT1_REPLY_ONCE
+	else
+		tmbit1 &= ~self.tmBit1._TM_BIT1_REPLY_ONCE
+	if(wordSeg)
+		otherData = '/*wordSeg '+wordSeg+' */'
+	post_opt = 0
+	if(self.o_voteView.value==1)
+		post_opt|=postfunc.postOptBit._OPT_VOTE_REPLY_VIEW
+	else if(self.o_voteView.value==2)
+		post_opt|=postfunc.postOptBit._OPT_VOTE_END_VIEW
+	commonui.newPost(
+		ob,
+		mode,//操作
+		fbit,//版面bit type
+		fid,//版面id
+		tid,//主题id
+		pid,//回复id
+		mode==self.__NEW ? (self.o_setTopic.checked ? -1 : stid ) : null,//o_setTopic
+		self.o_subject.value,//标题
+		self.o_content.value,//内容
+		self.o_hidden.checked ? 1 : 0,//隐藏帖子 仅版主可见
+		self.o_selfReply.checked ? 1 : 0,//只有作者和版主可回复
+		self.o_attach.value,//附件
+		self.o_attachChk.value,//附件校验
+		self.o_vote.value,//投票内容
+		self.o_voteType.value,// 0投票 1投注铜币
+		self.o_voteMax.value,//每人最多可投 0不限
+		self.o_voteEnd.value,//小时后结束
+		self.o_voteBetMax.value,//投注最大值
+		self.o_voteBetMin.value,//投注最小值
+		self.o_voteLimit.value,//投票的声望限制
+		self.o_modifyAppend ? self.o_modifyAppend.value : null,
+		null,//self.o_comment ? (self.o_comment.checked ? 1 :0) : null
+		self.o_anony.checked ? 1 : 0,//匿名
+		self.o_liveTopic.checked ? 1 : 0,//live
+		self.o_replyAnony.checked ? 1 : 0,//匿名huifu
+		self.o_topicVote ? (function(o){
+			var u = o.getElementsByTagName('input'),w={}
+			for(var i=0;i<u.length;i++){
+				u[i].value = u[i].value.replace(/\s*/g,'')
+				if(u[i].value)
+					w[u[i].name] = u[i].value
+				else
+					return ''
+				}
+			return __NUKE.scEn(w)
+			})(self.o_topicVote) : null,
+		tmbit1,
+		otherData,
+		post_opt
+		)
+	}
+var vo0,vo1,vo2,vo3,vo4,vo5,vo6,vo7,vo8,vo9,wordSeg=''
 var o_main = $('/span').$0(
 	
 	$('/table').$0(
@@ -1050,12 +1094,12 @@ var o_main = $('/span').$0(
 		//$('/caption').$0(
 		//	$('/h2').$0(t(':: 发布/编辑 ::'))
 		//	),
-			
+
 		//$('/thead').$0(
 		//	$('/tr').$0(
 		//		$('/td').$0(t('&nbsp; &nbsp;'))
 		//		)
-		//	),		
+		//	),
 		this.o_attach = $('/input').$0('name','attachments','type','hidden','id','attachments','value',''),
 		this.o_attachChk = $('/input').$0('name','attachments_check','type','hidden','id','attachments_check','value',''),
 		$('/tbody').$0(
@@ -1074,17 +1118,17 @@ var o_main = $('/span').$0(
 						'style',{width:'65%',marginRight:'0.5em'},
 						'value',subject
 						),
-					
+
 					mode==this.__NEW || mode==this.__MODIFY ? $('/span').$0(
 						'name','tk',
 						commonui.createTopicKeySelector(fid,function(k){self.o_subject.value = k+' '+self.o_subject.value})
 						) : null,
-					
+
 					commonui.prePostHintAfterSubject ? commonui.prePostHintAfterSubject(mode, fid, tid, pid, stid) : null
-					
+
 					)//td
 				),//tr__SETTING.bit & 4
-					
+
 			$('/tr').$0('className','row'+(((i++)&1)+1),
 				$('/td').$0('className','c2',
 					this.codeHelp()
@@ -1179,19 +1223,27 @@ var o_main = $('/span').$0(
 
 			$('/tr').$0('className','row'+(((i++)&1)+1),
 				$('/td','className','c2')._.add(
-					this.o_hidden = $('/input').$0('name','hidden','type','checkbox','value',1,'checked',(bit & this.postBit._POST_IF_HIDDEN) ? 1 : ''),
+					this.o_hidden = $('/input').$0('name','hidden','type','checkbox','value',1,'_nochange',1,'checked','','onchange',function(e){
+						if(this._nochange){
+							console.log(bit , postfunc.postBit._POST_IF_HIDDEN)
+							this.checked = (bit & postfunc.postBit._POST_IF_HIDDEN) ? 'checked' : ''
+							console.log(this.checked)
+							var o=this
+							setTimeout(function(){console.log(o.checked)})
+							commonui.cancelEvent(e)
+							return this._nochange=0
+							}
+						}),
 					t('隐藏内容 仅版主可见 '),
-					mode==this.__NEW ? this.o_selfReply = $('/input').$0('name','self_reply','type','checkbox','value',1,'checked',(bit & this.postBit._POST_IF_SELF_REPLY) ? 1 : '') : null,
+					mode==this.__NEW ? this.o_selfReply = $('/input').$0('name','self_reply','type','checkbox','value',1,'checked',(tbit & this.postBit._POST_IF_SELF_REPLY) ? 1 : '') : null,
 					mode==this.__NEW ? t('只有作者和版主可回复 ') : null,
-					mode==this.__NEW && _GP.lesser ? this.o_setTopic = $('/input').$0('type','checkbox','checked',(bit & this.postBit._POST_IF_SET) ? 1 : '') : null,
+					mode==this.__NEW && _GP.lesser ? this.o_setTopic = $('/input').$0('type','checkbox','checked',(tbit & this.postBit._POST_IF_SET) ? 1 : '') : null,
 					mode==this.__NEW && _GP.lesser ? $('/span').$0('innerHTML','合集主题 ','title','集合主题如同一个版面 用户可在其下发布子主题 发布集合主题会扣除5金币 版主免费') : null,
-					
 					mode==this.__NEW && _GP.lesser ? $('/span').$0('title','发布一个直播 可在直播系统中更新内容 (直播系统所有用户均可访问)')._.add(this.o_liveTopic = $('/input').$0('type','checkbox'), '发布直播(alpha) ') : null,
 					mode!=this.__MODIFY ? this.o_anony = $('/input').$0('type','checkbox','checked','','onclick',function(){if(this.checked)alert('匿名发布主题需要5000铜币\n\n匿名发布回复需要100铜币\n\n匿名发布的内容如果违反版规将会加重处罚\n\n因为很重要所以再说一次，加 重 处 罚')}) : null,
 					mode!=this.__MODIFY ? $('/span').$0('innerHTML','匿名发帖 ','title','匿名发帖，将不显示发帖人的任何信息') : null,
 
 					mode==this.__NEW && if_mod ? $('/span').$0('title','此主题所有的回复自动匿名')._.add(this.o_replyAnony= $('/input').$0('type','checkbox'), '回复自动匿名 ') : null,
-					
 					(mode==this.__NEW/*||mode==this.__MODIFY*/) ? $('/span').$0('title','2000个回复之内 除主题发布人之外的用户只能回复一次')._.add(this.o_replyOnce= $('/input').$0('type','checkbox','checked',(tmbit1 & this.tmBit1._TM_BIT1_REPLY_ONCE) ? 1 : ''), '每个用户只能回复一次 ') : null,
 					/*
 					((mode==this.__REPLY || mode==this.__QUOTE) && _GP.admin) ? 
@@ -1246,6 +1298,8 @@ var o_main = $('/span').$0(
 							if(document.selection)
 								self._selection = document.selection.createRange().duplicate();
 							},//fe
+						'_prvSPos',0,
+						'_prvSPos1',0,
 						'onkeyup',function (e){
 							if(e.keyCode == 18){
 								if(this._cws){
@@ -1327,14 +1381,14 @@ var o_main = $('/span').$0(
 						)
 					)
 				})(topic_vote,post_vote),
-			(if_mod&14) && mode==this.__NEW ? $('/tr').$0('className','row'+(((i++)&1)+1),
+			mode==this.__NEW ? $('/tr').$0('className','row'+(((i++)&1)+1),
 				$('/td').$0('className','c2',
 					this.o_voteType = $('/select').$0(
 						'name','newvote_type',
 						$('/option').$0('value','','innerHTML','无投票'),
 						$('/option').$0('value','0','innerHTML','投票'),
-						_GP.greater? $('/option').$0('value','1','innerHTML','投注铜币') : null,
-						$('/option').$0('value','2','innerHTML','评分'),
+						(if_mod&14)&&_GP.greater? $('/option').$0('value','1','innerHTML','投注铜币') : null,
+						(if_mod&14)?$('/option').$0('value','2','innerHTML','评分') : null,
 						'onchange', function(){
 							vo5.style.display = this.value==''? 'none' : ''
 							if(this.value == '0'){
@@ -1369,7 +1423,7 @@ var o_main = $('/span').$0(
 							vo1.style.display = (this.value == '2' ?'none' : '')
 							}
 						),
-					vo5 = $('/span','style','display:none',
+					vo5 = $('/span','style','display:none')._.add(
 						vo0 = $('/span'),
 						vo1 = this.o_voteMax = $('/input').$0('name','newvote_max','size','3','value',1),
 						vo2 = $('/span'),
@@ -1380,6 +1434,13 @@ var o_main = $('/span').$0(
 						vo8 =	this.o_voteBetMax = $('/input').$0('name','newvote_betmax','size','3','value',''),
 						vo9 = $('/span'),
 						this.o_voteLimit = $('/input').$0('name','newvote_limit','size','5','value','','title','发贴版面的第一个声望 -21000~21000'),
+						'\u2003',
+						this.o_voteView = $('/select',
+							$('/option','value',0,'innerHTML','即时查看结果'),
+							$('/option','value',1,'innerHTML','提交后可查看结果'),
+							$('/option','value',2,'innerHTML','结束后可查看结果')
+							),
+						(if_mod&14) ? null : ' 非版主发布投票会扣除50银币',
 						this.o_vote = $('/textarea').$0('name','newvote','style',{width:'98%',height:'6em',lineHeight:'1.538em'},'value','')
 						)
 					)
@@ -1449,6 +1510,31 @@ var o_ath = $('/table').$0(
 		)
 	
 	)
+	
+if ('selectionStart' in this.o_content) 
+	this.o_content.$0('onkeyup',function(e){
+		var n= this.selectionEnd
+		if(this.selectionStart==n &&wordSeg.length<100){
+			if(n-this._prvSPos>1 && n-this._prvSPos<5)
+				wordSeg+=this.value.substr(this._prvSPos,n-this._prvSPos)
+			
+			}
+		this._prvSPos = this.value.charAt(n-1)==' '?n-1 : n
+			
+		/*mspinyin
+			if(this.selectionStart==this.selectionEnd && wordSeg.length<100){
+				/*mspinyin
+				var s = this.selectionStart
+				if(s<this._prvSPos1){
+					if(s-this._prvSPos>1 && s-this._prvSPos<5){
+						wordSeg+=this.value.substr(this._prvSPos,s-this._prvSPos)+'\t'
+						this._prvSPos = s
+						}
+					}
+				this._prvSPos1 = s
+				}
+		*/
+		})
 
 if(attach){
 	for(var j in attach){
@@ -1618,12 +1704,10 @@ commonui.openPostWindow = function(e,mode,fid,tid,pid,stid,sfid,pcontent){
 var self = this, p = postfunc
 if(!commonui.quoteTo)
 	loader.script(__SCRIPTS.quoteTo)
-
 var ift=function(x){
 	if((typeof x=='string' || typeof x=='number') && x!=='')
 		return true
 	}
-
 if(!p.pwindow){
 	p.pwindow = commonui.createCommmonWindow()
 	var o = p.pwindow._.__c.parentNode
@@ -1702,10 +1786,14 @@ return __NUKE.doRequest({
 		
 		postfunc.currentPostStat = d
 		
-		var d = postfunc.genForm(//mode,fid,tid,pid,stid,fbit,bit,subject,content,attach
+		if(ift(pcontent))d.content = pcontent
+		
+		var d = postfunc.genFormFromApiData(d)
+		/*
+		postfunc.genForm(//mode,fid,tid,pid,stid,fbit,bit,subject,content,attach
 			mode,d.fid,d.tid,d.pid,d.__ST.tid,
-			__NUKE.toInt(d.__F.bit_data),
-			__NUKE.toInt(d.type),
+			d.__F.bit_data|0,
+			d.post_type|0,
 			d.subject+'' ,
 			ift(pcontent) ? pcontent+'' : (d.content+'' ),
 			d.attachs,
@@ -1714,8 +1802,9 @@ return __NUKE.doRequest({
 			d.if_moderator,
 			d.__T.post_misc_var.vote,
 			d.__P.post_misc_var.vote,
-			d.__T.topic_misc_var[1]|0//tmbit1
-			)
+			d.__T.topic_misc_var[1]|0,//tmbit1
+			d.type|0
+			)*/
 		if(__SETTING.uA[0]==1 && __SETTING.uA[1]<=6 && $('fastposttopickeyselector'))
 			$('fastposttopickeyselector').style.display='none'
 		p.pwindow._.addContent(null)
@@ -2079,7 +2168,9 @@ anony,//匿名
 live,//直播
 replyAnony,//回复匿名
 topicVote,//评分主题评分
-tmbit1
+tmbit1,
+otherData,
+post_opt
 ){
 if(opt&1)
 	return
@@ -2107,6 +2198,7 @@ fbit = fbit|0
 tid = tid|0
 pid = pid|0
 stid = stid|0
+post_opt|=0
 
 modifyAppend = modifyAppend ? 1 : ''
 comment = comment ? 1 : ''
@@ -2142,6 +2234,9 @@ if((opt&2) == 0){
 		vote = ''
 	if(voteType==1 && !voteEnd)
 		return unlock('投注必须有结束时间');
+	
+	if((post_opt & postfunc.postOptBit._OPT_VOTE_END_VIEW) && !voteEnd)
+		return unlock('投票/投注必须有结束时间');
 
 	//标题中的符号
 	var x = _$('</span>')
@@ -2257,14 +2352,14 @@ if(action == P.__NEW  && (fbit & P._bit.if_force_topickey) && (opt&4)==0 ){
 	if (cache._topic_key){
 		opt|=4
 		var x,y,z
-		console.log(subject)
+		
 		for (var k in cache._topic_key){
 			x = cache._topic_key[k]
 			if(x[1]){
 				y=1
 				if(x[0].indexOf('[')==0) x=x[0]
 				else x='['+x[0]+']'
-				console.log(x)
+
 				if (subject.indexOf(x)!=-1){
 					z=1
 					console.log(9)
@@ -2453,7 +2548,7 @@ var argmap = {'action':action,//操作
 	'self_reply':selfReply,//只有作者和版主可回复
 	'attachments':attach,//附件
 	'attachments_check':attachChk,//附件校验
-	'hidden_content':'',//隐藏的内容
+	'other_data':otherData,//隐藏的内容
 	'filter_key':'',//有监视词
 	'has_auto_translate':hasAutoTran,//有自动翻译词
 	'hide_upload':'',//折叠上传文件
@@ -2477,7 +2572,7 @@ var argmap = {'action':action,//操作
 	'tpic_misc_bit1':tmbit1,
 	'per_check_code':cache._perCheckCode,//验证码
 	'nojump':1,
-	'post_opt':window._tmp_post_opt|0,
+	'post_opt':post_opt|0,
 	'lite':'htmljs',
 	step:2
 	},arg={}
@@ -2501,23 +2596,25 @@ __NUKE.doRequest({
 			C.createadminwindow()
 			C.adminwindow._.addContent(null)
 			C.adminwindow._.addTitle(d.data.__MESSAGE[1])
-			
-			var c01,c02,c03=d.data.__MESSAGE[5],c04=5,u = d.data.__MESSAGE[6],thetid,ifmod = postfunc.currentPostStat ? postfunc.currentPostStat.if_moderator : __GP.admincheck
-			
+
+			var c01,c03=d.data.__MESSAGE[5],u = d.data.__MESSAGE[6],thetid,ifmod = postfunc.currentPostStat ? postfunc.currentPostStat.if_moderator : __GP.admincheck,apc=P.afterPostCount
+
+			apc.clear()
+
 			if(thetid=u.match(/(?:\?|&)tid=(\d+)/))thetid=thetid[1]
-			
+
 			if(btn && btn._nojump){
 				//console.log(d.data.__MESSAGE[1])
 				unlock('1 done')
 				return true
 				}
-			
+
 			C.adminwindow._.addContent(
 				c01 = $('/div')._.cls('ltxt b')._.add(
 					"发贴完毕 ",
-					c02 = $('/span','innerHTML',c04),
+					apc.c = $('/span','innerHTML',apc.i),
 					'秒后跳转 ',
-					$('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
+					apc.j = $('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
 					' ',
 					$('/a','href','javascript:void(0)','className','gray','innerHTML','(点此取消跳转)'),
 					' ',
@@ -2525,7 +2622,7 @@ __NUKE.doRequest({
 						var sv = commonui.userCache.get('tColorOnPost')
 						if(!sv)
 							return __NUKE.fireEvent(this.nextSibling,'click')
-						
+
 						__NUKE.doRequest({
 							u:__API.topicColor(thetid,sv,1)
 							})
@@ -2557,27 +2654,31 @@ __NUKE.doRequest({
 				);//addContent
 			C.adminwindow._.on(
 				'mousedown',function(){
-					window.clearInterval(c01._countTimeout)	
+					apc.clear()
 					}
 				)
 			C.adminwindow._.show()
-			
-			c01._countTimeout = window.setInterval(function(){
-				c04--
-				c02.innerHTML = c04
-				if(c04<1)
-					window.location.href=u
+
+			apc.t = setInterval(function(){
+				apc.i--
+				if(apc.c)
+					apc.c.innerHTML = apc.i
+				if(apc.i<1){
+					if(apc.j)
+						commonui.triggerEvent(apc.j,'click')
+					apc.clear()
+					}
 				}, 1000)
-				
-			window.setTimeout(function(){unlock()},1000)
-			
+
+			setTimeout(function(){unlock()},1000)
+
 			return true
 			}//if
-			
+
 		alert( (d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]) ? d.data.__MESSAGE[1] : 'DATA ERROR')
-		
+
 		unlock()
-		
+
 		return true
 		},//fe
 
@@ -2590,14 +2691,20 @@ __NUKE.doRequest({
 }//fe
 
 
+
 })();
 
 
+postfunc.afterPostCount = {t:null,i:5,j:null,c:null,clear:function(){
+	if(this.t)
+		clearInterval(this.t)
+	this.c = this.j = null
+	this.i=5
+	}}
 
-
-
-
-
+postfunc.reset = function(){
+if(this.afterPostCount && this.afterPostCount.clear)this.afterPostCount.clear()
+}//
 
 
 

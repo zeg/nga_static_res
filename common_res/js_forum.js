@@ -362,7 +362,6 @@ else if(type & 65536){
 else
 	this.loadThreadInfo.lastSet = 0
 
-	
 if(type & 2097152){
 	o_replies.href=o_topic.href = '/thread.php?fid='+topicMisc._SFID
 	o_replies.innerHTML="<img src='"+commonui.forumIcon(topicMisc._SFID)+"' style='vertical-align:middle'/>"
@@ -884,10 +883,11 @@ var x = $('/div').$0('className','ltxt b','style','width:40em',
 	//$('/a').$0('href',__API.keyword_watch(fid),'innerHTML','关键词监视记录'),
 	__GP.admincheck ? $('/a').$0('href','javascript:void(0)','innerHTML','关键词监视','onclick',function(e){adminui.setFilter(null,fid,2)}) : null,
 	__GP.superlesser ? $('/a').$0('href','javascript:void(0)','innerHTML','关键词删除','onclick',function(e){adminui.setFilterG()}) :null,
-	$('/a').$0('href','javascript:void(0)','innerHTML','新用户限制','onclick',function(e){adminui.setNewUserPostLimit(e,fid)}),
-	$('/a').$0('href','javascript:void(0)','innerHTML','镜像到主题','onclick',function(e){adminui.quoteForum(e,fid)}),
-	$('/a').$0('href','javascript:void(0)','innerHTML','子版面设置','onclick',function(e){adminui.setSets(e,fid)}),
-	$('/a').$0('href','javascript:void(0)','innerHTML','发帖提示','onclick',function(e){adminui.setHint(e,fid)})
+	$('/a','href','javascript:void(0)','innerHTML','新用户限制','onclick',function(e){adminui.setNewUserPostLimit(e,fid)}),
+	$('/a','href','javascript:void(0)','innerHTML','镜像到主题','onclick',function(e){adminui.quoteForum(e,fid)}),
+	$('/a','href','javascript:void(0)','innerHTML','子版面设置','onclick',function(e){adminui.setSets(e,fid)}),
+	$('/a','href','javascript:void(0)','innerHTML','发帖提示','onclick',function(e){adminui.setHint(e,fid)}),
+	$('/a','href','javascript:void(0)','innerHTML','关键词统计','onclick',function(e){adminui.keywordStat(e,fid)})
 	//__GP.admincheck ? $('/a').$0('href','javascript:void(0)','innerHTML','版面背景图','onclick',function(e){adminui.setForumPic(e)}) : null,
 
 	)

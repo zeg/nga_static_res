@@ -546,6 +546,9 @@ arg.txt = arg.txt.replace(/&amp;#(\d{2,8});/g,function($0,$1){
         return  $0
     })
 	 
+if(window.adminui && adminui.bbscode_min_admin)
+	adminui.bbscode_min_admin(arg)
+
 if(this.bbscode_mid)
 	this.bbscode_mid(arg)
 
@@ -1550,7 +1553,7 @@ else{
 
 //¥¶¿Ìsrc
 if(!src.match(/^[\x00-\x7F]+$/))
-	return false
+	return '/* bbscode img error */'+src+'/* bbscode img error */'
 
 if(src && src.substr(0,1)=='.'){
 	src = src.replace(/^\.(\d+)?\//,function($0,$1){
@@ -1561,6 +1564,7 @@ if(src && src.substr(0,1)=='.'){
 	}
 if(src && !src.match(/^https?:\/\//)) 
 	src = 'http://'+src;
+
 if(commonui.correctAttachUrl)
 	src = commonui.correctAttachUrl(src)
 

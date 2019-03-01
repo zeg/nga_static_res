@@ -161,3 +161,24 @@ return c
 }//fe
 
 })();
+
+
+
+;(function(){
+var img,mo,sr=__IMG_STYLE+'/moss.gif'
+ubbcode.mossBtn = function(e,o){
+if(!img){
+	img = new Image()
+	img.onload = function(){ubbcode.mossBtn(e,o)}
+	img.src=sr
+	return
+	}
+var p = o.getBoundingClientRect(), q=__NUKE.position.get()
+if(mo)
+	mo.parentNode.removeChild(mo)
+mo = _$('/div','style','borderTop:1px solid #000;width:99px;height:89px;position:absolute;left:'+(p.left-42+q.xf)+'px;top:'+(p.bottom+q.yf)+'px;background:url('+sr+') no-repeat;backgroundPosition:0 -89px;transition:background-position 2300ms ease-out;')
+document.body.appendChild(mo)
+setTimeout(function(){mo.style.backgroundPosition='0 0'},100)
+setTimeout(function(){mo.onclick=function(){this.parentNode.removeChild(this)}},8000)
+}//
+})();

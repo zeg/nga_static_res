@@ -12,16 +12,28 @@ written by zeg 20051010
 if(!window.ngaAds)
 	ngaAds = [];
 
-ngaAds.ckurl = function(url){
-	return location.pathname==url ? true : false
+ngaAds.maxw=function(){
+if(this.maxw.w)return this.maxw.w
+return this.maxw.w = __NUKE.position.get().cw-__COLOR.mwm*2-5*2
+}//
+
+ngaAds.loadGroup=function(g){
+if(g=='mobi'){
+	this.cacheLoadByName('dsid_bbs_ads44')
 	}
-ngaAds.clear = function (){
-var s = this
-for (var k in s){
-	if(k.match(/^bbs_ads\d+$/))
-		delete s[k]
+else{
+	this.cacheLoadByName('bbs_ads12')
+	this.cacheLoadByName('bbs_ads1')
+	if(g=='read'){
+		this.cacheLoadByName('bbs_ads24')
+		this.cacheLoadByName('bbs_ads45')
+		this.cacheLoadByName('bbs_ads22')
+		}
+	else if(g=='thread'){
+		this.cacheLoadByName('bbs_ads22')
+		}
 	}
-}
+}//
 
 ngaAds.style =function(x) {
 switch(x){
@@ -98,11 +110,11 @@ if ((ngaAds.count31 == 1) && (this.bbs_ads31 || this.bbs_ads1 || this.bbs_ads40 
 	var x='', z=$(id).parentNode
 	x+="<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"
 	if(this.bbs_ads1)
-		x+=this.genAds(this.bbs_ads1)
+		x+=this.genAds(this.bbs_ads1,this.maxw())
 	if(this.bbs_ads40 || this.bbs_ads41)
 		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads40)+'</td><td>'+this.genAds(this.bbs_ads41)+'</td></tr></table>'
 	else if(this.bbs_ads31)
-		x+=this.genAds(this.bbs_ads31)
+		x+=this.genAds(this.bbs_ads31,this.maxw())
 	x+="<div class='clear'></div></div>"
 	if(z.nodeName!='TABLE')z = z.parentNode
 	z.parentNode.insertBefore(_$('/span').$0('innerHTML',x), z.nextSibling) 
@@ -113,7 +125,7 @@ if ((ngaAds.count31 == 10) && (this.bbs_ads33 || this.bbs_ads42 || this.bbs_ads4
 	if(this.bbs_ads42 || this.bbs_ads43)
 		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads42)+'</td><td>'+this.genAds(this.bbs_ads43)+'</td></tr></table>'
 	else if(this.bbs_ads33)
-		x+=this.genAds(this.bbs_ads33)
+		x+=this.genAds(this.bbs_ads33,this.maxw())
 	x+="<div class='clear'></div></div>"
 	if(z.nodeName!='TABLE')z = z.parentNode
 	z.parentNode.insertBefore(_$('/span').$0('innerHTML',x), z.nextSibling) 
@@ -209,7 +221,7 @@ if(__SETTING.bit & 4)
 	return '';
 
 if (this.bbs_ads1)
-	return "<div style='"+this.style('adsc')+this.style('adsc1')+"'>"+this.genAds(this.bbs_ads1)+'</div>'
+	return "<div style='"+this.style('adsc')+this.style('adsc1')+"'>"+this.genAds(this.bbs_ads1,this.maxw())+'</div>'
 return ''
 }
 
@@ -221,15 +233,16 @@ if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
 	return
 var n=ngaAds, x=''
 if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && __CURRENT_FID==-7)){
-	x+="<div style='"+n.style('adsc')+";margin-bottom:8px;'>";
+	x+="<div style='"+n.style('adsc')+";margin-bottom:8px;'>"
+	var xw = this.maxw()
 	if(n.bbs_ads1)
-		x+=n.genAds(n.bbs_ads1)
+		x+=n.genAds(n.bbs_ads1, xw)
 	if(n.bbs_ads9)
-		x+=n.genAds(n.bbs_ads9)
+		x+=n.genAds(n.bbs_ads9, xw)
 	if(n.bbs_ads23)
-		x+=n.genAds(n.bbs_ads23)
+		x+=n.genAds(n.bbs_ads23, xw)
 	if(n.bbs_ads28)
-		x+=n.genAds(n.bbs_ads28)
+		x+=n.genAds(n.bbs_ads28, xw)
 	x+="</div>"
 	}
 if(x){

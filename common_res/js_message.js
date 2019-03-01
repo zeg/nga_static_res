@@ -420,7 +420,7 @@ httpDataGetter.script_muti_get(
 							),
 						$('/br'),
 						$('/span').$0(
-							'innerHTML',ubbcode.bbscode_core({
+							'innerHTML',ubbcode.bbsCode({
 								txt:d.content.toString().replace(/\n|\r/g,''),
 								tId:mid,
 								pId:d.id,

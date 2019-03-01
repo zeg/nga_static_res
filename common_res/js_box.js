@@ -1,8 +1,6 @@
 
 ;(function(){
 
-commonui.loadReadHidden=null
-
 var $ = _$, HTTP = new XMLHttpRequest()
 cs = document.characterSet || document.defaultCharset || document.charset;
 var error = function(e,a){
@@ -32,11 +30,20 @@ P.frame = (window.parent==window)
 P.off=false
 P.aInit=false
 P.init=function(o){
+if(!window.commonui)
+	return setTimeout(function(){P.init()},50)
+
 if(this.off)return
 if(this.aInit)return
 this.aInit=true
 
+if(commonui)
+	commonui.htmlLoader =  this
+
+window.addEventListener('popstate',function(e){P.onPopHis(e.state)})
 document.body.addEventListener('click',function(e){
+	if(e.shiftKey || e.altKey || e.ctrlKey)
+		return
 	var h = commonui.parentAHerf(e.target || e.srcElement)
 	if(!h || !h._useloadread)//&1使用htmlloader加载 &8如果可能使用连续加载
 		return
@@ -59,7 +66,7 @@ document.body.addEventListener('click',function(e){
 		e.cancelBubble = true;
 		e.preventDefault()
 		e.stopPropagation()
-		P.go(1|((h._useloadread&8)?8:0),{url:h.href,pos: ((o && o.id)?{posId:o.id,posRect:P.getRect(o)}:null) })
+		P.go(1|((h._useloadread&8)?8:0)|(h.href==location.href?32:0),{url:h.href,pos: ((o && o.id)?{posId:o.id,posRect:P.getRect(o)}:null) })
 		return false
 		}
 	P.go(0)
@@ -85,7 +92,7 @@ this.mc.style.display='none'
 
 /**
  * 
- * @param {type} act &1加载链接 &4不更新历史记录 &8如果可能连续加载页面
+ * @param {type} act &1加载链接 &4不添加历史记录 &8如果可能连续加载页面 &16替换历史记录 &32清除缓存
  * @param {type} go {url:目标地址, 
  *		pos:{偏移坐标等信息
  *		xf:
@@ -104,7 +111,7 @@ if(act & 1){
 	if((act&8)==0)
 		P.ifContinuePage &= ~3
 	if((P.ifContinuePage&4) && P.curUrl.pathname=='/read.php')
-		act |=4
+		act |=16
 	if((act&4)==0 && this.frame){
 			var s = history.state
 			if(!s)s={til:document.title,url:location.href}
@@ -149,18 +156,25 @@ return {top:x.top,right:x.right,bottom:x.bottom,left:x.left}
 
 P.showNew = function(act,data,go){
 var html=data.html.join(''),script = [],til = data.til,url=data.url, ok = P.ifContinuePage, scrollto
-//console.log(data)
+
 for(var i=0;i<data.scriptPre.length;i++)
 	commonui.eval(data.scriptPre[i])
 
-if(ok&3){//连续加载页时只运行一部分脚本
-	for(var i=0;i<data.script.length;i++)
-		if(data.script[i].match(/^\s*(\/\/topicloadallstart|commonui\.topicArg\.add|\/\/userinfostart|ngaAds\.bbs_ads8_load_new|commonui\.postArg\.proc|ubbcode\.attach\.load|\/\/everyload)/) )
-			script.push(data.script[i])
+//load ads
+if(ngaAds && ngaAds.reset){
+	ngaAds.reset()
+	if(navigator.userAgent.match(/iphone|mobile|IEMobile/i))
+		ngaAds.loadGroup('mobi')
+	else{
+		if(url.match(/\/read\.php/))
+			ngaAds.loadGroup('read')
+		else if(url.match(/\/thread\.php/))
+			ngaAds.loadGroup('thread')
+		else
+			ngaAds.loadGroup('other')
+		}
 	}
-else
-	script = data.script
-
+//add new html
 if(ok&3){//连续翻页
 	var th='<theader><tr><th colspan=6 id="continuepage'+(P.curUrl._arg.page-(ok&1?0:1))+'" style="font-size:0.833em;font-weight:normal"> PAGE '+(P.curUrl._arg.page+(ok&1?0:1))+' </th></tr></theader>'
 	if(P.curUrl.pathname=='/thread.php'){
@@ -190,12 +204,36 @@ if(ok&3){//连续翻页
 	commonui.pageBtn(e[1],[__PAGE[0], __PAGE[1], P.minUrl._arg.page, __PAGE[3], P.maxUrl._arg.page],2|8)
 	}
 else{
-	P.mcClear()
+	P.mcClear()//del global var here
 	P.mcInsert(html)
 	}
+
+
+
+//inline script proc
+if(ok&3){//连续加载页时只运行一部分脚本
+	for(var i=0;i<data.script.length;i++)
+		if(data.script[i].match(/^\s*(\/\/topicloadallstart|commonui\.topicArg\.add|\/\/userinfostart|ngaAds\.bbs_ads8_load_new|commonui\.postArg\.proc|ubbcode\.attach\.load|\/\/everyload)/) )
+			script.push(data.script[i])
+	}
+else{
+	//save global var name in script
+	/*var e = (this.mcClear.currentGlobal=[])
+	for(var i=0;i<data.script.length;i++)
+		data.script[i].replace(/(?:^|\n)\s*(__[a-zA-z)-9_]+)(?:\s*)=/g,
+			function(m,n){
+				console.log(m)
+				e.push(n)
+				return m
+				})*/
+	script = data.script
+	}
+
+
+
 if(go.isHis)
 	scrollto = go.pos
-
+//console.log('act',act)
 commonui.progbar(75,5000)
 P.runScript(script,0,function(){
 	P.mcShow()
@@ -206,9 +244,9 @@ P.runScript(script,0,function(){
 	P.scroll(scrollto)
 
 	if((act&4)==0){
-		//console.log('his3',document.title,url)
+		console.log('his3',document.title,url)
 		if(P.frame)
-			history.pushState({from:'htmlLoader',url:url,til:document.title},document.title,url)//渲染完成后保存访问历史
+			history[act&16 ? 'replaceState' : 'pushState']({from:'htmlLoader',url:url,til:document.title},document.title,url)//渲染完成后保存访问历史
 		}
 	if(!P.frame){
 		try{
@@ -291,11 +329,30 @@ for(var i=0;i<y.length;i++){
 		//z.appendChild(o)
 		}
 	}
+if(i = this.mcClear.currentGlobal.length){
+	while(--i>=0)
+		window[this.mcClear.currentGlobal[i]] = undefined
+	//this.mcClear.currentGlobal=[]
+	}
+if(commonui.postBtn && commonui.postBtn.clearCache)
+	commonui.postBtn.clearCache()
+
+if(commonui.postArg && commonui.postArg.clearCache)
+	commonui.postArg.clearCache()
+
+if(commonui.time2dis)
+	commonui.time2dis.now=null
+
+if(postfunc && postfunc.reset)
+	postfunc.reset()
+
 //return z
 }//fe
+P.mcClear.currentGlobal=["__CURRENT_FID", "__CURRENT_F_BIT", "__CURRENT_F_ALLOWPOST", "__ALL_FORUM_DATA", "__ALL_SET_DATA", "__SELECTED_FORUM", "__SELECTED_FORUM_ADD", "__SELECTED_SET", "__SUB_AND_UNION_FORUM_AND_SET", "__CURRENT_ORDER", "__CURRENT_PAGE", "__SUB_SET", "__SUB_AND_UNION_FORUM",  "__CURRENT_F_ALLOWREPLY", "__CURRENT_TID", "__CUSTOM_LEVEL",'__AUTO_TRANS_FID']
 
 P.mcInsert = function(html){
 var x = $('/span'),mc=this.mc,at=this.mcAt
+
 x.innerHTML=html
 while(x.firstChild)
 	mc.insertBefore(x.removeChild(x.firstChild),at)
@@ -311,6 +368,17 @@ if(st && st.from=='htmlLoader' && st.url){
 
 P.his=[]
 P.loadNew=function(act,go){
+if(act&32){
+	var m = go.url.match(preg),h=[]
+	for(var i=0;i<this.his.length;i++){
+		var n = this.his[i].url.match(preg)
+		if(m[1]!=n[1])
+			h.push(this.his[i])
+		else
+			this.his[i]=null
+		}
+	this.his = h
+	}
 for(var i=0;i<this.his.length;i++){
 	if(go.url==this.his[i].url)
 		return P.showNew(act,this.his[i],go)
@@ -466,17 +534,10 @@ while(o.nodeType!=1 || o.nodeName=='SCRIPT'){
 return o
 }//
 
-commonui.htmlLoader = P
-
-commonui.aE(window,'popstate',function(e){P.onPopHis(e.state)})
-
-
+window.__LOADERREAD = P
+window._LOADERREAD = P
 })();
 
-
-
-
-var _LOADERREAD = commonui.htmlLoader
 
 
 
