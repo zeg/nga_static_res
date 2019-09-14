@@ -15,7 +15,7 @@ getHintPos:null,
 
 init:function(name,nick,icon,honor,id,start){
 
-var mm = _$('mainmenu').$0('innerHTML','','className',null)
+var mm = _$('mainmenu','innerHTML','','className','')
 
 if(commonui.checkIfInIframe()){
 	if(mm)mm.style.display='none'
@@ -57,7 +57,10 @@ if(id){
 
 	}
 
-mm.appendChild(this.loadHis())
+mm._.add(
+	this.loadHis()
+	//,(__SETTING.bit & __SETTING.bits.noTopBg) ? _$('/div','style','position:absolute;width:1.5em;height:1.5em;left:calc(50% - 0.75em);margin-top:-1.2em;border-radius:0.75em;backgroundColor:'+__COLOR.bg4,__TXT.svg('down','width:0.6em;margin:1em auto auto 0.45em;fill:'+__COLOR.border0)	) : null
+	)
 
 },
 

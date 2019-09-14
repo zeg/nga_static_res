@@ -171,24 +171,35 @@ adminui.addpoint = function (e,tid,pid,fid)
 
 this.createadminwindow()
 this.w._.addContent(null)
-var $ = _$, n, de=function(x){return $('/span','className','silver','innerHTML',x)},rr,rs,ri,rv,ni,rg,rt,rx,
+var $ = _$, n, de=function(x){return $('/span','className','silver','innerHTML',x)},dig,rr,rs,ri,rv,ni,rg,rt,rx,
 lv = function(v){
 	return $('/input').$0('type','radio','name','level','value',v,'onclick',function(){
-		rr.checked=(this.value&(16|32|64|128)) ? false :true
+		dig.checked=(this.value&(16|32|64|128)) ? false :true
+		if(dig.checked){
+			rt.checked = true
+			if(rr)
+				rr.checked=true
+			}
 		})
 	},
 sw = function(x){
 	if(x){
 		rs.style.display=''
 		ri.style.display='none'
-		on(rr)
+		on(dig)
+		on(rt)
+		if(rr)
+			on(rr)
 		on(rv)
 		on(rg)
 		}
 	else{
 		rs.style.display='none'
 		ri.style.display=''
-		off(rr)
+		off(dig)
+		off(rt)
+		if(rr)
+			off(rr)
 		off(rv)
 		if(!__GP.superlesser)
 			off(rg,'需要Superlesser权限')
@@ -196,8 +207,8 @@ sw = function(x){
 	},
 on = function(o){
 	if(o._x)return
-	if(o._c)o.checked = o._c 
-	if(o._v)o.value = o._v
+	//if(o._c)o.checked = o._c 
+	//if(o._v)o.value = o._v
 	o.disabled=''
 	o.title=''
 	o.onclick = function(){}
@@ -208,9 +219,9 @@ off = function(o,t,x){
 		o.title = t
 		o.onclick = function(){alert(this.title)}
 		}
-	o._c = o.checked
-	o._v = o.value
-	o.checked=o.value=''
+	//o._c = o.checked
+	//o._v = o.value
+	//o.checked=o.value=''
 	o.disabled=true
 	}
 
@@ -224,7 +235,7 @@ this.w._.addContent(
 			}),'评分 ',
 		$('/input').$0('type','radio','name','act','value',4194304,'onclick',function(){
 			if(this.checked)sw()
-			}),'设置声望 ',$('/br'),
+			}),'加减声望 ',$('/br'),
 		$('/br'),
 		rs=$('/span')._.add(
 		'增加声望值',$('/br'),
@@ -286,9 +297,11 @@ this.w._.addContent(
 		$('/br'),
 		rg = $('/input').$0('type','checkbox','value','1','checked','1'),' 增加/扣除金钱** ',
 		$('/br'),
-		rr = $('/input').$0('type','checkbox','value','8'),' 主题加入精华区 ',
+		dig = $('/input').$0('type','checkbox','value','8'),' 主题加入精华区 ',
 		$('/br'),
-		pid ? [rt = $('/input').$0('type','checkbox','value','8388608'),' 增加回复的推荐值 ',
+		rt = $('/input').$0('type','checkbox','value','16777216','_negvalue','67108864'),' 增加主题的推荐值 ',
+		$('/br'),
+		pid ? [rr = $('/input').$0('type','checkbox','value','8388608','_negvalue','33554432'),' 增加回复的推荐值 ',
 		$('/br')] : null,
 		rx = $('/input').$0('type','checkbox','value','4','checked','1'),' 给作者发送PM ',
 		$('/br'),
@@ -298,8 +311,13 @@ this.w._.addContent(
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
 				var x = this.parentNode.getElementsByTagName('input'),opt=0
 				for (var i=0;i<x.length;i++){
-					if (x[i].checked) opt |= x[i].value
-				}
+					if(!x[i].disabled){
+						if (x[i].checked)
+							opt |= x[i].value
+						else if(x[i]._negvalue)
+							opt |= x[i]._negvalue
+						}
+					}
 				commonui.userCache.set('lastTipOpt', opt, 86400 * 30);
 				commonui.userCache.set('lastTipInfo', ni.value, 86400 * 30);
 				commonui.userCache.set('lastTipAmt', ri.value, 86400 * 30);
@@ -626,40 +644,55 @@ adminui.toptopic = function (e,tid)
 
 this.createadminwindow()
 this.w._.addContent(null)
-var $ = _$, t = this.txt, v=this.getValue, de=null,tid = tid
+var $ = _$, ff,tid = tid
 this.w._.addTitle('主题置顶');
 
 this.w._.addContent(
-	$('/form').$0(
-		$('/input').$0('type','radio','name','level','value','0'),t(' 解除'),
+	ff = $('/form')._.add(
+		$('/input','type','radio','name','level','value','0','onchange',function(){f[5].checked=true; f[8].checked=true;}),' 解除',
 		$('/br'),
 		$('/br'),
-		$('/input').$0('type','radio','name','level','value','9'),t(' 版面内直接显示'),
+		$('/input','type','radio','name','level','value','9','onchange',function(){f[3].checked=true; f[6].checked=true;}),' 版面内直接显示',
 		$('/br'),
-		t('将 主题内容 显示在版头'),
+		'将 主题内容 显示在版头',
 		$('/br'),
 		$('/br'),
-		$('/input').$0('type','radio','name','level','value','1'),t(' 普通置顶'),
+		$('/input','type','radio','name','level','value','1','onchange',function(){f[3].checked=true; f[6].checked=true;}),' 普通置顶',
 		$('/br'),
-		t('将主题的标题显示在版头下部'),
+		'将主题的标题显示在版头下部',
 		$('/br'),
-		t('最近一次普通置顶的主题会显示在版面第一页(且最后改动时间在一周内)'),
+		'最近一次普通置顶的主题会显示在版面第一页(且最后改动时间在一周内)',
 		$('/br'),
+		$('/br'),
+		$('/input','type','radio','name','opt','value','1'),' 加入精华区',$('/br'),
+		$('/input','type','radio','name','opt','value','2'),' 移出精华区',$('/br'),
+		$('/input','type','radio','name','opt','value','16','checked',1),' 不改变',$('/br'),
+		$('/br'),
+		$('/input','type','radio','name','opt1','value','4'),' 增加推荐值',$('/br'),
+		$('/input','type','radio','name','opt1','value','8'),' 移除推荐值',$('/br'),
+		$('/input','type','radio','name','opt1','value','32','checked',1),' 不改变',$('/br'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
-				var f = this.parentNode.getElementsByTagName('input'),level=0
-				for(var i=0;i<f.length;i++){
+				var level=0,opt=0
+				for(var i=0;i<3;i++){
 					if(f[i].checked)
 						level= f[i].value
 					}
+				for(var i=3;i<9;i++){
+					if(f[i].checked)
+						opt |= f[i].value
+					}
 				__NUKE.doRequest({
-					u:__API.topicTop(tid,level),
+					u:{u:__API._base,
+						a:{__lib:"topic_top",__act:"set",level:level,tid:tid,opt:opt,raw:3}
+						},
 					b:this
 					})
 				}
 			)
 		)
 	)
+var f = ff.parentNode.getElementsByTagName('input')
 this.w._.show(e)
 }
 //fe
@@ -689,13 +722,11 @@ for(var k in s){
 		}
 	}
 
-this.w._.addTitle('刷新资源地址');
+this.w._.addTitle('杂项功能');
 
 this.w._.addContent(
 	x,
-	$('/br'),
-	$('/br'),
-	$('/button').$0('innerHTML','提交','type','button','onclick',function(){
+	$('/button','innerHTML','刷新资源地址','type','button','onclick',function(){
 			var f = this.parentNode.getElementsByTagName('input'),set=''
 			for(var i=0;i<f.length;i++){
 				if(f[i].checked)
@@ -707,6 +738,50 @@ this.w._.addContent(
 						},
 				b:this,
 				f:function(d){alert((d.error && d.error[0] ? d.error[0] : d.data[0])+' 请刷新页面');location.reload()}
+				})
+			}
+		),
+	$('/br'),
+	$('/br'),
+	$('/hr'),
+	$('/br'),
+	$('/button','innerHTML','关闭web广告','type','button','onclick',function(){
+			__NUKE.doRequest({
+				u:{u:__API._base,
+						a:{__lib:"misc",__act:"dsbase_off_in_tpl",off:1,raw:3}
+						},
+				b:this,
+				f:function(d){alert((d.error && d.error[0] ? d.error[0] : d.data[0]))}
+				})
+			}
+		),
+	$('/button','innerHTML','开启web广告','type','button','onclick',function(){
+			__NUKE.doRequest({
+				u:{u:__API._base,
+						a:{__lib:"misc",__act:"dsbase_off_in_tpl",off:2,raw:3}
+						},
+				b:this,
+				f:function(d){alert((d.error && d.error[0] ? d.error[0] : d.data[0]))}
+				})
+			}
+		),$('/br'),
+	$('/button','innerHTML','关闭app广告','type','button','onclick',function(){
+			__NUKE.doRequest({
+				u:{u:__API._base,
+						a:{__lib:"misc",__act:"dsbase_off_in_tpl",off:4,raw:3}
+						},
+				b:this,
+				f:function(d){alert((d.error && d.error[0] ? d.error[0] : d.data[0]))}
+				})
+			}
+		),
+	$('/button','innerHTML','开启app广告','type','button','onclick',function(){
+			__NUKE.doRequest({
+				u:{u:__API._base,
+						a:{__lib:"misc",__act:"dsbase_off_in_tpl",off:8,raw:3}
+						},
+				b:this,
+				f:function(d){alert((d.error && d.error[0] ? d.error[0] : d.data[0]))}
 				})
 			}
 		)
@@ -727,45 +802,73 @@ adminui.colortopic = function (e,tid)
 {
 this.createadminwindow()
 this.w._.addContent(null)
-var $ = _$, t = this.txt, v=this.getValue, de=null,tid = tid
+var $ = _$,tid = tid,ff
 this.w._.addTitle('改变标题字体');
 
 this.w._.addContent(
-	$('/div')._.add(
-		$('/input').$0('type','checkbox','name','fontB','value','B'),t(' 粗体'),
+	ff = $('/div')._.add(
+		$('/input','type','checkbox','name','fontB','value','B'),' 粗体',
 		$('/br'),
-		$('/input').$0('type','checkbox','name','fontI','value','I'),t(' 斜体'),
+		$('/input','type','checkbox','name','fontI','value','I'),' 斜体',
 		$('/br'),
-		$('/input').$0('type','checkbox','name','fontU','value','U'),t(' 划线'),
+		$('/input','type','checkbox','name','fontU','value','U'),' 划线',
 		$('/br'),$('/br'),
-		$('/input').$0('type','radio','name','color','value','red'),$('/span').$0('class','red','innerHTML',' 红色'),
+		$('/input','type','radio','name','color','value','red'),$('/span','class','red','innerHTML',' 红色'),
 		$('/br'),
-		$('/input').$0('type','radio','name','color','value','blue'),$('/span').$0('class','blue','innerHTML',' 蓝色'),
+		$('/input','type','radio','name','color','value','blue'),$('/span','class','blue','innerHTML',' 蓝色'),
 		$('/br'),
-		$('/input').$0('type','radio','name','color','value','green'),$('/span').$0('class','green','innerHTML',' 绿色'),
+		$('/input','type','radio','name','color','value','green'),$('/span','class','green','innerHTML',' 绿色'),
 		$('/br'),
-		$('/input').$0('type','radio','name','color','value','orange'),$('/span').$0('class','orange','innerHTML',' 橙色'),
+		$('/input','type','radio','name','color','value','orange'),$('/span','class','orange','innerHTML',' 橙色'),
 		$('/br'),
-		$('/input').$0('type','radio','name','color','value','silver'),$('/span').$0('class','silver','innerHTML',' 银色'),
+		$('/input','type','radio','name','color','value','silver'),$('/span','class','silver','innerHTML',' 银色'),
 		$('/br'),
-		$('/input').$0('type','radio','name','color','value',''),t(' 无'),
+		$('/input','type','radio','name','color','value',''),' 无',
 		$('/br'),
-		$('/input','type','checkbox','name','nr','checked',window.__CURRENT_FID==10?'':'checked'),' 同时改变主题的推荐值 ',
+		$('/br'),		
+		$('/input','type','radio','name','opt','value','1'),' 加入精华区',$('/br'),
+		$('/input','type','radio','name','opt','value','2'),' 移出精华区',$('/br'),
+		$('/input','type','radio','name','opt','value','16','checked',1),' 不改变',$('/br'),
+		$('/br'),
+		$('/input','type','radio','name','opt1','value','4'),' 增加推荐值',$('/br'),
+		$('/input','type','radio','name','opt1','value','8'),' 移除推荐值',$('/br'),
+		$('/input','type','radio','name','opt1','value','32','checked',1),' 不改变',$('/br'),
+		$('/br'),
 		$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
-				var f = this.parentNode.getElementsByTagName('input'),set=''
-				for(var i=0;i<f.length-1;i++){
+				var set='',opt=0
+				for(var i=0;i<8;i++){
 					if(f[i].checked)
 						set+=','+f[i].value
 					}
+				for(var i=9;i<15;i++){
+					if(f[i].checked)
+						opt|=f[i].value
+					}
 				__NUKE.doRequest({
-					u:__API.topicColor(tid,set,f[i].checked?'':1),
+					u:{u:__API._base,
+						a:{__lib:"topic_color",__act:"set",tid:tid,font:set,opt:opt,raw:3}
+						},
 					b:this
 					})
 				}
 			)
 		)
 	)
+var f = ff.getElementsByTagName('input')
+
+for(var i=0;i<8;i++)
+	f[i].onchange=function(){
+		for(var i=0;i<8;i++){
+			if(f[i].checked && window.__CURRENT_FID!=10){
+				f[9].checked=1
+				f[12].checked=1
+				return
+		}}
+		f[10].checked=1
+		f[13].checked=1
+		}
+
 this.w._.show(e)
 
 }
@@ -849,46 +952,8 @@ this.w._.show(e)
  * @param {type} tid
  * @returns {undefined}
  */
-adminui.digesttopic = function (e,tid)
-{
-this.createadminwindow()
-this.w._.addContent(null)
-this.w._.addContent("\
-<div><div><div>\
-	<form action='' target='_blank' method='post'>\
-	<table>\
-		<tr>\
-			<td>\
-				精华\
-			</td>\
-			<td>\
-				<input type='radio' name='digest' value='0' checked>取消\
-				<input type='radio' name='digest' value='1' >精华1\
-				<input type='radio' name='digest' value='2' >精华2\
-			</td>\
-		</tr>\
-		<tr>\
-			<td>\
-				PM\
-			</td>\
-			<td>\
-				<input type='radio' name='pm' value='1'>是\
-				<input type='radio' name='pm' value='0' checked='checked'>否\
-			</td>\
-		</tr>\
-		<tr>\
-			<td colspan=2>\
-				<input name='submit' value='提交' type='submit'> <input value='取消' type='button' onclick='adminui.hide()'>\
-			</td>\
-		</tr>\
-	</table>\
-	</form>\
-	<iframe name='adminwindowiframe' id='adminwindowiframe' frameBorder=0 scrolling='no' allowtransparency='true' src='about:blank' style='height:50px;width:200px;border:none;overflow:hidden'></iframe>\
-</div></div></div>\
-")
-this.w._.show(e)
-this.w.getElementsByTagName('form')[0].action = 'nuke.php?func=digesttopic&tid='+tid;
-this.w.getElementsByTagName('form')[0].target = 'adminwindowiframe';
+adminui.digesttopic = function (e,tid){
+return this.colortopic(e,tid)
 }
 //fe
 
@@ -980,10 +1045,6 @@ this.w._.addContent(
 		pm = $('/input').$0('type','checkbox'),' 同时将说明发送给用户',
 		$('/br'),$('/br'),
 		$('/button').$0('innerHTML','确定','type','button','onclick',function(){
-				if(!tid){
-					var tids = commonui.massAdmin.getChecked()
-					if(!tids)return
-					}
 				var op = ''
 				if(ad.checked)
 					op = 1
@@ -1005,13 +1066,19 @@ this.w._.addContent(
 				var iv = info.value.replace(/^\s+|\s+$/g,'')
 				if(ad.checked && !iv)
 					return alert("需要操作说明")
+				
+				if(!tid){
+					var tids = commonui.massAdmin.getChecked()
+					if(!tids)return
+					}
+					
 				__NUKE.doRequest({
 					u:__API.topicMove2(
 						tid ? tid : tids, 
 						fid, 
 						pm.checked ? 1 : '', 
 						iv, 
-						op, 
+						op|16384|32768|65536, 
 						de.value, stid
 						),
 					b:this
@@ -1485,496 +1552,6 @@ __NUKE.doRequest({
 }//fe
 
 
-/**
- * 版面设置
- * @param {type} e
- * @param {type} fid
- * @returns {undefined}
- */
-adminui.modifyForum = function(e,fid){
-
-
-var fc,rpu,grp,tre
-
-this.createadminwindow()
-this.w._.addContent(null)
-
-this.w._.addContent(
-	_$('/span')._.add(
-		_$('/table')._.add(
-			_$('/tr')._.add(
-				fc=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
-				grp=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
-				rpu=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
-				tre=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'})
-				)
-			)
-		)
-	)
-this.w._.show(e)
-
-var _fid,t={71:{}},_NAME = 70,
-_BIT = 71,
-_ADMIN = 72,
-_PARENT_FID = 73,
-_SUB_ORDER = 74,
-_REPU = 75,
-_UNION = 76,
-_ALLOW_VISIT = 77,
-_ALLOW_POST = 78,
-_ALLOW_REPLY = 79,
-_DSCP = 80,
-_JUMP = 81,
-_E_AUTO_TRANS = 1,
-_E_LATEST_SET = 2,
-_E_FILTER_WORD = 3,
-_E_MINOR_ADMIN = 4,
-_E_KEY_COLOR = 5,
-_E_FORCE_KEY = 6,
-_E_OWNER_UID = 7,
-_E_UF_ALLOW_VISIT = 8,
-_E_UF_ALLOW_POST = 9,
-_E_UF_ALLOW_REPLY = 10,
-_E_HTML_KEY = 11,
-_E_HTML_DSCP = 12,
-_E_CUSTOM_LEVEL = 13,
-_E_UF_ADMIN = 14,
-
-_B_FREE_EDIT = 16,
-_B_DISPLAY_ATTACH = 1024,
-_B_SHOW_SUB = 2048,
-_B_IF_CAT = 4096,
-_B_NO_INHERIT_MOD=16384,
-_B_NAV_HIDDEN=32768,
-_B_TID_ORDER = 131072,
-_B_NAV_IGNORE = 262144,
-_B_TOPIC_HIDDEN = 524288
-
-__NUKE.doRequest({
-	u:__API._base+'__lib=modify_forum&__act=get&raw=1&fid='+fid,
-	f:function(d){//如有.error则显示.error 否则显示.data
-
-		if(!d)
-			return
-
-		if(d.error)
-			return alert(d.error[0])
-
-		try{
-			var x=d.data[0]
-		}catch(e){
-			return alert('ERROR NO DATA')
-			}
-		
-		for(var k in x.allGroup){
-			grp._.add(_$('/a').$0('style',{display:'block'},'href','/nuke.php?func=modifygroup&id='+x.allGroup[k].id,'target','_blank','innerHTML',x.allGroup[k].id+' : '+x.allGroup[k].name))
-			}
-
-		for(var k in x.allReputation){
-			rpu._.add(_$('/a').$0('style',{display:'block'},'href','/nuke.php?func=modifyreputation&id='+x.allReputation[k].id,'target','_blank','innerHTML',x.allReputation[k].id+' : '+x.allReputation[k].name))
-			}
-
-		var y ={}
-		
-		for(var k in x.allForumTree){
-			var z = x.allForumTree[k]
-			y[z.stid ? z.stid+'_'+z.fup : z.fid] = _$('/div',
-				'title',z.fup?z.fup:'',
-				'style',{marginLeft:'1em'},
-				_$('/a','title',z.stid?'':z.fid,'href',z.stid?'/thread.php?stid='+z.stid:'/thread.php?fid='+z.fid,'innerHTML',(z.stid?'S'+z.stid : z.fid)+' : '+z.name,'onclick',function(e){if(this.title)adminui.modifyForum(null,this.title);commonui.cancelEvent(e)}),
-				_$('/a','href','javascript:void(0)','innerHTML','&#8854;','style','marginLeft:0.5em','onclick',function(e){
-					var x = this.parentNode.childNodes
-					if(this._m){
-						this._m=0
-						this.innerHTML = '&#8854;'
-						for(var i=0;i<x.length;i++)
-							if(x[i].nodeName=='DIV')
-								x[i].style.display=''
-						}
-					else{
-						this._m=1
-						this.innerHTML = '&#8853;'
-						for(var i=0;i<x.length;i++)
-							if(x[i].nodeName=='DIV')
-								x[i].style.display='none'
-						}
-					})
-				)
-			}
-		for(var k in y){
-			if(y[k].title){
-				if(!y[y[k].title])
-					y[y[k].title] = _$('/div').$0(
-						'style',{marginLeft:'1em'},
-						_$('/a').$0('title',y[k].title,'href','/thread.php?fid='+y[k].title,'innerHTML',y[k].title+' : ','onclick',function(){adminui.modifyForum(null,this.title)})
-						)
-				y[y[k].title]._.add(y[k])
-				}
-			}
-		for(var k in y){
-			var z = 'purple'
-			if(y[k].parentNode){
-				z= 'royalblue'
-				if(y[k].parentNode.parentNode){
-					z= 'teal'
-					if(y[k].parentNode.parentNode.parentNode){
-						z= 'sienna'
-						if(y[k].parentNode.parentNode.parentNode.parentNode)
-							z= 'gray'
-						}
-					}
-				}
-			y[k].firstChild._.cls(z)
-			}
-		for(var k in y){
-			if(!y[k].title)
-				tre._.add(y[k].$0(
-						'style',{marginLeft:'0'}))
-			}
-
-		var y=function(k){return (x.forumData[k]===undefined)?'':x.forumData[k].toString()}
-		fc._.add(
-			'版面FID(留空为添加新版面',_$('/br'),
-			_fid = _$('/input').$0('value',fid),_$('/br'),
-			_$('/br'),
-			
-			'版面名',_$('/br'),
-			t[_NAME] = _$('/input').$0('value',y(_NAME)),_$('/br'),
-			_$('/br'),
-			
-			'版面说明(显示用',_$('/br'),
-			t[_DSCP] = _$('/textarea').$0('value',y(_DSCP),'style',{width:'25em',height:'5em'}),_$('/br'),
-			_$('/br'),
-			
-			'版面说明(SOE',_$('/br'),
-			t[_E_HTML_DSCP] = _$('/textarea').$0('value',y(_E_HTML_DSCP),'style',{width:'25em',height:'5em'}),_$('/br'),
-			_$('/br'),
-			
-			'版面关键字(SOE',_$('/br'),
-			t[_E_HTML_KEY] = _$('/textarea').$0('value',y(_E_HTML_KEY),'style',{width:'25em',height:'5em'}),_$('/br'),
-			_$('/br'),
-
-			'版面跳转地址',_$('/br'),
-			t[_JUMP] = _$('/input').$0('value',y(_JUMP)),_$('/br'),
-			_$('/br'),
-			
-			'排序权重(INT 小的在前',_$('/br'),
-			t[_SUB_ORDER] = _$('/input').$0('value',y(_SUB_ORDER)),_$('/br'),
-			_$('/br'),
-			
-			'父版面FID',_$('/br'),
-			t[_PARENT_FID] = _$('/input').$0('value',y(_PARENT_FID)),_$('/br'),
-			_$('/br'),
-
-			'版面声望ID(多个用逗号分隔 0为新建声望 名字使用版面名',_$('/br'),
-			t[_REPU] = _$('/input').$0('value',y(_REPU)),_$('/br'),
-			_$('/br'),
-			
-			'合并显示的版面FID(多个用逗号分隔 前加x默认不显示',_$('/br'),
-			t[_UNION] = _$('/input').$0('value',y(_UNION)),_$('/br'),
-			_$('/br'),
-			
-			'所有者UID(是所有者且在版主列表中方可打开用户版面设置功能',_$('/br'),
-			t[_E_OWNER_UID] = _$('/input').$0('value',y(_E_OWNER_UID)),_$('/br'),
-			_$('/br'),
-			
-			'版主UID*(每行一个',_$('/br'),
-			t[_ADMIN] = _$('/textarea').$0('value',y(_ADMIN).replace(/,/g,'\n'),'style',{width:'25em',height:'20em'}),_$('/br'),
-			_$('/textarea').$0(
-				'style',{width:'25em',height:'20em'},
-				'disabled','disabled',
-				'value',(function(){var y='';for(var k in x.adminName)y+=k+' '+x.adminName[k]+'\n';return y})()
-				),_$('/br'),
-			_$('/br'),
-			
-			'访问权限*(i 为继承上层版面设置 声望0为使用新建的声望',_$('/br'),
-			'其他参考lib_privilege::format_str_to_ary',_$('/br'),
-			t[_ALLOW_VISIT] = _$('/input').$0('value',y(_ALLOW_VISIT)),_$('/br'),
-			_$('/br'),
-			
-			'发帖权限*(同上',_$('/br'),
-			'+w,+u1,',t[_ALLOW_POST] = _$('/input').$0('value',y(_ALLOW_POST)),_$('/br'),
-			_$('/br'),
-			
-			'回复权限*(同上',_$('/br'),
-			'+w,+u1,',t[_ALLOW_REPLY] = _$('/input').$0('value',y(_ALLOW_REPLY)),_$('/br'),
-			_$('/br'),
-			
-			'显示子版面',_$('/br'),
-			t[_BIT][_B_SHOW_SUB] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_SHOW_SUB?1:null),_$('/br'),
-			_$('/br'),
-
-			'是一个归类版(仅作父版面使用 不能显示 不能发帖',_$('/br'),
-			t[_BIT][_B_IF_CAT] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_IF_CAT?1:null),_$('/br'),
-			_$('/br'),
-
-			'不在导航菜单中显示',_$('/br'),
-			t[_BIT][_B_NAV_IGNORE] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NAV_IGNORE?1:null),_$('/br'),
-			_$('/br'),
-			
-			'不继承版主权限',_$('/br'),
-			t[_BIT][_B_NO_INHERIT_MOD] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NO_INHERIT_MOD?1:null),_$('/br'),
-			_$('/br'),
-			
-			'在导航栏中隐藏',_$('/br'),
-			t[_BIT][_B_NAV_HIDDEN] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NAV_HIDDEN?1:null),_$('/br'),
-			_$('/br'),
-			
-			'编辑主题不受时限限制',_$('/br'),
-			t[_BIT][_B_FREE_EDIT] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_FREE_EDIT?1:null),_$('/br'),
-			_$('/br'),
-			
-			'在列表中显示附件图',_$('/br'),
-			t[_BIT][_B_DISPLAY_ATTACH] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_DISPLAY_ATTACH?1:null),_$('/br'),
-			_$('/br'),
-
-			'发主题自动隐藏',_$('/br'),
-			t[_BIT][_B_TOPIC_HIDDEN] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_TOPIC_HIDDEN?1:null),_$('/br'),
-			_$('/br'),
-
-			'默认TID排序',_$('/br'),
-			t[_BIT][_B_TID_ORDER] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_TID_ORDER?1:null),_$('/br'),
-			_$('/br'),
-
-			_$('/button').$0('innerHTML','提交','onclick',function(){
-				if(!_fid.value && !confirm('未设置FID将会创建新版面'))
-					return
-				var a = {}
-				for(var k in t){
-					if(t[k].nodeName)
-						a[k] = t[k].value.replace(/^\s+|\s+$/,'')
-					}
-				a[_BIT] = [0,0]
-				for(var k in t[_BIT]){
-					if(t[_BIT][k].checked)
-						a[_BIT][0] |= k
-					else
-						a[_BIT][1] |= k
-					}
-				a[_BIT] = a[_BIT].join(',')
-				__NUKE.doRequest({
-					u:{u:__API._base+'__lib=modify_forum&__act=set&raw=3&fid='+(_fid.value?_fid.value:''),
-						a:a
-						},
-					b:this
-					})
-				}), 
-			null
-			
-			)
-		
-		return true
-		}
-	})
-
-
-}//fe
-
-/**
- * 用户版面设置
- * @param {type} e
- * @param {type} fid
- * @returns {undefined}
- */
-adminui.modifyUserForum = function(e,fid){
-
-
-var fc,jr
-
-this.createadminwindow()
-this.w._.addContent(null)
-
-this.w._.addContent(
-	_$('/span')._.add(
-		_$('/table')._.add(
-			_$('/tr')._.add(
-				fc=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'})
-				)
-			)
-		)
-	)
-this.w._.show(e)
-
-var _fid,show,t={71:{},8:{},9:{},10:{}},_NAME = 70,
-_BIT = 71,
-_ADMIN = 72,
-_PARENT_FID = 73,
-_SUB_ORDER = 74,
-_REPU = 75,
-_UNION = 76,
-_ALLOW_VISIT = 77,
-_ALLOW_POST = 78,
-_ALLOW_REPLY = 79,
-_DSCP = 80,
-_JUMP = 81,
-_E_AUTO_TRANS = 1,
-_E_LATEST_SET = 2,
-_E_FILTER_WORD = 3,
-_E_MINOR_ADMIN = 4,
-_E_KEY_COLOR = 5,
-_E_FORCE_KEY = 6,
-_E_OWNER_UID = 7,
-_E_UF_ALLOW_VISIT = 8,
-_E_UF_ALLOW_POST = 9,
-_E_UF_ALLOW_REPLY = 10,
-_E_HTML_KEY = 11,
-_E_HTML_DSCP = 12,
-_E_CUSTOM_LEVEL = 13,
-_E_UF_ADMIN = 14,
-_E_UF_DSCP = 16,
-_E_UF_NAME = 17,
-
-_B_FREE_EDIT = 16,
-_B_DISPLAY_ATTACH = 1024,
-_B_SHOW_SUB = 2048,
-_B_IF_CAT = 4096
-
-__NUKE.doRequest({
-	u:__API._base+'__lib=modify_forum&__act=get&uf=1&raw=1&fid='+fid,
-	f:function(d){//如有.error则显示.error 否则显示.data
-
-		if(!d)
-			return
-
-		if(d.error)
-			return alert(d.error[0])
-
-		try{
-			var x=d.data[0]
-		}catch(e){
-			return alert('ERROR NO DATA')
-			}
-
-		var y=function(k){return (x.forumData[k]===undefined)?'':x.forumData[k].toString()}, 
-		z=function(k){
-			var y = (x.forumData[k]===undefined)?'':x.forumData[k].toString()
-			var y = y.match(/_(\d+)/);
-			if(y)
-				return y[1]
-			else
-				return 1
-			}
-		fc._.add(
-			'版面FID',_$('/br'),
-			_fid = _$('/input').$0('value',fid,'disabled',1),_$('/br'),
-			_$('/br'),
-			
-			'版面名',_$('/br'),
-			t[_NAME] = _$('/input').$0('value',y(_NAME)),_$('/br'),
-			_$('/br'),
-			
-			'版面说明(显示用',_$('/br'),
-			t[_DSCP] = _$('/input').$0('value',y(_DSCP)),_$('/br'),
-			_$('/br'),
-			
-			'在版面所有者的发帖信息中显示链接',_$('/br'),
-			show = _$('/input').$0('type','checkbox','checked',x.showlink?1:''),_$('/br'),
-			_$('/br'),
-
-			'版主UID或用户名(每行一个',_$('/br'),
-			t[_ADMIN] = _$('/textarea').$0('value',y(_ADMIN).replace(/,/g,'\n'),'style',{width:'25em',height:'20em'}),_$('/br'),
-			_$('/textarea').$0(
-				'style',{width:'25em',height:'20em'},
-				'disabled','disabled',
-				'value',(function(){var y='';for(var k in x.adminName)y+=k+' '+x.adminName[k]+'\n';return y})()
-				),_$('/br'),
-			_$('/br'),
-			
-			'访问权限',_$('/br'),
-			t[_E_UF_ALLOW_VISIT][0]=_$('/input').$0('type','radio','name','uf5833'),'允许未注册用户访问 (需要版主前一日访问/操作5次以上 否则只允许注册用户访问',_$('/br'),
-			t[_E_UF_ALLOW_VISIT][1]=_$('/input').$0('type','radio','name','uf5833'),'只允许注册用户访问',_$('/br'),
-			t[_E_UF_ALLOW_VISIT][2]=_$('/input').$0('type','radio','name','uf5833'),'只允许本版声望在',
-			t[_E_UF_ALLOW_VISIT][3]= _$('/input').$0('value',''),'及以上的注册用户访问',_$('/br'),
-			_$('/br'),
-			
-			'发帖权限',_$('/br'),
-			t[_E_UF_ALLOW_POST][0]=_$('/input').$0('type','radio','name','uf5834'),'允许本版声望在0及以上的用户发帖 (需要版主前一日访问/操作5次以上 否则只允许声望1及以上用户发帖',_$('/br'),
-			//t[_E_UF_ALLOW_POST][1]=_$('/input').$0('type','radio','name','uf5834'),'只',x.forumData.defaultPost,_$('/br'),
-			t[_E_UF_ALLOW_POST][2]=_$('/input').$0('type','radio','name','uf5834'),'只允许本版声望在',
-			t[_E_UF_ALLOW_POST][3] = _$('/input').$0('value','','onchange',function(){if(parseInt(this.value,10)<1)this.value=1}),'及以上的注册用户发帖',_$('/br'),
-			_$('/br'),
-			
-			'回复权限',_$('/br'),
-			t[_E_UF_ALLOW_REPLY][0]=_$('/input').$0('type','radio','name','uf5835'),'允许本版声望在0及以上的用户回复 (需要版主前一日访问/操作5次以上 否则只允许声望1及以上用户回复',_$('/br'),
-			//t[_E_UF_ALLOW_REPLY][1]=_$('/input').$0('type','radio','name','uf5835'),'只',x.forumData.defaultPost,_$('/br'),
-			t[_E_UF_ALLOW_REPLY][2]=_$('/input').$0('type','radio','name','uf5835'),'只允许本版声望在',
-			t[_E_UF_ALLOW_REPLY][3] = _$('/input').$0('value','','onchange',function(){if(parseInt(this.value,10)<1)this.value=1}),'及以上的注册用户回复',_$('/br'),
-			_$('/br'),
-			
-			_$('/button').$0('innerHTML','提交','onclick',function(){
-				var a = {}
-					a[_NAME]= t[_NAME].value.replace(/^\s+|\s+$/g,''),
-					a[_DSCP]= t[_DSCP].value.replace(/^\s+|\s+$/g,''),
-					a[_ADMIN ]= t[_ADMIN].value,
-					a[_E_UF_ALLOW_VISIT ]= t[_E_UF_ALLOW_VISIT][0].checked ? 'a' : ( t[_E_UF_ALLOW_VISIT][1].checked ? 'c' : 'b'+t[_E_UF_ALLOW_VISIT][3].value),
-					a[_E_UF_ALLOW_POST ]=  t[_E_UF_ALLOW_POST][0].checked ? 'a' : 'b'+t[_E_UF_ALLOW_POST][3].value,
-					a[_E_UF_ALLOW_REPLY ]=  t[_E_UF_ALLOW_REPLY][0].checked ? 'a' : 'b'+t[_E_UF_ALLOW_REPLY][3].value
-				if(show.checked)
-					a.showlink = 1
-				if(!a[_NAME] || a[_NAME].length>20)
-					return alert('版面名过短或过长')
-				if(a[_DSCP].length>20)
-					return alert('版面说明过长')
-				__NUKE.doRequest({
-					u:{u:__API._base+'__lib=modify_forum&__act=uf_set&raw=3&fid='+fid,
-						a:a
-						},
-					b:this
-					})
-				}),
-			
-			jr=_$('/div'),
-			null
-			
-			)//add
-
-
-		if(x.joinRequest){
-			jr._.add(_$('/br'))
-			for(var i in x.joinRequest){
-				jr._.add(
-					_$('/a').$0('className','b','href','/nuke.php?func=ucp&uid='+x.joinRequest[i][0],'innerHTML',x.joinRequest[i][1]),
-					' 申请 ',
-					_$('/a').$0('className','b','href','javascript:void(0)','name',x.joinRequest[i][0],'innerHTML','提高声望','onclick',function(e){commonui.setUserRepu(e,fid,this.name)}),
-					_$('/br')
-					)
-				}
-			}
-		if(x.forumData[_E_UF_ALLOW_VISIT].match(/^xa_f/))
-			t[_E_UF_ALLOW_VISIT][0].checked = 'checked'
-		else if(x.forumData[_E_UF_ALLOW_VISIT].match(/^u/))
-			t[_E_UF_ALLOW_VISIT][1].checked = 'checked'
-		else{
-			var m = x.forumData[_E_UF_ALLOW_VISIT].match(/r-?\d+_(\d+)/)
-			if(!m)m=[1,1]
-			t[_E_UF_ALLOW_VISIT][2].checked = 'checked'
-			t[_E_UF_ALLOW_VISIT][3].value = m[1]
-			}
-
-		if(x.forumData[_E_UF_ALLOW_POST].match(/^xa_r-?\d+_\d+/))
-			t[_E_UF_ALLOW_POST][0].checked = 'checked'
-		else{
-			var m = x.forumData[_E_UF_ALLOW_POST].match(/^r-?\d+_(\d+)/)
-			if(!m)m=[1,1]
-			t[_E_UF_ALLOW_POST][2].checked = 'checked'
-			t[_E_UF_ALLOW_POST][3].value = m[1]
-			}
-		if(x.forumData[_E_UF_ALLOW_REPLY].match(/^xa_r-?\d+_\d+/))
-			t[_E_UF_ALLOW_REPLY][0].checked = 'checked'
-		else{
-			var m = x.forumData[_E_UF_ALLOW_REPLY].match(/^r-?\d+_(\d+)/)
-			if(!m)m=[1,1]
-			t[_E_UF_ALLOW_REPLY][2].checked = 'checked'
-			t[_E_UF_ALLOW_REPLY][3].value = m[1]
-			}
-		return true
-		}
-	})
-
-
-}//fe
-
-
 adminui.setSets = function(e,fid){
 	return this.setSubSets(e,fid)
 	/*
@@ -2428,16 +2005,17 @@ __NUKE.doRequest({
 		if(e)
 			return alert(e)
 		x=d.data[0].split("\t")
-		for(var i=0;i<x.length;i+=3)
-			z._.add(
-				$('/input','value',x[i+1]+'('+x[i]+')','disabled','1','name',x[i]),
-				$('/select',
-					$('/option','value',0,'innerHTML','到 '+commonui.time2date(x[i+2],'Y-m-d H:i')+' 为止有副版主权限'),
-					$('/option','value',4,'innerHTML','从现在开始三个月内有副版主权限'),
-					$('/option','value',3,'innerHTML','取消副版主权限')
-					),
-				$('/br')
-				)
+		if(x.length>1)
+			for(var i=0;i<x.length;i+=3)
+				z._.add(
+					$('/input','value',x[i+1]+'('+x[i]+')','disabled','1','name',x[i]),
+					$('/select',
+						$('/option','value',0,'innerHTML','到 '+commonui.time2date(x[i+2],'Y-m-d H:i')+' 为止有副版主权限'),
+						$('/option','value',4,'innerHTML','从现在开始三个月内有副版主权限'),
+						$('/option','value',3,'innerHTML','取消副版主权限')
+						),
+					$('/br')
+					)
 		}
 	})
 }//fe
@@ -2520,6 +2098,31 @@ this.w._.addContent(
 this.w._.show(e)
 
 }//fe
+
+adminui.getDelayAction=function(id,type){
+var x
+this.createadminwindow()
+this.w._.addContent(null)
+this.w._.addTitle('预定的延时操作')
+this.w._.addContent(x=_$('/div'))
+__NUKE.doRequest({
+	u:{u:__API._base+'__lib=delay_action&__act=view_delay_action&about_id='+id+'&type='+type,
+		a:{__output:3}
+		},
+	f:function(d){
+		var e = __NUKE.doRequestIfErr(d)
+		if(e)
+			return alert(e)
+		console.log(d)
+		var dd = d.data[0],y=''
+		for(var i in dd){
+			y+="<tr><td><a href='/nuke.php?func=ucp&uid="+dd[i][0]+"'>"+dd[i][1]+"</a> 预订于 </td><td> "+commonui.time2date(dd[i][2],'Y-m-d H:i:s')+" </td><td> 进行 "+dd[i][3]+" 操作</td></tr>";
+			}
+		x.innerHTML = '<table>'+y+'</table>'
+		}
+	})
+this.w._.show()
+}//
 
 
 adminui.selectPid = function(tid,pid,opt){
@@ -2853,7 +2456,7 @@ loader.script(__SCRIPTS.imgEdit,function(){adminui.fIconGen()})
 
 if(window.__GP && __GP.userBit&4){//mod
 adminui.bbscode_min_admin = function(arg){
-if(arg.tId == 16403728 && !arg.pId){
+if(arg.tId == 16403728 && !arg.pId && !arg.isSig){
 	arg.txt= arg.txt+'<br/><img src="about:blank" class="x" onerror="adminui.bbscode16403728(this)"/>'
 	adminui.bbscode16403728 = function(o){
 		__NUKE.doRequest({
@@ -2959,3 +2562,624 @@ else
 adminui.massBuff.queue=[]
 adminui.massBuff()
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==================================================================
+//版面设置相关的
+
+;(function(){
+//版面属性key
+var 
+_NAME = 70,
+_BIT = 71,
+_ADMIN = 72,
+_PARENT_FID = 73,
+_SUB_ORDER = 74,
+_REPU = 75,
+_UNION = 76,
+_ALLOW_VISIT = 77,
+_ALLOW_POST = 78,
+_ALLOW_REPLY = 79,
+_DSCP = 80,
+_JUMP = 81,
+_E_AUTO_TRANS = 1,
+_E_LATEST_SET = 2,
+_E_FILTER_WORD = 3,
+_E_MINOR_ADMIN = 4,
+_E_KEY_COLOR = 5,
+_E_FORCE_KEY = 6,
+_E_OWNER_UID = 7,
+_E_UF_ALLOW_VISIT = 8,
+_E_UF_ALLOW_POST = 9,
+_E_UF_ALLOW_REPLY = 10,
+_E_HTML_KEY = 11,
+_E_HTML_DSCP = 12,
+_E_CUSTOM_LEVEL = 13,
+_E_UF_ADMIN = 14,
+_E_UF_DSCP = 16,
+_E_UF_NAME = 17,
+_E_REL_NAME = 28,
+
+//版面type bit
+_B_FREE_EDIT = 16,
+_B_DISPLAY_ATTACH = 1024,
+_B_SHOW_SUB = 2048,
+_B_IF_CAT = 4096,
+_B_NO_INHERIT_MOD=16384,
+_B_NAV_HIDDEN=32768,
+_B_TID_ORDER = 131072,
+_B_NAV_IGNORE = 262144,
+_B_TOPIC_HIDDEN = 524288
+
+
+
+
+adminui.forumTreeSw = function(o){
+					var x = o.parentNode.childNodes
+					if(o._m){
+						o._m=0
+						o.innerHTML = '&#8854;'
+						for(var i=0;i<x.length;i++)
+							if(x[i].nodeName=='DIV')
+								x[i].style.display=''
+						}
+					else{
+						o._m=1
+						o.innerHTML = '&#8853;'
+						for(var i=0;i<x.length;i++)
+							if(x[i].nodeName=='DIV')
+								x[i].style.display='none'
+						}
+}//
+
+adminui.forumTree = function(all ,f){
+var y={}
+for(var k in all){
+	var z = all[k]
+	y[z.stid ? z.stid+'_'+z.fup : z.fid] = _$('/div',
+		'_fup',z.fup?z.fup:'',
+		'style',{marginLeft:'1em'},
+		_$('/a','_fid',z.fid|0,'_stid',z.stid|0,'href',z.stid?'/thread.php?stid='+z.stid:'/thread.php?fid='+z.fid,'innerHTML',(z.stid?'S'+z.stid : z.fid)+' : '+z.name,'onclick',function(e){f(e,this._fid,this._stid)}),//if(this.title)adminui.modifyForum(null,this.title);commonui.cancelEvent(e)
+		_$('/a','href','javascript:void(0)','innerHTML','&#8854;','style','marginLeft:0.5em','onclick',function(e){adminui.forumTreeSw(this)})
+		)
+	}
+for(var k in y){
+	if(y[k]._fup){
+		if(!y[y[k]._fup])
+			y[y[k]._fup] = _$('/div',
+				'style',{marginLeft:'1em'},
+				_$('/a','_fid',y[k]._fup,'href','/thread.php?fid='+y[k]._fup,'innerHTML',y[k]._fup+' : ','onclick',function(e){f(e,this._fid)})
+				)
+		y[y[k]._fup]._.add(y[k])
+		}
+	}
+for(var k in y){
+	var z = 'purple'
+	if(y[k].parentNode){
+		z= 'royalblue'
+		if(y[k].parentNode.parentNode){
+			z= 'teal'
+			if(y[k].parentNode.parentNode.parentNode){
+				z= 'sienna'
+				if(y[k].parentNode.parentNode.parentNode.parentNode)
+					z= 'gray'
+				}
+			}
+		}
+	y[k].firstChild._.cls(z)
+	}
+var x = []
+for(var k in y)
+	if(!y[k].parentNode)
+		x.push(y[k])
+return x
+}//
+
+/**
+ * 版面设置
+ * @param {type} e
+ * @param {type} fid
+ * @returns {undefined}
+ */
+adminui.modifyForum = function(e,fid){
+
+
+var fc,rpu,grp,tre
+
+this.createadminwindow()
+this.w._.addContent(null)
+
+this.w._.addContent(
+	_$('/span')._.add(
+		_$('/table')._.add(
+			_$('/tr')._.add(
+				fc=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
+				grp=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
+				rpu=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'}),
+				tre=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'})
+				)
+			)
+		)
+	)
+this.w._.show(e)
+
+var _fid,t={71:{}}
+
+__NUKE.doRequest({
+	u:__API._base+'__lib=modify_forum&__act=get&raw=1&fid='+fid,
+	f:function(d){//如有.error则显示.error 否则显示.data
+
+		if(!d)
+			return
+
+		if(d.error)
+			return alert(d.error[0])
+
+		try{
+			var x=d.data[0]
+		}catch(e){
+			return alert('ERROR NO DATA')
+			}
+		
+		for(var k in x.allGroup){
+			grp._.add(_$('/a').$0('style',{display:'block'},'href','/nuke.php?func=modifygroup&id='+x.allGroup[k].id,'target','_blank','innerHTML',x.allGroup[k].id+' : '+x.allGroup[k].name))
+			}
+
+		for(var k in x.allReputation){
+			rpu._.add(_$('/a').$0('style',{display:'block'},'href','/nuke.php?func=modifyreputation&id='+x.allReputation[k].id,'target','_blank','innerHTML',x.allReputation[k].id+' : '+x.allReputation[k].name))
+			}
+
+		tre._.add(adminui.forumTree(  x.allForumTree,  function(e,fid,stid){
+			if(!stid && fid)
+				adminui.modifyForum(null,fid);
+			commonui.cancelEvent(e)
+			}  ))
+
+		var y=function(k){return (x.forumData[k]===undefined)?'':x.forumData[k].toString()}
+		fc._.add(
+			'版面FID',_$('/br'),
+			_fid = _$('/input').$0('value',fid),_$('/br'),
+			_$('/br'),
+			
+			'版面名',_$('/br'),
+			t[_NAME] = _$('/input').$0('value',y(_NAME)),_$('/br'),
+			_$('/br'),
+			
+			'版面说明(显示用',_$('/br'),
+			t[_DSCP] = _$('/textarea').$0('value',y(_DSCP),'style',{width:'25em',height:'5em'}),_$('/br'),
+			_$('/br'),
+			
+			'版面说明(SOE',_$('/br'),
+			t[_E_HTML_DSCP] = _$('/textarea').$0('value',y(_E_HTML_DSCP),'style',{width:'25em',height:'5em'}),_$('/br'),
+			_$('/br'),
+			
+			'版面关键字(SOE',_$('/br'),
+			t[_E_HTML_KEY] = _$('/textarea').$0('value',y(_E_HTML_KEY),'style',{width:'25em',height:'5em'}),_$('/br'),
+			_$('/br'),
+
+			'版面跳转地址',_$('/br'),
+			t[_JUMP] = _$('/input').$0('value',y(_JUMP)),_$('/br'),
+			_$('/br'),
+			
+			'排序权重(INT 小的在前',_$('/br'),
+			t[_SUB_ORDER] = _$('/input').$0('value',y(_SUB_ORDER)),_$('/br'),
+			_$('/br'),
+			
+			'父版面FID',_$('/br'),
+			t[_PARENT_FID] = _$('/input').$0('value',y(_PARENT_FID)),_$('/br'),
+			_$('/br'),
+
+			'版面声望ID(多个用逗号分隔 0为新建声望 名字使用版面名',_$('/br'),
+			t[_REPU] = _$('/input').$0('value',y(_REPU)),_$('/br'),
+			_$('/br'),
+			
+			'合并显示的版面FID(多个用逗号分隔 前加x默认不显示',_$('/br'),
+			t[_UNION] = _$('/input').$0('value',y(_UNION)),_$('/br'),
+			_$('/br'),
+			
+			'所有者UID(是所有者且在版主列表中方可打开用户版面设置功能',_$('/br'),
+			t[_E_OWNER_UID] = _$('/input').$0('value',y(_E_OWNER_UID)),_$('/br'),
+			_$('/br'),
+			
+			'版主UID*(每行一个',_$('/br'),
+			t[_ADMIN] = _$('/textarea').$0('value',y(_ADMIN).replace(/,/g,'\n'),'style',{width:'25em',height:'20em'}),_$('/br'),
+			_$('/textarea').$0(
+				'style',{width:'25em',height:'20em'},
+				'disabled','disabled',
+				'value',(function(){var y='';for(var k in x.adminName)y+=k+' '+x.adminName[k]+'\n';return y})()
+				),_$('/br'),
+			_$('/br'),
+			
+			'访问权限*(i 为继承上层版面设置 声望0为使用新建的声望',_$('/br'),
+			'其他参考lib_privilege::format_str_to_ary',_$('/br'),
+			t[_ALLOW_VISIT] = _$('/input').$0('value',y(_ALLOW_VISIT)),_$('/br'),
+			_$('/br'),
+			
+			'发帖权限*(同上',_$('/br'),
+			'+w,+u1,',t[_ALLOW_POST] = _$('/input').$0('value',y(_ALLOW_POST)),_$('/br'),
+			_$('/br'),
+			
+			'回复权限*(同上',_$('/br'),
+			'+w,+u1,',t[_ALLOW_REPLY] = _$('/input').$0('value',y(_ALLOW_REPLY)),_$('/br'),
+			_$('/br'),
+			
+			'显示子版面',_$('/br'),
+			t[_BIT][_B_SHOW_SUB] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_SHOW_SUB?1:null),_$('/br'),
+			_$('/br'),
+
+			'是一个归类版(仅作父版面使用 不能显示 不能发帖',_$('/br'),
+			t[_BIT][_B_IF_CAT] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_IF_CAT?1:null),_$('/br'),
+			_$('/br'),
+
+			'不在导航菜单中显示',_$('/br'),
+			t[_BIT][_B_NAV_IGNORE] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NAV_IGNORE?1:null),_$('/br'),
+			_$('/br'),
+			
+			'不继承版主权限',_$('/br'),
+			t[_BIT][_B_NO_INHERIT_MOD] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NO_INHERIT_MOD?1:null),_$('/br'),
+			_$('/br'),
+			
+			'在导航栏中隐藏',_$('/br'),
+			t[_BIT][_B_NAV_HIDDEN] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_NAV_HIDDEN?1:null),_$('/br'),
+			_$('/br'),
+			
+			'编辑主题不受时限限制',_$('/br'),
+			t[_BIT][_B_FREE_EDIT] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_FREE_EDIT?1:null),_$('/br'),
+			_$('/br'),
+			
+			'在列表中显示附件图',_$('/br'),
+			t[_BIT][_B_DISPLAY_ATTACH] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_DISPLAY_ATTACH?1:null),_$('/br'),
+			_$('/br'),
+
+			'发主题自动隐藏',_$('/br'),
+			t[_BIT][_B_TOPIC_HIDDEN] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_TOPIC_HIDDEN?1:null),_$('/br'),
+			_$('/br'),
+
+			'默认TID排序',_$('/br'),
+			t[_BIT][_B_TID_ORDER] = _$('/input').$0('type', 'checkbox', 'checked', x.forumData[_BIT]&_B_TID_ORDER?1:null),_$('/br'),
+			_$('/br'),
+
+			_$('/button').$0('innerHTML','提交','onclick',function(){
+				if(!_fid.value && !confirm('未设置FID将会创建新版面'))
+					return
+				var a = {}
+				for(var k in t){
+					if(t[k].nodeName)
+						a[k] = t[k].value.replace(/^\s+|\s+$/,'')
+					}
+				a[_BIT] = [0,0]
+				for(var k in t[_BIT]){
+					if(t[_BIT][k].checked)
+						a[_BIT][0] |= k
+					else
+						a[_BIT][1] |= k
+					}
+				a[_BIT] = a[_BIT].join(',')
+				__NUKE.doRequest({
+					u:{u:__API._base+'__lib=modify_forum&__act=set&raw=3&fid='+(_fid.value?_fid.value:''),
+						a:a
+						},
+					b:this
+					})
+				}), 
+			null
+			
+			)
+		
+		return true
+		}
+	})
+
+
+}//fe
+
+
+
+
+/**
+ * 版面相关作品设置
+ * @param {type} e
+ * @param {type} fid
+ * @returns {undefined}
+ */
+adminui.modifyForumRel = function(e,fid,stid){
+
+
+var fc,_fid,_stid,_value={},_name,tre
+
+this.createadminwindow()
+this.w._.addContent(null)
+
+this.w._.addContent(
+	_$('/span')._.add(
+		_$('/table')._.add(
+			_$('/tr')._.add(
+				fc=_$('/td','style','verticalAlign:top;paddingRight:1em')._.add(
+					_name = _$('/span'),_$('/br'),_$('/br'),
+					'版面FID',_$('/br'),
+					_fid = _$('/input'),_$('/br'),
+					_$('/br'),
+
+					'或合集ID',_$('/br'),
+					_stid = _$('/input'),_$('/br'),
+					_$('/br'),
+
+					'版面说明(显示用',_$('/br'),
+					_value[_DSCP] = _$('/textarea','style','width:25em;height:5em'),_$('/br'),
+					_$('/br'),
+
+					'版面说明(SEO',_$('/br'),
+					_value[_E_HTML_DSCP] = _$('/textarea','style','width:25em;height:5em'),_$('/br'),
+					_$('/br'),
+
+					'版面关键字(SEO) 每行一个',_$('/br'),
+					_value[_E_HTML_KEY] = _$('/textarea','style','width:25em;height:15em'),_$('/br'),
+					_$('/br'),
+
+					'相关作品(影音/游戏等)名 包括原文名 译名 俗名等 每行一个',_$('/br'),
+					_value[_E_REL_NAME] = _$('/textarea','style','width:25em;height:15em'),_$('/br'),
+					_$('/br'),
+
+					_$('/button','innerHTML','提交','onclick',function(){
+						var a = {}
+						a['v'+_DSCP] = _value[_DSCP].value.replace(/^\s+|\s+$/g,'')
+						a['v'+_E_HTML_DSCP] = _value[_E_HTML_DSCP].value.replace(/^\s+|\s+$/g,'')
+						a['v'+_E_HTML_KEY] = _value[_E_HTML_KEY].value.replace(/^\s+|\s+$/g,'')
+						a['v'+_E_REL_NAME] = _value[_E_REL_NAME].value.replace(/^\s+|\s+$/g,'')
+						__NUKE.doRequest({
+							u:{u:__API._base+'__lib=modify_forum&__act=set_rel_name&raw=3&fid='+(_fid.value|0)+'&stid='+(_stid.value|0),
+								a:a
+								},
+							b:this
+							})
+						})
+					),
+				_$('/td','style','verticalAlign:top;paddingRight:1em;',tre=_$('/div','style','max-height:50em;overflow:auto'))
+				)
+			)
+		)
+	)
+this.w._.show(e)
+
+var get1 = function(fid,stid){
+	__NUKE.doRequest({
+		u:__API._base+'__lib=modify_forum&__act=get_rel_name&raw=1&fid='+(fid|0)+'&stid='+(stid|0),
+		f:function(d){//如有.error则显示.error 否则显示.data
+			var e = __NUKE.doRequestIfErr(d)
+			if(e)
+				return alert(e)
+
+			var x = d.data[0]
+
+			_name.innerHTML = x.name
+			_fid.value = x.fid
+			_stid.value = x.stid
+			_value[_DSCP].value = x[_DSCP]
+			_value[_E_HTML_DSCP].value = x[_E_HTML_DSCP]
+			_value[_E_HTML_KEY].value = x[_E_HTML_KEY]
+			_value[_E_REL_NAME].value = x[_E_REL_NAME]
+
+			return true
+			}
+		})
+	}
+	
+get1(fid,stid)
+
+__NUKE.doRequest({
+	u:__API._base+'__lib=modify_forum&__act=get_all_forum&raw=1&fid='+(fid|0)+'&stid='+(stid|0),
+	f:function(d){//如有.error则显示.error 否则显示.data
+		var e = __NUKE.doRequestIfErr(d)
+		if(e)
+			return alert(e)
+
+		var x = d.data[0]
+
+		tre._.add(adminui.forumTree(  x,  function(e,fid,stid){
+			if(stid)
+				get1(0,stid);
+			else if(fid)
+				get1(fid,0);
+			commonui.cancelEvent(e)
+			}  ))
+
+		}
+	})
+}//fe
+
+
+
+
+/**
+ * 用户版面设置
+ * @param {type} e
+ * @param {type} fid
+ * @returns {undefined}
+ */
+adminui.modifyUserForum = function(e,fid){
+
+
+var fc,jr
+
+this.createadminwindow()
+this.w._.addContent(null)
+
+this.w._.addContent(
+	_$('/span')._.add(
+		_$('/table')._.add(
+			_$('/tr')._.add(
+				fc=_$('/td').$0('style',{verticalAlign:'top',paddingRight:'1em'})
+				)
+			)
+		)
+	)
+this.w._.show(e)
+
+var _fid,show,t={71:{},8:{},9:{},10:{}}
+
+__NUKE.doRequest({
+	u:__API._base+'__lib=modify_forum&__act=get&uf=1&raw=1&fid='+fid,
+	f:function(d){//如有.error则显示.error 否则显示.data
+
+		if(!d)
+			return
+
+		if(d.error)
+			return alert(d.error[0])
+
+		try{
+			var x=d.data[0]
+		}catch(e){
+			return alert('ERROR NO DATA')
+			}
+
+		var y=function(k){return (x.forumData[k]===undefined)?'':x.forumData[k].toString()}, 
+		z=function(k){
+			var y = (x.forumData[k]===undefined)?'':x.forumData[k].toString()
+			var y = y.match(/_(\d+)/);
+			if(y)
+				return y[1]
+			else
+				return 1
+			}
+		fc._.add(
+			'版面FID',_$('/br'),
+			_fid = _$('/input').$0('value',fid,'disabled',1),_$('/br'),
+			_$('/br'),
+			
+			'版面名',_$('/br'),
+			t[_NAME] = _$('/input').$0('value',y(_NAME)),_$('/br'),
+			_$('/br'),
+			
+			'版面说明(显示用',_$('/br'),
+			t[_DSCP] = _$('/input').$0('value',y(_DSCP)),_$('/br'),
+			_$('/br'),
+			
+			'在版面所有者的发帖信息中显示链接',_$('/br'),
+			show = _$('/input').$0('type','checkbox','checked',x.showlink?1:''),_$('/br'),
+			_$('/br'),
+
+			'版主UID或用户名(每行一个',_$('/br'),
+			t[_ADMIN] = _$('/textarea').$0('value',y(_ADMIN).replace(/,/g,'\n'),'style',{width:'25em',height:'20em'}),_$('/br'),
+			_$('/textarea').$0(
+				'style',{width:'25em',height:'20em'},
+				'disabled','disabled',
+				'value',(function(){var y='';for(var k in x.adminName)y+=k+' '+x.adminName[k]+'\n';return y})()
+				),_$('/br'),
+			_$('/br'),
+			
+			'访问权限',_$('/br'),
+			t[_E_UF_ALLOW_VISIT][0]=_$('/input').$0('type','radio','name','uf5833'),'允许未注册用户访问 (需要版主前一日访问/操作5次以上 否则只允许注册用户访问',_$('/br'),
+			t[_E_UF_ALLOW_VISIT][1]=_$('/input').$0('type','radio','name','uf5833'),'只允许注册用户访问',_$('/br'),
+			t[_E_UF_ALLOW_VISIT][2]=_$('/input').$0('type','radio','name','uf5833'),'只允许本版声望在',
+			t[_E_UF_ALLOW_VISIT][3]= _$('/input').$0('value',''),'及以上的注册用户访问',_$('/br'),
+			_$('/br'),
+			
+			'发帖权限',_$('/br'),
+			t[_E_UF_ALLOW_POST][0]=_$('/input').$0('type','radio','name','uf5834'),'允许本版声望在0及以上的用户发帖 (需要版主前一日访问/操作5次以上 否则只允许声望1及以上用户发帖',_$('/br'),
+			//t[_E_UF_ALLOW_POST][1]=_$('/input').$0('type','radio','name','uf5834'),'只',x.forumData.defaultPost,_$('/br'),
+			t[_E_UF_ALLOW_POST][2]=_$('/input').$0('type','radio','name','uf5834'),'只允许本版声望在',
+			t[_E_UF_ALLOW_POST][3] = _$('/input').$0('value','','onchange',function(){if(parseInt(this.value,10)<1)this.value=1}),'及以上的注册用户发帖',_$('/br'),
+			_$('/br'),
+			
+			'回复权限',_$('/br'),
+			t[_E_UF_ALLOW_REPLY][0]=_$('/input').$0('type','radio','name','uf5835'),'允许本版声望在0及以上的用户回复 (需要版主前一日访问/操作5次以上 否则只允许声望1及以上用户回复',_$('/br'),
+			//t[_E_UF_ALLOW_REPLY][1]=_$('/input').$0('type','radio','name','uf5835'),'只',x.forumData.defaultPost,_$('/br'),
+			t[_E_UF_ALLOW_REPLY][2]=_$('/input').$0('type','radio','name','uf5835'),'只允许本版声望在',
+			t[_E_UF_ALLOW_REPLY][3] = _$('/input').$0('value','','onchange',function(){if(parseInt(this.value,10)<1)this.value=1}),'及以上的注册用户回复',_$('/br'),
+			_$('/br'),
+			
+			_$('/button').$0('innerHTML','提交','onclick',function(){
+				var a = {}
+					a[_NAME]= t[_NAME].value.replace(/^\s+|\s+$/g,''),
+					a[_DSCP]= t[_DSCP].value.replace(/^\s+|\s+$/g,''),
+					a[_ADMIN ]= t[_ADMIN].value,
+					a[_E_UF_ALLOW_VISIT ]= t[_E_UF_ALLOW_VISIT][0].checked ? 'a' : ( t[_E_UF_ALLOW_VISIT][1].checked ? 'c' : 'b'+t[_E_UF_ALLOW_VISIT][3].value),
+					a[_E_UF_ALLOW_POST ]=  t[_E_UF_ALLOW_POST][0].checked ? 'a' : 'b'+t[_E_UF_ALLOW_POST][3].value,
+					a[_E_UF_ALLOW_REPLY ]=  t[_E_UF_ALLOW_REPLY][0].checked ? 'a' : 'b'+t[_E_UF_ALLOW_REPLY][3].value
+				if(show.checked)
+					a.showlink = 1
+				if(!a[_NAME] || a[_NAME].length>20)
+					return alert('版面名过短或过长')
+				if(a[_DSCP].length>20)
+					return alert('版面说明过长')
+				__NUKE.doRequest({
+					u:{u:__API._base+'__lib=modify_forum&__act=uf_set&raw=3&fid='+fid,
+						a:a
+						},
+					b:this
+					})
+				}),
+			
+			jr=_$('/div'),
+			null
+			
+			)//add
+
+
+		if(x.joinRequest){
+			jr._.add(_$('/br'))
+			for(var i in x.joinRequest){
+				jr._.add(
+					_$('/a').$0('className','b','href','/nuke.php?func=ucp&uid='+x.joinRequest[i][0],'innerHTML',x.joinRequest[i][1]),
+					' 申请 ',
+					_$('/a').$0('className','b','href','javascript:void(0)','name',x.joinRequest[i][0],'innerHTML','提高声望','onclick',function(e){commonui.setUserRepu(e,fid,this.name)}),
+					_$('/br')
+					)
+				}
+			}
+		if(x.forumData[_E_UF_ALLOW_VISIT].match(/^xa_f/))
+			t[_E_UF_ALLOW_VISIT][0].checked = 'checked'
+		else if(x.forumData[_E_UF_ALLOW_VISIT].match(/^u/))
+			t[_E_UF_ALLOW_VISIT][1].checked = 'checked'
+		else{
+			var m = x.forumData[_E_UF_ALLOW_VISIT].match(/r-?\d+_(\d+)/)
+			if(!m)m=[1,1]
+			t[_E_UF_ALLOW_VISIT][2].checked = 'checked'
+			t[_E_UF_ALLOW_VISIT][3].value = m[1]
+			}
+
+		if(x.forumData[_E_UF_ALLOW_POST].match(/^xa_r-?\d+_\d+/))
+			t[_E_UF_ALLOW_POST][0].checked = 'checked'
+		else{
+			var m = x.forumData[_E_UF_ALLOW_POST].match(/^r-?\d+_(\d+)/)
+			if(!m)m=[1,1]
+			t[_E_UF_ALLOW_POST][2].checked = 'checked'
+			t[_E_UF_ALLOW_POST][3].value = m[1]
+			}
+		if(x.forumData[_E_UF_ALLOW_REPLY].match(/^xa_r-?\d+_\d+/))
+			t[_E_UF_ALLOW_REPLY][0].checked = 'checked'
+		else{
+			var m = x.forumData[_E_UF_ALLOW_REPLY].match(/^r-?\d+_(\d+)/)
+			if(!m)m=[1,1]
+			t[_E_UF_ALLOW_REPLY][2].checked = 'checked'
+			t[_E_UF_ALLOW_REPLY][3].value = m[1]
+			}
+		return true
+		}
+	})
+
+
+}//fe
+
+
+
+})();

@@ -6,7 +6,7 @@ cs = document.characterSet || document.defaultCharset || document.charset;
 var error = function(e,a){
 commonui.progbar(100)
 if(!a)
-	alert(e)
+	commonui.alert(e)
 console.log(e)
 }
 
@@ -66,7 +66,13 @@ document.body.addEventListener('click',function(e){
 		e.cancelBubble = true;
 		e.preventDefault()
 		e.stopPropagation()
-		P.go(1|((h._useloadread&8)?8:0)|(h.href==location.href?32:0),{url:h.href,pos: ((o && o.id)?{posId:o.id,posRect:P.getRect(o)}:null) })
+		P.go(1|((h._useloadread&8)?8:0)|(h.href==location.href?32:0),
+				{//go
+				url:h.href,
+				fromUrl:location.href,
+				pos: ((o && o.id)?{posId:o.id,posRect:P.getRect(o)}:null) 
+				}
+			)
 		return false
 		}
 	P.go(0)
@@ -112,17 +118,22 @@ if(act & 1){
 		P.ifContinuePage &= ~3
 	if((P.ifContinuePage&4) && P.curUrl.pathname=='/read.php')
 		act |=16
-	if((act&4)==0 && this.frame){
-			var s = history.state
-			if(!s)s={til:document.title,url:location.href}
-			if(go.pos)
-				s.pos=go.pos
-			else
-				s.pos = __NUKE.position.get()
-			s.from='htmlLoader'
-			//console.log('his2',s)
+	if((act&4)==0 /*&& this.frame*/){
+		if(act & 16){
+			console.log('hisreplace','',go.url)
+			var s = {from:'htmlLoader',til:go.til?go.til:go.url,url:go.url}
+			history.replaceState(s,s.til,s.url)
+			}
+		else{
+			//var s = history.state
+			var s={from:'htmlLoader',til:document.title,url:location.href,pos:go.pos?go.pos:__NUKE.position.get()}
+			//console.log('hisreplaceaddpos',s.til,s.url)
 			history.replaceState(s,s.til,s.url)//加载链接时更新历史记录(添加滚动偏移)
+			//console.log('hispush','',go.url)
+			history.pushState({from:'htmlLoader'},go.til?go.til:go.url,go.url)
+			}
 		}
+	window.__fromUrl = go.fromUrl
 	if((P.ifContinuePage&3)==0)
 		this.hideCurrent()
 	this.loadNew(act,go)
@@ -156,6 +167,10 @@ return {top:x.top,right:x.right,bottom:x.bottom,left:x.left}
 
 P.showNew = function(act,data,go){
 var html=data.html.join(''),script = [],til = data.til,url=data.url, ok = P.ifContinuePage, scrollto
+
+if((ok&3)==0)
+	P.mcClear()//del global var here
+
 
 for(var i=0;i<data.scriptPre.length;i++)
 	commonui.eval(data.scriptPre[i])
@@ -204,7 +219,6 @@ if(ok&3){//连续翻页
 	commonui.pageBtn(e[1],[__PAGE[0], __PAGE[1], P.minUrl._arg.page, __PAGE[3], P.maxUrl._arg.page],2|8)
 	}
 else{
-	P.mcClear()//del global var here
 	P.mcInsert(html)
 	}
 
@@ -213,7 +227,7 @@ else{
 //inline script proc
 if(ok&3){//连续加载页时只运行一部分脚本
 	for(var i=0;i<data.script.length;i++)
-		if(data.script[i].match(/^\s*(\/\/topicloadallstart|commonui\.topicArg\.add|\/\/userinfostart|ngaAds\.bbs_ads8_load_new|commonui\.postArg\.proc|ubbcode\.attach\.load|\/\/everyload)/) )
+		if(data.script[i].match(/^\s*(\/\/topicloadallstart|commonui\.topicArg\.add|\/\/userinfostart|ngaAds\.bbs_ads8_load_new|commonui\.postArg\.proc|ubbcode\.attach\.load|\/\/everyload|\/\/everypage)/) )
 			script.push(data.script[i])
 	}
 else{
@@ -242,12 +256,15 @@ P.runScript(script,0,function(){
 	document.title = til+' P'+p
 
 	P.scroll(scrollto)
-
+	
 	if((act&4)==0){
-		console.log('his3',document.title,url)
-		if(P.frame)
-			history[act&16 ? 'replaceState' : 'pushState']({from:'htmlLoader',url:url,til:document.title},document.title,url)//渲染完成后保存访问历史
+		//if(P.frame)
+		//console.log('his'+(act&16 ? 'replace' :'push'),url,document.title)
+		history.replaceState({from:'htmlLoader',url:url,til:document.title},document.title,url)//渲染完成后更新访问历史
 		}
+
+	P.otherOnContentLoad(act,go.url,go.fromUrl)
+
 	if(!P.frame){
 		try{
 			window.parent.iframeRead.complete(document.title,url,2|(act&4))
@@ -329,13 +346,33 @@ for(var i=0;i<y.length;i++){
 		//z.appendChild(o)
 		}
 	}
+	
+this.otherOnClear()
+
+//return z
+}//fe
+
+
+P.otherOnContentLoad = function(act , url, fromUrl){
+if((this.ifContinuePage&3)==0 && location.hash && commonui.hashAction)//hash action
+	commonui.hashAction()
+
+if(commonui.customBackgroundUpdate && window.__CURRENT_FID)
+	commonui.customBackgroundUpdate( commonui.getForumBg(__CURRENT_FID,window.__CURRENT_F_BIT) )
+}//
+
+P.otherOnClear = function(){
 if(i = this.mcClear.currentGlobal.length){
 	while(--i>=0)
 		window[this.mcClear.currentGlobal[i]] = undefined
 	//this.mcClear.currentGlobal=[]
 	}
-if(commonui.postBtn && commonui.postBtn.clearCache)
-	commonui.postBtn.clearCache()
+if(commonui.postBtn){
+	if(commonui.postBtn.clearCache)
+		commonui.postBtn.clearCache()
+	if(commonui.postBtn.clearArgCache)
+		commonui.postBtn.clearArgCache()
+	}
 
 if(commonui.postArg && commonui.postArg.clearCache)
 	commonui.postArg.clearCache()
@@ -346,9 +383,11 @@ if(commonui.time2dis)
 if(postfunc && postfunc.reset)
 	postfunc.reset()
 
-//return z
-}//fe
-P.mcClear.currentGlobal=["__CURRENT_FID", "__CURRENT_F_BIT", "__CURRENT_F_ALLOWPOST", "__ALL_FORUM_DATA", "__ALL_SET_DATA", "__SELECTED_FORUM", "__SELECTED_FORUM_ADD", "__SELECTED_SET", "__SUB_AND_UNION_FORUM_AND_SET", "__CURRENT_ORDER", "__CURRENT_PAGE", "__SUB_SET", "__SUB_AND_UNION_FORUM",  "__CURRENT_F_ALLOWREPLY", "__CURRENT_TID", "__CUSTOM_LEVEL",'__AUTO_TRANS_FID']
+//if(commonui.topicArg && commonui.topicArg.clearCache)
+//	commonui.topicArg.clearCache()
+}//
+
+P.mcClear.currentGlobal=["__CURRENT_FID", "__CURRENT_F_BIT", "__CURRENT_F_ALLOWPOST", "__ALL_FORUM_DATA", "__ALL_SET_DATA", "__SELECTED_FORUM", "__SELECTED_FORUM_ADD", "__SELECTED_SET", "__SUB_AND_UNION_FORUM_AND_SET", "__CURRENT_ORDER", "__CURRENT_PAGE", "__SUB_SET", "__SUB_AND_UNION_FORUM",  "__CURRENT_F_ALLOWREPLY", "__CURRENT_TID", "__CUSTOM_LEVEL",'__AUTO_TRANS_FID','__SEARCHING']
 
 P.mcInsert = function(html){
 var x = $('/span'),mc=this.mc,at=this.mcAt
@@ -360,14 +399,20 @@ while(x.firstChild)
 
 P.onPopHis = function(st){
 if(st && st.from=='htmlLoader' && st.url){
-	//console.log('pop1',st)
+	console.log('pop1',st)
 	st.isHis = 1
 	this.go(5,st)
 	}
+console.log('ig pop1',st)
 }//fe
 
 P.his=[]
 P.loadNew=function(act,go){
+
+if(commonui.insAdsChk){
+	if(commonui.insAdsChk(go.url))
+		return console.log('show ins ads, cancel load')
+}
 if(act&32){
 	var m = go.url.match(preg),h=[]
 	for(var i=0;i<this.his.length;i++){
@@ -383,16 +428,53 @@ for(var i=0;i<this.his.length;i++){
 	if(go.url==this.his[i].url)
 		return P.showNew(act,this.his[i],go)
 	}
+	
+var ugo = go.url
+HTTP.__rep = 0
 HTTP.abort()
-HTTP.open('GET',go.url)
-
+HTTP.open('GET', ugo)
 HTTP.onreadystatechange = function (){
 	if (HTTP.readyState !== HTTP.DONE)
 		return;
-	if (HTTP.status !== 200)
+	var all = HTTP.responseText
+	if (HTTP.status != 200 || HTTP.getResponseHeader("X-NGA-CONTENT-TYPE")=='short-message'){
+		var c = all.match(/<!--msgcodestart-->(\d+)<!--msgcodeend-->/)
+		if(c && c[1]==15 && HTTP.__rep<1){
+			__COOKIE.setCookieInSecond('guestJs',__NOW,1200)
+			HTTP.__rep++
+			return setTimeout(function(){
+				HTTP.abort()
+				HTTP.open('GET',ugo)
+				HTTP.send()
+				},500)
+			}
+		var c = all.match(/<!--msginfostart-->(.+?)<!--msginfoend-->/g)
+		if(c){
+			var ap = ugo.substr(ugo.indexOf('?')).match(/(?:uid|stid|fid|tid|page|pid)=(?:-?\d+)/g)
+			return error(_$('/span','className','ltxt b','innerHTML',c.join('<br/>'))._.add(
+				__CURRENT_UID ? null : [_$('/br'),_$('/br'),'你可能需要 ' , _$('/a','href','javascript:void(0)','onclick',function(){},'innerHTML','[登录]'), ' 后访问...'],
+				((__SETTING.uA[2]==4 || __SETTING.uA[2]==2) && ap)? 
+					[_$('/br'),_$('/br'),_$('/a','href','javascript:void(0)','nga://?'+ap.join('&') , '使用APP打开...','onclick',function(e){
+						if(__SETTING.uA[0]==7){
+							alert('请在右上菜单中选择 "在浏览器打开"')
+							commonui.cancelBubble(e)
+							return commonui.cancelEvent(e)
+							}
+						if(__SETTING.uA[2]==2){
+							var st=e.timeStamp,to= setTimeout(function() {
+								if (!st || (Date.now() - st) < 800)
+									 window.location.assign('http://app.nga.cn/');
+								}, 600)
+							commonui.aE(window,'blur',function() {if(to)clearTimeout(to)})
+							}
+						})]
+					: null
+				))
+			}
 		return error('HTTP ERROR '+HTTP.status);
+		}
 	commonui.progbar(40,5000)
-	var all = HTTP.responseText, data = P.htmlProc(all,go)
+	var data = P.htmlProc(all,go)
 
 	P.his.push(data)
 	if(P.his.length>5)
@@ -414,7 +496,7 @@ var s = all.indexOf("<div id='mainmenu'>"), e = all.lastIndexOf("<div id='footer
 head = all.substr(0,b),
 body = all.substr(s,e-s),
 til = head.match(/<title>(.+?)<\/title>/),
-scp = head.match(/\/\/loadscriptstart([\x00-\xff]+?)\/\/loadscriptend/)
+scp = head.match(/\/\/loadscriptstart([\x00-\xff]+?)\/\/loadscriptend/g)
 
 body = body.split(/<\/?script[^>]*>/)
 body.shift();body.shift()//remove mainmenu and mainmenu init
@@ -423,9 +505,12 @@ data.til = til?til[1]:go.url//标题
 data.scriptPre = []//预加载脚本
 data.script = []
 data.html = []
-if(scp)
-	data.scriptPre.push(scp[1])
+if(scp){
+	for(var i =0;i<scp.length;i++)
+		data.scriptPre.push(scp[i])
+	}
 data.url =go.url
+
 for(var i=0;i<body.length;i++){
 	if(i&1){
 		body[i] = body[i].replace(/\/\/loadscriptstart([\n.]+?)\/\/loadscriptend/,function($0){data.scriptPre.push($0);return ''})

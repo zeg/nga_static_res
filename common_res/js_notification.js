@@ -55,7 +55,7 @@ T[_TYPE_MESSAGE_NEW] = '{_U} 发起了新的 {_M}<br/>',
 T[_TYPE_MESSAGE_REPLY] = '{_U} 回复了 {_M}<br/>',
 T[_TYPE_MESSAGE_ADD] = '{_U} 邀请了新用户加入 {_M}<br/>',
 T[_TYPE_REPORT_TOPIC] = '{_U} 举报了主题 {_T} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>',
-T[_TYPE_REPORT_REPLY] = function(x){return x[_ABOUT_ID_4]?'{_U} 举报了{_T1} {_R2} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>' : '{_U} 举报了主题 {_T} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>'}
+T[_TYPE_REPORT_REPLY] = function(x){return x[_ABOUT_ID_4]?'{_U} 举报了 {_T1} 中的 {_R6} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>' : '{_U} 举报了主题 {_T} 中的 {_R5} <span title="{_TEXT_2}" class="silver">{_TEXT_2_S}</span><br/>'}
 
 var T = TPL[_BIT_SYS]
 T[_TYPE_KEYWORD_WATCH_TOPIC] = '{_U} 发布的主题 {_T} 触发了关键词监视<br/>',
@@ -80,6 +80,7 @@ _R2:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&page={_ABOUT_ID_4}#pid{_
 _R4:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1" title="{_TEXT}">{_TEXT_S}</a></nobr>',
 _R5:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&pid={_ABOUT_ID_2}&to=1">回复</a></nobr>',
 _R3:'<a class="b" href="/read.php?pid={_ABOUT_ID_3}">回复</a>',
+_R6:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}&page={_ABOUT_ID_4}#pid{_ABOUT_ID_2}Anchor">回复</a></nobr>',
 _T:'<nobr><a class="b" href="/read.php?tid={_ABOUT_ID}" title="{_TEXT}">{_TEXT_S}</a></nobr>',
 _T1:'<a class="b" href="/read.php?tid={_ABOUT_ID}">主题</a>',
 _TNO:'<a href="javascript:void(0)" onclick="commonui.notification.setNoti({_ABOUT_ID})" class="b silver" title="不再提示此主题的回复或评论">不提示</a>',
@@ -147,7 +148,7 @@ var self = this
 __NUKE.doRequest({
 	u:{
 		u:'/nuke.php?__lib=noti&raw=3',
-		a:{__act:'get_all'}
+		a:{__act:'get_all',time_limit:(z&1)?'x':1}
 		},
 	f:function (r){
 		var e = __NUKE.doRequestIfErr(r)

@@ -14,31 +14,42 @@ if(!window.ngaAds)
 
 ngaAds.maxw=function(){
 if(this.maxw.w)return this.maxw.w
-return this.maxw.w = __NUKE.position.get().cw-__COLOR.mwm*2-5*2
+return this.maxw.w = __NUKE.position.get().cw-__COLOR.mwm*2-7*2 //广告padding和border
 }//
 
 ngaAds.loadGroup=function(g){
-if(g=='mobi'){
-	this.cacheLoadByName('dsid_bbs_ads44')
-	}
-else{
-	this.cacheLoadByName('bbs_ads12')
+if(g=='read' || g=='thread' || g=='other'){
+	//this.cacheLoadByName('bbs_ads12')
 	this.cacheLoadByName('bbs_ads1')
 	if(g=='read'){
 		this.cacheLoadByName('bbs_ads24')
 		this.cacheLoadByName('bbs_ads45')
-		this.cacheLoadByName('bbs_ads22')
+		if(window.__CURRENT_UID)
+			this.cacheLoadByName('bbs_ads22')//
+		this.cacheLoadByName('bbs_ads49')
 		}
 	else if(g=='thread'){
-		this.cacheLoadByName('bbs_ads22')
+		if(window.__CURRENT_UID)
+			this.cacheLoadByName('bbs_ads22')
+		this.cacheLoadByName('bbs_ads50')
 		}
+	else
+		this.cacheLoadByName('bbs_ads51')
 	}
+else if(g=='mobi'){
+	this.cacheLoadByName('bbs_ads44')
+	this.cacheLoadByName('bbs_ads46')
+	this.cacheLoadByName('bbs_ads47')
+	//this.cacheLoadByName('bbs_ads48')
+	}
+else if(g=='insert')
+	this.cacheLoadByName('bbs_ads12')
 }//
 
 ngaAds.style =function(x) {
 switch(x){
 	case 'bbs_ds32':
-		return 'background:'+__COLOR.gbg1+';box-shadow: 0px 2px 2px #777 inset;margin-top: -0.4em;'
+		return 'background:'+__COLOR.gbg1+';box-shadow: 0 0 5px 0 '+__COLOR.gbg0+' inset;margin-top: -0.4em;'
 	case 'bbs_ds32_a':
 		return 'color:#ddd;'
 	case 'adsc1':
@@ -48,9 +59,9 @@ switch(x){
 	case 'adshid':
 		return 'width:0px;height:0px;padding:0px;margin:0px;font-size:0px;line-height:0px;overflow:hidden;'
 	case 'adsc':
-		return 'background:'+__COLOR.gbg1+';vertical-align:top;padding:0.25em 0;text-align:center;'
+		return 'background:'+__COLOR.gbg1+';box-shadow: 0 0 5px 0 '+__COLOR.gbg0+' inset;vertical-align:top;padding:5px 0;text-align:center;'
 	case 'adsh':
-		return 'background:'+__COLOR.gbg1+';padding:0.416em;width:192px;text-align:center;vertical-align:top;'
+		return 'background:'+__COLOR.gbg1+';box-shadow: 0 0 5px 0 '+__COLOR.gbg0+' inset;padding:0.416em;width:192px;text-align:center;vertical-align:top;'
 	case 'dslabel':
 		return 'line-height:1.1em;font-size:0.583em;letter-spacing:0.25em;'
 	}
@@ -93,44 +104,39 @@ return ''
 }
 
 ngaAds.count31 = 0
-/*主题阅读页中通栏 900×60
- * bbs_ads1 一楼上（保留）
- * bbs_ads31 一楼上
- * bbs_ads40 一楼上左半
- * bbs_ads41 一楼上右半
- * bbs_ads33 十楼上
- * bbs_ads42 十楼上左半
- * bbs_ads43 十楼上右半
+/*
+ * 主题阅读页一楼上通栏 900×60    bbs_ads1   bbs_ads31   bbs_ads46(mobile
+ * 主题阅读页十楼上通栏 900×60    bbs_ads33   bbs_ads48(mobile
+ * //bbs_ads40 一楼上左半
+ * //bbs_ads41 一楼上右半
+ * //bbs_ads42 十楼上左半
+ * //bbs_ads43 十楼上右半
  */
 ngaAds.bbs_ads31_gen = function(id){
-if((__SETTING.bit & 4))
-	return
 ngaAds.count31++
-if ((ngaAds.count31 == 1) && (this.bbs_ads31 || this.bbs_ads1 || this.bbs_ads40 || this.bbs_ads41)){
-	var x='', z=$(id).parentNode
-	x+="<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"
-	if(this.bbs_ads1)
-		x+=this.genAds(this.bbs_ads1,this.maxw())
-	if(this.bbs_ads40 || this.bbs_ads41)
-		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads40)+'</td><td>'+this.genAds(this.bbs_ads41)+'</td></tr></table>'
-	else if(this.bbs_ads31)
-		x+=this.genAds(this.bbs_ads31,this.maxw())
-	x+="<div class='clear'></div></div>"
-	if(z.nodeName!='TABLE')z = z.parentNode
-	z.parentNode.insertBefore(_$('/span').$0('innerHTML',x), z.nextSibling) 
+if(ngaAds.count31>20)
+	ngaAds.count31 = 1
+if(ngaAds.count31 == 1)
+	var b = (__SETTING.bit & 4) ? ['bbs_ads46'] : ['bbs_ads1', 'bbs_ads31']
+else if(ngaAds.count31 == 10)
+	var b = (__SETTING.bit & 4) ? ['bbs_ads48'] : ['bbs_ads33']
+else
+	return
+var x=''
+for(var i=0;i<b.length;i++){
+	if(this[b[i]])
+		x+=this.genAds(this[b[i]], this.maxw())
 	}
-if ((ngaAds.count31 == 10) && (this.bbs_ads33 || this.bbs_ads42 || this.bbs_ads43)){
-	var x='', z=$(id).parentNode
-	x+="<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"
-	if(this.bbs_ads42 || this.bbs_ads43)
-		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads42)+'</td><td>'+this.genAds(this.bbs_ads43)+'</td></tr></table>'
-	else if(this.bbs_ads33)
-		x+=this.genAds(this.bbs_ads33,this.maxw())
-	x+="<div class='clear'></div></div>"
+if(x){
+	z=$(id).parentNode
 	if(z.nodeName!='TABLE')z = z.parentNode
-	z.parentNode.insertBefore(_$('/span').$0('innerHTML',x), z.nextSibling) 
+	z.parentNode.insertBefore(
+		_$('/span','innerHTML',
+			"<div style='"+this.style('adsc')+";border:1px solid "+__COLOR.bg0+";border-top:none;border-bottom:none'>"+x+"<div class='clear'></div></div>"
+			),
+		z.nextSibling)
 	}
-}
+}//
 
 
 
@@ -139,7 +145,7 @@ bbs_ads26 论坛首页右1 140*550~1100
 bbs_ads27 论坛首页右2 140*550~1100 
 */
 
-function bbs_ads26_27(){
+function bbs_ads26_27(){/*
 if(__SETTING.bit & 8)
 	return
 var x = ngaAds
@@ -150,24 +156,17 @@ if (x.bbs_ads27){
 	if(x.bbs_ads26)put("<div style='width:auto;border:none;padding:0;margin:0;float:none;height:20px;font-size:0px;line-height:0px'></div>")
 	put(x.genAds(x.bbs_ads27));
 	}
+*/
+}//
 
-}
-
-/*
- bbs_ads8 论坛阅读帖子页面（看帖）第1贴右侧190*400
- bbs_ads24 论坛阅读帖子页面（看帖）第1贴右侧190*400 优先级高于bbs_ads8
- bbs_ads45 与bbs_ads24不同高度互换 自动选择
-								
- bbs_ads21 论坛阅读帖子页面（看帖）第2贴右侧190*400
- bbs_ads25 论坛阅读帖子页面（看帖）第2贴右侧190*400 优先级高于bbs_ads21
-
- bbs_ads17 论坛阅读帖子页面（看帖）第3贴右侧190*400
+/*小屏没有
+ 论坛阅读帖子页面（看帖）0楼右侧190*400 bbs_ads8		bbs_ads24(优先级高于bbs_ads8)		bbs_ads45(与bbs_ads24不同高度互换 自动选择)
+ 论坛阅读帖子页面（看帖）1楼右侧190*400 bbs_ads21		bbs_ads25(优先级高于bbs_ads21)
+ 论坛阅读帖子页面（看帖）2楼右侧190*400  bbs_ads17
  */
 ngaAds.bbs_ads8_preload = function(){
 
 }//fe
-
-
 ngaAds.bbs_ads8_load_new = function(o,i,fid){
 if(i>2 || o.parentNode.tagName!='TR' || __SETTING.currentClientWidth<1200)
 	return
@@ -215,41 +214,34 @@ if(x)
 
 
 
-/*论坛全页面上通栏 900×60		bbs_ads1*/
+/*
+ * 论坛首页上通栏 900×60		bbs_ads1 bbs_ads46(mobile
+ */
 ngaAds.bbs_ads1_gen=function(){
-if(__SETTING.bit & 4)
-	return '';
-
-if (this.bbs_ads1)
-	return "<div style='"+this.style('adsc')+this.style('adsc1')+"'>"+this.genAds(this.bbs_ads1,this.maxw())+'</div>'
+var b = (__SETTING.bit & 4) ? this.bbs_ads46 : this.bbs_ads1
+if (b)
+	return "<div style='"+this.style('adsc')+this.style('adsc1')+"'>"+this.genAds(b,this.maxw())+'</div>'
 return ''
 }
 
-/*论坛全页面上通栏 900×60		bbs_ads1*/
-/*论坛帖子列表页面（版面）中通栏 900*60		bbs_ads9 bbs_ads23*/
-/*-7帖子列表页面（版面）中通栏 900*60		bbs_ads28 */
+/*论坛帖子列表页面（版面）中通栏 900*60		bbs_ads1 bbs_ads9 bbs_ads23 bbs_ads28 bbs_ads46(mobile*/
 ngaAds.bbs_ads9_gen=function(){
-if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
+
+if(!window.__CURRENT_FID || window.__CURRENT_TID)
 	return
-var n=ngaAds, x=''
-if (n.bbs_ads1 || n.bbs_ads9 || n.bbs_ads23 || (n.bbs_ads28 && __CURRENT_FID==-7)){
-	x+="<div style='"+n.style('adsc')+";margin-bottom:8px;'>"
-	var xw = this.maxw()
-	if(n.bbs_ads1)
-		x+=n.genAds(n.bbs_ads1, xw)
-	if(n.bbs_ads9)
-		x+=n.genAds(n.bbs_ads9, xw)
-	if(n.bbs_ads23)
-		x+=n.genAds(n.bbs_ads23, xw)
-	if(n.bbs_ads28)
-		x+=n.genAds(n.bbs_ads28, xw)
-	x+="</div>"
+var b = (__SETTING.bit & 4) ? ['bbs_ads46'] : ['bbs_ads1', 'bbs_ads9', 'bbs_ads23'], x=''
+
+for(var i=0;i<b.length;i++){
+	if(this[b[i]])
+		x+=this.genAds(this[b[i]], this.maxw())
 	}
+
 if(x){
 	var y = $('toptopics').nextSibling
 	while(y.nodeType!=1)
 		y = y.nextSibling
-	y.innerHTML += x
+
+	y.innerHTML += "<div style='"+this.style('adsc')+";margin-bottom:"+__COLOR.spc+"px;'>"+x+"</div>"
 	}
 }//fe
 
@@ -269,40 +261,43 @@ ngaAds.bbs_ads30_gen = function(){
 
 }//fe
 
-/*通栏组合B 900×60 快速发帖下通栏
- * 论坛全页面	bbs_ads14 (保留)
- * 主题列表页bbs_ads35
- * 主题列表页左半bbs_ads36
- * 主题列表页右半bbs_ads37
- * 主题阅读页bbs_ads34
- * 主题阅读页左半bbs_ads38
- * 主题阅读页右半bbs_ads39
+/*
+ * 主题列表页下部导航下通栏 900×60  bbs_ads50 bbs_ads14 bbs_ads47(mobile
+ * 主题阅读页下部导航下通栏 900×60 bbs_ads49 bbs_ads14 bbs_ads47(mobile
+ * 首页下部通栏 900×60            bbs_ads51 bbs_ads14 bbs_ads47(mobile
+ * bbs_ads34
+ * bbs_ads35
+ * bbs_ads36
+ * bbs_ads37
+ * bbs_ads38
+ * bbs_ads39
  * */
 ngaAds.bbs_ads14_gen = function(){
+//if(window.__CURRENT_TID)//主题
+//	var b = 
+//else if(window.__CURRENT_FID)//版面
+	
+//else//首页
+	
+var x='', b
 if(__SETTING.bit & 4)
-	return
-var x=''
-if (this.bbs_ads14)
-	x+=this.genAds(this.bbs_ads14)
+	b = this.bbs_ads47
+else if(location.pathname=='/read.php')
+	b = this.bbs_ads49
+else if(location.pathname=='/thread.php')
+	b = this.bbs_ads50
+else
+	b = this.bbs_ads51
+if(!b && this.bbs_ads14)
+	b = this.bbs_ads14
 
-if(window.__CURRENT_TID){
-	if(this.bbs_ads38 || this.bbs_ads39)
-		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads38)+'</td><td>'+this.genAds(this.bbs_ads39)+'</td></tr></table>'
-	else if(this.bbs_ads34)
-		x+=this.genAds(this.bbs_ads34)
-	}
-else{
-	if(this.bbs_ads36 || this.bbs_ads37)
-		x+='<table cellspacing=0 cellpadding=0><tr><td>'+this.genAds(this.bbs_ads36)+'</td><td>'+this.genAds(this.bbs_ads37)+'</td></tr></table>'
-	else if(this.bbs_ads35)
-		x+=this.genAds(this.bbs_ads35)
-	}
+if(b)
+	x+=this.genAds(b,this.maxw())
 
 if(x){
-	var y = $('fast_post_c').nextSibling
-	while(y.nodeType!=1)
-		y = y.nextSibling
-	y.innerHTML = "<div style='"+this.style('adsc')+"'>"+x+"<div class='clear'></div></div>"
+	var y = $('b_nav')
+	if(!y)y = $('m_cate5')
+	y.appendChild( _$('/div','style',this.style('adsc')+'marginBottom:'+__COLOR.spc+'px;','innerHTML',x,_$('/div','className','clear')))
 	}
 }
 
@@ -346,20 +341,10 @@ return ''
 //移动页面下浮动 固定尺寸比例640*150
 ngaAds.bbs_ads44_gen = function(){
 if((__SETTING.bit & 16) && this.bbs_ads44)
-	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(this.bbs_ads44)))
+	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(this.bbs_ads44,this.maxw())))
 return null
 }//
 ngaAds.bbs_ads44_perproc = function(x){
-if((''+x.file).match(/\.(jpg|jpeg|png|bmp|gif|swf)$/)){//img
-	if(x.width>523){
-		x.width='523'
-		x.height=Math.floor(523/x.width*x.height)+''
-		}
-	}
-else{//iframe
-	if(x.width>523)
-		x.style='transform: scale('+(523/x.width)+');transform-origin:0% 0%;margin-bottom:-'+Math.floor(x.height-523/x.width*x.height)+'px;'
-	}	
 return x
 }
 

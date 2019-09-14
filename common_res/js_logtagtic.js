@@ -3,12 +3,15 @@
 } (typeof window !== "undefined" ? window: this,
 function() {
 	var oldTimestamp = null,
-	topic = app_key || null,
+	topic = window.app_key || null,
 	sendDataUrl = location.protocol+"//xy-log2.tagtic.cn/mininfo/v1/logs/" + topic,
 	ip = null,
 	isNew = 0,
 	pageId = null,
 	sendFlag = 0,
+	eventAdded = 0,
+	currentUrl = '',
+	domain = '',
 	oldUrl = "";
 	var Util = function() {
 		return {
@@ -79,7 +82,6 @@ function() {
 	function setip(result) {
 		ip = result
 	}
-	init();
 	function sendData(content) {
 		if (!content.appkey || topic === "app_key") {
 			return
@@ -100,7 +102,65 @@ function() {
 			}*/
 		})
 	}
-	function init(spaFlag, currUrl) {
+	function filterUrl(data) {
+		if (!data.to_target.match(/^https?:\/\//)) {
+			data.to_target = null;
+			return data
+		}
+		var toDomain = Util.GetFirstLevelDomain(data.to_target);
+		if (domain === toDomain) {
+			data.to_target = null
+		}
+		return data
+	}
+	function dealwithData(content) {
+		content.cookie = Util.getCookie("taihe");
+		content.page_id = pageId;
+		content.short_cookie = Util.getCookie("taihe_session");
+		content.appkey = topic;
+		if (!content.http_url.match(/^https?:\/\//)  || !content.cookie) {
+			return
+		}
+		if (content.event === "jump") {
+			content = filterUrl(content);
+			if (!sendFlag) {
+				var duration = {
+					cookie: Util.getCookie("taihe"),
+					page_id: pageId,
+					short_cookie: Util.getCookie("taihe_session"),
+					appkey: topic,
+					http_url: currentUrl,
+					timestamp: new Date().toISOString(),
+					event: "duration",
+					duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
+				};
+				sendData(duration);
+				sendFlag = 1
+			}
+			if (content.to_target) {
+				sendData(content);
+				return
+			}
+		}
+		if (content.event === "load") {
+			sendData(content);
+			return
+		}
+		if (content.event === "close") {
+			var duration = {
+				cookie: Util.getCookie("taihe"),
+				page_id: pageId,
+				short_cookie: Util.getCookie("taihe_session"),
+				appkey: topic,
+				http_url: currentUrl,
+				timestamp: new Date().toISOString(),
+				event: "duration",
+				duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
+			};
+			sendData(duration)
+		}
+	}
+	function init(spaFlag, currUrl, referer) {
 		if (spaFlag) {
 			var duration = {
 				cookie: Util.getCookie("taihe"),
@@ -114,66 +174,8 @@ function() {
 			};
 			sendData(duration)
 		}
-		var currentUrl = currUrl || window.location.href;
-		var domain = Util.GetFirstLevelDomain();
-		function filterUrl(data) {
-			if (data.to_target.indexOf("http") < 0) {
-				data.to_target = null;
-				return data
-			}
-			var toDomain = Util.GetFirstLevelDomain(data.to_target);
-			if (domain === toDomain) {
-				data.to_target = null
-			}
-			return data
-		}
-		function dealwithData(content) {
-			content.cookie = Util.getCookie("taihe");
-			content.page_id = pageId;
-			content.short_cookie = Util.getCookie("taihe_session");
-			content.appkey = topic;
-			if (content.http_url.search("http:") < 0 || !content.cookie) {
-				return
-			}
-			if (content.event === "jump") {
-				content = filterUrl(content);
-				if (!sendFlag) {
-					var duration = {
-						cookie: Util.getCookie("taihe"),
-						page_id: pageId,
-						short_cookie: Util.getCookie("taihe_session"),
-						appkey: topic,
-						http_url: currentUrl,
-						timestamp: new Date().toISOString(),
-						event: "duration",
-						duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
-					};
-					sendData(duration);
-					sendFlag = 1
-				}
-				if (content.to_target) {
-					sendData(content);
-					return
-				}
-			}
-			if (content.event === "load") {
-				sendData(content);
-				return
-			}
-			if (content.event === "close") {
-				var duration = {
-					cookie: Util.getCookie("taihe"),
-					page_id: pageId,
-					short_cookie: Util.getCookie("taihe_session"),
-					appkey: topic,
-					http_url: currentUrl,
-					timestamp: new Date().toISOString(),
-					event: "duration",
-					duration: parseInt((new Date().getTime() - oldTimestamp) / 1000)
-				};
-				sendData(duration)
-			}
-		}
+		currentUrl = currUrl || window.location.href;
+		domain = Util.GetFirstLevelDomain();
 		oldTimestamp = new Date().getTime();
 		pageId = Util.md5(currentUrl + oldTimestamp);
 		if (!Util.getCookie("taihe")) {
@@ -187,43 +189,48 @@ function() {
 		} else {
 			Util.setCookie("taihe_session", Util.getCookie("taihe_session"), 1 / 6)
 		}
-		Util.addEvent(window, "beforeunload",
-		function(e) {
-			var node = e.target.activeElement.nodeName.toLowerCase();
-			if (node != "a") {
-				var result = {
-					to_target: e.target.links[0].href,
-					http_url: currentUrl,
-					timestamp: new Date().toISOString(),
-					event: "close",
-				};
-				dealwithData(result)
-			}
-		});
-
-		Util.addEvent(document.body, 'click', function (e) {
-		var h = e.target || e.srcElement
-		for(var i=0;i<3;i++){
-			if(h){
-				if(h.nodeName=='A'){
-					dealwithData({
-						to_target: h.getAttribute("href"),
-						http_url: currentUrl,
-						timestamp: new Date().toISOString(),
-						event: 'jump',
-						})
-					return
+		if(!eventAdded){
+			eventAdded = 1
+			Util.addEvent(window, "beforeunload",
+			function(e) {
+				if(e.target && e.target.activeElement){
+					var node = e.target.activeElement.nodeName.toLowerCase();
+					if (node != "a") {
+						var result = {
+							to_target: e.target.links[0].href,
+							http_url: currentUrl,
+							timestamp: new Date().toISOString(),
+							event: "close",
+						};
+						dealwithData(result)
 					}
-				else
-					h=h.parentNode
 				}
-			else
-				return
-			}
-		})
+			});
 
-		var load = function() {
-			var referer = spaFlag ? oldUrl: (document.referrer ? document.referrer: null);
+			Util.addEvent(document.body, 'click', function (e) {
+					var h = e.target || e.srcElement
+					for(var i=0;i<3;i++){
+						if(h){
+							if(h.nodeName=='A'){
+								dealwithData({
+									to_target: h.getAttribute("href"),
+									http_url: currentUrl,
+									timestamp: new Date().toISOString(),
+									event: 'jump',
+									})
+								return
+								}
+							else
+								h=h.parentNode
+							}
+						else
+							return
+						}
+					})
+			}
+
+		var load = function(setref) {
+			var referer = spaFlag ? oldUrl: (setref?setref:(document.referrer ? document.referrer: null));
 			var result = {
 				status: 200,
 				http_user_agent: navigator.userAgent,
@@ -237,7 +244,7 @@ function() {
 			};
 			dealwithData(result)
 		};
-		load();
+		load(referer);
 		/*
 		var onblur = window.onblur;
 		window.onblur = function() {
@@ -249,6 +256,15 @@ function() {
 		};*/
 		oldUrl = currentUrl
 	}
+
+	window.__LOATAGTIC = {
+		init : function(nouse,//run this on ajax load
+			newurl,//new load url
+			oldurl//current page url
+			){init(nouse,newurl,oldurl)}
+		}
+		
+	init();
 		/*
 	function sendExtEventData(event_value) {
 		if (!event_value) {

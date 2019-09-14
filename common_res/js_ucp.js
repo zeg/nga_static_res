@@ -81,13 +81,14 @@ _LESSER = __GP.lesser,
 _SUPERLESSER = __GP.superlesser,
 //_STAFF = __GP.staff,
 all = _$('<span/>'),
-sst = (_LESSER || _U.verified<0 || _U.uid==this._currentUid)?true:false,
-stp = (_LESSER || _U.uid==this._currentUid)?true:false,
+sst = (__GP.ubMod || __GP.ubStaff || _U.verified<0 || _U.uid==this._currentUid)?true:false,
+stp = (__GP.ubMod || __GP.ubStaff || _U.uid==this._currentUid)?true:false,
 
 //_ACT_UNNUKE = _STAFF,
 _ACT_UNNUKE = (_LESSER && (__GP.userBit&1024) && (__GP.userBit&256)),
 _ACT_NUKE = _SUPERLESSER || (__GP.userBit&1024) || _ACT_UNNUKE,
-_VIEW_NUKE = (_LESSER && (__GP.userBit&256) && (__GP.userBit&(8|2048)))
+_VIEW_NUKE = (_LESSER && (__GP.userBit&256) && (__GP.userBit&(8|2048))),
+tmp
 //_VIEW_NUKE = _STAFF||_SUPER
 _U.username  = _U.username+''
 //---------------------------------------
@@ -154,7 +155,23 @@ var info = this._span(
 			this._a(_ACT_NUKE, '禁言','nuke.php?func=muteuser&uid='+_U.uid)
 			) : null ,
 				
-		'头衔&emsp;&emsp;',this._span(this._title(_U), this._a(_ADMIN, '更改','/nuke.php?func=settitle&uid='+_U.uid)),
+		'头衔&emsp;&emsp;',
+		_$('/span')._.add(
+			tmp = this._title(_U),
+			_ADMIN ? this._a(_ADMIN, '更改','/nuke.php?func=settitle&uid='+_U.uid)
+			 : ((_SELF && tmp) ? _$('/a','href','javascript:void(0)','innerHTML','[清除]','onclick',function(){
+					if(window.confirm('清除有时限的头衔 永久头衔不受影响')){
+							__NUKE.doRequest({
+								u:{u:__API._base,
+										a:{__lib:"set_title",__act:"remove_random_title",raw:3}
+										},
+								b:this
+								})
+						}
+					})
+				: null 
+				)
+			),
 		'发帖数&emsp;',_U.posts,
 		'金钱&emsp;&emsp;',_$('<span>'+commonui.calc_money(_U.money)+'</span>'),
 		'注册日期',this._span(commonui.time2date(_U.regdate) , this._a(_ADMIN, '更改','/nuke.php?func=setregtime&uid='+_U.uid)),
@@ -341,7 +358,7 @@ else if(_U.userForum && _SELF){
 	}
 
 //---------------------------------------------------
-
+if(this._currentUid){
 	all._.aC(this._genBlock('user_post_block', _U.username+' 发布的贴子','',
 		this._span(
 
@@ -381,7 +398,7 @@ else if(_U.userForum && _SELF){
 			)
 
 		))
-	
+	}
 
 //---------------------------------------------------
 /*

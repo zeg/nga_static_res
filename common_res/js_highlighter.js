@@ -208,7 +208,7 @@ Highlighter.Brushe.prototype = {
 		}
 		
 		this.AddBit(this.code.substr(pos), null);
-		return '<div>'+this.GetLineNo(this.linecount)+'<div style="white-space:nowrap;float:left;overflow:auto;margin-left:25px">'+this.buffer.join('')+'</div><div style="clear:both;height:0;line-height:0;font-size:0"></div></div>';
+		return '<div>'+this.GetLineNo(this.linecount)+'<div style="white-space:nowrap;float:left;overflow:auto;margin-left:'+(((this.linecount+'').length+1)*0.7)+'em">'+this.buffer.join('')+'</div><div style="clear:both;height:0;line-height:0;font-size:0"></div></div>';
 	},
 	GetKeywords: function(str) {
 		return '\\b' + str.replace(/\s+/g, '\\b|\\b') + '\\b';
@@ -226,6 +226,6 @@ Highlighter.Brushe.prototype = {
 			{
 			x += i+':<br/>';
 			}
-		return "<div unselectable='on' onselectstart='return false' style='-moz-user-select:none;color:gray;float:left;margin-right:-25px;text-align:right'>"+x+"</div>";
+		return "<div unselectable='on' onselectstart='return false' style='-moz-user-select:none;color:gray;float:left;margin-right:-"+(((l+'').length+1)*0.7)+"em;text-align:right'>"+x+"</div>";
 	}
 }

@@ -65,7 +65,7 @@ postfunc.__QUOTE = 'quote'
 postfunc.__MODIFY = 'modify'
 
 postfunc._ATTACH_UPLOAD = window.__ATTACH_BASE+'/attach.php';
-
+postfunc._MAX_IMAGE_SIZE = 4096*1024//图片不超过(字节
 /**
  *文件上传使用到的变量
 postfunc.fileSelector=null //文件选择input
@@ -633,9 +633,12 @@ postfunc.attachUpload=function(){
 var f = this.o_attachForm
 f.innerHTML=''
 var z = this.o_waitAttachList.firstChild
-if(!z){
-	this.o_attachBtn.disabled=null
-	return
+if(!z)
+	return this.o_attachBtn.disabled=null
+if(z.__toobig){
+	alert('图片过大')
+	z.parentNode.removeChild(z)
+	return this.o_attachBtn.disabled=null
 	}
 if(!this.ifMultiple)//单选文件用老方法
 	return postfunc.attachUploadSingle();
@@ -678,7 +681,7 @@ var x = new FormData(f), self=this, onam = z.__file.name.replace(/([^\/\\]+)$/,'
 x.append('func','upload')
 x.append('v2','1')
 x.append('origin_domain',window.location.hostname )
-x.append('lite','js')
+x.append('lite','json')
 x.append('auth',this.currentAuth)
 x.append('fid',this.currentFid)
 if(z.__file64){
@@ -764,14 +767,47 @@ postfunc.wmsel=postfunc.wmdefsel=false
 postfunc.attachNewFile = function(fileO){
 var $=_$,si1,si2,si3
 if(fileO.type.indexOf('image/')===0){
-	var wm = fileO.type.match(/\/jpe?g|png/) ? true : false, wmo, z = this.attachFileC(true)
+	var wm = fileO.type.match(/\/jpe?g|png/) ? true : false, wmo, z = this.attachFileC(true),toobig = fileO.size>this._MAX_IMAGE_SIZE ? 1 : 0
 	
 	if(!fileO.__fake &&  window.FileReader){
 		var tmpImg = $("/img")._.css({'float':'left',border:'0.25em solid #551200',visibility:'hidden'})
 		tmpImg.__r = new FileReader()
 		tmpImg.__r.__p = tmpImg
-		tmpImg.__r.onload = function(e) {this.__p.src = e.target.result}
-		tmpImg.onload = function(){this.onload=null;commonui.resizeImg(this,160,90),this.style.visibility=''}
+		tmpImg.__r.onload = function(e) {
+			if(toobig && !wm){
+				toobig = 0
+				z.__toobig = 1
+				z.__infoC._.add($('/div','style','color:red')._.add('图片过大'))
+				}
+			else
+				this.__p.src = e.target.result
+			}
+		tmpImg.onload = function(){
+			if(toobig){
+				toobig = 0
+				if(wm){
+					var cv = document.createElement('canvas')
+					cv.width = this.width
+					cv.height = this.height
+					cv.getContext('2d').drawImage(this,0,0)
+					var jp = cv.toDataURL('image/jpeg',0.8)
+					cv = null
+					if(jp.match(/^data:image\/jpeg;base64,/)){
+						if(jp.length-23<=postfunc._MAX_IMAGE_SIZE/3*4){
+							z.__file64=jp
+							z.__infoC._.add($('/div','style','color:red')._.add('图片过大 将压缩'+(fileO.type.match(/\/jpe?g/)?'':'为jpeg')+'上传'))
+							return this.src = jp
+							}
+						}
+					}
+
+				z.__toobig = 1
+				z.__infoC._.add($('/div','style','color:red')._.add('图片过大'))
+				}
+			this.onload=null
+			commonui.resizeImg(this,160,90)
+			this.style.visibility=''
+			}
 		tmpImg.__r.readAsDataURL(fileO);
 		z.__imgC._.add(tmpImg)
 		}
@@ -1023,7 +1059,7 @@ this.albumImgCount=0
 this.ifMultiple
 this.uploadedAttach=[]
 this.o_setTopic={}
-this.o_liveTopic={}
+//this.o_liveTopic={}
 this.o_replyAnony={}
 this.o_replyOnce={}
 this.o_voteView={}
@@ -1064,7 +1100,7 @@ var f_post = function(ob){
 		self.o_modifyAppend ? self.o_modifyAppend.value : null,
 		null,//self.o_comment ? (self.o_comment.checked ? 1 :0) : null
 		self.o_anony.checked ? 1 : 0,//匿名
-		self.o_liveTopic.checked ? 1 : 0,//live
+		0,//self.o_liveTopic.checked ? 1 : 0,//live
 		self.o_replyAnony.checked ? 1 : 0,//匿名huifu
 		self.o_topicVote ? (function(o){
 			var u = o.getElementsByTagName('input'),w={}
@@ -1239,7 +1275,7 @@ var o_main = $('/span').$0(
 					mode==this.__NEW ? t('只有作者和版主可回复 ') : null,
 					mode==this.__NEW && _GP.lesser ? this.o_setTopic = $('/input').$0('type','checkbox','checked',(tbit & this.postBit._POST_IF_SET) ? 1 : '') : null,
 					mode==this.__NEW && _GP.lesser ? $('/span').$0('innerHTML','合集主题 ','title','集合主题如同一个版面 用户可在其下发布子主题 发布集合主题会扣除5金币 版主免费') : null,
-					mode==this.__NEW && _GP.lesser ? $('/span').$0('title','发布一个直播 可在直播系统中更新内容 (直播系统所有用户均可访问)')._.add(this.o_liveTopic = $('/input').$0('type','checkbox'), '发布直播(alpha) ') : null,
+					//mode==this.__NEW && _GP.lesser ? $('/span').$0('title','发布一个直播 可在直播系统中更新内容 (直播系统所有用户均可访问)')._.add(this.o_liveTopic = $('/input').$0('type','checkbox'), '发布直播(alpha) ') : null,
 					mode!=this.__MODIFY ? this.o_anony = $('/input').$0('type','checkbox','checked','','onclick',function(){if(this.checked)alert('匿名发布主题需要5000铜币\n\n匿名发布回复需要100铜币\n\n匿名发布的内容如果违反版规将会加重处罚\n\n因为很重要所以再说一次，加 重 处 罚')}) : null,
 					mode!=this.__MODIFY ? $('/span').$0('innerHTML','匿名发帖 ','title','匿名发帖，将不显示发帖人的任何信息') : null,
 
@@ -1740,6 +1776,7 @@ if(!p.pwindow){
 if(mode== p.__REPLY_BLANK)
 	mode= p.__REPLY
 return __NUKE.doRequest({
+	c:document.characterSet?document.characterSet:'GBK',
 	u:__API.postGet(tid,pid,mode,fid,stid),
 	f:function(d){
 		var e = __NUKE.doRequestIfErr(d)
@@ -2614,7 +2651,13 @@ __NUKE.doRequest({
 					"发贴完毕 ",
 					apc.c = $('/span','innerHTML',apc.i),
 					'秒后跳转 ',
-					apc.j = $('/a','href',u,'className','gray','innerHTML','(点此跳转)'),
+					apc.j = $('/a','href',u,'className','gray','innerHTML','(点此跳转)','_useloadread',1,'onclick',function(e){
+						if(this.href.replace(/#.*$/,'')==location.href.replace(/#.*$/,'')){
+							location.assign(this.href)
+							location.reload()
+							}
+						else
+							location.assign(this.href)}),
 					' ',
 					$('/a','href','javascript:void(0)','className','gray','innerHTML','(点此取消跳转)'),
 					' ',
@@ -2742,9 +2785,9 @@ m = m.replace(/\s*<col(?:\s+[^>]+)?>\s*/ig,'')
 						})
 				return x+']'
 				})
-			//.replace(/<\/?(?:font|p|b|tbody)(?:\s+[^>]+)?>/ig,'')
 			//.replace(/<span(?:\s+[^>]+)?>(&nbsp;)*<\/span>/ig,'')
-return '[table]\n'+m.replace(/^\s+|\s+$/ig,'').replace(/<[^>]+>/,'')+'\n[/table]'
+			//.replace(/<\/?(?:font|p|b|tbody|colgroup|span)(?:\s+[^>]+)?>/ig,'')
+return '[table]\n'+m.replace(/^\s+|\s+$/ig,'').replace(/<[^>]+>/ig,'')+'\n[/table]'
 }//fe
 
 

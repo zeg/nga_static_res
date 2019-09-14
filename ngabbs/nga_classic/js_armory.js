@@ -61,10 +61,10 @@ var urls = proxypath+"/"+cachepath+"/" + k + ".js"
 			if (!x)return false;
 			else
 				{
-				var date = new Date
-				if ((date.getTime() - x[0])>3600*24*30)return false
-				if (!x[0])x[0]=false
-				todo(x[0],realm,name,o,host,hosthost,u,l)
+				//var date = new Date
+				//if ((date.getTime() - x[0])>3600*24*30)return false
+				//if (!x[0])x[0]=false
+				//todo(x[0],realm,name,o,host,hosthost,u,l)
 				return true
 				}
 			},
@@ -88,9 +88,9 @@ var urls = proxypath+"/"+cachepath+"/" + k + ".js"
 				}
 			else
 				{
-				var date = new Date
-				if ((date.getTime()/1000 - x[1])>3600*24*7 && !x[2])
-					return false
+				//var date = new Date
+				//if ((date.getTime()/1000 - x[1])>3600*24*7 && !x[2])
+				//	return false
 				if(typeof(x[0])=='string')
 					o.innerHTML='old data error'
 				else if(x[0].battlegroup){

@@ -468,7 +468,7 @@ p {margin:auto}
 .subtxt_color a:hover {color:#28353d}
 del {text-decoration:line-through}
 button {
-background: #433227;
+background: #40332a;
 color: #bbbbbb;
 line-height: 1.5em;
 border:none;
@@ -481,7 +481,7 @@ margin:0.1em 0.2em
 textarea, select, input, button, option {font-size:1.083em}
 
 textarea, select, input {
-border: 1px solid #614839;
+border: 1px solid #5d493d;
 box-shadow: 0 0 2px 0 #444444 inset;
 border-radius: 0.25em;
 background: #11100e;
@@ -697,17 +697,17 @@ color: #000000;
 }
 
 .block_txt_c1 {
-background: #be8f7e;
+background: #6a584b;
 color: #11100e;
 }
 
 .block_txt_c2 {
-background: #614839;
+background: #5d493d;
 color: #708182;
 }
 
 .block_txt_c3 {
-background: #433227;
+background: #40332a;
 color: #777777;
 }
 
@@ -786,7 +786,7 @@ table.album {background:#51514a;border:1px solid #9a9d91}
 .item_ui a {font-weight:bold;text-decoration:none}
 
 /*urltip*/
-.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#181614;border:1px solid #be8f7e;padding:1px;z-index:1}
+.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#181614;border:1px solid #6a584b;padding:1px;z-index:1}
 .urltip2 {margin-top:-18px;font-size:0.923em;line-height:1.5em}
 .urltip3 {border:2px solid #fbdbb7}
 .urltip2 * {border-color:#fbdbb7}
@@ -957,7 +957,7 @@ word-break:break-all;
 .forumbox .topicrow .topic {font-size:1.085em;line-height:1.9em}
 
 .forumbox .topicrow .topic_content {margin: 0px 5px 5px 15px;padding: 0 8px 8px 8px;}
-.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #be8f7e;font-size:1.085em;line-height: 1.9em}
+.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #6a584b;font-size:1.085em;line-height: 1.9em}
 
 .forumbox .topicrow .replies {letter-spacing:-1px;font-family:'Arial Black',arial-black,'Helvetica Black',helvetica-black,Sans-serif}
 .forumbox .topicrow .c3, .forumbox .topicrow .c4 {width:14%;text-align:center;color:#525e64;padding-left:1px;padding-right:1px;font-size:0.923em}
@@ -1023,7 +1023,7 @@ margin-bottom: -0.456em;
 .forumbox .postrow .c2 h5.subtitle {border-color:#ccc}
 /*.forumbox .postrow .postbtnc {padding-top:2px;padding-bottom:2px;padding-right:1px;vertical-align:middle;line-height:37px}*/
 .forumbox .postrow h3 {font-size:1.17em;display:inline;font-weight:bold;margin:0;padding:0;line-height:2em}
-.forumbox .postrow .sigline {clear:both;display:block;width:60%;padding:0px 4em;margin:2.5em auto 0.333em 0px;color:#614839;border-bottom:1px dashed #614839;line-height:0.667em;letter-spacing:0.25em}
+.forumbox .postrow .sigline {clear:both;display:block;width:60%;padding:0px 4em;margin:2.5em auto 0.333em 0px;color:#5d493d;border-bottom:1px dashed #5d493d;line-height:0.667em;letter-spacing:0.25em}
 .forumbox .postrow .borderb {background:#fbdbb7;font-size:0px;line-height:0px;height:2px}
 .forumbox .postrow .thumblink img {border:2px solid #fbdbb7}
 
@@ -1271,8 +1271,8 @@ text-decoration:none;
 #mainmenu {height:55px;overflow:hidden;margin:0 0 168px 0}
 #mainmenu .avatar {width:78px;height:78px;float:right;margin-left:-1px}
 #mainmenu .avatar .bg {width:78px;height:38px;background: url(pager4_v2.png) 0px 0px no-repeat;margin:0 0 -38px 0}
-#mainmenu .avatar .img {width:67px;height:67px;background-color:#11100e;border:1px solid #be8f7e;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
-#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #be8f7e;background:#322f2b;border-radius:0px 0px 5px 5px}
+#mainmenu .avatar .img {width:67px;height:67px;background-color:#11100e;border:1px solid #6a584b;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
+#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #6a584b;background:#322f2b;border-radius:0px 0px 5px 5px}
 
 
 #startmenu td {padding:0;font-size:14px;font-weight:bold;color:gray;vertical-align:top;text-align:left;opacity:0.50;}
@@ -1301,9 +1301,9 @@ text-decoration:none;
 #mainmenu .stdbtn .half {padding:10px 0 8px 0;line-height:18px;}
 .mmdefault {color:#976f6b}
 .mmdefault:hover {color:#5e3532}
-/*#mainmenu .stdbtn .left td a {border-left:none;border-right:1px solid #433227;}*/
+/*#mainmenu .stdbtn .left td a {border-left:none;border-right:1px solid #40332a;}*/
 
-#m_posts {border-bottom:1px solid #be8f7e}
+#m_posts {border-bottom:1px solid #6a584b}
 #m_posts .postboxtop {margin-bottom:-1px;display:none}
 #m_posts_c table:first-of-type .postrow td.c1 {border-top-left-radius:2px}
 #m_posts_c table:first-of-type .postrow td.c2 {border-top-right-radius:2px}
@@ -1489,7 +1489,7 @@ background: url(http://img.db.178.com/wow/images/hs-sprite16.png) no-repeat righ
 .stdbtn .last a {border-right:none}
 .stdbtn .first a {border-left:none}
 
-.stdbtn a {border-left:1px solid #433227;background:#322f2b;font-weight:bold;display:block;padding:0 0.8em;}
+.stdbtn a {border-left:1px solid #40332a;background:#322f2b;font-weight:bold;display:block;padding:0 0.8em;}
 .stdbtn a:hover {background-color:#181614;text-decoration:none}
 
 .stdbtn .invert {background:#fbdbb7;color:#181614;}
@@ -1514,8 +1514,8 @@ vml\:roundrect {behavior:url(#default#VML);display:inline-block;background:trans
 .postbox .avatar_noborder {border:none}
 .postbox .ceffect1 .avatar_small, .postbox .avatar_small, .msgread .avatar_small {margin: -0.33em 0 -0.66em 0;width: 1.92em;height: 1.92em;border-radius: 0.416em;}
 /*collapse*/
-.collapse_content {border-top:1px solid #614839;border-bottom:1px solid #614839}
-.collapse_btn {border-top:1px solid #614839;border-bottom:1px solid #614839;padding:1px 0}
+.collapse_content {border-top:1px solid #5d493d;border-bottom:1px solid #5d493d}
+.collapse_btn {border-top:1px solid #5d493d;border-bottom:1px solid #5d493d;padding:1px 0}
 .collapse_btn button {line-height:1.2em;padding:0px 0.2em}
 /*fast view*/
 .fastViewPost .forumbox {border:none}
@@ -1556,8 +1556,8 @@ body .gnavv7 *,.oCv7 *{margin:0;padding:0;list-style:none;text-decoration:none;f
 
 .comment_c .avatar_small {margin-bottom:-1.92em}
 .comment_c .comment_c_0 {margin:0.5em 0.5em 0.5em 2.5em;}
-.comment_c .comment_c_1 {border-top: 1em solid #614839;border-left: 1em solid transparent;padding:0}
-.comment_c .comment_c_2 {padding:0.5em;border:0.2em solid #614839;border-radius:0 0.5em 0.5em 0.5em}
+.comment_c .comment_c_1 {border-top: 1em solid #5d493d;border-left: 1em solid transparent;padding:0}
+.comment_c .comment_c_2 {padding:0.5em;border:0.2em solid #5d493d;border-radius:0 0.5em 0.5em 0.5em}
 
 
 .haveCustomBackground #m_pbtntop .stdbtn {background:#322f2b;border-color:#11100e;box-shadow: 0 0 6px -3px #000;}

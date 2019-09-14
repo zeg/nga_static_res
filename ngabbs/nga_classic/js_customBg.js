@@ -1,4 +1,12 @@
-commonui._ifCanCustomBackground = window.__CURRENT_UID && ((window.File && window.FileReader && window.FileList) || (window.__UA && __UA[0]==1 && __UA[1]>=8))
+
+;(function(){
+var ___LOADED,
+___CANUSE = window.__CURRENT_UID && ((window.File && window.FileReader && window.FileList) || (window.__UA && __UA[0]==1 && __UA[1]>=8)),
+___LAST,
+___TRANS,//&4 trans pic		&1 css added
+___LOGO = __IMG_STYLE+'/logoshadow6.png',
+___OJ
+
 
 commonui.customBackgroundInit = function(a){
 var uu=this.userCache.get('customBackgroundFile')
@@ -11,6 +19,7 @@ if(uu){
 		return ''})
 	a[1] = uu
 	}
+___LAST = a.join('|')
 if(a[1]==0){
 	if(!window.Trianglify)
 		return loader.script(__COMMONRES_PATH+'/trianglify.min.js',function(){commonui.customBackgroundInit(a)})
@@ -26,6 +35,44 @@ if(a[0]==1)
 else if(a[0]==2)
 	this.customVerticalBackgroundInit(a[1],a[2],a[3])
 }//fe
+
+commonui.customBackgroundUpdate = function(a){
+if(a.join('|')==___LAST || !___OJ)
+	return
+___LAST = a.join('|')
+var u = a[1],
+l = a[2],
+os = a[3],
+v = a[4],
+opt = a[5],
+vbgc = a[6],
+s = 0,
+o
+
+console.log(___TRANS,u)
+if(opt&4){
+	if(os==190)
+		opt&=~4
+	s=190
+	if((___TRANS&1)==0){
+		__NUKE.addCss("\n #m_pbtntop, #m_nav, #custombg .overlay, #custombg .overlay a, #custombg .logo {transform:translateY(0px)} \n")
+		___TRANS |= 1
+		}
+	___TRANS |=4
+	}
+else{
+	___TRANS &= ~4
+	s=os
+	}
+
+___OJ.$0('_moveY',os-s,'style','height:'+os+'px;margin:-'+(os-s)+'px 0 -'+s+'px 0;overflow:hidden;background:url("'+u+'") bottom left repeat;transition:transform 45s linear')
+if(___TRANS&4)
+	___OJ.style.transform = 'translateY(0px)'
+else if(___OJ.style.transform)
+	___OJ.style.transform =''
+	
+
+}//
 /*
 commonui.ifCustomBackground=function(){
 if(commonui.userCache.get('customBackgroundFile'))
@@ -46,9 +93,8 @@ return 0
 
 },//fe
 */
-commonui.customBackgroundHeight = 0
-if(commonui.customBackgroundLogo===undefined)
-	commonui.customBackgroundLogo = __IMG_STYLE+'/logoshadow6.png'
+
+
 
 /**
  *u 背景图地址
@@ -59,8 +105,8 @@ if(commonui.customBackgroundLogo===undefined)
  */
 commonui.customBackground=function(u,l,os,v,opt,vbgc){
 var w= window,c=w.commonui
-if(c.customBackground.loaded || !document.body)return
-c.customBackground.loaded=true
+if(___LOADED || !document.body)return
+___LOADED=true
 
 var $ = _$,x = $('custombg'),z=55,y,vo,voc,vog,s
 
@@ -71,11 +117,12 @@ if(opt&4){
 	if(os==190)
 		opt&=~4
 	s=190
+	___TRANS |= 4
 	}
-else
+else{
+	___TRANS &= ~4
 	s=os
-	
-
+	}
 
 if(w.__UA && w.__UA[0]==1 && w.__UA[1]<=6){
 	var f = function(u,s){return "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+u+"'"+(s?",sizingMethod='scale'":'')+")"}
@@ -88,8 +135,8 @@ else{
 	var cok = "customBackgroundOverlay_2_"+s+"_"+__COLOR.bg0, l1 = c.userCache.get(cok)
 	if(!l1){
 		if(!w.PNGlib){
-			c.customBackground.loaded=false
-			return loader.script(__COMMONRES_PATH+'/js_pnglib.js', function(){commonui.customBackground(u,l,s)})
+			___LOADED=false
+			return __SCRIPTS.asyncLoad(__COMMONRES_PATH+'/js_pnglib.js', function(){commonui.customBackground(u,l,s)})
 			}
 		var tmp = function(x,y,z,rgb){//宽 高 渐变部分高
 			var p = new PNGlib(x, y, 256), j=z, a=0
@@ -104,29 +151,27 @@ else{
 		l1 = tmp(1, s+1, 0, c.hexToRgb(__COLOR.bg0))
 		c.userCache.set(cok, l1, 86400*30)
 		}
-	var x = $('/div','style','height:'+(s+1)+'px;boxShadow:inset 0 0 1.5em 0 black'+(opt&4 ? ';transform:translateY(0px)':''),'style',{background:'url(data:image/png;base64,'+l1+')'},
-					(commonui._ifCanCustomBackground ? $('/a','href','javascript:void(0)','style','color:#fff;font-size:20px;opacity:0.33;float:right'+(opt&4 ? ';transform:translateY(0px)':''),__TXT('gear'),'onclick',function(e){commonui.mainMenu.data[95].on.func(e)}) : null)
+	var x = $('/div','className','overlay','style','height:'+(s+1)+'px;boxShadow:inset 0 0 1.5em 0 black','style',{background:'url(data:image/png;base64,'+l1+')'},
+					(___CANUSE ? $('/a','href','javascript:void(0)','style','color:#fff;font-size:20px;opacity:0.33;float:right',__TXT('gear'),'onclick',function(e){commonui.mainMenu.data[95].on.func(e)}) : null)
 					)
 //	var x = _$('<div/>')._.css({height:(s+1)+'px',background:"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABVJREFUeNpi/P//PwMTAwODGkCAAQAYLAMn19xlOwAAAABJRU5ErkJggg==)"})._.aC(     _$('<div/>')._.css({height:(s+1)+'px',background:"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAC/CAYAAAA/1baMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAENJREFUeNpi+P//PwMTAxCMEqMEucTf90wgFjaCGU6gcdEIFlwsbFxsBCthMUq4OMVY8LoUp9+wEdgCDBsBCXaAAAMAc4cHZX7oZPoAAAAASUVORK5CYII=) bottom left repeat-x"})    )
 	}
 
-c.customBackgroundHeight=s
 
-var bgImgObj = $('/div','_moveY',os-s,'style','height:'+os+'px;margin:-'+(os-s)+'px 0 -'+s+'px 0;overflow:hidden;background:url("'+u+'") bottom left repeat'+((opt&4)?';transform:translateY(0px);transition:transform 45s linear':''))
-y = $('/div','style','height:'+s+'px;overflow:hidden;',bgImgObj)
+___OJ = $('/div','_moveY',os-s,'style','height:'+os+'px;margin:-'+(os-s)+'px 0 -'+s+'px 0;overflow:hidden;background:url("'+u+'") bottom left repeat'+((___TRANS&4)?';transform:translateY(0px);transition:transform 45s linear':''))
 
-if(opt&4){
-	this.customBackgroundUseTrans = 1
-	x._.on('click',function(){
-		bgImgObj.style.transform='translateY('+bgImgObj._moveY+'px)'
-		})
-	//commonui.aE(window,'DOMContentLoaded',function(){
-	//	bgImgObj.style.transform='translateY('+bgImgObj._moveY+'px)'
-	//	})
-	}
+
+y = $('/div','style','height:'+s+'px;overflow:hidden;',___OJ)
+
+
+x._.on('click',function(){
+	if(___TRANS&4)
+		___OJ.style.transform='translateY('+___OJ._moveY+'px)'
+	})
+
 
 if(v){
-	this.customBackgroundUseTrans = 1
+	___TRANS |= 4
 	opt = opt|0
 	var ts = __NUKE.cpblName(document.body.style,'transition',1)
 	if(ts){
@@ -192,14 +237,14 @@ if(l==1){
 		)
 	}
 else if(l==2){*/
-if(this.customBackgroundLogo){
-	var l = _$('/div','style','margin:auto auto auto 70px;width:451px;height:57px'+(opt&4 ? ';transform:translateY(0px)':''))
+if(___LOGO){
+	var l = _$('/div','style','margin:auto auto auto 70px;width:451px;height:57px')
 	if(w.__UA && w.__UA[0]==1 && w.__UA[1]<=6)
-		l._.css({filter:f( this.customBackgroundLogo )})
+		l._.css({filter:f( ___LOGO )})
 	else
-		l._.css({background:'url('+this.customBackgroundLogo+')'})
-	y._.aC(
-		$('<div/>')._.css({'marginBottom':'-'+(157)+'px',paddingTop:(100)+'px',textAlign:'left'})._.aC(l)
+		l._.css({background:'url('+___LOGO+')'})
+	y._.add(
+		$('/div','className','logo','style','marginBottom:-157px;paddingTop:100px;textAlign:left',l)
 		)
 	}
 /*	}*/
@@ -221,8 +266,10 @@ if(vo){
 	document.body.appendChild(vo)
 	document.body.appendChild(voc)
 	}
-if(this.customBackgroundUseTrans)
-	__NUKE.addCss("\n #m_pbtntop, #m_nav {transform:translateY(0px)} \n")
+if(___TRANS&4){
+	___TRANS|=1
+	__NUKE.addCss("\n #m_pbtntop, #m_nav, #custombg .overlay, #custombg .overlay a, #custombg .logo {transform:translateY(0px)} \n")
+	}
 }//fe
 
 commonui.receiveBase64Data = function(base64){
@@ -240,7 +287,7 @@ $('CBG_8667368')._data = base64
 }
 
 commonui.mainMenu.data[95]={u:1,
-check:function(){if (commonui._ifCanCustomBackground)return true},//ie8+或支持window.FileReader
+check:function(){if (___CANUSE)return true},//ie8+或支持window.FileReader
 innerHTML:'设置背景',
 on:{
 	event:'click',
@@ -371,6 +418,8 @@ document.body.className+=' verticalbg'
 
 
 commonui.mainMenu.data[18].subKeys.push(95)
+
+})();
 
 /*
 commonui.mainMenu._new[95]=1319101708

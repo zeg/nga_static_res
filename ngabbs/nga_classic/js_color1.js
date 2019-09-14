@@ -59,4 +59,4 @@ rd:'2.5',
 rdi:'2',
 shadow1:'border: 1px solid #cacaca;box-shadow:0 0 5px -3px #000;',
 mwm:'10',
-invertfilter:'*/' }
+invertfilter:'' }

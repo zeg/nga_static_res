@@ -286,7 +286,18 @@ setTopicBlock:function(stid,block){
 	},
 postGet:function(tid,pid,mode,fid,stid,isComment){
 	if(!mode)mode = 'reply'
-	return '/post.php?lite=js&action='+mode+(fid?'&fid='+fid:'')+'&tid='+(tid?tid:'')+'&pid='+(pid?pid:'')+'&stid='+(stid?stid:'')+'&comment='+(isComment?1:'')
+	return {
+		u:'/post.php',
+		a:{
+			__output:3,
+			action:mode,
+			fid:fid?fid:'',
+			tid:tid?tid:'',
+			pid:pid?pid:'',
+			stid:stid?stid:'',
+			comment:isComment?1:''
+			}
+		}
 	},/*
 topicLock:function(tid,lock,pm,info,delay,cfid){
 	return {u:this._base,
@@ -460,7 +471,10 @@ style2:262144, //Ê¹ÓÃÑùÊ½2
 autoPic:524288,//¸ù¾ÝÉè±¸³ß´çÑ¡ÔñÍ¼Æ¬ ½öÔÚlessPicÊ±ÓÐÐ§
 style3:1048576, //Ê¹ÓÃÑùÊ½3
 fontBig:2097152, //¼Ó´ó×ÖÌå
-fixWidth:4194304 //ÏÞÖÆ¿í¶È
+fixWidth:4194304, //ÏÞÖÆ¿í¶È
+
+//ÅÐ¶ÏÌõ¼þ
+noTopBg : 1024 | 64 | 2048,//ÎÞ±³¾°
 },
 width:null,
 cName:'uisetting',
@@ -821,13 +835,18 @@ var s =
 			)
 		)
 	)
-document.write("<link rel='stylesheet' href='"+__STYLE[s][1]+"' type='text/css'/>")
-var x ='<scr'+'ipt src=\"'+__STYLE[s][2]+'\" type=\"text/javasc'+'ript\" onload="__SETTING.applyThemeColor()"></scr'+'ipt>';
-document.write(x)
+for(var i=1;i<__STYLE[s].length;i++){
+	if(__STYLE[s][i].match(/\.css[^\.]*$/))
+		document.write("<link rel='stylesheet' href='"+__STYLE[s][i]+"' type='text/css'/>")
+	else
+		document.write('<scr'+'ipt src=\"'+__STYLE[s][i]+'\" type=\"text/javasc'+'ript\" onload="__SETTING.applyThemeColor()"></scr'+'ipt>')
+	}
 },
 
 applyThemeColor:function(){
 document.getElementsByTagName('head')[0].appendChild(	_$('/meta','name','theme-color','content',__COLOR.border4))
+if(this.smwm)
+	__COLOR.mwm = this.smwm
 },
 
 save:function(bit,day){
@@ -835,8 +854,8 @@ this.bit = bit
 __COOKIE.setMiscCookieInSecond(this.cName,bit,86400*(day?day:90))
 },
 
-init:function(defS){
-var w=window, ci=commonui, n = w.__NUKE, bits = this.bits, c=w.__COOKIE, bit = c.getMiscCookie(this.cName), self=this;
+init:function(defS,obit){
+var w=window, ci=commonui, n = w.__NUKE, bits = this.bits, c=w.__COOKIE, bit = obit ? obit : c.getMiscCookie(this.cName), self=this;
 //if(w.navigator.userAgent.indexOf('d3-bigfoot')!=-1 || w.location.hash.indexOf('ua=d3-bigfoot')!=-1){
 //	bit = bits.auto | bits.embed | bits.inIframe
 //	w.__LITE.embed=true//old
@@ -901,10 +920,10 @@ this.bit = bit
 
 this.syncLoadStyle(defS)
 
-var wi = this.getWidth()
-this.width = wi
-if(wi)
-	this.setWidth(wi)
+if((this.width = (this.getWidth()|0))>0)
+	this.setWidth(this.width)
+else
+	this.width*=-1
 this.setfont()
 this.currentClientWidth = __NUKE.position.get().cw
 if(this.css)
@@ -982,7 +1001,7 @@ return w
 */
 getWidth:function(){
 
-var ww=window, w, s=this.bits, b = this.bit
+var ww=window, w, s=this.bits, b = this.bit,scw = 19//ÔÚbody³öÏÖÖ®Ç°ÎÞ·¨µÃµ½¹ö¶¯Ìõ¿í¶È Ô¤ÉèÒ»¸ö
 sss = function(o){
 	b |= s.size10 | s.size7 | s.size4 | o
 	w=525
@@ -1003,11 +1022,11 @@ if(b & s.embed){//Èç¹ûÊÇÇ¶Èë¿Í»§¶Ë
 	sss(s.lessPic)
 	var m = ww.navigator.userAgent.match(/size(\d+)\*(\d+)/)
 	if(m)
-		w=m[1]
+		w=m[1]|0
 	else if(ww.location.hash){
 		m = ww.location.hash.match(/size=(\d+)_(\d+)/)
 		if(m)
-			w=m[1]
+			w=m[1]|0
 		}
 	}
 else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//Èç¹ûÃ»Éè³ß´ç»òÑ¡Ôñ×Ô¶¯
@@ -1024,18 +1043,18 @@ else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//Èç¹ûÃ»Éè³
 			sss(s.autoPic|s.lessPic)
 		}
 	else{//def PC  document.documentElement.clientWidth
-		w= (ww.innerWidth>50? ww.innerWidth : ww.screen.width)-19//·µ»Øä¯ÀÀÆ÷¿í¶È»òÆÁÄ»¿í¶È ÔÚbody³öÏÖÖ®Ç°ÎÞ·¨µÃµ½¹ö¶¯Ìõ¿í¶È
+		w= (ww.innerWidth>50? ww.innerWidth : ww.screen.width)-scw//·µ»Øä¯ÀÀÆ÷¿í¶È»òÆÁÄ»¿í¶È
 		//console.log(document.documentElement.clientWidth+' '+ww.innerWidth+' '+ww.screen.width)
-		if(w<=525)
+		if(w<=550)//525*1.05
 			sss(s.autoPic|s.lessPic)
-		else if(w<=700)
+		else if(w<=735)//700*1.05
 			ss(s.autoPic|s.lessPic)
-		else if(w<=940)
-			mm(0,(b & s.inIframe) ? 0 : 940)
+		else if(w<=987)//940*1.05
+			mm(0,(b & s.inIframe) ? w=w*-1 : 940)
 		else if(w<=1000)
-			mm(0,(b & s.inIframe) ? 0 : 1000)
+			mm(0,(b & s.inIframe) ? w=w*-1 : 1000)
 		else
-			w=0
+			w=w*-1
 		}
 	/*
 	w = this.devPixDetect()
@@ -1063,18 +1082,20 @@ else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//Èç¹ûÃ»Éè³
 	*/
 	}
 else{//Èç¹ûÉèÁË³ß´ç
+	w= (ww.innerWidth>50? ww.innerWidth : ww.screen.width)-19//·µ»Øä¯ÀÀÆ÷¿í¶È»òÆÁÄ»¿í¶È ÔÚbody³öÏÖÖ®Ç°ÎÞ·¨µÃµ½¹ö¶¯Ìõ¿í¶È
 	if(b & s.size4)
 		sss(0)
 	else if(b & s.size7)
 		ss(0)
 	else if(b & s.size10)
-		mm(0,0)
+		mm(0,w*-1)
 	else
-		w=0
+		w=w*-1
 	}
 this.bit=b
 return w
 },
+
 
 setfont:function(){
 var bit = this.bit, bs = this.bits
@@ -1092,7 +1113,7 @@ if((bit & (bs.size10 | bs.size7 | bs.size4)) == 0 ){
 	}
 	
 if( (bit & bs.fixWidth) && window.innerWidth>1920)
-	this.css+='\n#mc {width:1900px}'
+	this.css+='\n#mc {max-width:1900px;margin:auto}'
 
 if(bit & bs.fontHei){
 	//this.css+='body, textarea, select, input, button {font-family:Microsoft Yahei, Î¢ÈíÑÅºÚ, Verdana, Tahoma, Arial, sans-serif}'
@@ -1104,25 +1125,29 @@ if(bit & bs.fontHei){
 if(this.uA[4]==3 || this.uA[4]==1){//webkit/edge
 	if(this.uA[0]==5){//safari
 		if(bit & bs.size10)//small screen tablet or phone
-			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-bottom:0.15em;} \n .stdbtn a {padding-bottom:0.15em;}'
+			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25em;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-bottom:0.15em;} \n .stdbtn a {padding-bottom:0.15em;}'
 		else
-			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.35;padding-top:0.05em;padding-bottom:0} \n .vertmod{}'
+			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.35em;padding-top:0.05em;padding-bottom:0} \n .vertmod{}'
 		}
 	else{
 		if(bit & bs.size10)//small screen tablet or phone
-			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-top:0.15em;} \n .stdbtn a {padding-top:0.15em;}'
+			this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-top:0.15em;} \n .stdbtn a {padding-top:0.15em;}'
 		else
-			this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
+			this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
 		}
 	}
 else	
-	this.css+='\nbutton, .block_txt {line-height:1.4;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
+	this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
 },
 
+smwm:0,
 setWidth:function(w){
 var h = document.getElementsByTagName('head')[0], ww = window, fz = this.bit & this.bits.size7 ? true : false
 h.appendChild(_$('</meta>')._.attr({name:'viewport',content:'width='+w}))
-this.css+='\n@-ms-viewport {width:'+w+'px}\nbody {font-size:'+(fz?19:16)+'px} \nbody * {max-height:50000em;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%; -ms-text-size-adjust:100%}\n.posterInfoLine {font-size:0.85em}\nbody , #minWidthSpacer {width:'+w+'px} \n #adsc1, #_178NavAll_110906_765453, #mc , #custombg {width:'+w+'px;overflow:hidden} \n .urltip, .urltip2, .default_tip {font-size:1em} \n .notLoadImg #mainmenu {margin-bottom:0px} \n .single_ttip2 {max-width:'+w+'px}\n.postrow td.c1 {display:none} \n.module_wrap {margin-left:3px;margin-right:3px}\n.adsc {max-width:'+w+'px;overflow:hidden}\n.navhisurltip {line-height:2em;margin-top:2.5em}\n.navhisurltip .star {margin-top:0.5em} \n #m_nav .bbsinfo {display:none} \n #iframereadc {border-left-width:1px} \n #m_cate5 {font-size:0.736em} \n #postsubject {display:none}'
+this.smwm = 3
+if(window.__COLOR)
+	__COLOR.mwm = this.smwm
+this.css+='\n@-ms-viewport {width:'+w+'px}\nbody {font-size:'+(fz?19:16)+'px} \nbody * {max-height:50000em;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%; -ms-text-size-adjust:100%}\n.posterInfoLine {font-size:0.85em}\nbody , #minWidthSpacer {width:'+w+'px} \n #adsc1, #_178NavAll_110906_765453, #mc , #custombg {width:'+w+'px;overflow:hidden} \n .urltip, .urltip2, .default_tip {font-size:1em} \n .notLoadImg #mainmenu {margin-bottom:0px} \n .single_ttip2 {max-width:'+w+'px}\n.postrow td.c1 {display:none} \n.module_wrap {margin-left:'+this.smwm+'px;margin-right:'+this.smwm+'px}\n.adsc {max-width:'+w+'px;overflow:hidden}\n.navhisurltip {line-height:2em;margin-top:2.5em}\n.navhisurltip .star {margin-top:0.5em} \n #m_nav .bbsinfo {display:none} \n #iframereadc {border-left-width:1px} \n #m_cate5 {font-size:0.736em} \n #postsubject {display:none}'
 ww.commonui.aE(window,'DOMContentLoaded',function(){document.body.style.width='auto',$('mc').style.overflow='visible'})
 
 },
@@ -1199,6 +1224,7 @@ commonui.cancelBubble=function(e){
 if (!e) var e = window.event;
 e.cancelBubble = true;
 if (e.stopPropagation) e.stopPropagation()
+return false
 }
 commonui.cancelEvent=function(e){
 if (!e) var e = window.event;
@@ -1252,6 +1278,28 @@ if(u = u.match(/^(?:(https?:|ftp:|)\/\/)?([^\x00-\x20\/><"']*)([^\x00-\x1f\?><"'
 	return u
 	}
 }//fe
+
+//±éÀú
+//opt&1 'k,v,k,v...'
+//opt&2 {k:v,k:v...}
+commonui.uniEach = function(dat,f,opt){
+if(opt&1){
+	var k='',v='',j=0,i=0
+	while(j<dat.length){
+		i=dat.indexOf(',',j)
+		k = dat.substr(j,i>-1?i-j:undefined)
+		j=i>-1?i+1:dat.length
+		i=dat.indexOf(',',j)
+		v = dat.substr(j,i>-1?i-j:undefined)
+		f(k,v)
+		j=i>-1?i+1:dat.length
+		}
+	}
+else if(opt&2){
+	for(var k in dat)
+		f(k,dat[k])
+	}
+}//
 
 //¼æÈÝÊôÐÔÃû»ñÈ¡================
 commonui.compPropName = function(a,b){
@@ -1984,7 +2032,7 @@ commonui.crossDomainCall.setCallBack=function(k,v){CB[k] = v}
 window.addEventListener("message", function(e){
 if(!e.origin.match(/(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs.com|bigccq\.cn)(?::\d+)?$/))
 	return
-var call,callback,a = e.data.replace(/^([^\s]+)\s+([^\s]+)\s+/,function($0,$1,$2){call=$1;callback=$2;return ''})
+var call,callback,a = (e.data+'').replace(/^([^\s]+)\s+([^\s]+)\s+/,function($0,$1,$2){call=$1;callback=$2;return ''})
 if(call){
 	if(CB[call])
 		return CB[call](a)
@@ -2054,49 +2102,110 @@ P = 'userCache_'+uid+'_'
 }//ce
 })();
 //µ¯´°½çÃæ=====================
-commonui.createCommmonWindow = function (opt){//&1ÎÞ¶¯»­ &2ÎÞ±êÌâÀ¸
-var $ = _$,r = __NUKE.cpblName(document.body.style,'transition',1,'transform',1,'transformOrigin',1,'opacity',1),
 
-t = $('/div').$0(
+
+commonui.liteWindow = function(e,til,content){
+var $ = _$
+if(!this.liteWindow.w){
+	var v = $('/div','className','single_ttip3','style','background:rgba(0,0,0,0.5);border-radius:0.3em;padding:0.3em;position:absolute;'
+		,$('/span', 'className','title')
+		,$('/span', 'className','content')
+		,$('/div','className','clear')
+		)
+	v.style.display='none'
+	v._title = v.firstChild
+	v._content = v._title.nextSibling
+	commonui.aE(document.body,'click',function(e){
+		if(e._liteWindowIgorne)
+			return
+		if(commonui.ifMouseOut(e,v))
+			return v.style.display='none'
+		})
+	document.body.appendChild(v)
+	this.liteWindow.w = v
+	}
+var w = this.liteWindow.w
+if(til || content){
+	w._title.innerHTML = ''
+	w._content.innerHTML = ''
+	if(til)
+		w._title._.add(til,$('/br'))
+	if(content)
+		w._content._.add(content)
+	}
+e._liteWindowIgorne = true
+__NUKE.position.setPos(w,e,null,1)
+}//
+
+//µ¯´°½çÃæ=====================
+;(function(){
+var EVENT_INIT = 0, HIS
+
+commonui.createCommmonWindow = function (opt){//&1ÎÞ¶¯»­ &2ÎÞ±êÌâÀ¸
+var $ = _$,ss=__SETTING.bit&__SETTING.bits.size4,r = __NUKE.cpblName(document.body.style,'transition',1,'transform',1,'transformOrigin',1,'opacity',1)
+
+,t = $('/div').$0(
 	'className','tip_title'+((opt&2)?' x':''),
 	'draggable',true,
 	'ondragstart' , function(e){
-		var x = this.parentNode.parentNode, b = x.getBoundingClientRect(), p= __NUKE.position.get()
-		this._p = {x:e.screenX,y:e.screenY,l:b.left+p.xf,t:b.top+p.yf}
+		var x = this.parentNode.parentNode, b = x.getBoundingClientRect(), p= __NUKE.position.get(e)
+		this._p = {x:p.x,y:p.y,l:b.left+p.xf,t:b.top+p.yf}
 		},
 	'ondrag' , function(e){
-		if(e.screenX || e.screenY){
-			this._p.x1 = e.screenX
-			this._p.y1 = e.screenY
+		var p = __NUKE.position.get(e)
+		if(p.x || p.y){
+			this._p.x1 = p.x
+			this._p.y1 = p.y
 			}
 		},
 	'ondragend' , function(e){
-		var x = this.parentNode.parentNode
-		x.style.left = Math.round(this._p.x1 - this._p.x + this._p.l) + 'px'
-		x.style.top = Math.round(this._p.y1 - this._p.y + this._p.t) + 'px'
+		var x = this.parentNode.parentNode, p = __NUKE.position.get(e)
+		l = Math.round(this._p.x1 - this._p.x + this._p.l),
+		t = Math.round(this._p.y1 - this._p.y + this._p.t)
+		x.style.left = (l>=p.pw ? p.pw-50 : (x.getBoundingClientRect().right<0 ? l+50 : l )) + 'px'
+		x.style.top = (t>=0?t:0) + 'px'
 		},
 	
-	$('/a','className','colored_text_btn','href','javascript:void(0)',__TXT('close')._.css('line-height:1.85em'),'onclick',function(){this.parentNode.parentNode.parentNode._.hide()}),
-	$('/span').$0('className','title','innerHTML','&nbsp;')
+	$('/a','className','colored_text_btn','href','javascript:void(0)',__TXT('close')._.css('line-height:1.85em'),'onclick',function(){
+		//if(ss && window.history)
+		//	history.back()
+		this.parentNode.parentNode.parentNode._.hide()
+		}),
+	$('/span','className','title','innerHTML','&nbsp;')
 	),
 c1 = $('/div')._.cls('div3'),
 c2 = $('/div')._.cls('div3'),
 c = c1,
 d = c1,
-w = $('/div').$0('className','single_ttip2',
-		$('/div').$0('className','div1',
+
+w = $('/div','className','single_ttip2','style',/*ss?'position:fixed;left:0;top:0;bottom:0;right:0;overflow:auto':*/'','id','commonwindow'+(Math.random()+'').substr(2),
+		$('/div','className','div1',
 			t,
-			$('/div').$0('className','div2',
+			$('/div','className','div2',
 				c
 				)
 			)
 		)
+/*
+if(ss && window.addEventListener && !EVENT_INIT){
+	EVENT_INIT = 1
+	HIS = []
+	window.addEventListener('popstate',function(e){
+		if(e.state && e.state.from=='commonWindow'){
+			var od = HIS.pop()
+			if(od)
+				$(od)._.hide()
+			}
+		})
+	}*/
+	
 
 if(__SETTING.uA[0]==1 && __SETTING.uA[1]<=8)
 	w.style.borderWidth='4px'
 w.style.display='none'
 w._.__c = c
-
+w._.__t = t
+w._._commonWindowfocusTime = 0
 if(r[0] && r[1] && r[2] && r[3] && (opt&1)==0){}
 else r=false
 
@@ -2116,13 +2225,13 @@ w._.addTitle=function(i){
 	t.className='tip_title'
 	t.lastChild.innerHTML = i
 	return this.self
-	};//fe
+	}//fe
 w._.addAfterContent=function(o){
 	c.parentNode.parentNode.appendChild(o)
-	};//fe
+	}//fe
 w._.addBeforeContent=function(o){
 	c.parentNode.parentNode.insertBefore(o,c)
-	};//fe
+	}//fe
 w._.addContent=function (x){
 	if(arguments[0]===null){//µÚÒ»¸ö²ÎÊýÊÇnullÊ±reset ±ØÐëÊ¹ÓÃÒ»´Îshow²Å¿ÉÒÔÏÔÊ¾
 		if(d==c){
@@ -2150,7 +2259,7 @@ w._.addContent=function (x){
 	else//µ¥¸ö²ÎÊýÊ±¿ÉÒÔÉèÖÃinnerhtml
 		c.innerHTML+=x
 	return this.self
-	};//fe
+	}//fe
 w._.show=function (x,y,z){
 	var o = this.self
 	if(d!=c){
@@ -2159,6 +2268,17 @@ w._.show=function (x,y,z){
 		}
 	if(!o.parentNode || o.parentNode.nodeType!=1 || o.nextSibling)
 		document.body.appendChild(o)
+	this.zsort()
+	/*if(ss){
+		o.style.position='fixed'
+		o.style.display='block'
+		o.style.opacity=1
+		//if(window.history && history.pushState){
+		//	HIS.push(o.id)
+		//	history.pushState({from:'commonWindow'}, document.title, location.href)
+		//	}
+		return o
+		}*/
 	if(r){
 		var a = (o.style.display=='none'),p = __NUKE.position.setPos(o,x,y,z|32)
 		if(!a){
@@ -2183,7 +2303,7 @@ w._.show=function (x,y,z){
 	else
 		__NUKE.position.setPos(o,x,y,z|0)
 	return o
-	};//fe
+	}//fe
 w._.hide=function (e){
 	var o = this.self
 	if(r){
@@ -2194,9 +2314,39 @@ w._.hide=function (e){
 	else
 		o.style.display='none'
 	return this.self
-	};//fe
+	}//fe
+w._.zsort = function(e){
+	var x = commonui.allCommonWindow
+	if(x[0]!=this.self){
+		var y=this.self, i=-1, j=1000
+		x.sort(function(a,b){
+			if(a==y)
+				return -1
+			else if(b==y)
+				return 1
+			else
+				return 0
+			})
+		while((++i)<x.length){
+			x[i].style.zIndex=(--j)
+			x[i]._._commonWindowfocused=0
+			}
+		x[i-1]._._commonWindowfocusTime = e ? e.timeStamp : (window.performance ? performance.now() : 0 )
+		}
+	x[x.length-1]._._commonWindowfocused =1
+	}//
+if(w.addEventListener)
+w.addEventListener('mousedown',function(e){
+	this._.zsort(e)
+	},true)
+
+commonui.allCommonWindow.push(w)
+
 return w
 }//fe
+
+commonui.allCommonWindow = []
+})();
 
 //Ìæ´úalert===================
 ;(function(){
@@ -2211,9 +2361,9 @@ x._.show()
 })();
 
 //µ¯´°½çÃæ - ¹ÜÀí½çÃæ´°¿Ú=======
-commonui.createadminwindow = function(id){
+commonui.createadminwindow = function(id,opt){
 if(this.adminwindow)return this.adminwindow
-this.adminwindow = this.createCommmonWindow()
+this.adminwindow = this.createCommmonWindow(opt)
 if(!id)
 	this.adminwindow.id = 'commonuiwindow';
 else
@@ -2657,13 +2807,14 @@ PB={
 8:		[G|MAD|TT|TS,			32768,	'ºÏ¼¯',	'ºÏ¼¯',	'#A0B4F0',	'ÊÇÒ»¸öºÏ¼¯Ö÷Ìâ ÓÃ»§¿ÉÒÔÔÚºÏ¼¯ÖÐ·¢²¼×ÓÖ÷Ìâ',	'×ª³ÉºÏ¼¯'],
 9:		[G|MAD|TT|QF,			2097152,	'°æÃæ',	'°æÃæ',	'#A0B4F0',	'ÕâÊÇÒ»¸öµ½°æÃæµÄ¾µÏñ',								'×ª³É°æÃæ¾µÏñ'],
 10:	[G|MMOD|TT,				256,		'Õ¼Â¥',	'',		'#909090',	'Ö»ÄÜÖ÷Ìâ·¢²¼Õß×Ô¼º»Ø¸´',							'Ö»ÄÜÖ÷Ìâ·¢²¼Õß×Ô¼º»Ø¸´'],
-11:	[MOD|MWD|TT|PP,		16384,	'ÆÁ±Î',	'ÆÁ±Î',	'#C58080',	'×÷Õß/·Ã¿Í(¶ÌÊ±¼äÄÚ)/°æÖ÷¿É¼û',					'×÷Õß/·Ã¿Í(¶ÌÊ±¼äÄÚ)/°æÖ÷¿É¼û'],
+11:	[MOD|MWD|TT|PP,		16384,	'ÆÁ±Î',	'ÆÁ±Î',	'#C58080',	'×÷Õß/°æÖ÷¿É¼û',					'×÷Õß/°æÖ÷¿É¼û'],
 12:	[MOD|MNO|TS|QF|QQ,	1026,		'ÏÂ³Á',	'ÏÂ³Á',	'#A0B4F0',	'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡',						'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡'],
 13:	[MOD|MMOD|TS|QF|QQ,	16777216,'ÏÂ³Á',	'ÏÂ³Á',	'#A0B4F0',	'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡',						'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡'],
-14:	[MOD|MSU|TT|PP,		2048,		'´¦·£',	'´¦·£',	'#909090',	'ÓÐÓÃ»§ÔÚ´ËÌùÄÚ±»´¦·£',								'´¦·£±ê¼Ç'],
+14:	[MOD|MSL|TT|PP,		2048,		'´¦·£',	'´¦·£',	'#909090',	'ÓÐÓÃ»§ÔÚ´ËÌùÄÚ±»´¦·£',								'´¦·£±ê¼Ç'],
 15:	[MOD|TT|PP,				8,			'ÑÓÊ±',	'ÑÓÊ±',	'#909090',	'²é¿´Ô¤¶©²Ù×÷¼ÇÂ¼',									''],
 16:	[MOD|TT|PP,				32,		'±ê¼Ç',	'±ê¼Ç',	'#909090',	'²é¿´±ê¼Ç/¾Ù±¨¼ÇÂ¼',								''],
-17:	[MOD|MSL|TT,			524288,	'¸½¼þ',	'+',		"#BD7E6D",	'ÔÚÖ÷ÌâÁÐ±íÖÐÏÔÊ¾¸½¼þ',								'ÔÚÖ÷ÌâÁÐ±íÖÐÏÔÊ¾¸½¼þ']
+17:	[MOD|MSL|TT,			524288,	'¸½¼þ',	'+',		"#BD7E6D",	'ÔÚÖ÷ÌâÁÐ±íÖÐÏÔÊ¾¸½¼þ',								'ÔÚÖ÷ÌâÁÐ±íÖÐÏÔÊ¾¸½¼þ'],
+18:	[MOD|MMOD|MWD|TT|PP,	512,		'ÉóºË',	'A',		'#C58080',	'ÕýµÈ´ýÉóºË',								'ÕýµÈ´ýÉóºË'],
 },
 TMB={
 1:		[G|MMOD|TS,		131072,		'È«Ëø',	'È«Ëø',	'#C58080',	'ºÏ¼¯ÄÚÎÞ·¨±à¼­/»Ø¸´/·¢²¼×ÓÖ÷Ìâ',					'Ëø¶¨ºÏ¼¯µÄÈ«²¿Ö÷Ìâ'],
@@ -2769,6 +2920,7 @@ return x
  * @returns {unresolved}
  */
 commonui.getPostBitInfo = function(fid, tid, pid, pb, tmb1, h, mod){
+
 if((PBALL&pb)==0 && (TMBALL&tmb1)==0)
 	return ''
 if(P===undefined)
@@ -2785,7 +2937,7 @@ if(PBALL&pb)
 			if((pb & z[1])==z[1] && (z[0]&y)){
 				if(pb&2129960){
 					if(z[1]==8)
-						u = "/nuke.php?func=adminlog&about="+tid
+						u = "javascript:adminui.getDelayAction("+tid+",0)"
 					else if(z[1]==32)
 						u = "/nuke.php?func=logpost&tid="+tid
 					else if(z[1]==32768 || z[1]==2097152)
@@ -2799,8 +2951,7 @@ if(PBALL&pb)
 				}
 			}
 		}
-if((P&WD) && (pb&512)==0)
-	x+=C([MSU|TT|PP,		512,	'AU',	'AU',		'#C58080',	'',								''],h)
+
 if(TMBALL&tmb1)
 	for(var k in TMB){
 		z = TMB[k]
@@ -2855,6 +3006,10 @@ __NUKE.doRequest({
 
 //ÓÉµ±Ç°£¨Ö÷Ìâ£©µØÖ·Éú³Éµ½Ìû×ÓµÄÁ´½Ó=====================
 commonui.genPidLink = function(pid,lou){
+if(window.__PAGE)
+	return __PAGE[0]+'&page='+__PAGE[2]+'#pid'+pid+'Anchor'
+return ''
+/*
 if(!this.genPidLink.base){
 	var l = window.location;
 	if(l.pathname!='/read.php')
@@ -2866,6 +3021,7 @@ if(this.genPidLink.base===1)
 	return ''
 else
 	return this.genPidLink.base+( pid ? '&pid='+pid+'&to=1' : '#'+lou )
+*/
 }
 
 
@@ -3264,6 +3420,13 @@ groups:null,
 medals:null,
 buffs:null,
 reputations:null,
+clearCache:function(){
+this.users={}
+this.groups=null
+this.medals=null
+this.buffs=null
+this.reputations=null
+},
 setAll:function(v){
 if(v.__REPUTATIONS)
 	this.reputations = v.__REPUTATIONS
@@ -4611,11 +4774,11 @@ this.adminwindow._.addTitle('ÊÕ²Ø'+(pid?'»Ø¸´':'Ö÷Ìâ'))
 this.adminwindow._.addContent(
 	x = $('/div')._.add(
 			$('/input').$0('type','checkbox','checked','1'), ' ¸öÈËÊÕ²Ø', $('/br'),
-				$('/input').$0('type','checkbox'),' ¹«¿ªÊÕ²Øµ½ ', 
-				$('/a').$0('href','/column.php','target','_blank','innerHTML','[¾Û¾Û]', 'onclick',function(){commonui.adminwindow._.hide()}), 
-				$('/br'),
-				$('/a').$0('href','/column.php?action=create_archive','target','_blank','innerHTML','[¹«¿ªÊÕ²Ø²¢±àÐ´ÕªÒª]', 'onclick',function(){commonui.adminwindow._.hide()}), 
-				$('/br'),
+				//$('/input').$0('type','checkbox'),' ¹«¿ªÊÕ²Øµ½ ', 
+				//$('/a').$0('href','/column.php','target','_blank','innerHTML','[¾Û¾Û]', 'onclick',function(){commonui.adminwindow._.hide()}), 
+				//$('/br'),
+				//$('/a').$0('href','/column.php?action=create_archive','target','_blank','innerHTML','[¹«¿ªÊÕ²Ø²¢±àÐ´ÕªÒª]', 'onclick',function(){commonui.adminwindow._.hide()}), 
+				//$('/br'),
 			$('/br'),
 			$('/button').$0('innerHTML','È·¶¨','onclick',function(){
 				this.disabled=1
@@ -4906,7 +5069,7 @@ else	this.adminwindow._.addContent(
 				'²¢µã»÷ÏÂÒ»²½ÒÔÌí¼ÓÕËºÅ',$('/br'),
 				z=$('/input')._.attr('maxlength',6,'size',10),
 				$('/button')._.attr({innerHTML:'ÏÂÒ»²½',type:'button'})._.on('click',function(){
-						if(!x.checked || !y.checked)return
+						if(!x.checked || !y.checked)return alert('ÇëÈ·ÈÏ¹´Ñ¡Ç°ÌáÌõ¼þ')
 						var p = z.value.replace(/^\s*|\s*$/g,'')
 						if(!p)return
 						var s='salt'+Math.floor(Math.random()*10000), md5 = hex_md5(p+s+__CURRENT_UID)+s
@@ -4961,7 +5124,7 @@ commonui.lessernuke = function (e,tid,pid,f)
 {
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-var self=this,$ = _$, rg, rf, rs, m2, m4, m6, n1, n2, n3, n4, il, is, il, rf, sk='',ff=location.search.match(/_ff=(\d+)/), y= $('/span')
+var self=this,$ = _$, rg, rf, rs, m2, m4, m6, n1, n2, n3, n4, il, is, il, rf, ff=location.search.match(/_ff=(\d+)/), y= $('/span')
 this.adminwindow._.addTitle('´Î¼¶NUKE');
 
 this.adminwindow._.addContent(
@@ -5019,7 +5182,7 @@ this.adminwindow._.addContent(
 				return alert("ÐèÒª²Ù×÷ËµÃ÷")
 			self.lessernuke['info_'+tid+'_'+pid] = ist
 			__NUKE.doRequest({
-				u:__API.lesserNuke2(tid, pid, opt, il ? il.value.replace(/^\s+|\s+$/g,''):'' , ist,sk),
+				u:__API.lesserNuke2(tid, pid, opt, il ? il.value.replace(/^\s+|\s+$/g,''):'' , ist,''),
 				b:this,
 				inline:true
 				})
@@ -5058,7 +5221,6 @@ if(f)
 			if(e)
 				return
 			var x = d.data[0].replace(/^\s+|\s+$/g,'').split("\n")
-			sk=d.data[1]?d.data[1]:''
 			for(var i=0;i<x.length;i++){
 				if(x[i]){
 					isl._.add(

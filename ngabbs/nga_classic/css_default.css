@@ -697,7 +697,7 @@ color: #fff;
 }
 
 .block_txt_c1 {
-background: #ac6e41;
+background: #a6846c;
 color: #fffcee;
 }
 
@@ -786,7 +786,7 @@ table.album {background:#d6dcae;border:1px solid #91b262}
 .item_ui a {font-weight:bold;text-decoration:none}
 
 /*urltip*/
-.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#fff8e7;border:1px solid #ac6e41;padding:1px;z-index:1}
+.urltip, .urltip2 {position:absolute;margin-top:-1.5em;font-size:0.692em;line-height:1.33em;text-decoration:none;display:none;background:#fff8e7;border:1px solid #a6846c;padding:1px;z-index:1}
 .urltip2 {margin-top:-18px;font-size:0.923em;line-height:1.5em}
 .urltip3 {border:2px solid #591804}
 .urltip2 * {border-color:#591804}
@@ -957,7 +957,7 @@ word-break:break-all;
 .forumbox .topicrow .topic {font-size:1.085em;line-height:1.9em}
 
 .forumbox .topicrow .topic_content {margin: 0px 5px 5px 15px;padding: 0 8px 8px 8px;}
-.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #ac6e41;font-size:1.085em;line-height: 1.9em}
+.forumbox .topicrow .topic_content .postcontent {border-top:1px solid #a6846c;font-size:1.085em;line-height: 1.9em}
 
 .forumbox .topicrow .replies {letter-spacing:-1px;font-family:'Arial Black',arial-black,'Helvetica Black',helvetica-black,Sans-serif}
 .forumbox .topicrow .c3, .forumbox .topicrow .c4 {width:14%;text-align:center;color:#58697b;padding-left:1px;padding-right:1px;font-size:0.923em}
@@ -1192,7 +1192,7 @@ text-decoration:none;
 .ubbcode .headline .headlinesel .seled {background:#591804}
 
 .ubbcode .fixblk .apd {display:none}
-.ubbcode .smile_ac,.ubbcode .smile_ac2 {*/}
+.ubbcode .smile_ac,.ubbcode .smile_ac2 {}
 /*.page_nav btn*/
 
 .page_nav .symbol {font-size:27px;font-family:Arial Unicode MS, Verdana, Tahoma, Arial, sans-serif}
@@ -1271,8 +1271,8 @@ text-decoration:none;
 #mainmenu {height:55px;overflow:hidden;margin:0 0 168px 0}
 #mainmenu .avatar {width:78px;height:78px;float:right;margin-left:-1px}
 #mainmenu .avatar .bg {width:78px;height:38px;background: url(pager4_v2.png) 0px 0px no-repeat;margin:0 0 -38px 0}
-#mainmenu .avatar .img {width:67px;height:67px;background-color:#fffcee;border:1px solid #ac6e41;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
-#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #ac6e41;background:#fff0cd;border-radius:0px 0px 5px 5px}
+#mainmenu .avatar .img {width:67px;height:67px;background-color:#fffcee;border:1px solid #a6846c;border-radius:5px;background-position:center center;margin:3px;box-shadow: 0px 0px 4px #000 inset;}
+#mainmenu .avatar .cover {width:75px;height:75px;border:1px solid #a6846c;background:#fff0cd;border-radius:0px 0px 5px 5px}
 
 
 #startmenu td {padding:0;font-size:14px;font-weight:bold;color:gray;vertical-align:top;text-align:left;opacity:0.50;}
@@ -1303,7 +1303,7 @@ text-decoration:none;
 .mmdefault:hover {color:#b87563}
 /*#mainmenu .stdbtn .left td a {border-left:none;border-right:1px solid #ead5bc;}*/
 
-#m_posts {border-bottom:1px solid #ac6e41}
+#m_posts {border-bottom:1px solid #a6846c}
 #m_posts .postboxtop {margin-bottom:-1px;display:none}
 #m_posts_c table:first-of-type .postrow td.c1 {border-top-left-radius:2px}
 #m_posts_c table:first-of-type .postrow td.c2 {border-top-right-radius:2px}

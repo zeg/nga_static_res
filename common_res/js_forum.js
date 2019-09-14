@@ -25,7 +25,8 @@ if((x=o.getElementsByTagName('span')) && x[0] && x[0].id=='toptopicadd'){
 x = o.innerHTML,y = x.match(/\[headline|fixsize/i)
 x = commonui.parseImgInToppedTopic(x).replace(/\[quote\]|\[\/quote\]/gi,'').replace(/^(\s*<br\s*\/?>\s*)+|(\s*<br\s*\/?>\s*)+$/gi,'')//.replace(/\s*<br\s*\/?>\s*\[size=\d+%\]\s*\[\/size\]/gi,'')
 x = ubbcode.bbsCode({
-	maxWidth:o.offsetWidth,
+	maxWidthO:o,
+	//maxWidth:o.offsetWidth,
 	txt:x,
 	opt:4|1|16|(y?0:32),
 	noImg:(__SETTING.bit & 64)? 1:0,
@@ -181,6 +182,9 @@ preLoad:function(){
 
 },//fe
 loadAll:function(){
+if(window.__SEARCHING)
+	for(var i=0;i<this.data.length;i++)
+		this.data[i][1].target='_blank'
 for(var i=0;i<this.data.length;i++){
 	if(this.data[i].loaded)continue
 	commonui.loadThreadInfo.apply(commonui,this.data[i])
@@ -887,7 +891,8 @@ var x = $('/div').$0('className','ltxt b','style','width:40em',
 	$('/a','href','javascript:void(0)','innerHTML','镜像到主题','onclick',function(e){adminui.quoteForum(e,fid)}),
 	$('/a','href','javascript:void(0)','innerHTML','子版面设置','onclick',function(e){adminui.setSets(e,fid)}),
 	$('/a','href','javascript:void(0)','innerHTML','发帖提示','onclick',function(e){adminui.setHint(e,fid)}),
-	$('/a','href','javascript:void(0)','innerHTML','关键词统计','onclick',function(e){adminui.keywordStat(e,fid)})
+	$('/a','href','javascript:void(0)','innerHTML','关键词统计','onclick',function(e){adminui.keywordStat(e,fid)}),
+	__GP.ubStaff ? $('/a','href','javascript:void(0)','innerHTML','相关信息','onclick',function(e){adminui.modifyForumRel(null,fid)})  : null
 	//__GP.admincheck ? $('/a').$0('href','javascript:void(0)','innerHTML','版面背景图','onclick',function(e){adminui.setForumPic(e)}) : null,
 
 	)
@@ -1075,20 +1080,34 @@ else if(opt & 4)
 if(p<1 || (__PAGE[1]>0 && p>__PAGE[1]))
 	return error('page error '+p,1)
 
+var ugo = __PAGE[0]+'&page='+p
+HTTP.__rep = 0
 HTTP.abort()
-HTTP.open('GET', __PAGE[0]+'&page='+p)
-
+HTTP.open('GET', ugo)
 HTTP.onreadystatechange = function () {
-	if (HTTP.readyState !== HTTP.DONE) {
-		return;
-		}
-	if (HTTP.status !== 200) {
-		return error('HTTP ERROR '+HTTP.status);
+	if (HTTP.readyState !== HTTP.DONE)
+		return
+	var all = HTTP.responseText
+	if (HTTP.status !== 200 || HTTP.getResponseHeader("X-NGA-CONTENT-TYPE")=='short-message') {
+		var c = all.match(/<!--msgcodestart-->(\d+)<!--msgcodeend-->/)
+		if(c && c[1]==15 && HTTP.__rep<1){
+			__COOKIE.setCookieInSecond('guestJs',__NOW,1200)
+			HTTP.__rep++
+			return setTimeout(function(){
+				HTTP.abort()
+				HTTP.open('GET',ugo)
+				HTTP.send()
+				},500)
+			}
+		var c = all.match(/<!--msginfostart-->(.+?)<!--msginfoend-->/)
+		if(c)
+			return error(c[1].replace(/<br\s*\/>/g,"\n").replace(/<\/?[A-Za-z]+(\s[^>]*)?>/g," ").replace(/^\s+|\s+$/g,''),2)
+		return error('HTTP ERROR '+HTTP.status,2);
 		}
 
 	progt(5)
 			
-	var data = pr(HTTP.responseText,opt)
+	var data = pr(all,opt)
 
 	if(commonui.eval.call(window,data[0]))
 		return error('parse data 0 error')
@@ -1102,7 +1121,7 @@ HTTP.onreadystatechange = function () {
 		count = 1
 		iPo = null
 		for(var i = iPc.childNodes.length-1;i>=0;i--){
-			if(ifp(iPc.childNodes[i], opt) || iPc.childNodes[i].nodeName=='SCRIPT')
+			//if(ifp(iPc.childNodes[i], opt) || iPc.childNodes[i].nodeName=='SCRIPT')
 				iPc.removeChild(iPc.childNodes[i])
 			}
 		if(history.replaceState)
@@ -1180,8 +1199,6 @@ HTTP.overrideMimeType("text/html; charset="+cs);
 
 progt(1)
 
-	
-	
 HTTP.send()
 
 }//fe
@@ -1198,9 +1215,11 @@ count = 1
 
 var error = function(e,a){
 progt(10)
-if(!a)
+if((a&1)==0)
 	alert(e)
 console.log(e)
+if(a&2)
+	history.back()
 }
 
 

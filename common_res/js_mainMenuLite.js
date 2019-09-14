@@ -144,10 +144,9 @@ var menuItem = {
 		1:{h:'http://nga.cn/',t:'首页'},
 		2:{h:'http://bbs.nga.cn/',t:'论坛'},
 		3:{h:'http://game.nga.cn/',t:'评分'},
-		4:{h:'http://nga.cn/201812/t_338770223602.html',t:'收费资讯'},
-		5:{h:'http://tv.nga.cn',t:'赛事'},
-		6:{h:'http://www.nga.cn/special/',t:'专题'},
-		7:{h:'http://app.nga.cn/',t:'移动端'}
+		4:{h:'http://tv.nga.cn',t:'赛事'},
+		5:{h:'http://www.nga.cn/special/',t:'专题'},
+		6:{h:'http://app.nga.cn/',t:'移动端'}
 		},
 	right:{
 		1:{u:1, b:1, h:'http://bbs.nga.cn/nuke.php?func=ucp&uid='+uid, t:'<div style="zoom:1;display:inline;display:inline-block;font-size:2.307em;font-weight:bold;background:#'+d(uname)+';color:#fff;line-height: 1em;vertical-align: -0.3em;border-radius: 0.5em;overflow: hidden;transform:rotate(10deg);width:1em;text-align:center">'+uname.substr(0,1).toUpperCase()+'</div> '+c(uname,7,6,'...')},
@@ -172,3 +171,5 @@ m+="</div><div class='clear'></div></div></div>"
 return m
 }
 if(!window._NotLoadNgaNavAll)document.write(_ngaNavAll_1503071021());
+var app_key = 'uvhyzh0cudcn0o39'
+document.write('<script src="https://bdtj.tagtic.cn/JSSDK-1.5.min.js"></script>')

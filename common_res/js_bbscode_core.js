@@ -356,12 +356,16 @@ s:undefined,
 v:function(){
 if(this.s!==undefined)
 	return this.s
-if(this.arg.c){
-	var p = this.arg.c
+this.s = __SETTING.width ? ((__SETTING.width*0.7)|0) : 650 //Ä¬ÈÏ
+var p = this.arg.maxWidthO ? this.arg.maxWidthO : this.arg.c
+if(p){
 	for(var i=0;i<4;i++){
 		if(p){
-			if(p.nodeName=='TD' || p.nodeName=='DIV' || p.clientWidth)
+			if(p.nodeName=='TD' || p.nodeName=='DIV' || p.clientWidth){
+				if(!p.clientWidth)
+					return this.s
 				return this.s = p.clientWidth-parseInt(commonui.getStyle(p,'paddingLeft'))-parseInt(commonui.getStyle(p,'paddingRight'))-1//·ÀÖ¹ËÄÉáÎåÈë
+				}
 			else
 				p=p.parentNode
 			}
@@ -369,7 +373,7 @@ if(this.arg.c){
 			break
 		}
 	}
-return this.s=0
+return this.s
 }
 }//mwo
 mwo.valueOf = mwo.toString =function(){return this.v()},
@@ -411,6 +415,7 @@ var arg = {
 	maxLength ÄÚÈÝ×î´ó³¤¶È
 	fullLink ÔÚÄ©Î²¼ÓÁ´½Ó Èç¹ûÊÇÌû×ÓµÄ»°
 	removeQuote È¥µô¿ªÍ·µÄÒýÓÃÄÚÈÝ
+	maxWidthO ÓÃÓÚ¼ÆËã×î´ó¿í¶ÈµÄÔªËØ Èç¹û²»ÉèÔòÊ¹ÓÃc
 	}
 */
 ubbcode.bbsCode=function(arg){
@@ -425,7 +430,7 @@ this.regexplock = 1;
 if(typeof(arg.c)=='string')arg.c=document.getElementById(arg.c)
 
 if(!arg.maxWidth)//»ñÈ¡¿ÉÓÃµÄ¿í¶È
-	arg.maxWidth = this._argMaxWidth(arg)
+	arg.maxWidth = this._argMaxWidth(arg)//Õâ¸öÊÇObject ²»ÄÜÖ±½Óif
 
 arg.tId = parseInt(arg.tId,10)
 if(!arg.tId)arg.tId=0
@@ -461,7 +466,7 @@ arg.suffix+="<img src='about:blank' style='display:none' onerror='ubbcode.copyCh
 //if(window.__DEBUG)
 		  //this.parser(arg)
 
-if(arg.c){
+if(arg.c && (arg.opt&1024)==0){
 	if(!arg.c.className || arg.c.className.indexOf('ubbcode')==-1)arg.c.className+=' ubbcode'
 	var tmp = this.bbscode_core(arg)
 	arg.c.innerHTML = tmp
@@ -509,11 +514,10 @@ if(this.bbscode_pre)
 
 this.lesserNuke(arg)
 
-if(arg.removeQuote){
-	arg.txt = arg.txt.replace(/\s*\[quote\]\[pid=188165576,9591866,2\]Reply\[\/pid\] \[b\]Post by .+?\[\/quote\]/g,function($0){
+if(arg.removeQuote)
+	arg.txt = arg.txt.replace(/\s*\[quote\]\[(?:tid|pid).+?\](?:Reply|Topic)\[\/(?:tid|pid)\] \[b\]Post by .+?\[\/quote\](?:\s*<br\/?>)*/,function($0){
 		 return ''
 		 })
-	}
 
 if(arg.maxLength && arg.txt.length > arg.maxLength){
 	arg.txt = arg.txt.substr(0,arg.maxLength)+'¡­¡­'
@@ -522,6 +526,8 @@ if(arg.maxLength && arg.txt.length > arg.maxLength){
 	}
 else if(arg.fullLink)
 	arg.suffix+="¡­¡­ <a href='/read.php?tid="+arg.tId+(arg.pId?'&pid='+arg.pId+'&to=1':'')+"' target='_blank' class='silver'>[Ô­Ìû]</a>"
+
+this.continueCharProc(arg)
 
 if (arg.txt.match(/[\[=&]/)==null){
 	this.contentPrefix(arg)
@@ -941,18 +947,25 @@ arg.txt = arg.txt.replace(/(?:<br \/>)?\s*\[(l|r)(\s[^\[\]]+)?\]\s*(?:<br \/>)?\
 if(arg.isBlock && arg.opt && (arg.opt&1))
 	this.parseFix(arg)
 
-if(arg.txt.length>24)//³£¼û·ûºÅÁ¬Ðø25¸ö¼Ó¿Õ¸ñ
+
+}//fe
+
+ubbcode.errorHint = function(t){
+return "<span class='small_colored_text_btn stxt' style='position:absolute;margin:"+Math.random()+"em 0 0 "+Math.random()+"em;color:white;background:red'>/*bbscode "+t+" not match*/</span>"
+}//
+
+ubbcode.continueCharProc = function(arg){
+if(arg.txt.length>24 &&  arg.txt.match(/[\xb7\x7e\x40\x23\x25\x26\x2a\x2b\x7c\x2d\x3d\x60\x7e\x21\x40\x23\x24\x25\x5e\x26\x2a\x28\x29\x5f\x2b\x7b\x7d\x7c\x3a\x22\x3c\x3e\x3f\x2d\x3d\x5b\x5d\x5c\x3b\x27\x2c\x2e\x2f\uff01\uffe5\u2026\u2026\uff08\uff09\u2014\u2014\uff5b\uff5d\uff1a\u201c\uff1f\u300b\u300a\u3010\u3011\u3001\uff1b\u2018\uff0c\u3002\u3001]$/))//³£¼û·ûºÅÁ¬Ðø25¸ö¼Ó¿Õ¸ñ
 	arg.txt = arg.txt.replace(/([\xb7\x7e\x40\x23\x25\x26\x2a\x2b\x7c\x2d\x3d\x60\x7e\x21\x40\x23\x24\x25\x5e\x26\x2a\x28\x29\x5f\x2b\x7b\x7d\x7c\x3a\x22\x3c\x3e\x3f\x2d\x3d\x5b\x5d\x5c\x3b\x27\x2c\x2e\x2f\uff01\uffe5\u2026\u2026\uff08\uff09\u2014\u2014\uff5b\uff5d\uff1a\u201c\uff1f\u300b\u300a\u3010\u3011\u3001\uff1b\u2018\uff0c\u3002\u3001])\1{24,}/g,function($0){
 		var x=''
 		for(var i=0;i<$0.length;i++)
 			x += $0.charAt(i)+'\u200b'//0¿í¿Õ¸ñÒÔ×Ô¶¯»»ÐÐ
 		return x
 		})
-}//fe
-
-ubbcode.errorHint = function(t){
-return "<span class='small_colored_text_btn stxt' style='position:absolute;margin:"+Math.random()+"em 0 0 "+Math.random()+"em;color:white;background:red'>/*bbscode "+t+" not match*/</span>"
 }//
+
+
+
 //=============================
 //table
 //=============================
@@ -1532,24 +1545,26 @@ if(opt=='-1'){//-1 Éú³ÉQRÂë
 	this.manualLoadCache[id] = this.unSecureText(src).replace(/^\[url\]|\[\/url\]$/g,'')
 	return "<img src='about:blank' onerror='commonui.QRCode.loadDataUrl(this,ubbcode.manualLoadCache[\""+id+"\"])'/>"
 	}
-else{
-	if(opt=='0')//[img0]Ö¸¶¨°´Å¥
-		noimg |= 2
-	if((arg.opt&128) && src.substr(src.length-4)=='.gif')//Ç©ÃûÖÐ²»ÏÔÊ¾gif
-		noimg |= 2
-	var w='',n=''
+
+if(opt=='0')//[img0]Ö¸¶¨°´Å¥
+	noimg |= 2
+if((arg.opt&128) && src.substr(src.length-4)=='.gif')//Ç©ÃûÖÐ²»ÏÔÊ¾gif
+	noimg |= 2
+
+var w='',n='',wl=(arg.maxWidth|0) ? (arg.maxWidth-10) : 650
+	
 	opt = opt|0
 	if(opt>0 && opt<=100)//1~100ÉèÖÃ°Ù·Ö±È¿í¶È
 		w+="width:"+(opt-0.1)+"%;";
 	else if(arg.opt&2){}//in [fixsize]
 	else{
-		w+="max-width:"+( arg.maxWidth ? arg.maxWidth-10 : 650 )+"px;" 
+		w+="max-width:"+wl+"px;" 
 		//w+="max-width:90%;" 
 		n+='ubbcode.adjImgSize(this);'
 		}
 	if(arg.opt&256)
 		n+='ubbcode.bbscodeConvArgsSave["'+arg.argsId+'"].onResize();'
-	}
+	
 
 //´¦Àísrc
 if(!src.match(/^[\x00-\x7F]+$/))
@@ -1569,35 +1584,41 @@ if(commonui.correctAttachUrl)
 	src = commonui.correctAttachUrl(src)
 
 //È·¶¨ÏÔÊ¾×´Ì¬
-var dis, alt='';//  trueÏÔÊ¾°´Å¥ StringÏÔÊ¾ËõÂÔÍ¼ nullÏÔÊ¾Ô­Í¼
-if (commonui.ifUrlAttach(src) ){//¸½¼þ
-	var a = this.attach.check(arg.i,src),thumb=a?a.thumb:0, size = a? a.size:10000000,//Èç¹ûnot¸½¼þÔòÊÓÎª´óÍ¼ÎÞËõÂÔÍ¼
+var alt='',a, srco,dis; // trueÏÔÊ¾°´Å¥ nullÏÔÊ¾Ô­Í¼
+if (commonui.ifUrlAttach(src) && (a = this.attach.check(arg.i,src))){//¸½¼þ
+	var thumb=a?a.thumb:0, size = a? a.size:10000000,//Èç¹ûnot¸½¼þÔòÊÓÎª´óÍ¼ÎÞËõÂÔÍ¼
 		dw=0,dh=0,dr = (a&&a.w&&a.h)?a.h/a.w:0, tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
 	if(tmp){//ÓÃ»§Ö¸¶¨Ê¹ÓÃËõÂÔÍ¼
-	//	if(tmp[1]=='medium.')dw = 640
-	//	else if(tmp[1]=='thumb.')dw = 320
-	//	else if(tmp[1]=='thumb_s.')dw = 130
-	//	else if(tmp[1]=='thumb_ss.')dw = 60
-	//	dh = dw * dr
-		dis = src
-		src = src.replace(/\.(?:thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/,"")
+		if(tmp[1]=='medium.')dw = 640
+		else if(tmp[1]=='thumb.')dw = 320
+		else if(tmp[1]=='thumb_s.')dw = 130
+		else if(tmp[1]=='thumb_ss.')dw = 60
+		tmp = src.replace(/\.(?:thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/,"")
+		if(a.w && a.w<=dw && a.size && a.size<200){//Ô­Í¼ºÍËõÂÔÍ¼Ò»Ñù´ó ²¢ÇÒÐ¡ÓÚ300k Ê¹ÓÃÔ­Í¼
+			src = tmp
+			tmp = 0
+			}
+		}
+	if(tmp){
+		dh = dw * dr
+		w+="max-width:"+wl+"px;" 
+		srco = tmp
 		}
 	else{//Ô­Í¼
-		dis = null
-	//	dw = a.w
-	//	dh = a.h
+		dw = a.w
+		dh = a.h
 		if(size>100){//biger than 100k
 			if(++this.imgGen.c>50){//¸½¼þÔ­Í¼¼ÆÊý
 				if(thumb&96){
 					if(thumb&64){
 						dis = src+'.medium.jpg'
-	//					dw = 640
-	//					dh = dw * dr
+						dw = 640
+						dh = dw * dr
 						}
 					else{
 						dis = src+'.thumb.jpg'
-	//					dw = 320
-	//					dh = dw * dr
+						dw = 320
+						dh = dw * dr
 						}
 					}
 				else
@@ -1605,17 +1626,19 @@ if (commonui.ifUrlAttach(src) ){//¸½¼þ
 				}
 			}
 		}
-	//if(arg.maxWidth && dw>arg.maxWidth){
-	//	dw=arg.maxWidth
-	//	dh = dw * dr
-	//	}
-	//if(dr)
-		//w+="min-width:"+dw+"px;min-height:"+dh+"px;"
+	if( dw>wl){
+		dw=wl
+		dh = dw * dr
+		}
+	if(dr)
+		w+="min-width:"+dw+"px;min-height:"+dh+"px;"
 	if(noimg & 2)//µ÷ÓÃÊ±Ç¿ÖÆ°´Å¥
 		dis = true
 	else if((arg.opt&2)==0){//²»ÔÚfixblkÖÐ
-		if((noimg & 1) && (noimg & 524288))//×Ô¶¯×îÐ¡ËõÂÔÍ¼
-			dis = (thumb&32) ? src+".thumb.jpg" : (size>5 ? true : null)
+		if((noimg & 1) && (noimg & 524288)){//×Ô¶¯×îÐ¡ËõÂÔÍ¼
+			if(size>25)
+				dis = (thumb&32) ? src+".thumb.jpg" : true//(size>50 ? true : null)
+			}
 		else if(noimg & 1)//×Ô¶¯°´Å¥
 			dis = size>5 ? true : null//biger than 5k
 		}
@@ -1638,7 +1661,7 @@ else{//²»ÊÇ¸½¼þ
 		alt='ÖÃ¶¥±ØÐë\nÊ¹ÓÃ¸½¼þ'
 		w=this.imgGen.s
 		}
-		
+
 	src=src.replace(/^http:\/\/db1?\.178\.com\//i,'http://img.db.178.com/') //ÐÞÕýÒ»Ð©url
 	if(arg.opt & 128){
 		if(!this.checkSigImg(src)){
@@ -1647,14 +1670,15 @@ else{//²»ÊÇ¸½¼þ
 			w=this.imgGen.s
 			}
 		}
-	
+
 	if(noimg & 3)//°´Å¥
 		dis=true
-	else//Ô­Í¼
-		dis=null
 	}
 
-var img = "<img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+src+"' alt='"+alt+"' onerror='ubbcode.imgError(this)'/>"
+if(window.__INSECTOB)
+	var img = "<img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='about:blank' data-srclazy='"+src+"' "+(srco ? "data-srcorg='"+srco+"'":'')+" alt='"+alt+"' onerror='ubbcode.imgError(this)'/>"
+else
+	var img = "<img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+src+"' "+(srco ? "data-srcorg='"+srco+"'":'')+" alt='"+alt+"' onerror='ubbcode.imgError(this)'/>"
 if(dis){
 	var ck = this.randDigi('manualLoadImg', 10000)
 	this.manualLoadCache[ck]=img//.replace(/max-width:\d+px/,'max-width:90%')
@@ -1667,13 +1691,87 @@ else
 	return img
 }//fe
 ubbcode.imgGen.c = 0
-ubbcode.imgGen.s ='border:1px solid gray;color:gray;white-space:pre;font-size:9px;line-height:20px'
+ubbcode.imgGen.s = 'outline:1px solid gray;outlineOffset:-1px;font-size:9px;line-height:20px;color:gray;';
 ubbcode.imgError = function(o){
-if(o.src!='about:blank'){
+if(o.getAttribute('data-srclazy'))
+	return __INSECTOB.add(o,function(){
+		var y
+		if(y=this.getAttribute('data-srclazy')){
+			console.log('lazy load '+y)
+			this.src=y
+			this.setAttribute('data-srclazy','')
+			}
+		});
+if(o.src=='about:blank')return
 var x= o.src.replace(/^https?:\/\//,''),y=commonui.cutstrbylen(x,6).length , x=commonui.cutstrbylen(x,13,11,'...'), x = x.substr(0,y)+'\n'+x.substr(y)
-o.alt=x
-o.style=this.imgGen.s
-o.title=o.src}
+o.alt=' '
+o.style.outline='1px solid gray'
+o.style.outlineOffset='-1px'
+o.title=o.src
+}//fe
+//=============================
+//Í¼Æ¬³ß´çµ÷Õû
+//=============================
+ubbcode.adjImgSize = function(o){
+if(o.src=='about:blank')return
+var x=0
+if(o.naturalWidth){
+	o._nW = o.naturalWidth
+	o._nH = o.naturalHeight
+	if(o.width<o._nW || o.height<o._nH)
+		x=1
+	}
+else{
+	x = new Image()
+	x.src = o.src
+	o._nW = x.width
+	o._nH = x.height
+	if(o._nW >o.width || o._nH >o.height)
+		x=1
+	else
+		x=0
+	}
+if(o.getAttribute('data-srcorg') || o._doclick)
+	x=1
+if(x){
+	if('outline' in o.style){
+		o.style.outline='5px solid '+__COLOR.border0
+		o.style.outlineOffset='-5px'
+		}
+	else
+		o.style.border='5px solid '+__COLOR.border0
+	if(o._doclick){
+		o._doclick = 0
+		return o.click()
+		}
+	o.onclick = function(){
+		var s
+		if(s=this.getAttribute('data-srcorg')){//srcorgÊÇÔ­Í¼ µã»÷Ê±Ìæ»»src onloadºóÔÙclickÒ»´Î
+			this.src = s
+			this.setAttribute('data-srcorg','')
+			this._doclick = 1
+			return
+			}
+		s = this.style
+		if(s.maxWidth=='none'){
+			s.position = s.marginRight = s.boxShadow = ''
+			s.borderColor = s.outlineColor=__COLOR.border0
+			s.outlineOffset = '-5px'
+			s.maxWidth = this.__mw
+			}
+		else{
+			this.__mw = s.maxWidth
+			s.position = 'relative'
+			s.zIndex=2
+			s.borderColor = s.outlineColor=__COLOR.border2
+			s.marginRight = '-'+(this._nW-this.width)+'px'
+			s.outlineOffset=''
+			s.maxWidth='none'
+			s.boxShadow='0px 0px 10px '+__COLOR.gbg0
+			}
+		}
+
+	}
 }//fe
 //=============================
 
@@ -1914,50 +2012,7 @@ exe:function(txt,count){
 	}
 }//ce
 
-//=============================
-//Í¼Æ¬³ß´çµ÷Õû
-//=============================
-ubbcode.adjImgSize = function(o){
-if(o.src=='about:blank')return
-var x=null,nW,nH
-if(o.naturalWidth){
-	nW = o.naturalWidth
-	nH = o.naturalHeight
-	if(o.width<nW || o.hight<nH)
-		x=true
-	}
-else{
-	x = new Image()
-	x.src = o.src
-	nW = x.width
-	nH = x.height
-	if(nW>o.width || nH>o.height)
-		x=true
-	else
-		x=null
-	}
-if(x){
-	o.style.border='5px solid '+__COLOR.border0
-	o.onclick = function(){
-		var s = this.style
-		if(s.maxWidth=='none'){
-			s.position = s.marginRight = s.boxShadow = ''
-			s.borderColor = __COLOR.border0
-			s.maxWidth = this.__mw
-			}
-		else{
-			this.__mw = s.maxWidth
-			s.position = 'relative'
-			s.zIndex=2
-			s.borderColor='silver'
-			s.marginRight = '-'+(nW-this.width)+'px'
-			s.maxWidth='none'
-			s.boxShadow='0px 0px 10px black'
-			}
-		}
 
-	}
-}//fe
 
 //=============================
 //Ëæ»úÊý
@@ -1966,17 +2021,16 @@ ubbcode.sRand={
 seed:2110032,
 rnd:function(argsId){
 	if (argsId){
-		if(!this.seeds[argsId]){
-			var arg = ubbcode.bbscodeConvArgsSave[argsId]
-			this.seeds[argsId] = arg.authorId+arg.tId+arg.pId+(arg.tId>10246184 || arg.pId>200188932 ? (arg.seedOffset|0) : 0)
-			if(!this.seeds[argsId])
-				this.seeds[argsId]=Math.floor(Math.random()*10000)
+		var arg = ubbcode.bbscodeConvArgsSave[argsId]
+		if(!arg.rndseed){
+			arg.rndseed = arg.authorId+arg.tId+arg.pId+(arg.tId>10246184 || arg.pId>200188932 ? (arg.seedOffset|0) : 0)
+			if(!arg.rndseed)
+				arg.rndseed = Math.floor(Math.random()*10000)
 			}
-		this.seeds[argsId] = (this.seeds[argsId]*9301+49297) % 233280;
-		return this.seeds[argsId]/(233280.0);
+		arg.rndseed = (arg.rndseed*9301+49297) % 233280
+		return arg.rndseed/(233280.0)
 		}
-	this.seed = (this.seed*9301+49297) % 233280;
-	return this.seed/(233280.0);
+	return (this.seed = (this.seed*9301+49297) % 233280)/(233280.0);
 	},
 rand:function(argsId){
 	return this.rnd();
@@ -2028,6 +2082,7 @@ if(arg.txt.indexOf('[randomblock')!=-1){
 
 load:function(o,argsId,id,b){
 var arg = __NUKE.inheritClone(this.parent.bbscodeConvArgsSave[argsId])
+arg.maxWidth = null
 arg.txt = arg.collapseBlock[id]
 arg.c = o
 o.id = 'collapseBlock'+(Math.random()*10000|0)
@@ -2066,6 +2121,7 @@ if((!o.parentNode.className.match(/ubbcode/)||(window.__SETTING.bit&4))//²»ÊÇ×îÉ
 		o.nextSibling)
 
 var arg = __NUKE.inheritClone(this.parent.bbscodeConvArgsSave[argsId])
+arg.maxWidth = null
 if((opt&2) && arg.inTopImg)
 	arg.inTopImg[0]=arg.inTopImg[1]=0
 if(arg.opt&2)
@@ -2172,6 +2228,7 @@ highlighter:{
 	php:"/js_highlighter.php.js",
 	c:"/js_highlighter.c.js",
 	js:"/js_highlighter.js.js",
+	javascript:"/js_highlighter.js.js",
 	xml:"/js_highlighter.xml.js",
 	css:"/js_highlighter.css.js",
 	py:"/js_highlighter.py.js"
@@ -2186,19 +2243,70 @@ arg.txt = arg.txt.replace(/\[code(=[^\]]+)?\]\s*(?:<br\s*\/?>)*\s*(.+?)\s*(?:<br
 	if(!self.highlighter[l])l='c'
 	if(!arg.blockCode)arg.blockCode=[]
 	arg.blockCode.push([l,$2])
-	return "<div><span class='orange'>Code <span class='gray'>"+l+"</span>:</span><br><div class='textfield'></div><img src='about:blank' onerror='ubbcode.codeTag.loadCode(this.previousSibling,\""+arg.argsId+"\","+(arg.blockCode.length-1)+")' class='x'/></div>"
+	var i = arg.blockCode.length-1, id = arg.argsId+'_'+i
+	if((l=='javascript'||l=='js') && (arg.opt&512))
+		return '<div class="video" style="background:none;border-color:'+__COLOR.border2+';width:'+((arg.maxWidth|0)*0.9)+'px"><div style="background-color:'+__COLOR.border2+';">JavascriptÉ³ºÐ ´Ë´¦³ÌÐòÓÉ·¢ÌûÓÃ»§Ìá¹© <button onclick="ubbcode.codeTag.viewCode(this.parentNode.parentNode,\''+arg.argsId+'\','+i+',\''+l+'\')">²é¿´Ô´Âë</button></div><iframe id="runcode'+id+'" style="border:none;width:'+((arg.maxWidth|0)*0.9)+'px;height:'+self.resizeDef+'px" src="'+location.protocol+'//tools.178.com/ngacn/sandbox.html" onload="ubbcode.codeTag.runCode(this,\''+arg.argsId+'\','+i+')" onmouseover="ubbcode.codeTag.resizeSend(this,\''+arg.argsId+'\','+i+')"></iframe></div>'
+	return self.viewCode(null, arg.argsId, i, l, arg.i)
 	})
 },//fe
-
+viewCode : function(o,argsId,id,l,lo){
+var r = "<div><span class='orange'>Code <span class='gray'>"+l+((l=='javascript'||l=='js') ? ' (ÔËÐÐÉ³ºÐÐè°æÖ÷'+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" onclick="commonui.recommendPost(event,\''+lo+'\',this)">ÉèÖÃ</a>)':'ÉèÖÃ') : '')+"</span>:</span><br><div class='textfield'></div><img src='about:blank' onerror='ubbcode.codeTag.loadCode(this.previousSibling,\""+argsId+"\","+id+")' class='x'/></div>"
+if(o)
+	o.parentNode.replaceChild( _$('/span','innerHTML',r).firstChild, o )
+else
+	return r
+},//
+resizeMax:2048,
+resizeDef : 140,
+resize:null,
+resizeSend:function(o,argsId,id){
+//var a = this.parent.bbscodeConvArgsSave[argsId]
+//o.contentWindow.postMessage('?action=sendHeight&ifid='+(a.argsId+'_'+id)+'\n\n\n\n'+this.parent.unSecureText(a.blockCode[id][1], true),location.protocol+'//tools.178.com')
+},//
+runCode:function(o,argsId,id){
+if(!this.resize){
+	var s = this
+	this.resize = {}
+	window.addEventListener("message", function(e){
+		console.log('recv'+e.data)
+		if(e.origin){
+			var x={}
+			e.data.replace(/(ifid|width|height)=(.+?)(&|$)/g,function(a,b,c){x[b]=c;return a})
+			if(s.resize[x.ifid]){
+				x.height|=0
+				if(x.height>s.resizeMax)
+					x.height=s.resizeMax
+				if(x.height>s.resize[x.ifid].height){
+					var y = s.resize[x.ifid]
+					y.height = x.height
+					if(y.tl)
+						clearTimeout(y.tl)
+					y.tl = setTimeout(function(){$('runcode'+x.ifid).style.height=x.height+'px'},500)
+					}
+				}
+			}
+		}, false)
+	}
+var a = this.parent.bbscodeConvArgsSave[argsId]
+this.resize[a.argsId+'_'+id]={height:this.resizeDef}
+o.contentWindow.postMessage('?ifid='+(a.argsId+'_'+id)+'\n\n\n\n'+
+	"var __COLOR = "+__COOKIE.json_encode(__COLOR)+"\n\n"+
+	";(function(){var ev,h,tor=function(f){setTimeout(f)} \n\n window.__SCRIPTS = "+__COOKIE.json_encode(__SCRIPTS)+"\n})();\n\n"+
+	this.parent.unSecureText(a.blockCode[id][1], true),
+	location.protocol+'//tools.178.com')
+},//fe
 loadCode:function(o,argsId,id){
 var self = this , arg = this.parent.bbscodeConvArgsSave[argsId], l = arg.blockCode[id][0], parser = function(){
 	self.loadedHighlighter[l]=true
+	if(l=='javascript_sandbox')l='javascript'
 	o.innerHTML=Highlighter.Execute(self.parent.unSecureText(arg.blockCode[id][1], true), l)
 	o.style.height='auto'
+	o.style.maxWidth=((arg.maxWidth|0)*0.9)+'px'
+	o.style.overflow = 'auto'
 	}
 
 if (!window.Highlighter)
-	loader.script(__COMMONRES_PATH+"/js_highlighter.js",
+	loader.script(__COMMONRES_PATH+"/js_highlighter.js?3",
 		function(){
 			loader.script(__COMMONRES_PATH+self.highlighter[l],parser)
 			})
@@ -2655,7 +2763,7 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 	if(x=u.match(/^\/\/v\.youku\.com\/v_show\/id_(.+?)\.html/i))
 		uu = u,	u='//player.youku.com/player.php/sid/'+x[1]+'/v.swf';
 	else if(x=u.match(/^\/\/www\.bilibili\.com\/video\/av(\d+)/i))
-		uu = u,	u='//player.bilibili.com/player.html?aid='+x[1]+'&season_type=1&page=1', w=892, h=499 ,i=1;
+		uu = u,	u='//player.bilibili.com/player.html?aid='+x[1]+'&page=1', w=892, h=499 ,i=1;
 	else if(x=u.match(/^\/\/live\.bilibili\.com\/live\/(\d+)/i))
 		uu = u,	u='//static.hdslb.com/live/LivePlayerEx.swf?room_id='+x[1]+'&state=LIVE', w=892, h=499;
 	else if(x=u.match(/^\/\/www\.acfun\.(?:com|tv|cn)\/v\/ac(\d+(?:_\d+)?)/i))
@@ -2753,7 +2861,9 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='javascript:void(0)' class='play' onclick='this.parentNode.style.background=\"none\";this.parentNode.innerHTML=ubbcode.manualLoadCache[\""+id+"\"]'></a></div><div class='moreinfo'>"+(uu? "<a href='"+p0+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
 	else
 		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='"+(uu?p0+uu:p0+u)+"' class='play' target='_blank'></a></div><div class='moreinfo'>"+(uu? "<a href='"+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
-	x+="<i class='silver'>ÈçÔÚÒÔÉÏÄÚÈÝÖÐ³öÏÖÈÎºÎ¹ã¸æÐÔÐÅÏ¢²¢²»´ú±í±¾Õ¾Ö§³ÖÆäÁ¢³¡</i></div></div>"
+	x+="<i class='silver'>ÈçÔÚÒÔÉÏÄÚÈÝÖÐ³öÏÖÈÎºÎ¹ã¸æÐÔÐÅÏ¢²¢²»´ú±í±¾Õ¾Ö§³ÖÆäÁ¢³¡"+
+	(arg.opt&512 ? '' : " (²¥·ÅÊÓÆµÐè°æÖ÷"+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" style="color:'+__COLOR.gbg6+'" onclick="commonui.recommendPost(event,\''+arg.i+'\',this)">ÉèÖÃ</a>)':'ÉèÖÃ'))+
+	"</i></div></div>"
 	if(arg.noImg || self.videonum>1){
 		var id = self.randDigi('manualLoadSwf', 10000)
 		self.manualLoadCache[id]=x
@@ -3298,16 +3408,25 @@ ubbcode.attach = {
 w:window,
 parent:ubbcode,
 ucache:{},
+patt:/\/([a-zA-Z0-9_\-]+)\.([a-zA-Z0-9_\-]+)(?:\.(thumb|thumb_s|thumb_ss|medium)\.[a-zA-Z0-9]+)?$/,
+pdata:/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM][a-z0-9]+)+(?:T([a-z0-9]+))?(?:S([a-z0-9]+)-([a-z0-9]+))?/,
 check:function(id,src){
-var n = src.match(/\/([a-zA-Z0-9_\-]+)\.([a-zA-Z0-9_\-]+)(?:\.(thumb|thumb_s|thumb_ss|medium)\.[a-zA-Z0-9]+)?$/),x
+var n = src.match(this.patt),x
 if(!n)
 	return
 if((x=this.cache['attach'+id]) && (x=x.index[n[1]])){//Èç¹ûÔÚ±¾ÌûµÄ¸½¼þÀï
+	if(x.type=='img' && x.w==undefined){
+		var y = n[1].match(this.pdata)
+		if(y){
+			x.w = y[3] ? parseInt(y[3],36) : 0
+			x.h = y[4] ? parseInt(y[4],36) : 0
+			}
+		x.ext = n[2]?n[2]:''
+		}
 	x.ck=true
 	return x
 	}
-
-if(x = n[1].match(/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM][a-z0-9]+)+(?:T([a-z0-9]+))?(?:S([a-z0-9]+)-([a-z0-9]+))?/)){//Èç¹ûÊÇÆäËûÌùµÄ¸½¼þ
+if(x = n[1].match(this.pdata)){//Èç¹ûÊÇÆäËûÌùµÄ¸½¼þ
 	var sz = 0
 	x[1].replace(/([A-Z])([a-z0-9]+)/g,function($0,$1,$2){
 			if($1=='K')

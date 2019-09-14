@@ -391,5 +391,19 @@ if(x.time && (tt || x.timeout)){
 
 }//ce
 
-
-
+if(("IntersectionObserver" in window) && ('IntersectionObserverEntry' in window) && ('intersectionRatio' in window.IntersectionObserverEntry.prototype)){
+	var __INSECTOB = new IntersectionObserver(function(entries, observer) {
+		for(var i=0;i<entries.length;i++){
+			if(entries[i].intersectionRatio>0){
+				var o = entries[i].target;
+				if(typeof o._onIntersection == 'function')
+					o._onIntersection()
+				__INSECTOB.unobserve(o);
+				}
+			}
+		},{threshold:0.05})
+	__INSECTOB.add = function(o,f){
+		o._onIntersection = f
+		this.observe(o)
+		}
+	}

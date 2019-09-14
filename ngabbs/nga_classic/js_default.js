@@ -8,18 +8,19 @@ FOR NGACN ONLY
 written by zeg 2006-4-27
 ========================
 */
+
 //============================
 //即刻执行=====================
-{
+if(!window.__APPEMBED){
 
 //var test
 //小屏幕隐藏顶部菜单 下拉时显示
 ;(function(){
-if((location.pathname=='/read.php' || location.pathname=='/thread.php')){}else return
+if(location.pathname!='/read.php' && location.pathname!='/thread.php')return
 
 var t = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',3), x, y = __NUKE.position.get, i=0, p=null, j=0, c = commonui, 
-prog = _$('/div','style','position:fixed;bottom:-2.5em;height:2em;lineHeight:2em;left:calc(50% - 1.25em);right:auto;width:auto;fontSize:1em;border-radius:1em;boxShadow: 0 0 0.5em '+__COLOR.gbg8+';background:'+__COLOR.bg0+';color:'+__COLOR.inverttxt2+';fontWeight:bold;padding:0 0.5em','innerHTML','>>>'),
-d = function(o,r){//屏幕上端向下
+prog = _$('/div','style','position:fixed;bottom:-2.5em;height:2em;lineHeight:2em;left:calc(50% - 1.25em);right:auto;width:auto;fontSize:1em;border-radius:1em;boxShadow: 0 0 0.5em '+__COLOR.gbg8+';background:'+__COLOR.bg0+';color:'+__COLOR.inverttxt2+';fontWeight:bold;padding:0 0.5em;'+(t?t[0]+':margin-bottom 0.3s linear 0s,0.3s':''),'innerHTML','>>>'),
+d = (__SETTING.bit & __SETTING.bits.noTopBg) ? function(o,r){//屏幕上端向下
 	if(o){
 		i+=o
 		if(i>=r){
@@ -31,11 +32,11 @@ d = function(o,r){//屏幕上端向下
 		}
 	else
 		i=0
-	},
+	} : function(){},
 z = function(e){
 	x = y(e)
 	if(x.yf==0 && (e.detail<0 || e.wheelDelta>0)){//屏幕上端向下
-		d(1,7)
+		d(1,3)
 		f(0)
 		}
 	else if(x.ph-x.yf-x.ch<10 && (e.detail>0 || e.wheelDelta<0)){//屏幕下端向上
@@ -103,7 +104,10 @@ fcl = function(){
 	},flr,
 fcd=0
 
-__NUKE.addCss('#mainmenu {margin-top:-50px; '+(t?t[0]+':margin-top 0.3s linear 0s,0.3s':'')+' }')
+if((__SETTING.bit & __SETTING.bits.noTopBg) && location.pathname=='/read.php'){
+	__NUKE.addCss('#mainmenu {margin-top:-50px; '+(t?t[0]+':margin-top 0.3s linear 0s,0.3s':'')+' }')
+	
+	}
 c.aE(window,'touchend',fcl)
 c.aE(window,'touchstart',u)
 c.aE(window,'touchmove',w)
@@ -113,8 +117,6 @@ commonui.aE(window,'DOMContentLoaded',function(){document.body.appendChild(prog)
 
 
 //do sth from hash============
-if(location.hash){
-
 commonui.hashAction = function(){
 
 var c=commonui, m = location.hash.match(/^#pid(\d+)Anchor$/)
@@ -126,6 +128,7 @@ if(m){
 		if(x.nodeName=='TABLE')
 			x.style.borderLeft='10px solid '+__COLOR.border0
 		}
+	scroll(0,x.getBoundingClientRect().top)
 	return
 	}
 
@@ -158,20 +161,17 @@ switch(m[1]){
 	//	break
 	}
 }//fe
-
-commonui.aE(window,'DOMContentLoaded',commonui.hashAction);//aE
-
-}//if
-
+if(location.hash)
+	commonui.aE(window,'DOMContentLoaded',commonui.hashAction);//aE
 
 
 //全屏中专广告==================
-(function(){
+commonui.insAdsChk = function(url){
 var l=location
 if(l.host=='bbs.ngacn.cc')
 	l.replace(l.protocol+'//'+'bbs.nga.cn'+l.pathname+l.search+l.hash)
 
-if(!ngaAds || !ngaAds.bbs_ads12 || (window.__GP && window.__GP.greater && !window.__GP['super'] ) || __SETTING.uA[6]==2)
+if(!window.__LOAD_BBS_ADS_12 || (window.__GP && window.__GP.greater && !window.__GP['super'] ) || __SETTING.uA[6]==2)
 	return
 
 if(l.pathname!='/' && l.pathname!='/thread.php' && l.pathname!='/read.php')
@@ -179,61 +179,57 @@ if(l.pathname!='/' && l.pathname!='/thread.php' && l.pathname!='/read.php')
 
 
 
-var C = __COOKIE,n = ngaAds,v = __NUKE.toInt(C.getMiscCookie('insad_views')), c = C.getMiscCookie('pv_count_for_insad')
-if (n.bbs_ads12.refreshid && C.getMiscCookie('insad_refreshid')!=n.bbs_ads12.refreshid){
-	C.setMiscCookieInSecond('insad_refreshid',n.bbs_ads12.refreshid,3600*24*7)
-	c=null
-	}
-
+var C = __COOKIE,v = C.getMiscCookie('insad_views')|0, c = C.getMiscCookie('pv_count_for_insad'),d = new Date
+d = (24-d.getHours())*3600 + (60-d.getMinutes())*60 + d.getSeconds()
+//console.log('insAdsChk '+v+ ' '+c)
 if(c===null){
-	var d = new Date
-	d = (24-d.getHours())*3600 + (60-d.getMinutes())*60 + d.getSeconds()
 	C.setMiscCookieInSecond('pv_count_for_insad',0,d)
 	C.setMiscCookieInSecond('insad_views',0,d)
-	return
+	c=0
 	}
-
-if(__NUKE.toInt(c)>0){
+c|=0
+if(c>0){
 	v++
-	C.setMiscCookieInSecond('insad_views',v)
-	C.setMiscCookieInSecond("pv_count_for_insad",0-v*v*48)
-	if(n.bbs_ads12.o)
-		n.bbs_ads12.o = _$('/div').$0('style','position:fixed;zIndex:7;left:0;top:0;right:0;bottom:0;background:#000;textAlign:center',
-			_$('/a').$0('href','javascript:void(0)','innerHTML','点此跳过广告','style','fontFamily:"Microsoft YaHei" simhei,Verdana, Tahoma, Arial, simsum;fontSize:1.8em;lineHeight:2.5em;fontWeight:bold;color:#D4C8A0','onclick',function(){this.parentNode.parentNode.removeChild(this.parentNode)}),
-			_$('/br'),
-			_$('/a').$0('href',n.bbs_ads12.url,'target','_blank',
-				_$('/img').$0('src',n.bbs_ads12.file),
-				'onmouseup',function(){var o=this;setTimeout(function(){o.parentNode.parentNode.removeChild(o.parentNode)},100)}
-				),
-			n.bbs_ads12.title ? _$('/br') : null,
-			n.bbs_ads12.title ? _$('/span').$0('innerHTML',n.bbs_ads12.title,'style','fontFamily:"Microsoft YaHei" simhei,Verdana, Tahoma, Arial, simsum;fontSize:1.8em;lineHeight:2.5em;fontWeight:bold;color:#D4C8A0') : null
-			)
+	if(v>4)
+		v=1
+	C.setMiscCookieInSecond('insad_views',v,d)
+	C.setMiscCookieInSecond("pv_count_for_insad",0-v*v*48,d)
+	if(ngaAds.readCache('bbs_ads12')){
+		var u = url ? url : location.href
+		setTimeout(function(){l.replace( l.protocol+'//'+l.host+'/misc/adpage_insert_2.html?'+u )});
+		return true
+		}
 	else
-		l.replace( l.protocol+'//'+l.host+'/misc/adpage_insert_2.html?'+l.href );
+		console.log('no insert ad, skip')
 	}
+else if(c>-1){
+	try{
+		__SCRIPTS.asyncLoad(ngaAds.scriptKey('bbs_ads12'),2)
+		}
+	catch(e){
+		
+		}
+	}
+	
 /*
 (function(){
 var x=0,j=false,y=''
-for(var	i=0;i<10000;i++){
+for(var i=0;i<10000;i++){
 if(j===false){j=0
 	continue}
 if(j>0){x++
+	if(x>4)
+		x=1
 	j=0-x*x*48
 	y+=i+','}
 j++}
 console.log(y)
 })()
  */
-})()
-//fe
+}//fe
+commonui.insAdsChk()
 
 
-//内嵌窗口阅读==================
-var iframeReadSetWindowTitle = function(til){document.title=til}
-
-
-
-commonui.loadNotiScript=function(f){loader.script(__SCRIPTS.notification,f)}
 //commonui.checkIfInIframe =function(){return commonui.checkIfInIframe.check};
 
 //防止滚轮影响父页面============
@@ -322,14 +318,17 @@ if (x && x.length>32){
 
 }//be
 
-//date
-var date = new Date;
-
 //----------------------------
+//var date = new Date;
+
+var iframeReadSetWindowTitle = function(til){document.title=til}
+
+commonui.loadNotiScript=function(f){loader.script(__SCRIPTS.notification,f)}
+
 commonui.topicArg.init()
 
-//--------------------------
 commonui.touchMoveInit()
+//--------------------------
 
 //============================
 //覆盖默认/补齐=================
@@ -410,12 +409,6 @@ return y
 if(window.__CURRENT_FID){
 	//if(!window.postfunc)window.postfunc={}
 	switch (__CURRENT_FID){
-		case -152678:
-			commonui.forumBtns.d[15] = {n1:'战绩查询',c:'uitxt1',
-				u:'http://lolnewbf.178.com/search/index',
-				ck:function(a){if(a.fid==-152678)return 1} }
-			commonui.forumBtns.def1.unshift(15)
-			break;
 		case -452227:
 			commonui.forumBtns.d[15] = {n1:'对战模拟',c:'uitxt1',
 				u:'http://tools.ngacn.cc/iframe/-452227/VGCDmgCalc/index.html',
@@ -433,14 +426,10 @@ if(window.__CURRENT_FID){
 
 function time2date(t){
 return commonui.time2date(t)
-}
+}//fe
 
-//fe
-
-//fe
-function add_pv_count()
-{
-var w = window, pv = __NUKE.toInt(__COOKIE.getMiscCookie('pv_count_for_insad'))
+commonui.add_pv_count = function (){
+var w = window, pv = __COOKIE.getMiscCookie('pv_count_for_insad')|0
 console.log('show ad in '+(-pv)+' pv')
 __COOKIE.setMiscCookieInSecond('pv_count_for_insad',pv+1);
 
@@ -467,6 +456,7 @@ if (w.location.href.indexOf('autoreload')!=-1){
 	addEvent(document.body,'click',tmp);
 	}
 }//fe
+var add_pv_count = commonui.add_pv_count
 
 function nextElement(obj){
 var next = obj.nextSibling;
@@ -665,7 +655,7 @@ switch (fid){
 	case 452:
 		return [1,h+'/20140617.jpg',0,190]
 	case 422:
-		return [1,h+'/20181121.jpg',0,190]
+		return [1,h+'/20190705.jpg',0,190]
 	case -51095:
 		return [1,h+'/20140915a.png',0,190]
 	case -7202235:
@@ -694,7 +684,7 @@ switch (fid){
 	case 497:
 		return [1,h+'/20160314.jpg',0,190]
 	case 459:
-		return [1,h+'/'+(Math.random()>0.5?'20180725':'20181103d')+'.jpg',0,190]
+		return [1,h+'/20190725.jpg',0,190]
 	case 492:
 		return [1,h+'/20160418.jpg',0,190]
 	case -149110:
@@ -750,14 +740,18 @@ switch (fid){
 //if(typeof bit=='number' && fid && (bit & 512))
 	//return [1,w.__IMG_BASE +'/proxy/cache_attach/_f/or/_forum_bg'+fid,0,190]
 
-return [1,w.__IMGPATH+'/head/20160831_'+(Math.ceil(Math.random()*20))+'.jpg',0,190]
+return [1,
+	Math.random()>0.76 ? 
+	h+'/20190322_'+(Math.ceil(Math.random()*6))+'.jpg'
+	 : h+'/20160831_'+(Math.ceil(Math.random()*20))+'.jpg'
+	,0,190]
 }//fe
 
 
 ngaAds.bbs_ads9_gen_old = ngaAds.bbs_ads9_gen ? ngaAds.bbs_ads9_gen : function(){}
 ngaAds.bbs_ads9_gen = function (){
 if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
-	return;
+	return this.bbs_ads9_gen_old();
 var x, p =location.protocol
 switch(__CURRENT_FID){
 	case 7:
@@ -847,6 +841,9 @@ switch(__CURRENT_FID){
 		break;
 	case 540:
 		x = p+'//tools.178.com/iframe/index.php?fid=540'
+		break;
+	case -60204499:
+		x = p+'//tools.178.com/iframe/index.php?fid=-60204499'
 		break;
 	case -149110:
 		x = '<span style="text-align:center"><table class=" stdbtn" style="margin-left:auto;margin-right:auto"><tbody><tr><td><a href="javascript:void(0)" class="b teal" onclick="ngaAds.open_69124(event,\''+p+'//js.ntwikis.com/?nologin=1\',600)"><nobr><span style="font-size:1.5em">战舰少女资料库</span></nobr></a></td></tr></tbody></table></span>'
@@ -1076,6 +1073,10 @@ commonui.checkIframeTable = {
 
 })();
 
+commonui.ifNotLoadTopBg = function(){
+return __SETTING.bit & (1024 | 64 | 2048)
+}//
+
 //地址是否是附件================
 commonui.ifUrlAttach = function(u){
 if(u.match(/^https?:\/\/(img\d?\.ngacn\.cc|img\d?\.nga\.cn|ngaimg\.178\.com|img\d?\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
@@ -1093,7 +1094,7 @@ if(u.match(/^https?:\/\/(img\d?\.ngacn\.cc|img\d?\.nga\.cn|ngaimg\.178\.com|img\
 commonui.initAfterBody=function(){
 var w = window, b =__SETTING.bit ,x=''
 __SETTING.setIframe()
-if(b & (1024 | 64 | 2048)){
+if(b & __SETTING.bits.noTopBg){
 	if(b & 1024){
 		x+=' notLoadImg isInAnIframe embed'
 		w.ngaAds.clear()
@@ -1157,25 +1158,33 @@ commonui.aE(window,'DOMContentLoaded',function(){
 	commonui.mobanner()
 	__SCRIPTS.syncLoad = __SCRIPTS.asyncLoad
 	loader.script = function(s,f,c,y){__SCRIPTS.load(s,f,c,0)}
+	/*__SCRIPTS.el = function(x){
+		if(!this._o){
+			this._o = _$('/div','style','position:fixed;font-size:0.8em;right:0;bottom:0;background:#fee;border:1px solid #a00;color:#a00;padding:0.5em;transform:translateX(0);','onclick',function(){this.style.display='none';__SCRIPTS.el=function(){}})
+			document.body.insertBefore(this._o,document.body.firstChild)
+			}
+		this._o.innerHTML+=x+'<br/>'
+		}*/
+
 	})
 if(this.loginlog)
 	this.loginlog()
 }//fe
 
 //广告========================
-commonui.mobanner = function(){
+commonui.mobanner = function(){return
 var r = 60,t = this.mobanner.unpack(__COOKIE.getMiscCookie('mobanner1')|0), ads, now=false
 if(__SETTING.uA[2] ==2 || __SETTING.uA[2] ==4 || __SETTING.uA[2] ==5 ){
-	if(t.count_a<4){
+	/*if(t.count_a<4){//每天四次
 		now = this.mobanner.getMi()
-		if(now-t.time_a>r && (ads = ngaAds.bbs_ads44_gen())){
+		if(now-t.time_a>r && (ads = ngaAds.bbs_ads44_gen())){//每小时一次
 			var $ = _$, x = $('/div','style','position:fixed;backgroundColor:rgba(255, 252, 238, 0.95);bottom:0px;color:#fff;width:100%;lineHeight:3em;textAlign:center;zIndex:6',
-				$('/a','style','margin:0 auto 0 0;padding:0.1em 0.6em 0.2em 0.6em;border-radius:1.2em;background:'+__COLOR.border2+';color:'+__COLOR.inverttxt1,'href','javascript:void(0)','innerHTML','\u2573','onclick',function(){x.style.display='none';t.time_a = now;t.count_a++;__COOKIE.setMiscCookieInSecond('mobanner1',commonui.mobanner.pack(t),(1440-now+5)*60)}),
+				$('/a','style','margin:0 auto 0 0;padding:0.1em 0.6em 0.2em 0.6em;border-radius:1.2em;background:'+__COLOR.border2+';color:'+__COLOR.inverttxt1,'href','javascript:void(0)','innerHTML','\u2573','onclick',function(){x.style.display='none';t.time_a = now;t.count_a++;__COOKIE.setMiscCookieInSecond('mobanner1',commonui.mobanner.pack(t),(1440-now+5)*60)}),//时间和次数存一天
 				ads
 				)
 			document.body.appendChild(x)
 			}
-		}
+		}*/
 	if(t.count_b<4 && __SETTING.uA[2]!=4){
 		if(now===false)now = this.mobanner.getMi()
 		if(now-t.time_b>r && !ads){
@@ -1501,7 +1510,8 @@ var s = {
 	bad:["42 -213.3 940 854","M810-213.3h172v512H810v-512zm-170 0c46 0 86 40 86 86v426c0 24-10 44-26 60l-280 282-46-46c-12-12-18-26-18-44v-14l42-196H128c-46 0-86-38-86-84l2-4h-2v-82c0-12 2-22 6-32l130-300c12-30 42-52 78-52h384z","thumb_down","2bc6"],
 	img:["86 -255.3 852 852","M170 212.7v300h300v84H170c-46 0-84-38-84-84v-300h84zm684 300v-300h84v300c0 46-38 84-84 84H554v-84h300zm0-768c46 0 84 38 84 84v300h-84v-300H554v-84h300zm-128 276c0 36-28 64-64 64s-64-28-64-64 28-64 64-64 64 28 64 64zm-300 192l128 158 86-114 128 170H256zm-256-384v300H86v-300c0-46 38-84 84-84h300v84H170z","wallpaper","e1bc"],
 	tbody:["128 -213.3 768 768","M810 128.7v-256H554v256h256zm0 340v-256H554v256h256zm-340-340v-256H214v256h256zm0 340v-256H214v256h256zm-342-682h768v768H128v-768z","border_all","e228"],
-	smile:["86 -255.3 852 852","M512 340.7c64 0 118-34 148-84h70c-34 88-118 148-218 148s-184-60-218-148h70c30 50 84 84 148 84zm0 172c188 0 342-154 342-342s-154-342-342-342-342 154-342 342 154 342 342 342zm0-768c236 0 426 190 426 426s-190 426-426 426-426-190-426-426 190-426 426-426zm-214 320c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64zm300 0c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64z","sentiment_satisfied","e813"]
+	smile:["86 -255.3 852 852","M512 340.7c64 0 118-34 148-84h70c-34 88-118 148-218 148s-184-60-218-148h70c30 50 84 84 148 84zm0 172c188 0 342-154 342-342s-154-342-342-342-342 154-342 342 154 342 342 342zm0-768c236 0 426 190 426 426s-190 426-426 426-426-190-426-426 190-426 426-426zm-214 320c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64zm300 0c0-36 28-64 64-64s64 28 64 64-28 64-64 64-64-28-64-64z","sentiment_satisfied","e813"],
+	bubble:["0 0 16 16","M8 1c4.418 0 8 2.91 8 6.5s-3.582 6.5-8 6.5c-0.424 0-0.841-0.027-1.247-0.079-1.718 1.718-3.77 2.027-5.753 2.072v-0.421c1.071-0.525 2-1.48 2-2.572 0-0.152-0.012-0.302-0.034-0.448-1.809-1.192-2.966-3.012-2.966-5.052 0-3.59 3.582-6.5 8-6.5z"]
 	}		
 /*
 if(__SETTING.uA[0]==1 && __SETTING.uA[1]<9 || __SETTING.uA[4]==2 && __SETTING.uA[5]<9)
@@ -1519,15 +1529,17 @@ if(__SETTING.uA[0]==1 && __SETTING.uA[1]<9 || __SETTING.uA[4]==2 && __SETTING.uA
 		}*/
 		
 __TXT = function(k,opt){
-//var sp=opt&1?'':'\u00A0', v = '<svg xmlns="http://www.w3.org/2000/svg" viewbox="'+s[k][0]+'" style="height:1em;line-height:1em;vertical-align:-0.1em;fill:'+(c?c:'#ffffff')+';"><path d="'+s[k][1]+'"></path></svg>'
-//if(opt&2)	return '<span>'+sp+v+sp+'</span>'
-//return _$('/span','innerHTML',sp+v+sp)
-
-
 if(opt&2)
 	return "<span style=\""+g._c+"\">"+(g[k]?g[k]:'notfound')+"</span>"
 return _$('/span')._.add((opt&1) ? null:'\u00A0',_$('/span','style',g._c)._.add(g[k]),(opt&1) ? null:'\u00A0')
-}
+}//
+
+__TXT.svg = function(k,y){
+v = '<svg xmlns="http://www.w3.org/2000/svg" viewbox="'+s[k][0]+'" style="'+y+'"><path d="'+s[k][1]+'"></path></svg>'
+//if(opt&2)	return '<span>'+sp+v+sp+'</span>'
+return _$('/span','innerHTML',v).firstChild
+}//
+
 })();
 
 
@@ -1659,11 +1671,11 @@ commonui.mainMenuItems={
 	150:{arg:['innerHTML','重置密码','href','/nuke.php?__lib=login&__act=account&resetpass','onclick',function(e){commonui.accountAction('resetpass');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	151:{href:'https://shop482085632.taobao.com',innerHTML:'商城'},
 	152:{u:1,check:function(){if(__GP.ubMod)return true},innerHTML:'debug',on:{event:'click',func:function(e){commonui.userDebug()}}},
-	153:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'update src',on:{event:'click',func:function(e){adminui.updateSrc()}}},
+	153:{u:1,check:function(){if(__GP.super && __GP.ubStaff)return true},innerHTML:'杂项功能',on:{event:'click',func:function(e){adminui.updateSrc()}}},
 	154:{u:1,check:function(){if(__GP.greater || __GP.rvrc>=200)return true},innerHTML:'随机头衔',on:{event:'click',func:function(e){commonui.randomTitle()}}},
 	155:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGA.CN',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.nga.cn')}}},
 	156:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGACN.CC',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.ngacn.cc')}}},
-	157:{u:1,check:function(){if(__GP['super'])return true},innerHTML:'设置版面图标',on:{event:'click',func:function(e){adminui.fIconGen()}}},
+	157:{u:1,check:function(){if(__GP.ubStaff)return true},innerHTML:'设置版面图标',on:{event:'click',func:function(e){adminui.fIconGen()}}},
 	158:{innerHTML:'账号设置'  ,subKeys:[149,150,159,166]},
 	159:{arg:['innerHTML','绑定手机号','href','/nuke.php?__lib=login&__act=account&setphone','onclick',function(e){commonui.accountAction('setphone');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	160:{href:'http://tv.nga.cn/',innerHTML:'赛事'},
@@ -1704,6 +1716,8 @@ commonui.mainMenuItems={
 						o._.hide()
 						})
 					}
+				if(!o.parentNode)
+					document.body.appendChild(o)
 				if(o.style.display == 'none' || o.style.visibility == 'hidden'){
 					var p = this.parentNode.parentNode.getBoundingClientRect()
 					o._.show(p.left+p.width-o._b,p.top+p.height)
@@ -1740,7 +1754,7 @@ commonui.mainMenuItems={
 //============================
 //版面icon====================
 ;(function(){
-var f = [320,181,182,183,184,185,186,187,188,189,255,'10',306,'10',336,'10',190,213,218,258,272,191,200,240,274,315,333,327,318,332,321,7,-7,'354',354,310,323,264,10,335,18,13,16,12,8,102,254,355,116,193,201,230,334,335,29,387,388,390,391,-46468,393,394,395,396,397,398,399,-152678,403,-447601,-2371813,-65653,411,412,414,311,'414',420,422,-8725919,425,428,427,-7861121,-6194253,-84,431,430,435,432,442,444,445,426,-362960,452,-187579,-47218,-51095,-452227,-532408,459,-7202235,464,441,-1437546,469,463,474,406,446,-343809,476,477,486,'s8702375',492,-149110,124,494,490,501,482,480,497,-5080470,465,526,489,-81981,485,529,-547859,537,538,540,418,479,'418',545,'418',550,549,516,555,551,484,-4567100,'-4567100b',-353371,-608808,556,559,-15219445,560,563,-8180483,493,'493_1',564,568,0],
+var f = [320,181,182,183,184,185,186,187,188,189,255,'10',306,'10',336,'10',190,213,218,258,272,191,200,240,274,315,333,327,318,332,321,7,-7,'354',354,310,323,264,10,335,18,13,16,12,8,102,254,355,116,193,201,230,334,335,29,387,388,390,391,-46468,393,394,395,396,397,398,399,-152678,403,-447601,-2371813,-65653,411,412,414,311,'414',420,422,-8725919,425,428,427,-7861121,-6194253,-84,431,430,435,432,442,444,445,426,-362960,452,-187579,-47218,-51095,-452227,-532408,459,-7202235,464,441,-1437546,469,463,474,406,446,-343809,476,477,486,'s8702375',492,-149110,124,494,490,501,482,480,497,-5080470,465,526,489,-81981,485,529,-547859,537,538,540,418,479,'418',545,'418',550,549,555,551,484,-4567100,'-4567100b',-353371,-608808,556,559,-15219445,560,563,-8180483,493,'493_1',564,568,0],
 s= [8702375],
 uf = window.__UFICON ? __UFICON : [],
 us = window.__USICON ? __USICON : [],
@@ -1764,10 +1778,10 @@ if(stid){
 		return __IMG_BASE+'/proxy/cache_attach/ficon/'+i
 	}
 if(fid){
-	if(i = g(f,fid,'.png'))
-		return __IMG_STYLE+'/f/'+i
 	if(i = g(uf,fid,'u.png'))
 		return __IMG_BASE+'/proxy/cache_attach/ficon/'+i
+	if(i = g(f,fid,'.png'))
+		return __IMG_STYLE+'/f/'+i
 	}
 return __IMG_STYLE+'/f/00.png'
 }//fe
