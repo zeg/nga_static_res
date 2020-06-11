@@ -10,6 +10,8 @@ written by zeg 2007/12/14
 */
 if(!window.ngaAds)
 	ngaAds = [];
+if(!ngaAds.location)
+	ngaAds.location = location
 
 ngaAds.reset = function(ni){
 if(!ni)ngaAds.clear()
@@ -20,13 +22,35 @@ this.rateSum = []
 this.rnd = []
 }//
 
+ngaAds.selectGroup = function(ua,lo){
+if(ua.match(/iphone|mobile|IEMobile/i))
+	this.loadGroup('mobi')
+else{
+	if(lo.pathname=='/read.php')
+		this.loadGroup('read')
+	else if(lo.pathname=='/thread.php')
+		this.loadGroup('thread')
+	else if(lo.pathname=='/misc/adpage_insert_2.html')
+		this.loadGroup('insert')
+	else
+		this.loadGroup('other')
+	}
+}//
+
 ngaAds.clear = function (){
 for(var k in this){
 	if(typeof k =='number' ||k.match(/^bbs_ads\d+$/))
 		delete this[k]
 	}
 this.length=0
+if(this.clear.onclear.length){
+	for(var i=0;i<this.clear.onclear.length;i++)
+		this.clear.onclear[i]()
+	this.clear.onclear = null
+	this.clear.onclear = []
+	}
 }//
+ngaAds.clear.onclear=[]//
 
 ngaAds.genadslist = function (id)
 {
@@ -70,6 +94,10 @@ for (var k=0;k<this.length;k++){
 				}
 			}
 		if (tempShow){
+			if(D.sgid && !window.SG_GG){
+				window.SG_GG = true
+				__SCRIPTS.syncLoad('dsCommonG')
+				}
 			if (this.rateSum[D.id]===undefined)
 				this.rateSum[D.id] = 0;
 			if (this.rnd[D.id]===undefined)
@@ -99,7 +127,11 @@ ngaAds.cacheLoadByNameOrg = function(n,opt){
 	var x = this.readCache(n)
 	//console.log('load cache '+n+' '+(''+x).length)
 	if(x){
+		try{
 		eval(x)
+		}catch(e){
+		console.log('ngaAds.cacheLoadByNameOrg '+e)	
+		}
 		this.delCache(n)
 		}
 	if((opt&1)==0)
@@ -216,96 +248,181 @@ qu.insert=function(o,id){
 	}
 }//
 
-ngaAds.genAds = function (a,maxw){
-if(this[a.id+'_perproc'])
-	a = this[a.id+'_perproc'](a)	
-if (a.type=='js')
-	return "<scr"+"ipt type='text/javascr"+"ipt' src='"+a.file+"'></scr"+"ipt>"
-else if (a.type=='baidu' && a.cpro_id){
-		if(typeof window.BAIDU_CLB_fillSlotAsync=='undefined')
-			loader.script("https://cpro.baidustatic.com/cpro/ui/c.js")
-		var bid = a.cpro_id
-		window.setTimeout(function(){
-			if(window.BAIDU_CLB_fillSlotAsync)
-				BAIDU_CLB_fillSlotAsync(bid,"baidu_"+bid);
-			},window.BAIDU_CLB_fillSlotAsync?0:1000)
-		return "<span id='baidu_"+a.cpro_id+"' name='bbs_ads"+a.id+"'></span>"
-	}
-else if (a.type=='taobao'){
-		var id = a.file.match(/i=(mm_.+)$/)
-		if(id){
-			return "<div id='tanx-a-"+id[1]+"'></div><img src='about:blank' style='display:none' onerror='loader.script(\""+a.file+"\")'/>"
-			}
-		
-	}
-else if (a.type=='txt'){
-	return "<span style='"+(a.style?a.style:'')+"'>"+a.file+"</span>"
-	}
-else{
-	var ww=0, hh=0, ra=0, mkm=18, olo=''
-	a.width|=0
-	a.height|=0
-	if(a.width){
-		if(maxw && a.width>maxw){
-			ra = maxw/a.width
-			ww = ra*a.width
-			hh = a.height ? ra*a.height : 0
-			mkm+=a.height-hh
-			}
-		else{
-			ww = a.width
-			hh = a.height ? a.height : 0
-			}
-		}
-	a.width = a.width ? a.width+'px' : 'auto'
-	a.height = a.height ? a.height+'px' : 'auto'
-	ww = ww ? ww+'px' : 'auto'
-	hh = hh ? hh+'px' : 'auto'
-	ra = ra ? ';transform:scale('+ra+');transform-origin:0% 0%;' : ''
-/*
-	if(a.placeholder){
-		if(!this.loadQueue)
-			this.loadQueueInit()
-		return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;margin:auto;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
-		}*/
-	var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif)$/), img='', ic=(a.isUnion|0)==2 ? '' : "<br/><img src='"+__IMG_STYLE+"/admark.png' style='border:none;transform:scale(1);margin:-"+mkm+"px 0 auto calc(100% - 48px)'>"
-	/*if(tp && tp[1]=='swf'){
-		img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
-		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
-		return img
-		}
-	else */
-	if(a.onload){
-		if(window.__INSECTOB)
-			olo = " onload='__INSECTOB.add(this,function(){ngaAds[\""+a.id+"\"].onload.apply(this)})' "
+ngaAds.syncAfterloadCutScript = function(x){
+var ev = [],tp = _$('/span','innerHTML',x),pt = tp.childNodes
+for(var i=0;i<pt.length;i++){
+	if(pt[i].nodeType==1 && pt[i].nodeName=='SCRIPT'){
+		if(pt[i].src)
+			ev.push(pt[i].src)
 		else
-			olo = " onload='ngaAds[\""+a.id+"\"].onload.apply(this)'"
+			ev.push(pt[i].innerHTML)
 		}
-	if(tp){
-		img = "<img src='"+a.file+"' title='"+a.title+"' style='width:"+a.width+";height:"+a.height+";margin:auto;"+ra+"' "+olo+"'/>";
-		img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+" style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
-		return img;
+
+	}
+return ev
+}//
+
+
+ngaAds.syncAfterload = function(){
+	return
+for(var k in this){
+	if(this[k] && this[k].id && this[k].type)  {
+
+		if(this[k].type==5 && this[k].placeholderid){//type5 广点通
+			var a = this[k], ev = this.syncAfterloadCutScript(a.file)
+
+			for(var i=0;i<ev.length;i++){
+				ev[i] = ev[i].replace(/containerid: '.+?'/, "containerid: '"+a.placeholderid+"'")
+				try{
+					eval.call(window,ev[i])
+					}
+				catch(e){
+					console.log(e,ev[i])
+					}
+				}
+
+			this.clear.onclear.push(function(){
+				var x = ['TencentGDT','GDT_HYB','GDT','jsInited']
+				for(var i=0;i<x.length;i++){
+					window[x[i]] = null
+					delete window[x[i]]
+					}
+				})
+			/*
+			var so = $(a.placeholderid).parentNode, oss = function(){
+				console.log(so.getBoundingClientRect())
+				}
+			this.clear.onclear.push(function(){commonui.dE(window,'scroll',oss)})
+			commonui.aE(window,'scroll',oss)*/
+			}
+		else if(this[k].type==1 && this[k].placeholderid){//type1 baidu
+			var a = this[k], ev = this.syncAfterloadCutScript(a.file),jf
+
+			for(var i=0;i<ev.length;i++){
+				
+				if(ev[i].substr(0,4)=='http'){
+					if(location.protocol=='https:')
+						ev[i] = ev[i].replace(/^http:\/\//,'https://')
+					jf=ev[i]
+					}
+				else if(ev[i].substr(0,2)=='//'){
+						jf=ev[i]
+					}
+				else{
+					ev[i] = ev[i].replace(/container:.+?(,|;|\n)/, "container: '"+a.placeholderid+"'$1")
+					try{
+						eval.call(window,ev[i])
+						}
+					catch(e){
+						console.log(e,ev[i])
+						}
+					}
+					
+				}
+			__SCRIPTS.asyncLoad(jf)
+			this.clear.onclear.push(function(){
+				window.slotbydup = null
+				delete window.slotbydup
+				})
+			}
+		else if(this[k].type==999){
+			}
+			
+
+
+		}
+	}
+}//
+
+ngaAds.ifMouseOut = function(e,o){
+var r = e.relatedTarget ? e.relatedTarget : e.toElement;
+while (r && r.nodeName != 'BODY'){
+	if (r==o) return
+	r= r.parentNode
+	}
+return true
+}//fe
+
+ngaAds.genAds = function (a,maxw,maxh,defw,defh){
+if(this[a.id+'_perproc'])
+	a = this[a.id+'_perproc'](a)
+
+
+var ww=0, hh=0, mww=0, mhh=0, ra=0, mkm=18, olo=''
+a.width=parseInt(a.width)
+a.height=parseInt(a.height)
+
+
+if(a.width<0)a.width = defw
+if(a.height<0)a.height = defh
+
+if(a.width>0){
+	if(maxw && a.width>maxw){
+		ra = maxw/a.width
+		ww = ra*a.width
+		hh = a.height ? ra*a.height : 0
+		mkm+=a.height-hh
 		}
 	else{
-		var rr=''
-		if(a.url && window.addEventListener){
-			var rd = 'ifrds_'+a.id+'_'+Math.floor(Math.random()*10000)
-			if(!window[rd]){
-				window[rd]={
-					url:a.url,
-					over:false,
-					mouseenter : function(o){
+		ww = a.width
+		hh = a.height ? a.height : 0
+		}
+	}
+a.width = a.width ? a.width+'px' : 'auto'
+a.height = a.height ? a.height+'px' : 'auto'
+ww = ww ? ww+'px' : 'auto'
+hh = hh ? hh+'px' : 'auto'
+ra = ra ? ';transform:scale('+ra+');transform-origin:0% 0%;' : ''
+
+
+/*
+if(a.placeholder){
+	if(!this.loadQueue)
+		this.loadQueueInit()
+	return "<div style='display:inline-block;*display:inline;*zoom:1;border:1px solid #000000;margin:auto;"+(ww?' ;width:'+ww:'')+(hh?' ;height:'+hh:'')+"'><img src='about:blank' style='display:none' onerror='var t=this.parentNode;commonui.aE(window,\"DOMContentLoaded\",function(){ngaAds.loadQueue.insert(t,\""+a.id+"\")})'/></div>";
+	}*/
+var tp = (''+a.file).match(/\.(jpg|jpeg|png|bmp|gif)$/), img='', ic=(a.isUnion|0)==2 ? '' : "<br/><img src='"+__IMG_STYLE+"/admark.png' style='border:none;transform:scale(1);margin:-"+mkm+"px 0 auto calc(100% - 48px)'>"
+/*if(tp && tp[1]=='swf'){
+	img = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" style="background:#000" width="'+a.width+'" height="'+a.height+'" style="'+(a.style?a.style:'')+'" onload="'+(a.onload?'ngaAds[\''+a.id+'\'].onload.apply(this)':'')+'"><param value="transparent" name="wmode"/><param name="movie" value="'+a.file+'"/><embed wmode="transparent" src="'+a.file+'" width="'+a.width+'" height="'+a.height+'"/></object>';
+	img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+"style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:right;overflow:hidden;line-height:0px;font-size:0px;"+(a.style?a.style:'')+"'' target='_blank' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
+	return img
+	}
+else */
+
+if(a.onload){
+	if(window.__INSECTOB)
+		olo = " onload='__INSECTOB.add(this,function(){ngaAds[\""+a.id+"\"].onload.apply(this)})' "
+	else
+		olo = " onload='ngaAds[\""+a.id+"\"].onload.apply(this)' "
+	}
+
+if(tp){//普通图片广告
+	img = "<img src='"+a.file+"' title='"+a.title+"' style='width:"+a.width+";height:"+a.height+";margin:auto;"+ra+"' "+olo+"/>";
+	img = (a.url?"<a href='"+a.url+"' target='_blank' ":"<div ")+" style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+(a.url?"</a>":"</div>")
+	return img;
+	}
+else{//嵌入页面广告等
+	var rr=''
+	if(a.url && window.addEventListener){
+		var rd = 'ifrds_'+a.id+'_'+Math.floor(Math.random()*10000)
+		if(!window[rd]){
+			window[rd]={
+				url:a.url,
+				over:false,
+				mouseover : function(e,o){
+					if(ngaAds.ifMouseOut(e,o)){
 						this.over = true
 						setTimeout(function () {
 							window.focus();
 							this.over = false;
 							}, 100)
-						},
-					mouseout : function(o){
-						this.over = false
 						}
-					}
-				window.addEventListener('blur',function(){//window blur when click iframe
+					},
+				mouseout : function(e,o){
+					if(ngaAds.ifMouseOut(e,o))
+						this.over = false
+					},
+				winblur : function(){//window blur when click iframe
 					if(window[rd].over){
 						var img1 = document.createElement('img');
 						img1.src = window[rd].url
@@ -313,16 +430,40 @@ else{
 						img1.style.display = 'none'
 						document.body.appendChild(img1)
 						}
-					})
+					}
 				}
-			rr = " onmouseenter='window[\""+rd+"\"].mouseenter(this)'  onmouseout='window[\""+rd+"\"].mouseout(this)' "
+			this.clear.onclear.push(function(){
+				window.removeEventListener('blur',window[rd].winblur)
+				})
+			window.addEventListener('blur',window[rd].winblur)
 			}
-		img =  "<ifr"+"ame scrolling='no' frameborder='0' style='margin:0px;width:"+a.width+";height:"+a.height+";"+ra+"overflow:hidden;margin:auto;margin-left:"+iml+";"+(a.style?a.style:'')+"' src='"+a.file+"' "+olo+" "+rr+"></ifr"+"ame>";
-		img = "<div style='display:block;border:"+(ic?'1px solid #000000':'none')+";width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+"</div>"
-		return img;
+		rr = " onmouseover='window[\""+rd+"\"].mouseover(event,this)'  onmouseout='window[\""+rd+"\"].mouseout(event,this)' "
 		}
 
+	if(a.sgid){
+		/*this.clear.onclear.push(function(){
+			var x = ['TencentGDT','GDT_HYB','GDT','jsInited']//清除联盟广告的全局变量以再次加载广告
+			for(var i=0;i<x.length;i++){
+				window[x[i]] = null
+				delete window[x[i]]
+				}
+			})*/
+		delete a.type
+		a.placeholderid = 'SG_GG_CONTAINER_'+a.sgid
+		return "<div style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;'  "+rr+"><div id='"+a.placeholderid+"' style='"+(a.type==5 ? "width:"+ww+";height:"+hh+";" : "width:"+a.width+";height:"+a.height+";"+ra)+"'></div><img src='about:blank' style='display:none' onerror='SG_GG("+a.sgid+")'/></div>"
+		}
+/*
+	if (a.type==5 || a.type==1 ){//广点通 baidu
+		a.placeholderid = '_ds'+Math.floor(Math.random()*10000000)
+		return "<div style='display:block;border:1px solid #000000;width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;'  "+rr+"><div id='"+a.placeholderid+"' style='"+(a.type==5 ? "width:"+ww+";height:"+hh+";" : "width:"+a.width+";height:"+a.height+";"+ra)+"'></div><img src='about:blank' style='display:none' "+olo.replace(/^\s*onload=/,'onerror=').replace(/this/g,'this.parentNode')+"/></div>"
+		}*/
+
+	img =  "<ifr"+"ame scrolling='no' frameborder='0' style='margin:0px;width:"+a.width+";height:"+a.height+";"+ra+"overflow:hidden;margin:auto;"+(a.style?a.style:'')+"' src='"+a.file+"' "+olo+" "+rr+"></ifr"+"ame>";
+	img = "<div style='display:block;border:"+(ic?'1px solid #000000':'none')+";width:"+ww+";height:"+hh+";margin:auto;text-align:center;overflow:hidden;"+(a.style?a.style:'')+"' title='"+a.title+"'>"+img+ic+"</div>"
+	return img;
 	}
+
+
 }
 //fe
 
@@ -367,16 +508,7 @@ else{
 		__SCRIPTS.syncLoad(this.scriptKey(n))
 		}//
 	}
-if(navigator.userAgent.match(/iphone|mobile|IEMobile/i))
-	ngaAds.loadGroup('mobi')
-else{
-	if(location.pathname=='/read.php')
-		ngaAds.loadGroup('read')
-	else if(location.pathname=='/thread.php')
-		ngaAds.loadGroup('thread')
-	else if(location.pathname=='/misc/adpage_insert_2.html')
-		ngaAds.loadGroup('insert')
-	else
-		ngaAds.loadGroup('other')
-	}
+
+
+ngaAds.selectGroup(navigator.userAgent, ngaAds.location)
 //-------------------------------

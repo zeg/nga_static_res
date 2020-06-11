@@ -142,15 +142,30 @@ this._iList.innerHTML=''
 var tmp = _$('/h4','className','textTitle'),self = this
 this._iList._.add(tmp)
 
-if(callerArg && callerArg[1] && callerArg[1].useArg)
-	tmp._.add( '请选择一个道具购买并使用')
-else{
-	if(data.ownerUid!=this._currentUid)
-		tmp._.add( '用户 '+data.ownerUname+' 的')
-	tmp._.add( '物品列表 ')
-	if(data.ownerUid==this._currentUid || __GP.greater)
-		tmp._.add(_$('/a','href','javascript:void(0)','className','b','innerHTML','[堆叠所有]','onclick',function(){self.stackListCache()}))
+var til = ''
+
+switch(callerArg && callerArg[1] ? callerArg[1].actDscp :''){
+	case 'buy':
+		til ='物品购买'
+		break
+	case 'buyanduse':
+		til ='请选择一个道具购买并使用'
+		break
+	case 'list':
+		if(data.ownerUid!=this._currentUid)
+			til ='用户 '+data.ownerUname+' 的物品列表 '
+		else
+			til ='物品列表 '
+		if(data.ownerUid==this._currentUid || __GP.greater)
+			til = [til, _$('/a','href','javascript:void(0)','className','b','innerHTML','[堆叠所有]','onclick',function(){self.stackListCache()})]
+		break
+	default:
+		til = callerArg[1].actDscp ? callerArg[1].actDscp : '物品列表'
 	}
+	
+
+tmp._.add( til)
+
 	
 
 for(var k in data){
@@ -322,6 +337,26 @@ if(d.uid!=this._currentUid && d.price){
 			)
 		}
 	}
+
+if((d.uid==this._currentUid || d.uid==this._storeUid) && window.__GP['super'])
+	this._iMenu._.add(
+		_$('/h4','className','textTitle','innerHTML','改变数量'),
+		_$('/ul')._.add(
+			_$('/li')._.add(
+				_$('/a',
+					'href','javascript:void(0)',
+					'innerHTML','[改为]',
+					'_itemid',d.id,
+					'onclick',function(){
+						var i = parseInt(this.nextSibling.value,10)
+						if(i<1)return alert('请填入数目')
+						self.setCount(this._itemid,i)
+						}),
+				_$('/input','size','8','value','1'),
+				'个'
+				)
+			)
+		)
 
 if(d.uid==this._currentUid){
 	
@@ -704,7 +739,7 @@ __NUKE.doRequest({
 		
 },//fe
 
-create:function(type,sub_type,uid,count,price){
+create:function(type,sub_type,uid,count,price,call){
 var self = this
 if(!price)price=0
 this._get('new',{
@@ -713,7 +748,7 @@ this._get('new',{
 	uid:uid,
 	count:count,
 	price:price
-	},function(x){
+	},call ? call : function(x){
 		self._echo(typeof(x)=='object' ? commonui._debug._d(x) : x)
 		console.log(x)})
 },//fe
@@ -753,6 +788,7 @@ else{
 storeList:function(page){
 var arg={}
 if(page)arg.page=page
+arg.actDscp='buy'
 this._list('store_list',arg)
 },
 
@@ -766,8 +802,9 @@ this._get('store_sell',{
 },
 
 setCount:function(id,count){
-if(!price)price=0
-this._get('seet_count',{
+count|=0
+if(count<1)count=1
+this._get('set_count',{
 	id:id,
 	count:count
 	})	
@@ -825,18 +862,20 @@ var arg={}
 if(type)arg.type=type
 if(sub_type)arg.sub_type=sub_type
 if(page)arg.page=page
+arg.actDscp='buy'
 this._list('store',arg)
 },//fe
 
 //useArg={arg:'useArg'}
-storeBuyAndUse:function(page,type,sub_type,useArg,clickevt){
-if(!useArg)
+storeBuyAndUse:function(page,type,sub_type,useArg,title){
+if(!useArg)//tid\tpid\t0
 	return
 var arg={}
 if(type)arg.type=type
 if(sub_type)arg.sub_type=sub_type
 if(page)arg.page=page
 if(useArg)arg.useArg=useArg
+arg.actDscp=title ? title : 'buyanduse'
 this._list('store',arg)
 },//fe
 
@@ -846,6 +885,7 @@ if(type)arg.type=type
 if(sub_type)arg.sub_type=sub_type
 if(uid)arg.uid=uid
 if(page)arg.page=page
+arg.actDscp='buy'
 this._list('market',arg)
 },//fe
 
@@ -920,6 +960,7 @@ if(type)arg.type=type
 if(sub_type)arg.sub_type=sub_type
 if(uid)arg.uid=uid
 if(page)arg.page=page
+arg.actDscp='list'
 this._list('list',arg)
 },//fe
 
@@ -1050,16 +1091,25 @@ else if (u){
 	return
 	}
 
+re = 0
 for (var k in y){
 	for(var i in y[k]){
 		console.log('uid:'+k+' mid:'+i)
 		this.medalProduceUi.b.innerHTML = '为'+k+'创建徽章 请等待'
-		this.create( 2 ,i , k , 1 )
-		delete y[k][i]
+		this.create( 2 ,i , k , 1, '', function(d){
+			console.log(commonui._debug._d(d))
+			if(d.error){
+				console.log('重试')
+				re = 1
+				}
+			} )
+		if(re == 0)
+			delete y[k][i]
 		break;
 		}
 	if(!i)
-		delete y[k]
+		if(re == 0)
+			delete y[k]
 	break;
 	}
 

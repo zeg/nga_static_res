@@ -65,7 +65,20 @@ postfunc.__QUOTE = 'quote'
 postfunc.__MODIFY = 'modify'
 
 postfunc._ATTACH_UPLOAD = window.__ATTACH_BASE+'/attach.php';
-postfunc._MAX_IMAGE_SIZE = 4096*1024//图片不超过(字节
+postfunc._MAX_IMAGE_SIZE = {
+	default:4194304
+	,default_gif:4194304
+	,'200_zip':12582912
+	,'274_zip':12582912
+	,'663_zip':12582912
+	,'200_rar':12582912
+	,'274_rar':12582912
+	,'663_rar':12582912
+	,'200_7z':12582912
+	,'274_7z':12582912
+	,'663_7z':12582912
+	//,'663_zip':12582912
+	}//上传文件不超过(字节 与attach.php中保持一致
 /**
  *文件上传使用到的变量
 postfunc.fileSelector=null //文件选择input
@@ -111,6 +124,10 @@ this.o_anony
 this.o_pvwindow	//预览窗口
 
 this.o_f_content	//快速发帖input内容
+
+this.o_focus_content //聚焦的input内容
+this.o_wysiwyg_editor
+this.o_wysiwyg_editor_sw
 */
 
 
@@ -134,7 +151,10 @@ postfunc.currentPostStat =null
  *在光标位置插入文字
  */
 postfunc.addText = function (txt,opt){
-var o = this.o_content
+if(this.o_wysiwyg_editor_sw && this.o_wysiwyg_editor_sw._open)
+	return this.o_wysiwyg_editor.contentWindow.postMessage('insertCodeFromParentFrame null '+txt,this.o_wysiwyg_editor.src)
+
+var o = this.o_focus_content ? this.o_focus_content : this.o_content
 if (o.setSelectionRange){
 	var s = o.selectionStart;
 	o.value = o.value.substring(0,s) + txt + o.value.substring(o.selectionEnd,o.value.length)
@@ -201,82 +221,46 @@ this._selectionStart = s
 this._selectionEnd = e
 }//fe
 */
-postfunc.inputchar = function(e,o)
+
+postfunc.inputchar = window.getSelection ? function(e,o)
 {
 //if (e.keyCode == 9)
 //	return this.addText('	');
-
-if(document.selection)
-	{
-	var rng = document.selection.createRange();
-	rng.moveStart("character",-1)
-	var c= rng.text.charCodeAt(0)
+var c = e.keyCode
+if(c == 219 || c == 221 ||  c == 187 || c == 191 || c==37 || c==38 || c==39 || c==40 ){//[ ] = / 上下左右
+	var c=0,i = o.selectionStart-2,j = o.selectionEnd
+	if(i<0)i=0
+	while(i<j){
+		c = o.value.charCodeAt(i)
+		if (c==12304)//[]
+			c= 91
+		else if (c==12305)//]
+			c=93
+		else if (c==65309)//=
+			c=61
+		else if (c==12289 && i-1>=0 && o.value.charCodeAt(i-1)==91)//[、 [/
+			c=47
+		o.value = o.value.substr(0,i)+String.fromCharCode(c)+o.value.substr(i+1)
+		i++
+		}
+	o.selectionStart = o.selectionEnd = j
 	}
-else
-	{
-	var c = o.value.charCodeAt(o.selectionStart-1)
-	var rng = false;
-	}
+} : (document.selection ? function(e,o){
+var rng = document.selection.createRange();
+rng.moveStart("character",-1)
+var c= rng.text.charCodeAt(0)
 if (c==12304)
-	{
-	if (rng)
-		{
-		rng.text='['
-		}
-	else
-		{
-		rng = o.selectionStart
-		o.value=o.value.substring(0,rng-1)+'['+o.value.substr(rng)
-		o.selectionStart= o.selectionEnd = rng
-		}
-	}
+	rng.text='['
 else if (c==12305)
-	{
-	if (rng)
-		{
-		rng.text=']'
-		}
-	else
-		{
-		rng = o.selectionStart
-		o.value=o.value.substring(0,rng-1)+']'+o.value.substr(rng)
-		o.selectionStart= o.selectionEnd = rng
-		}
-	}
+	rng.text=']'
 else if (c==65309)
-	{
-	if (rng)
-		{
-		rng.text='='
-		}
-	else
-		{
-		rng = o.selectionStart
-		o.value=o.value.substring(0,rng-1)+'='+o.value.substr(rng)
-		o.selectionStart= o.selectionEnd = rng
-		}
+	rng.text='='
+else if (c==12289){
+	rng.moveStart("character",-1)
+	if (rng.text.charAt(0)=='[')
+		rng.text='[/'
 	}
-else if (c==12289)
-	{
-	if (rng)
-		{
-		rng.moveStart("character",-1)
-		if (rng.text.charAt(0)=='[')
-			{
-			rng.text='[/'
-			}
-		}
-	else
-		{
-		if (o.value.charAt(o.selectionStart-2)=='[')
-			{
-			rng = o.selectionStart
-			o.value=o.value.substring(0,rng-1)+'/'+o.value.substr(rng)
-			o.selectionStart= o.selectionEnd = rng
-			}
-		}
-	}
-}
+} : function(){})
 //fe
 
 
@@ -516,7 +500,65 @@ return c
 }//fe
 }//ce
 
+postfunc.selectSmiles=function(e){
+if(this.selectSmilesw)
+	return this.selectSmilesw._.show(e,null,2)
+this.selectSmilesw = commonui.createCommmonWindow()
+this.selectSmilesw._.addContent(null)
+this.selectSmilesw._.addTitle('插入表情')
+this.selectSmilesw.style.maxWidth='88em'
+var y = _$('/div','style','margin-bottom:1em'),z=_$('/span'), o = ubbcode.smiles
+y._.add(_$('/span','style','float:right;color:'+__COLOR.border4))
+for(var k in o){
+	if(o[k]._______name){
+		z._.add(_$('/div','_name',k))
+		y._.add(
+			_$('/button', 'class','block_txt_big', 'innerHTML', o[k]._______name, '_name', k, 'onclick' ,function(){
+				var oo = ubbcode.smiles[this._name]
+					,p = __IMGPATH
+					,v = this.parentNode.nextSibling.childNodes
 
+				for(var i=0;i<v.length;i++){
+					if(v[i]._name==this._name){
+						v[i].style.display = ''
+						var x = v[i]
+						}
+					else
+						v[i].style.display = 'none'
+					}
+				
+				this.parentNode.firstChild.innerHTML= (this._name=='ac'||this._name=='a2') ? '&copy;AcFun 授权使用' : ''
+
+				if(!x.firstChild)
+					if(oo.____display){
+						var y = oo.____display.split('\t')
+						for(var j=0;j<y.length;j+=2){
+							x._.add(
+								_$('/img','src',p+'/post/smile/'+ubbcode.smiles[y[j+1]][y[j]],'name',y[j],'_group',y[j+1],'onclick',function(){postfunc.selectSmilesw._.hide();postfunc.addText("[s:"+this._group+':'+this._name+"]")}),
+								' '
+								)
+							}
+						}
+					else{
+						for(var j in oo){
+							if(j.charAt(0)!='_')
+								x._.add(
+									_$('/img','src',p+'/post/smile/'+oo[j]
+									,'_px',this._name==0?'':this._name
+									,'_name',j
+									,'onclick',function(){postfunc.selectSmilesw._.hide();postfunc.addText("[s:"+this._px+':'+this._name+"]")}),
+									' '
+									)
+							}
+						}
+				})
+			)
+		
+		}
+	}
+this.selectSmilesw._.addContent(y,z)
+this.selectSmilesw._.show(e,null,2)
+}//
 
 
 /**
@@ -602,6 +644,45 @@ for(var i=0;i<x.length;i++)
 		y+='%'+j.toString(16)
 return y
 }//fe
+postfunc.rawUrlDecode = function(x){
+var y=''
+try{
+	y = decodeURIComponent(x)
+	}
+catch(e){
+	var j,c='',i=0
+	try{
+		while(i<x.length){
+			c = x.charAt(i)
+			if(c=='%'){
+				c = '00000000'+('0x'+x.substr(i+1,2)|0).toString(2)
+				c = c.substr(c.length-8)//16进制转2进制并填满8位
+				
+				//一个字符的二进制起始
+				//0.... 则独立的表示一个字符(ASCII j=1
+				//10... 则为一个多字节字符中的一个字节(非ASCII j=1
+				//110... 则为两字节字符的第一字节 j=2
+				//1110... 则为三字节字符的第一字节 j=3
+				//11110... 则为四字节字符的第一字节 j=4
+				j = c.indexOf('0')
+				if(j<=0)j=1
+				else if(j>4)j=4
+
+				y+= j==1 ? unescape(x.substr(i,j*3)) : decodeURIComponent(x.substr(i,j*3))
+				i+=j*3
+				}
+			else{
+				y+=c
+				i++
+				}
+			}
+		}
+	catch(e){
+		y=''
+		}
+	}
+return y
+}//fe
 
 /**
  *上传一个待上传的附件
@@ -625,6 +706,20 @@ f.submit()
 this.o_attachBtn.disabled=null
 }
 
+
+postfunc.ifWaitUpload2big = function(z){//wait object
+var size = z.__file.size
+console.log(z.__file.size, z.__maxSize, z.__isimg, z.__imgKeep)
+if(!z.__isimg || (z.__isimg && z.__imgKeep)){//不是图或者 选了保持原图
+	if(size>z.__maxSize)
+		return z.__maxSize
+	}
+else{//选缩图放宽到3倍
+	if(size>z.__maxSize*3)
+		return z.__maxSize*3
+	}
+}//
+
 /**
  *上传一个待上传的附件
  * 新式方法 在多选文件时用 将<input type=file>中多个文件中的一个通过XHR上传
@@ -635,11 +730,17 @@ f.innerHTML=''
 var z = this.o_waitAttachList.firstChild
 if(!z)
 	return this.o_attachBtn.disabled=null
-if(z.__toobig){
-	alert('图片过大')
+var tmp = this.ifWaitUpload2big(z)
+if(tmp){
+	alert('文件过大 超过'+(tmp/1024/1024)+'M')
 	z.parentNode.removeChild(z)
 	return this.o_attachBtn.disabled=null
 	}
+
+var inputs = z.getElementsByTagName('input')
+for(var i=0;i<inputs.length;i++)
+	inputs[i].name = inputs[i].name.replace(/attachment_file\d+/,'attachment_file1')
+
 if(!this.ifMultiple)//单选文件用老方法
 	return postfunc.attachUploadSingle();
 
@@ -681,12 +782,14 @@ var x = new FormData(f), self=this, onam = z.__file.name.replace(/([^\/\\]+)$/,'
 x.append('func','upload')
 x.append('v2','1')
 x.append('origin_domain',window.location.hostname )
-x.append('lite','json')
+x.append('__output','1')
+if(window.__DEBUG)
+	x.append('debug','1')
 x.append('auth',this.currentAuth)
 x.append('fid',this.currentFid)
-if(z.__file64){
-	x.append('attachment_base64_file1',z.__file64)
-	var typ = z.__file64.match(/^data:image\/(png|jpeg);base64,/)
+if(z.__file.__dataUrl){
+	x.append('attachment_base64_file1',z.__file.__dataUrl)
+	var typ = z.__file.__dataUrl.match(/^data:image\/(png|jpeg);base64,/)
 	if(!typ)
 		return alert('data url error')
 	x.append('attachment_file1_url_utf8_name',this.rawUrlEncode(onam+'.'+typ[1]))
@@ -745,11 +848,11 @@ xhr.send(x);
  *return {__imgC:缩略图dom容器, __infoC:信息dom容器}
  */
 postfunc.attachFileC = function(isimg){
-var $=_$,z = $('/table')._.cls('c1')._.css({'float':'left',margin:'0 0.416em 0.416em 0'})._.add(
+var $=_$,z = $('/table')._.cls('row2c1')._.css({'float':'left',margin:'0 0.416em 0.416em 0'})._.add(
 	$('/tbody')._.add(
 		$('/tr')._.add(
-			isimg ? $('/td') :null,
-			$('/td','style','verticalAlign:top')				
+			isimg ? $('/td','style','padding:0.3em') :null,
+			$('/td','style','verticalAlign:top;padding:0.3em')				
 			)
 		)
 	)
@@ -759,108 +862,279 @@ z.__infoC = z.firstChild.firstChild.lastChild
 return z
 }
 
+postfunc.getPngIHDR = function(base64) {
+if(!window.atob || !window.Uint8Array || !Uint8Array.from || !window.DataView)
+	return {width:0,height:0,colorType:0}
+const header = atob(base64.slice(0, 50)).slice(16,29)
+const uint8 = Uint8Array.from(header, function(c){return c.charCodeAt(0)})
+const dataView = new DataView(uint8.buffer)
+
+return {
+	width: dataView.getInt32(0)
+	,height: dataView.getInt32(4)
+	,depth:dataView.getInt8(8)
+	,colorType:dataView.getInt8(9)
+	,compression:dataView.getInt8(10)
+	,filter:dataView.getInt8(11)
+	,interlace:dataView.getInt8(12)
+	}
+}//
+
+
 postfunc.wmsel=postfunc.wmdefsel=false
 /**
  *生成一个待上传附件dom obj
- *fileO <input type=file>的files中的一个文件object 或 一个虚假的文件object(包含name type __fake 三个属性)
+ *fileO <input type=file>的files中的一个文件object 或 fileO=
+	{
+	name 文件名
+	type mime类型
+	size
+	__dataUrl
+	}
  */
 postfunc.attachNewFile = function(fileO){
-var $=_$,si1,si2,si3
-if(fileO.type.indexOf('image/')===0){
-	var wm = fileO.type.match(/\/jpe?g|png/) ? true : false, wmo, z = this.attachFileC(true),toobig = fileO.size>this._MAX_IMAGE_SIZE ? 1 : 0
+var z = this.attachFileC(true)
+setTimeout(function(){postfunc.fillNewAttach(z,fileO)})
+return z
+}//fe
+
+
+
+
+
+
+
+
+
+/**
+fileO 文件object
+	{
+	name 文件名
+	type mime类型
+	size
+	__dataUrl
+	}
+*/
+postfunc.fillNewAttach = function(z,fileO){
+var $=_$
+,ext = fileO.name.match(/\.[a-zA-Z0-9]+$/)
+,ext = ext? ext[0].substr(1):''
+,MAX_SIZE = Math.max(this._MAX_IMAGE_SIZE[this.currentPostStat.fid]|0
+	,this._MAX_IMAGE_SIZE.default|0
+	,this._MAX_IMAGE_SIZE['default_'+ext]|0
+	,this._MAX_IMAGE_SIZE[this.currentPostStat.fid+'_'+ext]|0)
+,fileName = fileO.name
+
+z.__imgKeep=0//保持原图 仅img
+z.__isimg=0//是图片
+z.__maxSize = MAX_SIZE//相应的最大限制 字节
+z.__infoC.innerHTML=''
+if(z.__imgC)
+	z.__imgC.innerHTML = ''
 	
-	if(!fileO.__fake &&  window.FileReader){
-		var tmpImg = $("/img")._.css({'float':'left',border:'0.25em solid #551200',visibility:'hidden'})
-		tmpImg.__r = new FileReader()
-		tmpImg.__r.__p = tmpImg
-		tmpImg.__r.onload = function(e) {
-			if(toobig && !wm){
-				toobig = 0
-				z.__toobig = 1
-				z.__infoC._.add($('/div','style','color:red')._.add('图片过大'))
-				}
-			else
-				this.__p.src = e.target.result
+z.__jpgOrPng //filetype
+z.__wmo //水印选择obj
+z.__initScale //初始选择缩图
+z.__initPQ //有pngquant选项
+	
+z.__rk = (Math.random()+'').substr(2)
+
+z.__file = fileO//文件object
+//z.__file.__dataUrl 假文件dataurl base64编码的文件内容
+
+if(fileO.type.indexOf('image/')===0){
+	z.__jpgOrPng = fileO.type.match(/\/jpe?g|png/)
+	z.__jpgOrPng = z.__jpgOrPng? z.__jpgOrPng[0] : 0
+	
+
+	z.__isimg=1
+	z.__imgKeep=1
+	
+	
+	z.__infoC._.add(
+		commonui.cutstrbylen(fileO.name,10,9,'...')+' '+'('+fileO.type+')',
+		$('/br'),
+		$('/input','name','attachment_file1_dscp', 'type','text', 'onfocus',function(){this.nextSibling.style.display='none'}),
+		$('/span','innerHTML','附件说明','className','silver', 'style',{marginLeft:'-5em',marginRight:'1em'}),
+		$('/input','name','attachment_file1_img','type','hidden','value',1),
+		$('/br')
+		)
+	
+	z.__initScale=(__SETTING.uA[6]&3)//手机和平板默认自动缩图
+
+	
+	
+	if(fileO.size>MAX_SIZE*10){//大过十倍的不读图
+		z.__infoC._.add($('/div','style','color:red')._.add('图片过大 (>'+(MAX_SIZE*3/1024/1024)+'M)'))
+		}
+	else if(fileO.size>MAX_SIZE*3){//大过3倍尝试canvas缩图
+		if(confirm(fileO.name+' 图片过大是否尝试压缩后上传(仅静态图)')){
+			return postfunc.canvas2jpg(fileO,function(dataUrl){
+				if(dataUrl && (dataUrl.length-23)/4*3 <= MAX_SIZE*3 
+					&& (fo = postfunc.imgDataUrl2FileO(dataUrl,fileO.name))
+					){
+					postfunc.fillNewAttach(z,fo)
+					}
+				else
+					z.__infoC._.add($('/div','style','color:red')._.add('图片过大 (>'+(MAX_SIZE*3/1024/1024)+'M)'))
+				})
 			}
-		tmpImg.onload = function(){
-			if(toobig){
-				toobig = 0
-				if(wm){
-					var cv = document.createElement('canvas')
-					cv.width = this.width
-					cv.height = this.height
-					cv.getContext('2d').drawImage(this,0,0)
-					var jp = cv.toDataURL('image/jpeg',0.8)
-					cv = null
-					if(jp.match(/^data:image\/jpeg;base64,/)){
-						if(jp.length-23<=postfunc._MAX_IMAGE_SIZE/3*4){
-							z.__file64=jp
-							z.__infoC._.add($('/div','style','color:red')._.add('图片过大 将压缩'+(fileO.type.match(/\/jpe?g/)?'':'为jpeg')+'上传'))
-							return this.src = jp
-							}
+		else
+			z.__infoC._.add($('/div','style','color:red')._.add('图片过大 (>'+(MAX_SIZE*3/1024/1024)+'M)'))
+		}
+	else if(window.FileReader){
+		postfunc.fileReadAsDataURL(fileO,function(dataUrl){
+
+			//fill thumb
+			var tmpImg = $("/img",'style','float:left;border:0.25em solid #551200')
+			tmpImg.onload=function(){
+				this.onload=null
+				commonui.resizeImg(this,160,90)
+				z.__imgC._.add(tmpImg)
+				}
+			tmpImg.src = dataUrl
+			
+			//fill info
+			if(z.__jpgOrPng){
+				z.__initScale = 1
+				z.__imgKeep = 0
+				if(dataUrl.match(/^data:image\/png;base64,/)){
+					var tmp = postfunc.getPngIHDR(dataUrl.substr(22,90))
+					if(tmp.colorType==6){
+						z.__initPQ=1
 						}
 					}
-
-				z.__toobig = 1
-				z.__infoC._.add($('/div','style','color:red')._.add('图片过大'))
 				}
-			this.onload=null
-			commonui.resizeImg(this,160,90)
-			this.style.visibility=''
-			}
-		tmpImg.__r.readAsDataURL(fileO);
-		z.__imgC._.add(tmpImg)
+			else if(fileO.type.match(/gif/)){
+				z.__initScale = 1//gif默认自动缩图 服务端根据大小和帧数判断
+				z.__imgKeep = 0
+				
+				}
+			else{
+				
+				}
+
+			z.__infoC._.add(
+				z.__noScale = $('/input','onchange',function(){if(this.checked){z.__imgKeep=1;if(z.__jpgOrPng=='png')z.__wmo.selectedIndex = 5}},'type','radio','name','attachment_file'+z.__rk+'_auto_size','value','0','checked',z.__initScale ? '':'checked')
+				,'不压缩 '
+				,$('/input','type','radio','name','attachment_file'+z.__rk+'_auto_size','value','1','checked',z.__initScale ? 'checked':'')
+				,$('/span','title','图片尺寸超过一定值时会被缩小或转为其他格式')._.add('自动压缩 ')
+					//,(sJpg?'(转为jpg) ':(sMp4?'(转为mp4) ':''))
+				,z.__initPQ ? [
+					$('/input','onchange',function(){if(this.checked)z.__wmo.selectedIndex = 5},'type','radio','name','attachment_file'+z.__rk+'_auto_size','value','5')
+					,$('/span','title','尝试使用pngquant压缩 会减少图片颜色 减小文件体积并保持半透明像素')._.add('压缩(pngquant) ')] : null
+				
+				,z.__jpgOrPng ? [$('/br'),z.__wmo = $('/select').$0('name','attachment_file1_watermark',
+					$('/option','value','br','innerHTML','右下水印'),
+					$('/option','value','bl','innerHTML','左下水印'),
+					$('/option','value','tl','innerHTML','左上水印'),
+					$('/option','value','tr','innerHTML','右上水印'),
+					$('/option','value','cn','innerHTML','中央水印'),
+					$('/option','value','','innerHTML','无水印'),
+					'onchange',function(){postfunc.wmsel = this.selectedIndex}
+					)] : null
+				
+				,z.__jpgOrPng ? [$('/br'),$('/button','type','button','innerHTML','编辑图片','onclick',function(e){
+					postfunc.fileReadAsDataURL(fileO,function(dataUrl){
+						commonui.imageEditor(e, dataUrl, function(img64,thumb64){
+							var fo
+							if(fo = postfunc.imgDataUrl2FileO(img64))
+								postfunc.fillNewAttach(z,fo)
+							})
+						})
+					})]:null
+				)//z.__infoC._.add
+			
+			if(z.__wmo){
+				if(postfunc.wmdefsel!==false)
+					z.__wmo.selectedIndex = postfunc.wmdefsel
+				else if(postfunc.wmsel!==false)
+					z.__wmo.selectedIndex = postfunc.wmsel
+				else
+					postfunc.wmsel = z.__wmo.selectedIndex
+				if(postfunc.defNoScale)
+					z.__noScale.checked=1
+				}
+			
+			})//fileReadAsDataURL
+		}
+	else{
+		z.__infoC._.add($('/input','type','hidden','name','attachment_file1_auto_size','value','0')
+			)
 		}
 	
-	z.__infoC._.add(
-		fileO.name+' '+'('+fileO.type+')',
-		$('/br'),
-		wm ? wmo = $('/select').$0('name','attachment_file1_watermark',
-			$('/option').$0('value','br','innerHTML','右下水印'),
-			$('/option').$0('value','bl','innerHTML','左下水印'),
-			$('/option').$0('value','tl','innerHTML','左上水印'),
-			$('/option').$0('value','tr','innerHTML','右上水印'),
-			$('/option').$0('value','cn','innerHTML','中央水印'),
-			$('/option').$0('value','','innerHTML','无水印'),
-			'onchange',function(){postfunc.wmsel = this.selectedIndex}
-			) : null,
-		wm ? $('/br') : null,
-		$('/input').$0('name','attachment_file1_dscp', 'type','text', 'onfocus',function(){this.nextSibling.style.display='none'}),
-		$('/span').$0('innerHTML','附件说明','className','silver', 'style',{marginLeft:'-5em',marginRight:'1em'}),
-		$('/input').$0('name','attachment_file1_img','type','hidden','value',1),
-		$('/br'),
-		si1=$('/input','type','hidden','name','attachment_file1_auto_size','value',__SETTING.uA[6]&3 ? 1:''),
-		si2=$('/input','type','radio','onclick',function(){si3.checked='';si1.value=this.value},'value','1','checked',si1.value ? 'checked' : ''),'自动缩图 ',
-		si3=$('/input','type','radio','onclick',function(){si2.checked='';si1.value=this.value},'value','0','checked',si1.value ? '' : 'checked'),'保持原图',
-		(window.FileReader && (fileO.type=='image/jpeg' || fileO.type=='image/png')) ? [$('/br'),$('/button','type','button','innerHTML','编辑图片','onclick',function(e){
-			var r = new FileReader()
-			r.onload = function(e) {commonui.imageEditor(e, e.target.result, function(img64,thumb64){z.__file64=img64;z.__imgC.firstChild.src=thumb64})}
-			r.readAsDataURL(fileO)
-			})]:null
-		)
-	if(wmo){
-		if(this.wmdefsel!==false)
-			wmo.selectedIndex = this.wmdefsel
-		else if(this.wmsel!==false)
-			wmo.selectedIndex = this.wmsel
-		else
-			this.wmsel = wmo.selectedIndex
-		}
 	}
 else{
-	var z = this.attachFileC()
+	z.__isimg=0
+	var tmp = postfunc.ifWaitUpload2big(z)
 	z.__infoC._.add(
-		fileO.name+' '+'('+fileO.type+')',
+		commonui.cutstrbylen(fileO.name,10,9,'...')+' '+'('+fileO.type+')',
+		tmp ? $('/div','style','color:red')._.add('文件过大 (>'+(tmp/1024/1024)+'M)') : null,
 		$('/br'),
 		$('/input').$0('name','attachment_file1_dscp','type','text', 'onfocus',function(){this.nextSibling.style.display='none'}),
 		$('/span').$0('innerHTML','附件说明','className','silver', 'style',{marginLeft:'-5em',marginRight:'1em'})
 		)
 
 	}
-z.__fileName = fileO.name
-z.__file = fileO
-return z
+
 }//fe
+
+	
+
+
+
+postfunc.fileReadAsDataURL=function(fo,cal){
+if(fo.__dataUrl){
+	setTimeout(cal(fo.__dataUrl))
+	}
+else{
+	var r = new FileReader()
+	r.onload = function(e){cal(e.target.result)}
+	r.readAsDataURL(fo)
+	}
+}//
+
+
+postfunc.imgDataUrl2FileO =function(x,n){
+var t
+if(t = x.match(/^(data:image\/(png|jpeg));base64,/))
+	return {
+		'name':(n?n:'noname')+'.'+t[2],
+		'type':t[1],
+		'size':(x.length-t[0].length)/4*3,
+		'__dataUrl':x
+		}
+}//
+
+
+postfunc.canvas2jpg =function(fo,cal){
+this.fileReadAsDataURL(fo,function(dU){
+	var im = new Image()
+	im.onload = function(){
+		var cv = document.createElement('canvas')
+		cv.width = this.width
+		cv.height = this.height
+		cv.getContext('2d').drawImage(this,0,0)
+		var jp = cv.toDataURL('image/jpeg',0.8)
+		cv = null
+		if(jp.match(/^data:image\/jpeg;base64,/)){
+			return cal(jp)
+			}
+		cal()
+		}
+	
+	im.src = dU
+	})
+
+}//
+
+
+
+
+
+
+
+
 
 commonui.imageEditor= function(e,img,callback){if(this.imageEditor.load)return;this.imageEditor.load=1;loader.script(__SCRIPTS.imgEdit,function(){commonui.imageEditor(e,img,callback)})}
 /**
@@ -881,6 +1155,10 @@ if(!this.o_attachList.firstChild)
 
 var z= this.o_attachForm.firstChild
 
+isimg|=0
+if(url.match(/\.mp4$/) && thumb)
+	isimg = 2
+
 if(isimg)
 	thumb = this.add1Attach.getDispThumb(thumb)
 
@@ -894,34 +1172,59 @@ if(!z){
 	}
 
 z.__infoC.innerHTML=''
-if(isimg){
-	if(z.__fileName)
-		z.__infoC.innerHTML += z.__fileName+'<br/>'
+
+if(!utf8oname && typeof(attach)=='string')
+	var utf8oname = __NUKE.scDe(attach).url_utf8_org_name
+if(utf8oname || (z.__file && z.__file.name)){
+	var on=utf8oname ? postfunc.rawUrlDecode(utf8oname) : 'noname'
+	if(!on.length)on='nameDecodeErr'
+	
+	z.__infoC._.add(
+		(z.__file && z.__file.name)? z.__file.name : on,
+		_$('/br')
+		)
+	}
+	
+if(isimg&1){
 	z.__infoC.innerHTML += '<span class="silver xtxt"> 点击下方插入附件</span><br/>'
 	for(var i = 0;i<thumb.length;i++)
 		z.__infoC.innerHTML+=this.add1Attach.sub(thumb[i][1],url+thumb[i][0])
 	z.__infoC.innerHTML+=this.add1Attach.sub('完整大小',url)
 
 	//图片超过5个显示使用相册的提示
-	if(!this.album)this.album=_$('<div>在有大量图片的时候建议使用相册<span class="silver">([album])</span><br/><span class="orange">[album=查看全部附件][/album]</span><br/><br/></div>')
-	this.album.innerHTML=this.album.innerHTML.replace('[/album]','<br/>./'+url+'[/album]')
+	if(!this.album){
+		this.album=this.attachFileC()
+		this.album.__infoC._.add('在有大量图片的时候建议使用图集代码',_$('/br'),_$('/textarea','style','width:20em;height:8em','value','[album=查看全部附件][/album]'))
+		}
+	this.album.__infoC.lastChild.value=this.album.__infoC.lastChild.value.replace('[/album]','\n./'+url+'[/album]')
 	this.albumImgCount++
 	if(this.albumImgCount==5)
 		this.o_attachList.parentNode.insertBefore(this.album,this.o_attachList)
-	if(tid && aid)
-		z.__infoC.appendChild(_$('/div','innerHTML','<button class="deleteAttach xtxt" style="width:5.5em" type=button title="点击删除该附件" onclick="if(confirm(\'是否要删除\')){__NUKE.doPost(__API.delAttach('+(pid?pid:0)+', '+tid+', \''+aid+'\'));var x = this.parentNode.parentNode.parentNode.parentNode.parentNode; x.parentNode.removeChild(x)}">删除附件</button>'));
 	}
-else{
-	if(z.__fileName)
-		z.__infoC.innerHTML += z.__fileName+'<br/>'
-	if(!utf8oname && typeof(attach)=='string')
-		var utf8oname = __NUKE.scDe(attach).url_utf8_org_name
-		
+else if(isimg&2){
+	z.__infoC.innerHTML+=this.add1Attach.sub('插入附件',url,'flash=video','flash')
+	}
+else{		
 	z.__infoC.innerHTML='<span class=gray>文件</span> <span class=orange>[attach]./'+url+(utf8oname?'?filename='+utf8oname:'')+'[/attach]</span>'
 	if(__GP.ubMod && url.match(/\.(mp4|webm|ogg|mp3|aac)$/))
-		z.__infoC.innerHTML+='<br/><span class=gray>播放</span> <span class=orange>[flash]./'+url+(utf8oname?'?filename='+utf8oname:'')+'[/flash]</span><br/><span class=gray>在加分/加亮贴中有效</span><br/><span class=gray>使用h264编码mp4/mp3/aac以获得最大兼容性</span>'
+		z.__infoC.innerHTML+='<br/><span class=gray>播放</span> <span class=orange>[flash'+(url.match(/\.(mp4|webm)+']./)?'=video':'=audio')+']./'+url+(utf8oname?'?filename='+utf8oname:'')+'[/flash]</span><br/><span class=gray>在加分/加亮/或使用播放道具的主题中有效</span><br/><span class=gray>使用h264编码mp4/mp3/aac以获得最大兼容性</span>'
 
 	}
+if(tid && aid)
+	z.__infoC._.add(
+		_$('/div')._.add(
+			_$('/button','className',"deleteAttach xtxt",'style',"width:5.5em",'type','button','title',"点击删除该附件",'innerHTML','删除附件',
+				'_z',z,
+				'onclick',function(){
+					if(confirm('是否要删除')){
+						__NUKE.doPost(__API.delAttach((pid?pid:0), tid, aid))
+						this._z.parentNode.removeChild(x)}
+					}
+				)
+			)
+		)
+		
+
 
 this.o_attachList.appendChild(z)
 
@@ -935,7 +1238,10 @@ this.o_attachChk.value+=checkSum+'\t';
 window.setTimeout(function(){postfunc.attachUpload()},200)
 }//fe
 
-postfunc.add1Attach.sub=function(t,u){return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10))" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> [img]./'+u+'[/img]</span><br/>'}//fe
+postfunc.add1Attach.sub=function(t,u,g,e){
+if(!g)g = 'img'
+return '<button class="gray xtxt" style="width:5.5em" type=button onclick="this.style.backgroundColor=\'silver\';postfunc.addText(this.nextSibling.innerHTML.substr(1)+String.fromCharCode(10))" title="点击在光标的位置插入图片">'+t+'</button><span class="orange xtxt en_font"> ['+g+']./'+u+'[/'+(e?e:g)+']</span><br/>'
+}//fe
 
 postfunc.add1Attach.getDispThumb = function(thumb){
 var t = [],thumb = parseInt(thumb,10)
@@ -965,6 +1271,9 @@ var ift=function(x){
 	if((typeof x=='string' || typeof x=='number') && x!=='')
 		return true
 	}
+
+postfunc.currentPostStat = d
+
 return this.genForm(
 	d.action,d.fid,d.tid,d.pid,d.__ST?d.__ST.tid:null,
 	d.__F.bit_data|0,
@@ -978,7 +1287,8 @@ return this.genForm(
 	(d.__T && d.__T.post_misc_var) ? d.__T.post_misc_var.vote : null,
 	(d.__P && d.__P.post_misc_var) ? d.__P.post_misc_var.vote : null,
 	(d.__T && d.__T.topic_misc_var) ? d.__T.topic_misc_var[1]|0 : 0,//tmbit1
-	d.type|0
+	d.type|0,
+	d.warning
 	)
  }//fe
 
@@ -1000,7 +1310,8 @@ if_mod,//当前用户是否版主 lib_privilege::if_forum_admin
 topic_vote,//主题的vote数据 仅编辑或回复时
 post_vote,//回复的vote数据 仅编辑
 tmbit1,
-tbit//主题的bit位
+tbit,//主题的bit位
+warn
 			){
 var self=this,
 _GP = __GP,
@@ -1040,29 +1351,33 @@ this.o_vote = {}//投票内容
 this.o_voteType = {}// 0投票 1投注铜币
 this.o_voteMax = {}//每人最多可投 0不限
 this.o_voteEnd = {}//小时后结束
-this.o_attach
-this.o_attachChk
+this.o_ath = null
+this.o_ath_placer = null
+this.o_attach = null
+this.o_attachChk = null
 this.o_voteBetMin = {}//投注最大值
 this.o_voteBetMax = {}//投注最小值
 this.o_voteLimit = {}//投票的声望限制
 this.o_pvwindow
 this.o_anony={}
 
-this.o_topicVote
-this.o_attachBtn
-this.o_attachList
-this.o_waitAttachList
-this.o_attachForm
-this.o_fileSelector
-this.album
+this.o_topicVote = null
+this.o_attachBtn = null
+this.o_attachList = null
+this.o_waitAttachList = null
+this.o_attachForm = null
+this.o_fileSelector = null
+this.album = null
 this.albumImgCount=0
-this.ifMultiple
+//this.ifMultiple
 this.uploadedAttach=[]
 this.o_setTopic={}
 //this.o_liveTopic={}
 this.o_replyAnony={}
 this.o_replyOnce={}
 this.o_voteView={}
+this.o_wysiwyg_editor=null
+this.o_wysiwyg_editor_sw = null
 
 var f_post = function(ob){
 	if(self.o_replyOnce.checked)
@@ -1076,6 +1391,7 @@ var f_post = function(ob){
 		post_opt|=postfunc.postOptBit._OPT_VOTE_REPLY_VIEW
 	else if(self.o_voteView.value==2)
 		post_opt|=postfunc.postOptBit._OPT_VOTE_END_VIEW
+
 	commonui.newPost(
 		ob,
 		mode,//操作
@@ -1086,7 +1402,7 @@ var f_post = function(ob){
 		mode==self.__NEW ? (self.o_setTopic.checked ? -1 : stid ) : null,//o_setTopic
 		self.o_subject.value,//标题
 		self.o_content.value,//内容
-		self.o_hidden.checked ? 1 : 0,//隐藏帖子 仅版主可见
+		self.o_hidden._nochange ? 0 : (self.o_hidden.checked ? 1 : 2),//隐藏帖子 仅版主可见
 		self.o_selfReply.checked ? 1 : 0,//只有作者和版主可回复
 		self.o_attach.value,//附件
 		self.o_attachChk.value,//附件校验
@@ -1143,25 +1459,61 @@ var o_main = $('/span').$0(
 			$('/tr').$0(
 				'className','row'+(((i++)&1)+1),
 				$('/td').$0(
-					'className','c2',
+					'className','c2'
 
-					this.o_subject = $('/input').$0(
+					,this.o_subject = $('/input').$0(
 						'className','title',
 						'maxLength','100',
 						'name','post_subject',
 						'id','post_subject',
 						'title','标题',
 						'style',{width:'65%',marginRight:'0.5em'},
-						'value',subject
-						),
+						'value',subject,
+						'onkeyup',function (e){
+							postfunc.onInput(e,this)
+							}
+						)
 
-					mode==this.__NEW || mode==this.__MODIFY ? $('/span').$0(
+					,mode==this.__NEW || mode==this.__MODIFY ? $('/span').$0(
 						'name','tk',
 						commonui.createTopicKeySelector(fid,function(k){self.o_subject.value = k+' '+self.o_subject.value})
-						) : null,
-
-					commonui.prePostHintAfterSubject ? commonui.prePostHintAfterSubject(mode, fid, tid, pid, stid) : null
-
+						) : null
+					,this.o_wysiwyg_editor_sw =__GP.greater ? $('/button','innerHTML','可视化编辑器','onclick',function(){
+						var u = __SCRIPTS.ubbeditor
+						if(!this._open){
+							this._open = 1
+							var p = this.parentNode.parentNode
+							for(var i=0;i<3;i++){
+								p=p.nextSibling
+								p.style.display='none'}
+							self.o_content.style.display='none'
+							self.o_wysiwyg_editor.style.display=''
+							if(self.o_wysiwyg_editor.src=='about:blank'){
+								self.o_wysiwyg_editor.onload = function(){
+									var kk = "__NOW __CACHE_PATH __IMG_BASE __IMGPATH __IMG_STYLE __COMMONRES_PATH __BBSURL __ATTACH_BASE __ATTACH_BASE_UPLOAD __ATTACH_BASE_UPLOAD_SEC __ATTACH_BASE_VIEW __ATTACH_BASE_VIEW_SEC __RES_BASE __RES_BASE_SEC __CURRENT_FID __CURRENT_F_BIT __JSBASE __CSSBASE __UICON_BASE".split(' '),vv=''
+									for(var k in kk)
+										vv+= (kk[k]+'="'+window[kk[k]]+'";')
+									this.contentWindow.postMessage('setVarFromParentFrame null '+vv,u)
+									this.contentWindow.postMessage('loadContentFromParentFrame null '+self.o_content.value,u)
+									}
+								return self.o_wysiwyg_editor.src = u+(content ? '&blank=1' : '')
+								}
+							self.o_wysiwyg_editor.onload=null
+							self.o_wysiwyg_editor.contentWindow.postMessage('loadContentFromParentFrame null '+self.o_content.value, u )
+							}
+						else{
+							this._open = 0
+							var p = this.parentNode.parentNode
+							for(var i=0;i<3;i++){
+								p=p.nextSibling
+								p.style.display=''}
+							self.o_content.style.display=''
+							self.o_wysiwyg_editor.style.display='none'
+							self.o_wysiwyg_editor.contentWindow.postMessage('returnContentToParent null null', u )
+							}
+						}) : null
+					,aler = (commonui.prePostHintAfterSubject ? commonui.prePostHintAfterSubject(mode, fid, tid, pid, stid) : $('/span'))
+					
 					)//td
 				),//tr__SETTING.bit & 4
 
@@ -1172,61 +1524,60 @@ var o_main = $('/span').$0(
 				),//tr
 
 			$('/tr').$0('className','row'+(((i++)&1)+1),
-				$('/td').$0('className','c2',
+				$('/td','className','c2')._.add(
 					s('字体',ubbcode.fonts,function(){self.addTag('font',this.value)}),
 					s('字号',ubbcode.fontSize,function(){self.addTag('size',this.value)}),
 					s('颜色',ubbcode.fontColor,function(){self.addTag('color',this.value)}),
-					t(' '),
+					' ',
+					$('/button','innerHTML','文字颜色','title','文字颜色','type','button','onclick',
+						function(e){
+							self.dialog.createWindow('uiAddTag')
+							self.dialog.w.style.display='none'
+							self.dialog.w.style.maxWidth='24em'
+							self.dialog.w._.addContent(null)
+							self.dialog.w._.addTitle('文字颜色')
+							var x = $('/span')
+							for(var k in ubbcode.fontColor){
+								x._.add(
+									$('/a','class',k,'style','font-size:3em;line-height:2em','innerHTML','\u2588','href','javascript:void(0)'
+									,'onclick',function(){
+										self.addTag('color',this.className)
+										self.dialog.w._.hide()
+										}),
+									'\u2003'
+									)
+								}
+							self.dialog.w._.addContent(x)
+							self.dialog.w._.show(e)
+							}
+						),
+					' ',
 					$('/button').$0('innerHTML','<b>B</b>','title','粗体','type','button','onclick',function(){self.addTag("b")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<u>U</u>','title','下横线','type','button','onclick',function(){self.addTag("u")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<span style="font-style:italic"> I </span>','title','斜体','type','button','onclick',function(){self.addTag("i")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<del class="gray">DEL</del>','title','删除线','type','button','onclick',function(){self.addTag("del")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<b>&#8220;</b>','title','引用','type','button','onclick',function(){self.addTag("quote")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<b>&#8212;</b>','title','分隔线','type','button','onclick',function(){self.addText("======")}),
-					t(' '),
+					' ',
 					$('/button').$0('innerHTML','<b>H</b>','title','段落标题','type','button','onclick',function(){self.addText("==="+self.getSelectText()+"===")}),
-					t(' '),
+					' ',
 					$('/button').$0('style',{paddingLeft:0,paddingRight:0},'title','引用图片','type','button','onclick',function(e){self.uiAddTag(e,11)},
 						__TXT('img')._.css('fontSize','1.15em')
 						),
-					t(' '),
+					' ',
 					$('/button').$0('style',{paddingLeft:0,paddingRight:0},'title','插入超链接','type','button','onclick',function(e){self.uiAddTag(e,13)},
 						__TXT('link')._.css('fontSize','1.15em')
 						),
-					t(' '),
-					$('/button').$0('style',{paddingLeft:0,paddingRight:0},'title','插入表情','type','button','onclick',function(e){
-							var o = ubbcode.smiles
-							self.dialog.createWindow('uiAddTag')
-							self.dialog.w.style.display='none'
-							self.dialog.w._.addContent(null)
-							self.dialog.w._.addTitle('插入表情')
-							for(var k in o)
-								self.dialog.w._.addContent(
-									$('/button').$0('innerHTML',ubbcode.smilesN[k], 'name', k , 'onclick' ,function(){
-										var oo = ubbcode.smiles[this.name],
-											x=this.nextSibling,
-											i = __IMGPATH,
-											p = this.name==0?'':this.name+':'
-										if(x.firstChild)return
-										for(var j in oo){
-											x._.add(
-												$('/img').$0('src',i+'/post/smile/'+oo[j],'name',j,'onclick',function(){self.dialog.w._.hide();self.addText("[s:"+p+this.name+"]")}),
-												' '
-												)
-											}
-										}),
-									$('/div')
-									)
-							self.dialog.w._.show(e,null,2)
-							},
+					' ',
+					$('/button','style',{paddingLeft:0,paddingRight:0},'title','插入表情','type','button','onclick',function(){postfunc.selectSmiles()},
 						__TXT('smile')._.css('fontSize','1.15em')
 						),
-					t(' '),
+					' ',
 					$('/button').$0('style',{paddingLeft:0,paddingRight:0},'title','插入表格','type','button','onclick',
 						function(e){
 							self.dialog.createWindow('uiAddTag')
@@ -1259,13 +1610,10 @@ var o_main = $('/span').$0(
 
 			$('/tr').$0('className','row'+(((i++)&1)+1),
 				$('/td','className','c2')._.add(
-					this.o_hidden = $('/input').$0('name','hidden','type','checkbox','value',1,'_nochange',1,'checked','','onchange',function(e){
+					this.o_hidden = $('/input').$0('name','hidden','type','checkbox','value',1,'_checkorg',(bit & postfunc.postBit._POST_IF_HIDDEN),'_nochange',1,'checked','','onchange',function(e){
 						if(this._nochange){
-							console.log(bit , postfunc.postBit._POST_IF_HIDDEN)
-							this.checked = (bit & postfunc.postBit._POST_IF_HIDDEN) ? 'checked' : ''
-							console.log(this.checked)
+							this.checked = this._checkorg ? 'checked' : ''
 							var o=this
-							setTimeout(function(){console.log(o.checked)})
 							commonui.cancelEvent(e)
 							return this._nochange=0
 							}
@@ -1304,7 +1652,7 @@ var o_main = $('/span').$0(
 						$('/option').$0('value','2','innerHTML', '开头')
 						) :null,
 					modifyAppend ? t('，如需修改原帖请联系版主') :null,
-					this.o_content = $('/textarea').$0(
+					this.o_focus_content = this.o_content = $('/textarea').$0(
 						'autofocus', '',
 						'name','post_content',
 						'style',{width:'98%',height:'25em',lineHeight:'1.538em'},
@@ -1343,11 +1691,9 @@ var o_main = $('/span').$0(
 									this._cw._.hide()
 									}
 								}
-							this.focus()
-							self.inputchar(e,this)
-							this.focus()
+							postfunc.onInput(e,this)
 							if(document.selection)
-								self._selection = document.selection.createRange().duplicate();
+								this._selection = document.selection.createRange().duplicate();
 							},//fe
 						'onkeydown',function (e){
 							if(e.keyCode == 18){
@@ -1389,16 +1735,11 @@ var o_main = $('/span').$0(
 								commonui.cancelEvent(e)
 								}
 							},//fe
-						'onpaste',function(e){
-							var h = e.clipboardData.getData('text/html')
-							if(!h)return
-							var m = self.parseTableClip(h)
-							if(m && confirm('是否要在光标位置粘贴表格')){
-								self.addText(m)
-								return commonui.cancelEvent(e)
-								}
-							}//fe
+						'onfocus',function(){
+							self.o_focus_content = this
+							}//
 						)
+						,this.o_wysiwyg_editor = $('/iframe','frameborder','0','src','about:blank','style','display:none;width:98%;height:50em;border:1px solid '+__COLOR.border2+';border-radius:0.25em;')
 					)
 				),//tr
 			self.o_topicVote = (function(tv,pv){
@@ -1469,7 +1810,7 @@ var o_main = $('/span').$0(
 						vo7 = $('/span'),
 						vo8 =	this.o_voteBetMax = $('/input').$0('name','newvote_betmax','size','3','value',''),
 						vo9 = $('/span'),
-						this.o_voteLimit = $('/input').$0('name','newvote_limit','size','5','value','','title','发贴版面的第一个声望 -21000~21000'),
+						this.o_voteLimit = $('/input').$0('name','newvote_limit','size','5','value','','title','发帖版面的第一个声望 -21000~21000'),
 						'\u2003',
 						this.o_voteView = $('/select',
 							$('/option','value',0,'innerHTML','即时查看结果'),
@@ -1509,10 +1850,9 @@ var o_ath = $('/table').$0(
 	$('/tbody').$0(
 		$('/tr').$0('className','row'+(((i++)&1)+1),
 			
-			$('/td').$0('className','c2','id','attachformC',
-			
-				this.o_attachList = $('/span').$0('id','uploadedattach'),
-				this.o_attachForm = $('/form').$0(
+			$('/td','className','c2','id','attachformC')._.add(
+				this.o_attachList = $('/span','id','uploadedattach'),
+				this.o_attachForm = $('/form',
 					'method','post',
 					'id','attachform',
 					'target','upload_iframe',
@@ -1521,31 +1861,37 @@ var o_ath = $('/table').$0(
 					'encoding','multipart/form-data',
 					'enctype','multipart/form-data',
 					'style',{clear:'both'}),
-				this.o_waitAttachList =  $('/span').$0('id','waituploadattach'),
-				$('/div').$0('style',{clear:'both'}),
+				this.o_waitAttachList =  $('/span','id','waituploadattach'),
+				$('/div','style','clear:both'),
+				'图片/文件附件',
 				this.o_fileSelector = this.attachNewFileSelect(),
-				this.o_attachBtn = $('/button').$0(
+				this.o_attachBtn = $('/button',
 					'type','button',
-					'innerHTML','上传图片/文件附件',
+					'innerHTML','上传',
 					'onclick',function(){this.disabled=true;postfunc.attachUpload()} ),
 				this.ifMultiple ? t(' (可一次选多个文件 可拖放) ') : null,
 				$('/a','href','javascript:void(0)','onclick',function(){this.style.display='none',this.nextSibling.style.display=''},__TXT('gear')),
-				$('/select','style','display:none',
-					$('/option').$0('value','','innerHTML','----'),
-					$('/option').$0('value','br','innerHTML','默认右下水印'),
-					$('/option').$0('value','bl','innerHTML','默认左下水印'),
-					$('/option').$0('value','tl','innerHTML','默认左上水印'),
-					$('/option').$0('value','tr','innerHTML','默认右上水印'),
-					$('/option').$0('value','cn','innerHTML','默认中央水印'),
-					$('/option').$0('value','','innerHTML','默认无水印'),
-					'onchange',function(){if(this.selectedIndex)postfunc.wmdefsel = this.selectedIndex-1}
+				$('/span','style','display:none')._.add(
+					$('/select',
+						$('/option','value','','innerHTML','----'),
+						$('/option','value','br','innerHTML','默认右下水印'),
+						$('/option','value','bl','innerHTML','默认左下水印'),
+						$('/option','value','tl','innerHTML','默认左上水印'),
+						$('/option','value','tr','innerHTML','默认右上水印'),
+						$('/option','value','cn','innerHTML','默认中央水印'),
+						$('/option','value','','innerHTML','默认无水印'),
+						'onchange',function(){if(this.selectedIndex)postfunc.wmdefsel = this.selectedIndex-1}
+						),
+					' ',
+					$('/input','type','checkbox','onchange',function(){postfunc.defNoScale=this.checked? 1:0}),'默认不压缩'
 					),
 				$('<iframe name="upload_iframe"></iframe>').$0('name','upload_iframe','id','upload_iframe', 'style',{display:'none'})
 				)
 			)
 		)
-	
 	)
+
+this.o_ath= o_ath
 	
 if ('selectionStart' in this.o_content) 
 	this.o_content.$0('onkeyup',function(e){
@@ -1590,6 +1936,8 @@ o_btn._.__add(
 	'href','javascript:void(0)',
 	'className','uitxt1',
 	'onclick',function(){
+			if(self.o_wysiwyg_editor_sw && self.o_wysiwyg_editor_sw._open)
+				return commonui.triggerEvent(self.o_wysiwyg_editor_sw,'click')
 			f_post(this)
 			}
 		)
@@ -1631,12 +1979,23 @@ var drpo = function (e) {
 		}
 	}
 
-var drp = function (e) {
-	if (e.dataTransfer.files) {
-		self.o_fileSelector.files = e.dataTransfer.files;
+var dropOrpaste = function (e) {
+	var d,h
+	d = e.dataTransfer ? e.dataTransfer : e.clipboardData
+	if(h = d.getData('text/html')){
+		var m = self.parseTableClip(h)
+		if(m && confirm('检测到表格\n是否在光标处导入表格数据\n(仅粘贴表格部分)')){
+			self.addText(m)
+			commonui.cancelBubble(e)
+			return commonui.cancelEvent(e)
+			}
+		}
+	if (d.files && d.files.length) {
+		self.o_fileSelector.files = d.files;
 		this.style.boxShadow=''
-		commonui.cancelEvent(e)
+		commonui.triggerEvent(self.o_fileSelector,'change')
 		commonui.cancelBubble(e)
+		return commonui.cancelEvent(e)
 		}
 	}
 
@@ -1644,11 +2003,19 @@ var drp = function (e) {
 	//o_main.$0('ondrop',drp,'ondragover',drpo);
 
 if (o_ath){
-	o_ath.ondrop=drp
-	o_ath.ondragover=drpo
-	o_ath.onmouseout=function(){this.style.boxShadow=''}
-	
+	this.o_ath.ondrop=dropOrpaste
+	this.o_ath.ondragover=drpo
+	this.o_ath.onmouseout=function(){this.style.boxShadow=''}
 	}
+this.o_content.onpaste=dropOrpaste
+this.o_content.ondrop=dropOrpaste
+this.o_content.ondragover=drpo
+this.o_content.onmouseout=function(){this.style.boxShadow=''}
+	
+
+
+if(warn)
+	aler._.add(postfunc.warn2txt(warn))
 //-----------------------------------------------------
 //
 //兼容
@@ -1684,7 +2051,38 @@ return $('/span').$0(
 			)
 
 
-}
+}////fe
+
+
+
+postfunc.windowedUpload = function(e){
+if(!this.o_ath)
+	return
+var $ = _$
+if(!this.o_ath_placer)
+	this.o_ath_placer = $('/span','style','display:none');
+if(!this.o_ath_window){
+	var self = this
+	this.o_ath_window = commonui.createCommmonWindow(0,{
+		onclose:function(){
+			
+			self.o_ath_placer.parentNode.replaceChild(self.o_ath, self.o_ath_placer)
+			}
+		})
+	}
+if(!this.o_ath_placer.parentNode){
+	this.o_ath.parentNode.replaceChild(this.o_ath_placer,this.o_ath)
+	this.o_ath_window._.addContent(null)
+	this.o_ath_window._.addTitle('上传图片/文件附件')
+	this.o_ath_window._.addContent(
+		$('/div','style','width:35em;maxHeight:70em;overflow:auto')._.add(
+			this.o_ath
+			)
+		)
+	}
+this.o_ath_window._.show(e)
+}//fe windowedUpload
+
 
 /**
  *发帖预览
@@ -1781,9 +2179,9 @@ return __NUKE.doRequest({
 	f:function(d){
 		var e = __NUKE.doRequestIfErr(d)
 		if(e)
-			return commonui.alert(e)
+			return commonui.alert(_$('/span','style','color:gray','innerHTML',e))
 		if(d.data.__MESSAGE)
-			return commonui.alert(_$('/span','style','fontSize:1.23em;color:gray;fontWeight:bold','innerHTML',d.data.__MESSAGE[1]))
+			return commonui.alert(_$('/span','style','color:gray','innerHTML',d.data.__MESSAGE[1]))
 		var d= d.data, til=''
 		
 		commonui.fillDefault({
@@ -1889,7 +2287,16 @@ this.dialog.w._.addContent(f)
 this.dialog.w._.show(e)
 }//fe
 
-
+/**
+* 键盘事件 字符替换功能
+ */
+postfunc.onInput = function(e,o){
+if(o !== document.activeElement)
+	o.focus()
+this.inputchar(e,o)
+if(o !== document.activeElement)
+	o.focus()
+}//
 
 /**
  *代码帮助列表
@@ -1925,6 +2332,14 @@ return _$('/span').$0('innerHTML',txt)
 
 
 
+postfunc.warn2txt = function(warning){
+var y=_$('/b')._.cls('red')
+for(var k in warning){
+	if(typeof(warning[k])=='object')
+		y._.add(warning[k][1],_$('/br'))
+	}
+return y
+}//
 
 /**
  *生成快速发帖窗口
@@ -1944,7 +2359,7 @@ var w=window,
 //stid = w.__CURRENT_STID ? w.__CURRENT_STID : 0,
 sfid = tid ? fid : commonui.selectForum.getCurrent(fid)
 
-var $ = _$,t =function(x){return document.createTextNode(x)},b= commonui.stdBtns(),p,sel=null,subject,content,selector
+var $ = _$,t =function(x){return document.createTextNode(x)},b,p,sel=null,subject,content,selector,aler
 
 , fbit=0
 , dopost = function(o){
@@ -1970,36 +2385,16 @@ else
 		f:function(d){
 			var e = __NUKE.doRequestIfErr(d)
 			if(e)
-				return alert(e)
+				return commonui.alert(_$('/span','style','color:gray','innerHTML',e))
 			fbit = __NUKE.toInt(d.data.__F.bit_data)
+			if(d.data.warning)
+				aler._.add(postfunc.warn2txt(d.data.warning))
 			dopost(o)
 			}
 		})
 dopost(o)
 }
-/*
-if(tid)
-	p = window.__CURRENT_F_ALLOWREPLY
-else
-	p = window.__CURRENT_F_ALLOWPOST
-if(p.indexOf('+u1')!=-1 && __GP.active==0)
-	b._.__add($('/a').$0(
-				'href',__API.activeHelper(),
-				'innerHTML','本版'+(tid?'回复':'发帖')+'需要激活(?)',
-				'className','gray',
-				'style',{fontSize:'1.23em'}
-				),1 )
-else*/
-	b._.__add($('/a').$0(
-			'onclick',function(){
-				dopost0(this)
-				},
-			'href','javascript:void(0)',
-			'innerHTML',(tid?'发表回复':'发表新帖')+'(Ctrl+Enter)',
-			'className','uitxt1',
-			'style',{fontSize:'1.23em'}
-			),1 )
-b._.css('margin','auto')
+
 if(!sfid)
 	var sel = $('/button').$0('style',{marginRight:'0.3em'},
 			t('版面选择'),
@@ -2014,11 +2409,14 @@ if(!sfid)
 								f:function(d){
 									var e = __NUKE.doRequestIfErr(d)
 									if(e)
-										return alert(e)
+										return commonui.alert(_$('/span','style','color:gray','innerHTML',e))
 									if(d.data.__MESSAGE)
-										return alert(d.data.__MESSAGE[1])
+										return commonui.alert(_$('/span','style','color:gray','innerHTML',d.data.__MESSAGE[1]))
 									sfid=d.data.fid
 									selector._.setFid(sfid)
+									console.log(d.data)
+									if(d.data.warning)
+										aler._.add(postfunc.warn2txt(d.data.warning))
 									}
 								})
 							}
@@ -2037,7 +2435,7 @@ z.$0(
 		$('/div').$0('className','w100',
 			$('/table').$0('className','forumbox','cellspacing',1,'cellSpacing',1,
 				$('/caption').$0(
-					$('/h2').$0('innerHTML','..:: 快速发贴 ::..')
+					$('/h2').$0('innerHTML','..:: 快速发帖 ::..')
 					),
 				$('/thead').$0(
 					$('/tr').$0(
@@ -2046,21 +2444,41 @@ z.$0(
 							)
 						)
 					),
-				$('/tbody').$0(
-					$('/tr').$0('className','row1',
-						$('/td').$0('className','c2','style',{textAlign:'center'},
-							$('/div').$0('style',{textAlign:'left',marginBottom:'1em'},
+				$('/tbody',
+					$('/tr','className','row1',
+						$('/td','className','c2','style','textAlign:center',
+							$('/div','style',{textAlign:'left',marginBottom:'1em'},
 								sel,
 							
-								subject = $('/input').$0('style',{width:'65%',marginRight:'0.3em'}),
+								subject = $('/input','style','width:65%;margin-right:0.3em','onkeyup',function (e){
+									postfunc.onInput(e,this)
+									}),
 
 								tid ? null : selector = commonui.createTopicKeySelector(sfid,function(k){subject.value = k+' '+subject.value}),
 								
-								(commonui.prePostHintAfterSubject ? commonui.prePostHintAfterSubject(tid?postfunc.__REPLY_BLANK:postfunc.__NEW, fid, tid, 0, stid) : null),
+								aler = (commonui.prePostHintAfterSubject ? commonui.prePostHintAfterSubject(tid?postfunc.__REPLY_BLANK:postfunc.__NEW, fid, tid, 0, stid) : $('/span')),
 
-								postfunc.o_f_content = $('/textarea').$0('style',{width:'98%',height:'200px'},'onkeydown',function(e){if(e.ctrlKey && e.keyCode == 13)dopost0(null)}	)
+								postfunc.o_focus_content = postfunc.o_f_content = $('/textarea','style','width:98%;height:200px'
+									,'onkeydown',function(e){if(e.ctrlKey && e.keyCode == 13)dopost0(null)}
+									,'onkeyup',function (e){
+										postfunc.onInput(e,this)
+										}
+									,'onfocus',function(){postfunc.o_focus_content = this}	
+									)
 								),
-							b
+							$('/button','style','padding:0;float:left','title','插入表情','type','button','onclick',function(){postfunc.selectSmiles()},
+								__TXT('smile')._.css('fontSize','1.15em')
+								),
+							b = commonui.stdBtns()._.css('margin','auto')._.__add(
+								$('/a',
+									'onclick',function(){
+										dopost0(this)
+										},
+									'href','javascript:void(0)',
+									'innerHTML',(tid?'发表回复':'发表新帖')+'(Ctrl+Enter)',
+									'className','uitxt1',
+									'style',{fontSize:'1.23em'}
+									),1 )
 							),
 						ngaAds.bbs_ads16_gen()
 						)
@@ -2080,8 +2498,7 @@ if(__SETTING.uA[0]==1 && __SETTING.uA[1]<=6 && selector){
 
 z.style.display='inline'
 
-if(b._.__vml)
-	var b = b._.__vml(2)
+//if(b._.__vml)var b = b._.__vml(2)
 	
 }
 
@@ -2095,48 +2512,54 @@ if(b._.__vml)
  * @param call(function 选择key之后的callback函数 参数为选择的key文字
  */
 commonui.createTopicKeySelector = function(fid,call){
-var $ = _$, t= function(x){return document.createTextNode(x)}
+var $ = _$
+,f = function(o,e){
 
-var s = $('/select').$0('style',{width:'7em',overFlow:'hidden'},
-	$('/option').$0(t('主题分类')),
-	'onclick',function(e){
-		if(!this._.__fid)
-			return alert('请先选择版面')
-		if(this._.__fidCurrent == this._.__fid)return
-		var o = this
-		o.innerHTML = ''
-		o._.add(_$('/option').$0('innerHTML','加载中...'))
-		o._.__fidCurrent =o._.__fid
-		o.disabled=true
-		__NUKE.doRequest({
-			u:__API.topic_key(this._.__fid),
-			f:function(d){
-				if(__NUKE.doRequestIfErr(d,3600))
-					return false
-				if(!d.data || d.error)
-					return true
-				if(typeof d.data[0][0] == 'object')
-					d.data = d.data[0]
-				o.options[0].innerHTML = '...'
-				var r = d.data;
-				for (var k in r){
-					var x = document.createElement('option');
-					x.value=r[k][0]
-					x.innerHTML=r[k][0]
-					if (r[k][1]) x.style.backgroundColor='#eee'
-					o.appendChild(x)
-					}
-				o.onchange=function(){
-					call(this.value)
-					o.selectedIndex=0
-					}
-				o.disabled=false
-				//o.onclick = function(){commonui.onloadtopic_key(this)}
-				return true
-				}
-			})//doRequest
+	if(o.disabled)
+		return commonui.cancelEvent(e)
+	if(!o._.__fid){
 		commonui.cancelEvent(e)
+		o.blur()
+		return alert('请先选择版面')
 		}
+	if(o._.__fidCurrent == o._.__fid)
+		return
+	o.disabled=true
+	o.innerHTML = ''
+	o._.add(_$('/option','innerHTML','加载中...'))
+	o._.__fidCurrent =o._.__fid
+	__NUKE.doRequest({
+		u:__API.topic_key(o._.__fid),
+		f:function(d){
+			if(__NUKE.doRequestIfErr(d,3600))
+				return false
+			if(!d.data || d.error)
+				return true
+			if(typeof d.data[0][0] == 'object')
+				d.data = d.data[0]
+			setTimeout(function(){o.options[0].innerHTML = '选择分类...'},500)
+			var r = d.data;
+			for (var k in r){
+				var x = document.createElement('option');
+				x.value=r[k][0]
+				x.innerHTML=r[k][0]
+				if (r[k][1]) x.style.backgroundColor='#eee'
+				o.appendChild(x)
+				}
+			o.onchange=function(){
+				call(this.value)
+				o.selectedIndex=0
+				}
+			o.disabled=false
+			//o.onclick = function(){commonui.onloadtopic_key(this)}
+			return true
+			}
+		})//doRequest
+	}//f
+var s = $('/select').$0('style',{width:'7em',overFlow:'hidden'},
+	$('/option')._.add('主题分类'),
+	'onfocus',function(e){f(this,e)}
+	,'onclick',function(e){f(this,e)}
 	)
 
 s._.setFid = function(f){this.__fid = f}
@@ -2276,7 +2699,7 @@ if((opt&2) == 0){
 		return unlock('投票/投注必须有结束时间');
 
 	//标题中的符号
-	var x = _$('</span>')
+	var x = $('</span>')
 	x.innerHTML = subject
 	subject = x.innerHTML.replace('&lt;','<').replace('&gt;','>').replace('&amp;','&')
 
@@ -2397,10 +2820,8 @@ if(action == P.__NEW  && (fbit & P._bit.if_force_topickey) && (opt&4)==0 ){
 				if(x[0].indexOf('[')==0) x=x[0]
 				else x='['+x[0]+']'
 
-				if (subject.indexOf(x)!=-1){
+				if (subject.indexOf(x)!=-1)
 					z=1
-					console.log(9)
-					}
 				}
 			}
 		if (y==1 && z!=1)
@@ -2559,7 +2980,7 @@ if (action == P.__MODIFY){
 		subjectNoMod=1
 	
 	if(content.match(/\[dice\](?:[\dd+\s]+?)\[\/dice\]/i)){
-		if(!confirm("[dice]代码随机数结果可推算！\n\n如在关键场合(如摇奖)使用 务必在新发贴中生成随机数！！\n\n不要用随机数代码编辑到原帖的方式生成结果！！！ \n\n以防被事前推知！！！！\n\n另需注意编辑内容时\n调换[dice]代码顺序 将[dice]代码移入或移出折叠块\n等情况下随机数结果会发生改变\n\n是否继续"))
+		if(!confirm("[dice]代码随机数结果可推算！\n\n如在关键场合(如摇奖)使用 务必在新发帖中生成随机数！！\n\n不要用随机数代码编辑到原帖的方式生成结果！！！ \n\n以防被事前推知！！！！\n\n另需注意编辑内容时\n调换[dice]代码顺序 将[dice]代码移入或移出折叠块\n等情况下随机数结果会发生改变\n\n是否继续"))
 			return unlock();
 		}
 	}
@@ -2627,7 +3048,7 @@ __NUKE.doRequest({
 	u:{u:'/post.php',	a:arg},
 	b:btn,
 	f:function(d){
-		if(d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]=="发贴完毕 ..."){
+		if(d.data && d.data.__MESSAGE && !d.data.__MESSAGE[0]){
 			if(P.pwindow)
 				P.pwindow._.hide()
 			C.createadminwindow()
@@ -2641,14 +3062,13 @@ __NUKE.doRequest({
 			if(thetid=u.match(/(?:\?|&)tid=(\d+)/))thetid=thetid[1]
 
 			if(btn && btn._nojump){
-				//console.log(d.data.__MESSAGE[1])
 				unlock('1 done')
 				return true
 				}
 
 			C.adminwindow._.addContent(
 				c01 = $('/div')._.cls('ltxt b')._.add(
-					"发贴完毕 ",
+					"发帖完毕 ",
 					apc.c = $('/span','innerHTML',apc.i),
 					'秒后跳转 ',
 					apc.j = $('/a','href',u,'className','gray','innerHTML','(点此跳转)','_useloadread',1,'onclick',function(e){
@@ -2670,7 +3090,7 @@ __NUKE.doRequest({
 							u:__API.topicColor(thetid,sv,1)
 							})
 						}) : null,
-					ifmod&&tid ? _$('/a','href','javascript:void(0)','style','color:#aaa;',__TXT('gear'),'onclick',function(e){
+					ifmod&&tid ? $('/a','href','javascript:void(0)','style','color:#aaa;',__TXT('gear'),'onclick',function(e){
 						var y=this
 						this.parentNode._.add(
 							$('/br'),
@@ -2718,7 +3138,9 @@ __NUKE.doRequest({
 			return true
 			}//if
 
-		alert( (d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]) ? d.data.__MESSAGE[1] : 'DATA ERROR')
+		commonui.alert((d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]) ? $('/span','innerHTML',d.data.__MESSAGE[1]) : 'POST ERROR 网络错误 可尝试再次提交')
+
+		//alert( (d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]) ? d.data.__MESSAGE[1] : 'DATA ERROR')
 
 		unlock()
 
@@ -2726,7 +3148,8 @@ __NUKE.doRequest({
 		},//fe
 
 	ff:function(){
-		alert('REQUEST ERROR')
+		commonui.alert('POST ERROR 网络错误 可尝试再次提交')
+		//alert('REQUEST ERROR')
 		unlock()
 		}//fe
 	})
@@ -2755,7 +3178,10 @@ if(this.afterPostCount && this.afterPostCount.clear)this.afterPostCount.clear()
 
 
 postfunc.parseTableClip = function(h){
-var m = h.match(/^\s*<table(?:\s+[^>]+)?>([^\x00]+)<\/table>\s*$/i)
+if(h.indexOf('<table')==-1)
+	return
+console.log(h)
+var m = h.match(/<table(?:\s+[^>]+)?>([^\x00]+)<\/table>/i)
 if(m){
 	m = m[1]
 	}
@@ -2779,18 +3205,41 @@ m = m.replace(/\s*<col(?:\s+[^>]+)?>\s*/ig,'')
 		  .replace(/\s*<(\/?td)(\s+[^>]+)?>\s*/ig,function($0,$1,$2){
 				var x= ($1=='td'?'\n':'')+'['+$1
 				if($2)
-					$2.replace(/colspan=\d+|rowspan=\d+/ig,function($0){
-						x+=' '+$0
-						return $0
+					$2.replace(/(colspan|rowspan)=(?:'|")?(\d+)/ig,function(j,l,n){
+						if((n|0)>1)
+							x+=' '+l+'='+n
+						return j
 						})
 				return x+']'
 				})
 			//.replace(/<span(?:\s+[^>]+)?>(&nbsp;)*<\/span>/ig,'')
 			//.replace(/<\/?(?:font|p|b|tbody|colgroup|span)(?:\s+[^>]+)?>/ig,'')
-return '[table]\n'+m.replace(/^\s+|\s+$/ig,'').replace(/<[^>]+>/ig,'')+'\n[/table]'
+			console.log(m)
+return '[table]\n'+m.replace(/<[^>]+>/ig,'').replace(/^\s+|\s+$/ig,'')+'\n[/table]'
 }//fe
 
 
 
 
+commonui.crossDomainCall.setCallBack('wysiwygUpdateContent',function(a,e){
+	if(e.origin!=__IMG_BASE && e.origin.indexOF('127.0.0.1')==-1)
+		return
+	if(postfunc.o_focus_content)
+		postfunc.o_focus_content.value = a ? a+'\n\n' : ''
+	})//
+	
+commonui.crossDomainCall.setCallBack('wysiwygEditorReciveHeight',function(a,e){
+	if(e.origin!=__IMG_BASE && e.origin.indexOf('127.0.0.1')==-1)
+		return
+	if(postfunc.o_wysiwyg_editor){
+		postfunc.o_wysiwyg_editor.style.height = (a|0)+'px'
+		postfunc.o_content.style.minHeight = (a|0)+'px'
+		}
+	})//
 
+commonui.crossDomainCall.setCallBack('wysiwygEditorReciveContent',function(a,e){
+	if(e.origin!=__IMG_BASE && e.origin.indexOf('127.0.0.1')==-1)
+		return
+	if(postfunc.o_focus_content)
+		postfunc.o_focus_content.value = a
+	})//

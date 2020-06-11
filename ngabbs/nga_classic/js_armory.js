@@ -934,15 +934,15 @@ for(var k in rhst){
 	rh._sp += "<nobr>"+k.replace(/数$/,'')+"<span style='7'>"+rhst[k]+'</span></nobr> &nbsp;'
 	}
 
-rhst = rh.statsSectionMap.游戏
-if(!rhst.火力全开时间)rhst.火力全开时间 = rhst.最佳表現时间
-rhst.火力全开时间 = pr(tm(rhst.火力全开时间) ,  tm(rhst.游戏总时间))
+rhst = rh.statsSectionMap['游戏']
+if(!rhst['火力全开时间'])rhst['火力全开时间'] = rhst['最佳表現时间']
+rhst['火力全开时间'] = pr(tm(rhst['火力全开时间']) ,  tm(rhst['游戏总时间']))
 
 
-var all = t.statsSectionMap.所有英雄.statsSectionMap.游戏
-if(!all.火力全开时间)all.火力全开时间 = all.最佳表現时间
-all.火力全开时间 = pr(tm(all.火力全开时间) , tm(all.游戏总时间))
-all.胜率 = pr(all.胜场 , all.对战次数)
+var all = t.statsSectionMap['所有英雄'].statsSectionMap['游戏']
+if(!all['火力全开时间'])all['火力全开时间'] = all['最佳表現时间']
+all['火力全开时间'] = pr(tm(all['火力全开时间']) , tm(all['游戏总时间']))
+all['胜率'] = pr(all['胜场'] , all['对战次数'])
 
 var r =	"<div style='9'>\
 <div style='0' onclick='this.nextSibling.style.display=\"\";this.parentNode.style.background=\"#3c4860\"'>\
@@ -951,7 +951,7 @@ var r =	"<div style='9'>\
 <a href='{a.link}' target='_blank'>\
 	<b style='3'>"+a.battleTag.replace("'",'&#39;')+"</b><span style='2'> <span  class='small_colored_text_btn' style='background-color:#8d3939'>"+a.plt.toUpperCase()+" "+a.host.toUpperCase()+"</span> [ow.766.com]</span>\
 </a>&nbsp;\
-总计对战<nobr style='8'>{all.对战次数}</nobr>场 共<nobr style='8'>"+all.游戏总时间.replace(' ','')+"</nobr>&emsp;\
+总计对战<nobr style='8'>{all.对战次数}</nobr>场 共<nobr style='8'>"+all['游戏总时间'].replace(' ','')+"</nobr>&emsp;\
 胜率<nobr style='8'>{all.胜率}%</nobr> 火力全开<nobr style='8' title='火力全开占总时间的比例'>{all.火力全开时间}%</nobr>&emsp;\
 <a class='xtxt small_colored_text_btn' \
 		style='background:#f0edf2' \
@@ -959,9 +959,9 @@ var r =	"<div style='9'>\
 		onclick='owarmory.get(\"{a.key}\",1)' title='刷新 数据缓存可能需要数小时或数天更新'>#</a>\
 </br>\
 <span style='1'><span style='font-size:1.4em'>{rh.selectName}</span> \
-<nobr>对战<span style='7'>{rhst.对战次数}</span>场 共<span style='7'>"+rhst.游戏总时间.replace(/[^\d]+/,'')+"</span>小时</nobr> \
+<nobr>对战<span style='7'>{rhst.对战次数}</span>场 共<span style='7'>"+rhst['游戏总时间'].replace(/[^\d]+/,'')+"</span>小时</nobr> \
 <nobr>胜率<span style='7'>{rhst.胜率}</span>火力全开<span style='7' title='火力全开占总时间的比例'>{rhst.火力全开时间}%</span></nobr> \
-<nobr>场均<span style='7'>"+rh.statsSectionMap.平均[rh.selectId!="0x02E0000000000004"?'平均伤害量':'平均治疗量'].replace(/\.\d+$/,'')+"</span>击杀<span style='7'>{rh.statsSectionMap.平均.平均最后一击数}</span>金牌<span style='7'>"+(rhst.对战次数|0 ? Math.round(rh.statsSectionMap.对战奖励.金牌/rhst.对战次数*100)/100 : 0)+"</span></nobr>\
+<nobr>场均<span style='7'>"+rh.statsSectionMap['平均'][rh.selectId!="0x02E0000000000004"?'平均伤害量':'平均治疗量'].replace(/\.\d+$/,'')+"</span>击杀<span style='7'>{rh.statsSectionMap.平均.平均最后一击数}</span>金牌<span style='7'>"+(rhst['对战次数']|0 ? Math.round(rh.statsSectionMap['对战奖励']['金牌']/rhst['对战次数']*100)/100 : 0)+"</span></nobr>\
 </span>\
 </div><div style='10'>{rh._sp}</div></div>\
 ";

@@ -59,7 +59,8 @@ return h
 _stat:function(_U){
 var y = []
 if(_U.verified!==undefined){
-	var r = commonui.activeInfo(_U.verified,_U.uid)
+	console.log(_U.bit)
+	var r = commonui.activeInfo(_U.verified,_U.uid,_U.bit)
 	y.push(_$('/a','className', r[0]+' b', 'innerHTML', r[2], 'href', r[5] ? r[5] : 'javascript:void(0)', 'onclick', function(){alert(this.title)}, 'title', r[3]+' '+r[4]))
 	}
 if(_U.bit & 16777216)
@@ -120,7 +121,7 @@ var info = this._span(
 				})
 			}),
 		this._a(_ADMIN, '更改头衔','/nuke.php?func=settitle&uid='+_U.uid),
-		this._a(_ADMIN, 'buff',null, function(e){adminui.addBuff(e,_U.uid)}),
+		this._a(_SUPERLESSER && _GREATER, 'buff',null, function(e){adminui.addBuff(e,_U.uid)}),
 		this._a(_SELF, '<span class="teal">更改密码</span>', null,function(){commonui.accountAction('changepass')}),
 		this._a(_SELF, '<span class="teal">重置密码</span>', null,function(){commonui.accountAction('resetpass')}),
 		this._a(_SELF, '<span class="teal">绑定手机号</span>', null,function(){commonui.accountAction('setphone')}),
@@ -359,7 +360,7 @@ else if(_U.userForum && _SELF){
 
 //---------------------------------------------------
 if(this._currentUid){
-	all._.aC(this._genBlock('user_post_block', _U.username+' 发布的贴子','',
+	all._.aC(this._genBlock('user_post_block', _U.username+' 发布的帖子','',
 		this._span(
 
 			this._ul(

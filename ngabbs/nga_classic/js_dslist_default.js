@@ -11,6 +11,8 @@ written by zeg 20051010
 /* 总表 */
 if(!window.ngaAds)
 	ngaAds = [];
+if(!ngaAds.location)
+	ngaAds.location = location
 
 ngaAds.maxw=function(){
 if(this.maxw.w)return this.maxw.w
@@ -105,7 +107,7 @@ return ''
 
 ngaAds.count31 = 0
 /*
- * 主题阅读页一楼上通栏 900×60    bbs_ads1   bbs_ads31   bbs_ads46(mobile
+ * 主题阅读页一楼上通栏 900×60    bbs_ads1   bbs_ads31   bbs_ads46(mobile 640*150
  * 主题阅读页十楼上通栏 900×60    bbs_ads33   bbs_ads48(mobile
  * //bbs_ads40 一楼上左半
  * //bbs_ads41 一楼上右半
@@ -125,7 +127,7 @@ else
 var x=''
 for(var i=0;i<b.length;i++){
 	if(this[b[i]])
-		x+=this.genAds(this[b[i]], this.maxw())
+		x+=this.genAds(this[b[i]], this.maxw(), null, (__SETTING.bit & 4) ? 640 : 900, (__SETTING.bit & 4) ? 150 : 90)
 	}
 if(x){
 	z=$(id).parentNode
@@ -209,7 +211,7 @@ else if(i==1)
 else if(i==2)
 	x = t.bbs_ads17 ? t.bbs_ads17 : null
 if(x)
-	t.bbs_ads8_load_new[i].innerHTML = this.genAds(x)
+	t.bbs_ads8_load_new[i].innerHTML = this.genAds(x , 190, null, 190, 400)
 }//
 
 
@@ -224,7 +226,9 @@ if (b)
 return ''
 }
 
-/*论坛帖子列表页面（版面）中通栏 900*60		bbs_ads1 bbs_ads9 bbs_ads23 bbs_ads28 bbs_ads46(mobile*/
+/*
+论坛帖子列表页面（版面）中通栏 900*60		bbs_ads1 bbs_ads9 bbs_ads23 bbs_ads28 bbs_ads46(mobile 640*150
+*/
 ngaAds.bbs_ads9_gen=function(){
 
 if(!window.__CURRENT_FID || window.__CURRENT_TID)
@@ -233,7 +237,7 @@ var b = (__SETTING.bit & 4) ? ['bbs_ads46'] : ['bbs_ads1', 'bbs_ads9', 'bbs_ads2
 
 for(var i=0;i<b.length;i++){
 	if(this[b[i]])
-		x+=this.genAds(this[b[i]], this.maxw())
+		x+=this.genAds(this[b[i]], this.maxw(), null, (__SETTING.bit & 4) ? 640 : 900, (__SETTING.bit & 4) ? 150:90)
 	}
 
 if(x){
@@ -262,7 +266,7 @@ ngaAds.bbs_ads30_gen = function(){
 }//fe
 
 /*
- * 主题列表页下部导航下通栏 900×60  bbs_ads50 bbs_ads14 bbs_ads47(mobile
+ * 主题列表页下部导航下通栏 900×60  bbs_ads50 bbs_ads14 bbs_ads47(mobile 640*150
  * 主题阅读页下部导航下通栏 900×60 bbs_ads49 bbs_ads14 bbs_ads47(mobile
  * 首页下部通栏 900×60            bbs_ads51 bbs_ads14 bbs_ads47(mobile
  * bbs_ads34
@@ -282,9 +286,9 @@ ngaAds.bbs_ads14_gen = function(){
 var x='', b
 if(__SETTING.bit & 4)
 	b = this.bbs_ads47
-else if(location.pathname=='/read.php')
+else if(this.location.pathname=='/read.php')
 	b = this.bbs_ads49
-else if(location.pathname=='/thread.php')
+else if(this.location.pathname=='/thread.php')
 	b = this.bbs_ads50
 else
 	b = this.bbs_ads51
@@ -292,7 +296,7 @@ if(!b && this.bbs_ads14)
 	b = this.bbs_ads14
 
 if(b)
-	x+=this.genAds(b,this.maxw())
+	x+=this.genAds(b,this.maxw(), null, (__SETTING.bit & 4) ? 640 : 900, (__SETTING.bit & 4) ? 150 : 90)
 
 if(x){
 	var y = $('b_nav')
@@ -326,7 +330,7 @@ if (ad)
 */
 if (this.bbs_ads22)
 	return _$('/td','className','c2','style','verticalAlign:top;padding:0;width:'+((this.bbs_ads22.width|0)+2+12)+'px',
-		_$('/div','style', this.style('adsh')+'verticalAlign:middle;padding:6px;'+(this.bbs_ads22.width ? 'width:'+((this.bbs_ads22.width|0)+2)+'px;' : ''),'innerHTML',this.genAds(this.bbs_ads22))
+		_$('/div','style', this.style('adsh')+'verticalAlign:middle;padding:6px;'+(this.bbs_ads22.width ? 'width:'+((this.bbs_ads22.width|0)+2)+'px;' : ''),'innerHTML',this.genAds(this.bbs_ads22, 190, null, 190, 400))
 		)
 return null
 }
@@ -341,7 +345,7 @@ return ''
 //移动页面下浮动 固定尺寸比例640*150
 ngaAds.bbs_ads44_gen = function(){
 if((__SETTING.bit & 16) && this.bbs_ads44)
-	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(this.bbs_ads44,this.maxw())))
+	return _$('/div','style',this.style('adsc'),_$('/div','innerHTML',this.genAds(this.bbs_ads44,this.maxw(), null, 640, 150)))
 return null
 }//
 ngaAds.bbs_ads44_perproc = function(x){

@@ -56,17 +56,9 @@ ubbcode.fontColor = {
 'silver':0
 }
 
-ubbcode.smilesN={
-0:'默认',
-ac:'AC娘',
-a2:'AC娘',
-pst:'潘斯特',
-dt:'外域三人组',
-pg:'企鹅'
-}
 ubbcode.smiles = {
 0:{
-
+_______name:'默认',
 1:'smile.gif',
 2:'mrgreen.gif',
 3:'question.gif',
@@ -97,6 +89,8 @@ ubbcode.smiles = {
 },
 
 ac:{
+_______name:'AC娘(v1)',
+//____display:'茶	ac	晕	ac	瞎	ac	大哭	a2	喘	ac	喷	ac	鬼脸	a2	羡慕	ac	闪光	ac	blink	ac	lucky	a2	goodjob	ac	惊	ac	吻	ac	不明觉厉	a2	咦	ac	汗	ac	诶嘿	a2	呆	ac	上	ac	冷	ac	偷笑	ac	有何贵干	a2	怒	a2	中枪	ac	哭1	ac	囧	ac	委屈	ac	怒	ac	哭	a2	愁	ac	抓狂	ac	黑枪	ac	反对	ac	那个…	a2	哦嗬嗬嗬	a2	恨	a2	哭笑	ac	中枪	a2	囧	a2	doge	a2	自戳双目	a2	偷吃	a2	抠鼻	ac	嘲笑1	ac	冷笑	a2	壁咚	a2',
 "blink":	"ac0.png",
 "goodjob":	"ac1.png",
 "上":	"ac2.png",
@@ -104,7 +98,6 @@ ac:{
 "偷笑":	"ac4.png",
 "冷":	"ac5.png",
 "凌乱":	"ac6.png",
-"反对":	"ac7.png",
 "吓":	"ac8.png",
 "吻":	"ac9.png",
 "呆":	"ac10.png",
@@ -113,39 +106,46 @@ ac:{
 "哭":	"ac13.png",
 "哭1":	"ac14.png",
 "哭笑":	"ac15.png",
-"哼":	"ac16.png",
 "喘":	"ac17.png",
-"喷":	"ac18.png",
-"嘲笑":	"ac19.png",
-"嘲笑1":	"ac20.png",
-"囧":	"ac21.png",
-"委屈":	"ac22.png",
 "心":	"ac23.png",
+
+"囧":	"ac21.png",
+"晕":	"ac33.png",
+"汗":	"ac34.png",
+"瞎":	"ac35.png",
+"羞":	"ac36.png",
+"羡慕":	"ac37.png",
+
+"委屈":	"ac22.png",
 "忧伤":	"ac24.png",
 "怒":	"ac25.png",
 "怕":	"ac26.png",
 "惊":	"ac27.png",
 "愁":	"ac28.png",
 "抓狂":	"ac29.png",
+"哼":	"ac16.png",
+"喷":	"ac18.png",
+"嘲笑":	"ac19.png",
+"嘲笑1":	"ac20.png",
+
 "抠鼻":	"ac30.png",
-"擦汗":	"ac31.png",
 "无语":	"ac32.png",
-"晕":	"ac33.png",
-"汗":	"ac34.png",
-"瞎":	"ac35.png",
-"羞":	"ac36.png",
-"羡慕":	"ac37.png",
-"花痴":	"ac38.png",
-"茶":	"ac39.png",
 "衰":	"ac40.png",
-"计划通":	"ac41.png",
-"赞同":	"ac42.png",
+
+"黑枪":	"ac44.png",
+"花痴":	"ac38.png",
 "闪光":	"ac43.png",
-"黑枪":	"ac44.png"
+"擦汗":	"ac31.png",
+"茶":	"ac39.png",
+"计划通":	"ac41.png",
+"反对":	"ac7.png",
+"赞同":	"ac42.png"
 
 },
 
 a2:{
+_______name:'AC娘(v2)',
+//____display:'哭	ac	哦	ac	干杯	a2	干杯2	a2	冷	a2	羞	ac	惊	a2	花痴	ac	笑	a2	无语	ac	忧伤	ac	擦汗	ac	怕	ac	哼	ac	赞同	ac	心	ac	舔	a2	goodjob	a2	衰	ac	计划通	ac	妮可妮可妮	a2	不活了	a2	是在下输了	a2	你为猴这么	a2	异议	a2	认真	a2	你已经死了	a2	你这种人…	a2	抢镜头	a2	yes	a2	病娇	a2	你看看你	a2	poi	a2	囧2	a2	威吓	a2	嘲笑	ac	jojo立	a2	jojo立2	a2	jojo立3	a2	jojo立4	a2	jojo立5	a2	凌乱	ac	吓	ac	偷笑	a2',
 "goodjob":	"a2_02.png",
 "诶嘿":	"a2_05.png",
 "偷笑":	"a2_03.png",
@@ -196,7 +196,7 @@ a2:{
 },
 
 pst:{
-
+_______name:'潘斯特',
 "举手":	"pt00.png",
 "亲":	"pt01.png",
 "偷笑":	"pt02.png",
@@ -265,6 +265,7 @@ pst:{
 },
 
 dt:{
+_______name:'外域三人组',
 "ROLL":"dt01.png",
 "上":"dt02.png",
 "傲娇":"dt03.png",
@@ -301,6 +302,7 @@ dt:{
 },
 
 pg:{
+_______name:'企鹅',
 "战斗力":"pg01.png",
 "哈啤":"pg02.png",
 "满分":"pg03.png",
@@ -390,7 +392,7 @@ var arg = {
 	i:123, 帖子的楼层 0开始 贴条为-1 非帖子时没有
 	tId
 	pId
-	opt &1解析style &2在fixsize的折叠或随机块中(自动设置) &4fixsize限高 &8在快速阅读的弹出窗口中 &16在置顶中 &32在较长的置顶中 &64同isBlock(自动设置) &128在签名中 &256渲染完成后发生长宽变化需调用onResize  &512显示视频
+	opt &1解析style &2在fixsize的折叠或随机块中(自动设置) &4fixsize限高 &8在快速阅读的弹出窗口中 &16在置顶中 &32在较长的置顶中 &64同isBlock(自动设置) &128在签名中 &256渲染完成后发生长宽变化需调用onResize  &512显示视频  &1024忽略帖子中视频数量限制
 	authorId
 	c 要解析内容的元素
 	txt 或者要解析的文字
@@ -421,10 +423,8 @@ var arg = {
 ubbcode.bbsCode=function(arg){
 if(this.noBBCode)
 	return
-if (this.regexplock){
-	var self = this
-	return window.setTimeout(function(){self.bbsCode(arg)},50);
-	}
+if (this.regexplock)
+	return window.setTimeout(function(){ubbcode.bbsCode(arg)},50);
 
 this.regexplock = 1;
 if(typeof(arg.c)=='string')arg.c=document.getElementById(arg.c)
@@ -440,8 +440,10 @@ arg.authorId = parseInt(arg.authorId,10)
 if(!arg.authorId)arg.authorId=0
 var argsId = (arg.c && arg.c.id) ? arg.c.id : this.randDigi('bbcode', 10000)
 arg.argsId = argsId
+if(!arg.txt)
+	arg.txt = arg.c.innerHTML
 if((arg.opt&128)==0){
-	var x = arg.txt!==undefined ? arg.txt : arg.c.innerHTML
+	var x = arg.txt
 	if(x.indexOf('[quote]')!=-1)
 		x = x.replace(/\[quote\](.+?)\[\/quote\](?:<br\/?>)*/gi,'')
 	if(x.indexOf('Reply to [pid=')!=-1)
@@ -463,6 +465,13 @@ if(!arg.prefix)arg.prefix=''
 if(!arg.suffix)arg.suffix=''
 arg.suffix+="<img src='about:blank' style='display:none' onerror='ubbcode.copyChk(this.parentNode,\""+arg.argsId+"\")'/>"
 
+
+if(arg.txt.substr(0,10)=='[markdown]'){
+	if(!ubbcode.md2bbscode){
+		this.regexplock=0
+		return __SCRIPTS.asyncLoad('bbscodeMd',function(){ubbcode.bbsCode(arg)})
+		}
+	}
 //if(window.__DEBUG)
 		  //this.parser(arg)
 
@@ -504,9 +513,10 @@ ubbcode.manualLoadCache = {}
 
 ubbcode.bbscode_core=function(arg)
 {
-if(!arg.txt)arg.txt = arg.c.innerHTML
+
 //if(!arg.noCov)
 //	arg.txt = arg.txt.replace(/<br\s*\/>/g,'\x01')
+
 if(this.bbscode_pre)
 	this.bbscode_pre(arg)
 
@@ -538,6 +548,9 @@ arg.txt = arg.txt.replace(/\n/g,' ');
 if(!arg.noCov)
 	arg.txt = this.secureText(arg.txt)
 
+if(arg.txt.substr(0,10)=='[markdown]' && ubbcode.md2bbscode)
+	arg.txt = ubbcode.md2bbscode(arg.txt)
+
 this.codeTag.parse(arg)
 
 if(this.bbscode_bef)
@@ -546,18 +559,21 @@ if(this.bbscode_bef)
 this.collapse.parse(arg)
 
 arg.txt = arg.txt.replace(/&amp;#(\d{2,8});/g,function($0,$1){
-    if(($1>127 && $1<19968) || $1>40869)
-        return  String.fromCharCode($1)
-    else
-        return  $0
-    })
+	$1|=0
+	if(($1>127 && $1<19968) || ($1>40869 && $1<65536))
+		return  String.fromCharCode($1)
+	else if($1>65535 && $1<1114112 && String.fromCodePoint)
+		return  String.fromCodePoint($1)
+	else
+		return  $0
+	})
 	 
 if(window.adminui && adminui.bbscode_min_admin)
 	adminui.bbscode_min_admin(arg)
 
 if(this.bbscode_mid)
 	this.bbscode_mid(arg)
-
+	
 this.bbscode_common(arg)
 
 if(this.bbscode_aft)
@@ -806,7 +822,11 @@ arg.txt = arg.txt.replace(/\[attach\](.+?)\[\/attach\]/gi,function($0,$1){
 
 
 
-arg.txt = arg.txt.replace(/\[url(=[^\[\]]+?)?\](.+?)\[\/url\]/gi,function($0,$1,$2){if($1) return self.writelink($1.substr(1),$2); else return self.writelink($2)});//[url]
+arg.txt = arg.txt.replace(/\[url(=[^\[\]]+?)?\](.+?)\[\/url\]/gi,function($0,$1,$2){
+	if($1)
+		return self.writelink($1.substr(1),$2,argsId)
+	else
+		return self.writelink($2,null,argsId)});//[url]
 
 arg.txt = arg.txt.replace(/\[(tid|pid|stid)=?([\d,]{0,50})\](.+?)\[\/\1\]/gi,function($0,$1,$2,$3){
 	return self.postLinkTag($1,$2,$3,arg.opt & 8)
@@ -971,13 +991,12 @@ if(arg.txt.length>24 &&  arg.txt.match(/[\xb7\x7e\x40\x23\x25\x26\x2a\x2b\x7c\x2
 //=============================
 
 ;(function(){
-var table,tr,td,noboder,align,width,colspan,rowspan,space,bdrCo,bdrWd,ST,STACK,SPIT
+var table,tr,td,noboder,align,width,colspan,rowspan,space,bdrCo,bdrWd,ST,STACK,SPIT,cellpadding
 init=function(){
 table=/(?:\s*<br \/>\s*)?\[(\/?)(table|tr|td)(\s*[^\]]*)?\](?:\s*<br \/>\s*)?/gi
 noboder=/noborder/
 align=/top/g
-width=/width=?(auto|\d{0,2})/
-width=/width=?(auto|\d{0,2})/
+width=/width=?(auto|\d{0,2})(em)?/
 colspan=/colspan=?(\d{0,2})/
 rowspan=/rowspan=?(\d{0,2})/
 space=/^(?:<br \/>|\s)+|(?:<br \/>|\s)+$/g
@@ -1008,7 +1027,7 @@ if (y = parseFloat(ops)){
 	}
 else{
 	if (y = ops.match(width))
-		z+='width:'+y[1]+(y[1]=='auto'?';':'%;')
+		z+='width:'+y[1]+(y[1]=='auto'?';':(y[2]?'em;':'%;'))
 	else
 		z+='width:99.95%'
 	}
@@ -1106,9 +1125,12 @@ ubbcode.parseTable=function(arg){
 if(table===undefined)
 	init()
 
+var FLT
 if(arg.opt&16){
-	if((__SETTING.bit&8) && !arg.txt.match(/\[span[\s=]aligntable\]/))
+	if((__SETTING.bit&4) && !arg.txt.match(/\[span[\s=]aligntable\]/)){
+		FLT = __SETTING.bit&8 ? 0 : 1
 		SPIT={}
+		}
 	}
 STACK = []
 ST={}
@@ -1186,7 +1208,7 @@ if(STACK.length){
 if(SPIT){
 	for(var tableid in SPIT){
 		arg.txt = arg.txt.replace(new RegExp("<table id='"+tableid+"'.+?<\\/table lastId='"+tableid+"'>"),function($0){//把表格切出来
-				var tb = SPIT[tableid], r='', x={}
+				var tb = SPIT[tableid], r=[], x={}
 				for(var i=1;i<=tb.maxc;i++){//把td按照从上到下从左到右的顺序重排成一列
 					for(var j=1;j<=tb.maxr;j++){
 						var id = tb[j+','+i]
@@ -1195,14 +1217,28 @@ if(SPIT){
 						else{
 							x[id] = 1
 							$0 = $0.replace(new RegExp("<td id='"+id+"'.+?<\\/td lastId='"+id+"'>"),function($0){
-								r+=$0.replace(/-add-style:here/,'display:block;width:auto')
+								r.push($0.replace(/-add-style:here/,'display:block;width:auto'))
 								return ''
 								})
 							}
 						}
 					}
+				
 				var m = $0.match(new RegExp("<table id='"+tableid+"'.+? lastId='"+tableid+"'>"))
-				$0 = m[0].replace(/-add-style:here/,'display:block')+"<tbody style='display:inline'><tr style='display:inline'>"+r+"</tr></tbody></table>"
+				$0 = m[0].replace(/-add-style:here/,'display:block')
+				
+				if(FLT){
+					j=r.length/2,rl='',rr=''
+					for(var i=0;i<r.length;i++){
+						if(i<j)
+							rl+=r[i]
+						else
+							rr+=r[i]
+						}
+					$0+="<tbody style='display:inline'><tr style='display:block;float:left;width:49.8%'>"+rl+"</tr><tr style='display:block;float:left;width:49.8%'>"+rr+"</tr></tbody></table>"
+					}
+				else
+					$0+="<tbody style='display:inline'><tr style='display:inline'>"+r.join('')+"</tr></tbody></table>"
 				return $0
 			})
 		}
@@ -1273,7 +1309,7 @@ return svg+'</svg>'
 }
 //=============================
 ubbcode.lesserNuke = function(arg){
-var f = function(x){return "<div class='lessernuke"+(x && x!=1? " lessernuke"+x+"'><span class='sienna'>用户在主题中被处罚" : "'><span class='crimson'>用户因此贴中的发言被处罚")+"</span> <a href='javascript:void(0)' onclick='var x = document.getElementsByName(\"lessernukeblk\");for(var i=0;i<x.length;i++){x[i].style.display=\"\"}'>点击查看</a><div style='display:none' name='lessernukeblk'>";}
+var f = function(x){return "<div class='lessernuke"+(x && x!=1? " lessernuke"+x+"'><span class='sienna'>用户在主题中被处罚" : "'><span class='crimson'>用户因此帖中的发言被处罚")+"</span> <a href='javascript:void(0)' onclick='var x = document.getElementsByName(\"lessernukeblk\");for(var i=0;i<x.length;i++){x[i].style.display=\"\"}'>点击查看</a><div style='display:none' name='lessernukeblk'>";}
 
 if(!arg.isNukePost){
 	var i=0
@@ -1586,28 +1622,36 @@ if(commonui.correctAttachUrl)
 //确定显示状态
 var alt='',a, srco,dis; // true显示按钮 null显示原图
 if (commonui.ifUrlAttach(src) && (a = this.attach.check(arg.i,src))){//附件
-	var thumb=a?a.thumb:0, size = a? a.size:10000000,//如果not附件则视为大图无缩略图
-		dw=0,dh=0,dr = (a&&a.w&&a.h)?a.h/a.w:0, tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
+	
+	dis = this.attach.ifUseThumb(noimg,arg.opt,a)
+	
+	var thumb=a?a.thumb:0
+	, size = a? a.size:10000000//如果not附件则视为大图无缩略图
+	,dw=0,dh=0,dr = (a&&a.w&&a.h)?a.h/a.w:0
+	
+	,tmp = src.match(/\.(thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/)
 	if(tmp){//用户指定使用缩略图
 		if(tmp[1]=='medium.')dw = 640
 		else if(tmp[1]=='thumb.')dw = 320
 		else if(tmp[1]=='thumb_s.')dw = 130
 		else if(tmp[1]=='thumb_ss.')dw = 60
 		tmp = src.replace(/\.(?:thumb\.|thumb_s\.|thumb_ss\.|medium\.)[a-zA-Z0-9]+$/,"")
-		if(a.w && a.w<=dw && a.size && a.size<200){//原图和缩略图一样大 并且小于300k 使用原图
+		if(a.type=='img' && a.w && a.w<=dw && a.size && a.size<200){//原图和缩略图一样大 并且小于300k 使用原图
 			src = tmp
 			tmp = 0
 			}
 		}
+	
 	if(tmp){
 		dh = dw * dr
 		w+="max-width:"+wl+"px;" 
-		srco = tmp
+		if(a.type=='img')
+			srco = tmp
 		}
 	else{//原图
 		dw = a.w
 		dh = a.h
-		if(size>100){//biger than 100k
+		if(size>100 && a.type=='img'){//biger than 100k
 			if(++this.imgGen.c>50){//附件原图计数
 				if(thumb&96){
 					if(thumb&64){
@@ -1632,16 +1676,8 @@ if (commonui.ifUrlAttach(src) && (a = this.attach.check(arg.i,src))){//附件
 		}
 	if(dr)
 		w+="min-width:"+dw+"px;min-height:"+dh+"px;"
-	if(noimg & 2)//调用时强制按钮
-		dis = true
-	else if((arg.opt&2)==0){//不在fixblk中
-		if((noimg & 1) && (noimg & 524288)){//自动最小缩略图
-			if(size>25)
-				dis = (thumb&32) ? src+".thumb.jpg" : true//(size>50 ? true : null)
-			}
-		else if(noimg & 1)//自动按钮
-			dis = size>5 ? true : null//biger than 5k
-		}
+	
+	
 	if((arg.opt&16) && a && !a.isThumb && arg.inTopImg){//在置顶中
 		if((arg.inTopImg[0]+=a.size) && arg.inTopImg[0]>1200){
 			src='about:blank'
@@ -1685,7 +1721,7 @@ if(dis){
 	if(dis === true)
 		return "<button type='button' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'>显示图片</button><span style='display:none'></span>"
 	else if(dis)
-		return "<a href='javascript:void(0)' class='thumblink' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'><img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+dis+"' onerror=''/></a><span style='display:none'></span>"
+		return "<a href='javascript:void(0)' class='thumblink' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'><img "+(w?" style='"+w+"'":'')+(n?" onload='"+n+"'":'')+" src='"+src+dis+"' onerror=''/></a><span style='display:none'></span>"
 	}
 else
 	return img
@@ -1697,7 +1733,7 @@ if(o.getAttribute('data-srclazy'))
 	return __INSECTOB.add(o,function(){
 		var y
 		if(y=this.getAttribute('data-srclazy')){
-			console.log('lazy load '+y)
+			//console.log('lazy load '+y)
 			this.src=y
 			this.setAttribute('data-srclazy','')
 			}
@@ -1963,7 +1999,7 @@ exe:function(txt,p){
 							y[0]=((y[0]+z[0])/2+0.5)|0
 							y[1]=((y[1]+z[1])/2+0.5)|0
 							y[2]=((y[2]+z[2])/2+0.5)|0
-							return "<div class='quote' style='margin-left:0.8em;background-color:"+commonui.rgbToHex(y)+"' "+s+">"+$1+"</div>"
+							return "<div class='quote' style='background-color:"+commonui.rgbToHex(y)+"' "+s+">"+$1+"</div>"
 							break
 							}
 						else
@@ -2250,7 +2286,8 @@ arg.txt = arg.txt.replace(/\[code(=[^\]]+)?\]\s*(?:<br\s*\/?>)*\s*(.+?)\s*(?:<br
 	})
 },//fe
 viewCode : function(o,argsId,id,l,lo){
-var r = "<div><span class='orange'>Code <span class='gray'>"+l+((l=='javascript'||l=='js') ? ' (运行沙盒需版主'+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" onclick="commonui.recommendPost(event,\''+lo+'\',this)">设置</a>)':'设置') : '')+"</span>:</span><br><div class='textfield'></div><img src='about:blank' onerror='ubbcode.codeTag.loadCode(this.previousSibling,\""+argsId+"\","+id+")' class='x'/></div>"
+var arg = this.parent.bbscodeConvArgsSave[argsId]
+, r = "<div><span class='orange'>Code <span class='gray'>"+l+((l=='javascript'||l=='js') ? ' (运行沙盒需版主'+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" onclick="commonui.atItemBuyUse(event,'+arg.tId+','+(arg.pId|0)+')">设置</a>)':'设置') : '')+"</span>:</span><br><div class='textfield'></div><img src='about:blank' onerror='ubbcode.codeTag.loadCode(this.previousSibling,\""+argsId+"\","+id+")' class='x'/></div>"
 if(o)
 	o.parentNode.replaceChild( _$('/span','innerHTML',r).firstChild, o )
 else
@@ -2367,6 +2404,7 @@ return c
 //
 //=============================
 ubbcode.postLinkTag=function(tag,arg,txt,more){
+	
 var x = arg ? arg.split(',') : txt.split(','), y, z = tag.toLowerCase(),
 txt = arg ? txt : (
 	z == 'stid' ? '合集'+txt :
@@ -2390,7 +2428,7 @@ else if(x[1]){
 else if(z == 'pid'){
 	y= '/read.php?pid='+x[0]
 	if(txt=='Reply')
-		return this.fastViewPostLink(y,x[0],x[1],txt.substr(0,1),more)
+		return this.fastViewPostLink(y,0,x[0],txt.substr(0,1),more)
 	return this.writelink(y, txt)+this.fastViewPostLink(y,0,x[0],null,more,1)
 	}
 else{
@@ -2409,7 +2447,6 @@ return (opt&1 ? '' : "<a href='"+u+"' class='block_txt block_txt_c2' style='font
 ;(function(){
 var p,pc,$=_$,c = commonui
 ubbcode.fastViewPost = function(e,tid,pid,opt){
-	console.log(tid,pid,opt)
 __NUKE.doRequest({
 	u:'/read.php?lite=js&tid='+tid+'&pid='+(pid?pid:0)+(opt?'&opt='+opt:''),
 	f:function(o){
@@ -2752,22 +2789,53 @@ return null
 ubbcode.parseFlash = function(arg){
 var self = this
 arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,function($0,$1,$2){
-	var w=0, h=0,x,i,uu,p0='http:',po=location.protocol=='https:'?'https:':'http:',para,u=
+	var w=0, h=0,x,i,uu,gifvideo,p0='http:',u=
 			  $2.replace(/\.bilibili\.(?:us|tv)/,'.bilibili.com')
 			  .replace(/(is)?Auto(Play)?=.+?(&|$)/ig,'')
 			  .replace('static.acfun.tv','cdn.aixifan.com')
-	if(u.substr(0,2)=='./')
+	if(u.substr(0,2)=='./'){
 		u = commonui.getAttachBase(u)+'/'+u.substr(2);
-	var ua = self.urlToAry(u),u=ua.url
+		}
+	if(commonui.ifUrlAttach(u)){
+		var att = self.attach.check(arg.i,u)
+		if(att.type=='video'){
+			if(att.url.match(/\.gif\.mp4$/)){
+				gifvideo=1
+				if(att){
+					var vo = "<video controls preload=none muted=true src='"+u+"' poster='"+u+(att.w>320 ? '.thumb.jpg' : '.thumb_s.jpg')+"' style='background:"+__COLOR.gbg1+";width:"+att.w+"px;height:"+att.h+"px'></video>"
+					if(self.attach.ifUseThumb(arg.noImg,arg.opt,att)===true){
+						var ck = self.randDigi('manualLoadImg', 10000)
+						self.manualLoadCache[ck]=vo
+						return "<button type='button' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+ck+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'>显示图片</button><span style='display:none'></span>"
+						}
+					else
+						return vo
+					}
+				}
+			else if (arg.fId==-7)//temp202004
+				return "<div><img src='"+att.url+"'/></div>"
+			}
+		}
+	
+	var ua = self.urlToAry(u)
+	,u=ua.url
+	,po=(location.protocol=='https:' ||ua.protocol=='https:') ?'https:':'http:'
+	,thisopt = arg.opt
+
+
 	u = u.replace(/^https?:\/\//,'//')
 	if(x=u.match(/^\/\/v\.youku\.com\/v_show\/id_(.+?)\.html/i))
 		uu = u,	u='//player.youku.com/player.php/sid/'+x[1]+'/v.swf';
-	else if(x=u.match(/^\/\/www\.bilibili\.com\/video\/av(\d+)/i))
-		uu = u,	u='//player.bilibili.com/player.html?aid='+x[1]+'&page=1', w=892, h=499 ,i=1;
+	else if(x=u.match(/^\/\/www\.bilibili\.com\/video\/(a|b)v([a-z0-9]+)/i))
+		uu = u,	u='//player.bilibili.com/player.html?'+(x[1]=='a' ? 'aid' : 'bvid')+'='+x[2]+'&page=1', w=892, h=499 ,i=1 , thisopt|=512;
 	else if(x=u.match(/^\/\/live\.bilibili\.com\/live\/(\d+)/i))
 		uu = u,	u='//static.hdslb.com/live/LivePlayerEx.swf?room_id='+x[1]+'&state=LIVE', w=892, h=499;
 	else if(x=u.match(/^\/\/www\.acfun\.(?:com|tv|cn)\/v\/ac(\d+(?:_\d+)?)/i))
-		uu = u,	u='//cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.com/v/ac'+x[1];
+		uu = u,	u='//www.acfun.cn/player/ac'+x[1], i=1, w=800, h=480
+	else if(x=u.match(/^\/\/video\.topgamers\.cn\/video_[a-z0-9_]+\.mp4/i))
+		uu = u, i=0, w=800, h=450, thisopt|=512
+	else if(x=u.match(/^\/\/r\.topgamers\.cn\/share\/share-([a-z0-9_]+)/i))
+		uu = u, u='//h5.gaonengshike.com/share/share-'+x[1], i=1, w=500, h=500, thisopt|=512
 	else if(x=u.match(/^\/\/www\.letv\.com\/ptv\/vplay\/(\d+)\.html/i))
 		uu = u,	u='//i7.imgs.letv.com/player/swfPlayer.swf?id='+x[1]+'&autoplay=0';
 	else if(x=u.match(/^\/\/v\.qq\.com\/.+?\/([a-zA-Z0-9_]+)\.html(?:\?vid=([a-zA-Z0-9]+))?/i))
@@ -2785,16 +2853,15 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 	else if(x=u.match(/^\/\/(?:www\.)?feixiong\.tv\/Video\/(?:play\/id\/|fx_)(\d+)/i))
 		uu = '//www.feixiong.tv/Video/fx_'+x[1], u = '//www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
 
-	var x=self.mediaBlk(arg,ua)
-	if(x)
-		return x
-
 	if (self.checklink(ua,1)<2)
 		return $0
+	//var x=self.mediaBlk(arg,ua)
+	//if(x)
+	//	return x
 
 	if(!uu){
-		if(x=u.match(/^\/\/player\.bilibili\.com\/.+?aid=(\d+)/i))
-			uu = '//www.bilibili.com/video/av'+x[1], w=892, h=499, i=1;
+		if(x=u.match(/^\/\/player\.bilibili\.com\/.+?(a|bv)id=([a-z0-9]+)/i))
+			uu = '//www.bilibili.com/video/'+(x[1]=='a' ? 'av':'BV')+x[2], w=892, h=499, i=1;
 		if(x=u.match(/^\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
 			uu = '//live.bilibili.com/live/'+x[1]+'.html', w=892, h=499;
 		else if(x=u.match(/^\/\/static\.hdslb\.com\/live\/LivePlayerEx\.swf\?room_id=(\d+)/i))
@@ -2808,6 +2875,8 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 		else if(x=u.match(/^\/\/player\.pptv\.com\/v\/(.+?)\.swf/i))
 			uu = '//v.pptv.com/show/'+x[1]+'.html';
 		else if(x=u.match(/^\/\/cdn\.aixifan\.com\/player\/ACFlashPlayer\.out\.swf\?type=page&(?:amp;)?url=http:\/\/www\.acfun\.com\/v\/ac(\d+)/i))
+			uu = '//www.acfun.com/v/ac'+x[1];
+		else if(x=u.match(/^\/\/www\.acfun\.cn\/player\/ac(\d+)/i))
 			uu = '//www.acfun.com/v/ac'+x[1];
 		else if(x=u.match(/^\/\/i\d+\.imgs\.letv\.com\/player\/swfPlayer\.swf\?id=(\d+)/i))
 			uu = '//www.letv.com/ptv/vplay/'+x[1]+'.html';
@@ -2843,28 +2912,42 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 			uu = '//www.feixiong.tv/Video/fx_'+x[1], u = '//www.feixiong.tv/video/share/id/'+x[1], w=510, h=498, i=1
 		}
 
-	if(!para)
-		para = "<param name='movie' value='"+u+"'>"
 
-	if(w==0 && h==0){
-		if(uu)
-			w=600,	h=498;
-		else
-			w=480,	h=400;
-		}
+	if(w==0 && h==0)
+		w=640,h=360;
+		//if(uu) w=600,	h=498; else w=480,	h=400
+	if(w>arg.maxWidth)
+		w=arg.maxWidth+0,h=arg.maxWidth*(640/360);
 	self.videonum++
 	var id = self.randDigi('manualLoadSwf', 10000)
-	self.manualLoadCache[id]= i ? 
-	"<iframe height="+h+" width="+w+" src='"+po+u+"' frameborder=0 allowfullscreen></iframe>"
-	: "<object width='"+w+"' height='"+h+"' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0'>"+para+"<embed src='"+po+u+"' quality='high' type='application/x-shockwave-flash' width='"+w+"' height='"+h+"' allowfullscreen='true' allownetworking='all' allowscriptaccess='always' base='.'></embed></object>"
-	if(arg.opt&512)
+
+
+	if(i){
+		self.manualLoadCache[id]= "<iframe height="+h+" width="+w+" src='"+po+u+"' frameborder=0 allowfullscreen></iframe>"
+		}
+	else{
+		var tp = u.replace(/\?[^\?]+$/,'').match(/\.(mp4|ogg|webm|flv|aac|mp3)$/)
+
+		if(tp){
+			if(tp[1]=='mp4'||tp[1]=='ogg'||tp[1]=='webm'){
+				self.manualLoadCache[id]= "<video width='"+w+"' height='"+h+"' controls='controls' autoplay='autoplay'><source src='"+po+u+"' type='video/"+tp[1]+"' /></video>"
+				}
+			else if(tp[1]=='aac'||tp[1]=='mp3'){
+				return "<div class='video' style='text-align:center;display:table-cell'><audio controls preload='none'><source src='"+po+u+"' type='audio/"+tp[1]+"'></audio></div>"
+				}
+			}
+		}
+	
+	//"<object width='"+w+"' height='"+h+"' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0'>"+para+"<embed src='"+po+u+"' quality='high' type='application/x-shockwave-flash' width='"+w+"' height='"+h+"' allowfullscreen='true' allownetworking='all' allowscriptaccess='always' base='.'></embed></object>"
+
+	if(thisopt&512)
 		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='javascript:void(0)' class='play' onclick='this.parentNode.style.background=\"none\";this.parentNode.innerHTML=ubbcode.manualLoadCache[\""+id+"\"]'></a></div><div class='moreinfo'>"+(uu? "<a href='"+p0+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
 	else
 		var x = "<div class='video' style='width:"+w+"px'><div class='spacer' style='width:"+w+"px;height:"+h+"px;'><a href='"+(uu?p0+uu:p0+u)+"' class='play' target='_blank'></a></div><div class='moreinfo'>"+(uu? "<a href='"+uu+"' class='xtxt silver' target='_blank'>"+p0+uu+"</a><br/>":'')
 	x+="<i class='silver'>如在以上内容中出现任何广告性信息并不代表本站支持其立场"+
-	(arg.opt&512 ? '' : " (播放视频需版主"+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" style="color:'+__COLOR.gbg6+'" onclick="commonui.recommendPost(event,\''+arg.i+'\',this)">设置</a>)':'设置'))+
+	(thisopt&512 ? '' : " (播放视频需版主"+(__GP.admincheck ? ' <a href="javascript:void(0)" class="b" style="color:'+__COLOR.gbg6+'" onclick="commonui.atItemBuyUse(event,'+arg.tId+','+(arg.pId|0)+')">设置</a>)':'设置'))+
 	"</i></div></div>"
-	if(arg.noImg || self.videonum>1){
+	if(arg.noImg || (self.videonum>1 && (arg.opt&1024)==0)){
 		var id = self.randDigi('manualLoadSwf', 10000)
 		self.manualLoadCache[id]=x
 		return "<button type='button' onclick='this.nextSibling.innerHTML=ubbcode.manualLoadCache[\""+id+"\"];this.nextSibling.style.display=\"\";this.style.display=\"none\"'>点击显示视频</button><span style='display:none'></span>"
@@ -2873,6 +2956,22 @@ arg.txt = arg.txt.replace(/\[flash(?:=(video|audio))?\](.+?)\[\/flash\]/gi,funct
 		return x
 	} );//[flash]
 }//fe
+
+
+ubbcode.url2player = function(e,o,argsId){
+commonui.cancelEvent(e)
+commonui.cancelBubble(e)
+var arg = this.bbscodeConvArgsSave[argsId] 
+,aa = {txt:'[flash]'+o.href+'[/flash]', i:arg.i, opt:arg.opt|1024, noImg:arg.noImg, fId:arg.fId, tId:arg.tId, pId:arg.pId, maxWidth:arg.maxWidth}
+, y = commonui.createCommmonWindow(4)
+console.log(aa)
+this.parseFlash(aa)
+y._.addContent(
+	_$('/span','className','postcontent ubbcode','innerHTML',aa.txt)
+	)
+y._.show()
+
+}
 
 //=============================
 //t.178.com
@@ -3139,7 +3238,7 @@ o.appendChild(_$('<table/>')._.cls('headline')._.aC(_$('<tbody/>')._.aC(tr)))
 //=============================
 //链接生成
 //=============================
-ubbcode.writelink=function(u,n)
+ubbcode.writelink=function(u,n,argsId)
 {
 
 var v = this.urlToAry(u)
@@ -3158,7 +3257,19 @@ if(v.check==-1 && v.pathname.substr(v.pathname-10)=='/read.php'){
 		h = " onclick='if($(\""+an+"\")){window.location.hash = \"#"+an+"\";commonui.cancelEvent(event);commonui.cancelBubble(event);return false}' "+h
 		}
 	}
-return "<span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>[</span>"+v.alertHTML+"<a href='"+v.url+"' target='_blank' "+h+(n?n:v.url)+"</a><span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>]</span>";
+
+
+var r= "<span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>[</span>"+v.alertHTML+"<a href='"+v.url+"' target='_blank' "+h+(n?n:v.url)+"</a><span class='apd' style='vertical-align:0.05em;padding:0 0.15em;color:"+v.color+"'>]</span>"
+
+if(argsId 
+	&& v.url.match(/bilibili|topgamer/) 
+	&& (
+			v.url.match(/^https?:\/\/www\.bilibili\.com\/video\/(a|b)v([a-z0-9]+)/i)
+			|| v.url.match(/^https?:\/\/video\.topgamers\.cn\/video_[a-z0-9_]+\.mp4/i)
+			)
+	)
+	r+="<a href='"+v.url+"' class='block_txt white nobr' style='padding-top:0;border-radius: 0.7em;' onclick='ubbcode.url2player(event,this,\""+argsId+"\")'>&#9656;</a>"
+return r
 }
 //fe
 
@@ -3193,7 +3304,7 @@ else{
 		}
 	}
 v.hintHTML = "<span class='urltip' style='margin-top:auto;color:"+c+"'>"+u+" </span>"
-v.alertHTML = s<2 ? "<span class='urltip' style='font-size:0.846em;padding:0.153em;text-align:center' unselectable=on><div>"+(v.protocol+'://'+'<b class="red">'+v.host+'</b>'+v.pathname+v.search+v.hash)+"</div><div class='nobr'> 此网页不属于本网站，不保证其安全性 </div><div class='nobr'> <a href='"+u+"' class='b' onclick='this.parentNode.parentNode.style.display=\"none\"' target='_blank'>继续访问</a> &emsp; &emsp; &emsp; <a class='b' href='javascript:void(0)' onclick='this.parentNode.parentNode.style.display=\"none\"'>取消</a> </div></span>" : ''
+v.alertHTML = s<2 ? "<span class='urltip' style='font-size:0.846em;padding:0.153em;text-align:center'><div>"+(v.protocol+'://'+'<b class="red">'+v.host+'</b>'+v.pathname+v.search+v.hash)+"</div><div class='nobr'> 此网页不属于本网站，不保证其安全性 </div><div class='nobr'> <a href='"+u+"' class='b' onclick='this.parentNode.parentNode.style.display=\"none\"' target='_blank'>继续访问</a> &emsp; &emsp; &emsp; <a class='b' href='javascript:void(0)' onclick='this.parentNode.parentNode.style.display=\"none\"'>取消</a> </div></span>" : ''
 v.color = c
 v.url = u
 v.check = s
@@ -3404,55 +3515,100 @@ o.href+='?filename='+n
 //=============================
 //附件
 //=============================
+
+
+
 ubbcode.attach = {
 w:window,
 parent:ubbcode,
 ucache:{},
-patt:/\/([a-zA-Z0-9_\-]+)\.([a-zA-Z0-9_\-]+)(?:\.(thumb|thumb_s|thumb_ss|medium)\.[a-zA-Z0-9]+)?$/,
+patt:/\/([a-zA-Z0-9_\-]+)\.([a-zA-Z0-9_\-]+(?:\.mp4)?)(?:\.(thumb|thumb_s|thumb_ss|medium)\.[a-zA-Z0-9]+)?$/,
 pdata:/^-?[a-z0-9]+Q[a-z0-9]+-[a-z0-9]+([KZXM][a-z0-9]+)+(?:T([a-z0-9]+))?(?:S([a-z0-9]+)-([a-z0-9]+))?/,
 check:function(id,src){
-var n = src.match(this.patt),x
-if(!n)
-	return
-if((x=this.cache['attach'+id]) && (x=x.index[n[1]])){//如果在本帖的附件里
-	if(x.type=='img' && x.w==undefined){
-		var y = n[1].match(this.pdata)
-		if(y){
-			x.w = y[3] ? parseInt(y[3],36) : 0
-			x.h = y[4] ? parseInt(y[4],36) : 0
-			}
-		x.ext = n[2]?n[2]:''
-		}
+var aa = this.parseName(src), x
+if(aa.url_utf8_org_name && (x=this.cache['attach'+id]) && (x=x.index[ aa.url_utf8_org_name ])){
 	x.ck=true
-	return x
 	}
-if(x = n[1].match(this.pdata)){//如果是其他贴的附件
-	var sz = 0
-	x[1].replace(/([A-Z])([a-z0-9]+)/g,function($0,$1,$2){
+return aa
+
+},//fe
+parseName:function(src){
+
+var a={
+	size:0,
+	thumb:0,
+	w:0,
+	h:0,
+	type : 'zip',
+	url_utf8_org_name : '',
+	url : src,
+	autoUrl:src.charAt(0)=='.' ? src : src.replace(/^.+?\/(mon_\d+)\//,'./$1/'),
+	isThumb : 0,
+	ext : ''
+	}
+var n = src.match(this.patt)
+if(n){
+	a.url_utf8_org_name = n[1]
+	a.cacheKey = n[1]
+	a.isThumb = n[3]?1:0
+	a.ext = n[2]?n[2]:''
+	a.type = this.parseExt(a.ext)
+
+	if(x = n[1].match(this.pdata)){//如果是其他贴的附件
+		x[1].replace(/([A-Z])([a-z0-9]+)/g,function($0,$1,$2){
 			if($1=='K')
-				sz+= parseInt($2,36)
+				a.size+= parseInt($2,36)
 			else if($1=='Z')
-				sz+= parseInt($2,36)*10
+				a.size+= parseInt($2,36)*10
 			else if($1=='X')
-				sz+= parseInt($2,36)*100
+				a.size+= parseInt($2,36)*100
 			else if($1=='M')
-				sz+= parseInt($2,36)*1000
+				a.size+= parseInt($2,36)*1000
 			})
-	return {
-		size:sz,
-		thumb:x[2] ? parseInt(x[2],36) : 0,
-		w : x[3] ? parseInt(x[3],36) : 0,
-		h : x[4] ? parseInt(x[4],36) : 0,
-		type : "img",
-		url_utf8_org_name : n[1],
-		url : src,
-		autoUrl:src.charAt(0)=='.' ? src : src.replace(/^.+?\/(mon_\d+)\//,'./$1/'),
-		isThumb : n[3]?1:0,
-		ext : n[2]?n[2]:''
+		a.thumb =x[2] ? parseInt(x[2],36) : 0
+		a.w = x[3] ? parseInt(x[3],36) : 0
+		a.h = x[4] ? parseInt(x[4],36) : 0
 		}
 	}
-},//fe
-disp:function(id,opt){
+return a
+},
+parseExt:function(ext){
+var j = ext.match(/(gif|jpg|jpeg|png|bmp|mp4|mp3|ogg|aac|webm)$/),ty
+if(j){
+	//n[2] = j[0]
+	switch(j[0]){
+		case 'jpg':
+		case 'jpeg':
+		case 'gif':
+		case 'png':
+		case 'bmp':
+			return 'img'
+		case 'mp4':
+		case 'ogg':
+		case 'webm':
+			return 'video'
+		default:
+			return 'audio'
+		}
+	}
+return 'zip';
+},
+ifUrlAttach:function(u){return commonui.ifUrlAttach(u)},
+ifUseThumb:function(noimg,opt,att){//arg.noImg, arg.opt, parsed attach
+var d = ''
+if(noimg & 2)//强制按钮
+	d = true
+else if((opt&2)==0){//不在fixblk中
+	if((noimg & 1) && (noimg & 524288) && !att.isThumb){//自动最小缩略图
+		if(att.size>25 || att.size==0)
+			d = (att.thumb&32) ? ".thumb.jpg" : true//(size>50 ? true : null)
+		}
+	else if(noimg & 1)//自动按钮
+		d = att.size>5 ? true : ''//biger than 5k
+	}
+return d//返回true用按钮 返回空用原图
+},
+disp:function(id,opt){// opt&1显示内容里出现过的附件 &2显示zip类 0显示正文里没出现过的附件
 var a = this.cache['attach'+id],
 pid = a.pid,
 tid = a.tid,
@@ -3463,7 +3619,9 @@ a=a.a,
 b,
 s = __SETTING.bit & 16,//4寸以下
 x=''
+
 for (var k=0 ;k<a.length;k++){
+	
 	if((opt&2) && a[k].type!='zip')
 		a[k].ck=1
 	if(opt&1){
@@ -3471,7 +3629,7 @@ for (var k=0 ;k<a.length;k++){
 			continue
 		}
 	else{
-		if(a[k].type=='img' && a[k].ck){
+		if(a[k].type!='zip' && a[k].ck){
 			b=1
 			continue
 			}
@@ -3496,11 +3654,17 @@ else
 
 this.cache[id] = {a:a,pid:pid,tid:tid,authorId:authorId,postTime:postTime,o:o,index:{}}
 
+
 for (var k=0 ;k<a.length;k++){
-	a[k].thumb = a[k].thumb|0
-	if(!a.dscp)a.dscp=''
-	if(!a.name)a.name=a[k].url.match(/[^\/]+$/)[0]
-	this.cache[id].index[a[k].name.replace(/\.[a-zA-Z0-9]+$/,'')] = a[k]
+	if(!a[k].name)a[k].name=a[k].url.match(/[^\/]+$/)[0]
+	var aa = this.parseName('/'+a[k].name)
+
+	if(aa.type!='zip' && aa.type!=a[k].type)
+		a[k].type = aa.type
+	a[k].thumb = aa.thumb ? aa.thumb : (a[k].thumb|0)
+	a[k].size = aa.size ? aa.size : (a[k].size|0)
+	if(!a[k].dscp)a[k].dscp=''
+	this.cache[id].index[ aa.cacheKey ] = a[k]
 	}
 
 //x='<button type=button onclick="ubbcode.attach.load(this.parentNode,\''+o.id+'\',\''+id+'\')">显示附件</button>'
@@ -3516,9 +3680,9 @@ if (url.indexOf('/')==-1)
 var orglink='',main='',del=''
 
 if (w.__GP.admincheck ||  w.__CURRENT_UID ==authorId)
-	del = "<a href='javascript:void(0)' onclick='if(confirm(\"是否要删除\"))__NUKE.doPost(__API.delAttach(\""+pid+"\",\""+tid+"\",\""+(aid?aid:name)+"\"))' class='block_txt block_txt_c0' title='删除'>&#10005</a>";
+	del = "<a href='javascript:void(0)' onclick='if(confirm(\"是否要删除 \"))__NUKE.doPost(__API.delAttach(\""+pid+"\",\""+tid+"\",\""+(aid?aid:name)+"\"))' class='block_txt block_txt_c0' title='删除'>&#10005</a>";
 
-if(type == 'img'){
+if((type=='img' || type=='video') && thumb){
 	var s
 	if(small){
 		if(thumb&16)
@@ -3548,7 +3712,7 @@ else{
 	var x = ''
 	try{x = decodeURIComponent(url_utf8_org_name)}
 	catch(x){x=''}
-	return "<div class='left quote' style='margin:0.8em'>"+dscp+'&nbsp;'+del+"&nbsp;<a href='"+c.getAttachBase(url)+"/"+url+(x ? '?filename='+x : '')+"' target='_blank' class='green'>"+(x ? x : name)+"</a> ("+size+" K)</div>";
+	return "<div class='left quote' style='margin:0.8em'>"+dscp+(dscp?'<br/>':'')+'&nbsp;'+del+"&nbsp;<a href='"+c.getAttachBase(url)+"/"+url+(x ? '?filename='+x : '')+"' target='_blank' class='green'>"+(x ? x : name)+"</a> ("+size+" K)</div>";
 
 	}
 
@@ -3873,7 +4037,7 @@ ubbcode.codeHelpCommon = [
 },
 {
 	0:'<b>[randomblock]</b><br/><nobr>插入随机段落</nobr>',
-	1:"<b>一个帖子中所有的随机段落只会显示一个</b><br/><br/>[randomblock]<br/>一段内容……<br/>[/randomblock]<br/><br/>[randomblock]<br/>这两段只会显示其中一个……<br/>[/randomblock]<br/><br/>在版主加粗/加亮标题的主题中的随机段落中可以使用更复杂的排版<br/>具体格式见 <a href='/read.php?pid=220511197' target='_blank'><b>说明贴</b></a><br/><br/><a href='javascript:void(0)' onclick='if(window.adminui){adminui.gameScoreTemplate(event)}else{__SCRIPTS.load(\"admin\",function(){adminui.gameScoreTemplate()},\"gbk\")}'><b>游戏打分模版</b></a>"
+	1:"<b>一个帖子中所有的随机段落只会显示一个</b><br/><br/>[randomblock]<br/>一段内容……<br/>[/randomblock]<br/><br/>[randomblock]<br/>这两段只会显示其中一个……<br/>[/randomblock]<br/><br/>在版主加粗/加亮标题的主题中的随机段落中可以使用更复杂的排版<br/>具体格式见 <a href='/read.php?pid=220511197' target='_blank'><b>说明帖</b></a><br/><br/><a href='javascript:void(0)' onclick='if(window.adminui){adminui.gameScoreTemplate(event)}else{__SCRIPTS.load(\"admin\",function(){adminui.gameScoreTemplate()},\"gbk\")}'><b>游戏打分模版</b></a>"
 },
 {
 	0:'<b>[@用户名]</b><br/><nobr>发送提醒</nobr>',

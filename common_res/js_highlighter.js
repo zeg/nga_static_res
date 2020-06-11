@@ -226,6 +226,6 @@ Highlighter.Brushe.prototype = {
 			{
 			x += i+':<br/>';
 			}
-		return "<div unselectable='on' onselectstart='return false' style='-moz-user-select:none;color:gray;float:left;margin-right:-"+(((l+'').length+1)*0.7)+"em;text-align:right'>"+x+"</div>";
+		return "<div unselectable='on' onselectstart='return false' style='-moz-user-select:none;user-select:none;color:gray;float:left;margin-right:-"+(((l+'').length+1)*0.7)+"em;text-align:right'>"+x+"</div>";
 	}
 }

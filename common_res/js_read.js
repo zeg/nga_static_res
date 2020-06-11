@@ -9,9 +9,16 @@ commonui.postArg = {
 data:{},
 w:window,
 def:{},
-toInt:__NUKE.toInt,
+inited:0,
+init:function(){
+commonui.blockword.init()
+},
 //设置帖子参数的默认值 参见proc
 setDefault:function(fid,stid,tid,tAid,topicMiscBit1,punUsers,visit,mods,vote,customLevel){//版面id 所在合集的stid 主题id 帖子id 主题作者id tmbit1 贴中禁言的用户 访问数 版主 主题的投票/投注/打分信息
+if(!this.inited){
+	this.inited=1
+	this.init()
+	}
 if(!customLevel && window.__CUSTOM_LEVEL)
 	customLevel = window.__CUSTOM_LEVEL
 if(typeof customLevel=='string')
@@ -21,24 +28,33 @@ this.def = {
 	stid:stid|0,
 	tid:tid,
 	tAid:tAid|0,
-	punUsers:punUsers ? (function(){var y={};punUsers.replace(/\d+/g,function($0){y[$0]=1;return $0});return y})() : null,
-	mods:mods ? (function(){//1版主 2副版主
-		var now = __NOW,x,y={},z = function($0){
-			if($0.substr($0.length-1)=='t')
-				x = $0.substr(0,$0.length-1)-now>=0 ? 3 : 1
-			else if(x){
-				y[$0] = x-1
-				x = 0
+	punUsers:punUsers ? (function(){var y={};(punUsers+'').replace(/\d+/g,function($0){y[$0]=1;return $0});return y})() : null,
+	mods:mods ? (function(){//1版主 2副版主 4副版主过期  8副版加标记
+		var now = __NOW,x=1,v,y={},z = function($0){
+			if($0.substr($0.length-1)=='t'){
+				x=2,v=$0.substr(0,$0.length-1)|0
+				if((v&4095)&1)
+					x|=8
+				if(v-now<0)
+					x|=4
 				}
-			else
-				y[$0] = 1
+			else{
+				if(x&2){
+					if((x&4)==0){
+						y[$0] = x
+						x = 1
+						}
+					}
+				else
+					y[$0] = 1
+				} 
 			return $0
 			}
 		mods.replace(/\d+t?/g,z)
 		return y
 		})() : {},
-	tmBit1:this.toInt(topicMiscBit1),
-	noimg:(__SETTING.bit & 64) && true,
+	tmBit1:topicMiscBit1|0,
+	noimg:(__SETTING.bit & 64)? 1:0,
 	small:(__SETTING.bit & 8) && true,
 	vsmall:(__SETTING.bit & 4) && true,
 	visit:visit ? (function(vi){
@@ -164,40 +180,54 @@ var ogood = $('/span','className','small_colored_text_btn block_txt_c2 stxt')._.
 	$('/a','className','white','href','javascript:void(0)','title','支持',__TXT('good'),'onclick',function(){commonui.postScoreAdd(this,a)}),
 	a.recommendO,
 	$('/a','className','white','href','javascript:void(0)','title','反对',__TXT('bad'),'onclick',function(){commonui.postScoreAdd(this,a,1)})
-	),
+	)
 //ip
-oip = a.ip ? $('/a','className','stxt','href','javascript:void(0)','style','color:inherit','innerHTML','['+a.ip+']','onclick',function(e){commonui.ipArea(e,a.ip)}) : null,
+, oip = a.ip ? $('/a','className','stxt','href','javascript:void(0)','style','color:inherit','innerHTML','['+a.ip+']','onclick',function(e){commonui.ipArea(e,a.ip)}) : null
 //源版面
-oofrm = a.orgForum && (a.fid!=108 || a.__GP.ubMod)? 
-	$('/a','style','marginLeft:0.7em;color:inherit','href','/thread.php?fid='+a.orgFid,'innerHTML',"["+a.orgForum+"]") : null,
+, oofrm = a.orgForum && (a.fid!=108 || a.__GP.ubMod)? 
+	$('/a','style','marginLeft:0.7em;color:inherit','href','/thread.php?fid='+a.orgFid,'innerHTML',"["+a.orgForum+"]") : null
 //posttime
-optime = $('/span','id','postdate'+a.i,'style','marginLeft:0.7em','className','stxt',
+,optime = $('/span','id','postdate'+a.i,'style','marginLeft:0.7em','className','stxt',
 		'innerHTML',this.time2date(a.postTime,'Y-m-d H:i'), 
 		a.__GP.admincheck?'onclick':null,a.__GP.admincheck?function(){if(this.style.color){adminui.selectPid(a.tid,a.pid,1);this.style.color=''}else{adminui.selectPid(a.tid,a.pid,0);this.style.color='darkred'}}:null)
 //count
-ocount = (a.i==0 && a.visit && a.__GP.admincheck && a.__GP.greater) ? $('/a','href','javascript:void(0)','innerHTML',(a.tmBit1 & _TM_BIT1_COUNT_VIEW) ? '??' : a.visit[0],'style','marginLeft:0.7em','className','small_colored_text_btn block_txt_c0 stxt',
-		'onclick',function(){if(a.tmBit1 & _TM_BIT1_COUNT_VIEW) adminui.forumStat(null,null,a.tid); else alert('本日访问'+a.visit[0]+'次 其中用户'+a.visit[1]+'次 第一页'+a.visit[2]+'次')}) : null,
+,ocount = (a.i==0 && a.visit && a.__GP.admincheck && a.__GP.greater) ? $('/a','href','javascript:void(0)','innerHTML',(a.tmBit1 & _TM_BIT1_COUNT_VIEW) ? '??' : a.visit[0],'style','marginLeft:0.7em','className','small_colored_text_btn block_txt_c0 stxt',
+		'onclick',function(){if(a.tmBit1 & _TM_BIT1_COUNT_VIEW) adminui.forumStat(null,null,a.tid); else alert('本日访问'+a.visit[0]+'次 其中用户'+a.visit[1]+'次 第一页'+a.visit[2]+'次')}) : null
 //收藏
-ofav = $('/a','style','marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
+,ofav = $('/a','style','marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
 			'title','收藏','onclick',function(e){commonui.favor(e,this,a.tid,a.pid)},
 			__TXT('star')
-			),
+			)
 //操作菜单
-oopt = $('/a','style','marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
+,oopt = $('/a','style','marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
 			'title','操作菜单','onclick',function(e){
 				if(lite&8)
 					return commonui.postBtnLite(e,1,argid)
 				commonui.postBtn.allBtn(e,argid)},
 			'oncontextmenu',function(e){commonui.postBtn.allBtn(e,argid);return commonui.cancelEvent(e)},
 			__TXT('gear')
-			),
+			)
 //属性
-otype = (a.type || a.tmBit1) ? $('/span','innerHTML',this.getPostBitInfo(a.fid, a.tid, a.pid , a.type, a.tmBit1, 2|(a.comment?4:0), a.__GP.admincheck)) : null,
+,otype = (a.type || a.tmBit1) ? $('/span','innerHTML',this.getPostBitInfo(a.fid, a.tid, a.pid , a.type, a.tmBit1, 2|(a.comment?4:0), a.__GP.admincheck)) : null
 //标题
-osubj = $(a.subjectC).$0('style','line-height:inherit;vertical-align:-0.15em'),
-//客户端
-clt = a.fromClient ? this.postDispFromClient(a.fromClient) : null
+,osubj = $(a.subjectC).$0('style','line-height:inherit;vertical-align:-0.15em')
 
+//回复
+,rly = $('/a','style','padding:0 0.85em;marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
+	'title','回复','onclick',function(e){
+		if(window.__APPEMBED)
+			window.__API['do']('8?replyStr#',{tid:a.tid,pid:a.pid})
+		else
+			commonui.openPostWindow(e,postfunc.__REPLY,'',a.tid,a.pid)
+		},
+	'oncontextmenu',function(e){commonui.openPostWindow(e,postfunc.__REPLY,'',a.tid,a.pid);return commonui.cancelEvent(e)},
+	__TXT.svg('bubble','width:0.8em;fill:'+__COLOR.bg1)
+	)
+
+//客户端
+,clt = a.fromClient ? this.postDispFromClient(a.fromClient) : null
+if(clt)
+	clt.$0('className','stxt','style','margin-left:'+(a.small?'1.5em':'0.7em')+';')
 
 if(lite&8){
 	var pInfoC_add =[
@@ -210,13 +240,7 @@ if(lite&8){
 	subjectCC_add = [otype,osubj],
 	opra_add = [
 		$('/div',ogood,'style','float:left'),
-		$('/a','style','padding:0 0.85em;marginLeft:'+(a.small?'2em':'0.7em'),'className','small_colored_text_btn block_txt_c0 stxt','href','javascript:void(0)',
-			'title','回复','onclick',function(e,a){
-				commonui.openPostWindow(e,postfunc.__REPLY,'',a.tid,a.pid)
-				return commonui.cancelEvent(e)
-				},
-			__TXT.svg('bubble','width:0.8em;fill:'+__COLOR.bg1)
-			),
+		rly,
 		ofav,
 		oopt]
 	}
@@ -255,7 +279,7 @@ x.insertBefore(
 
 //pinfo块
 a.pInfoC.innerHTML=ngaAds.bbs_ads32_gen();
-console.log(pInfoC_add)
+
 $(a.pInfoC).$0('style','lineHeight:inherit;color:'+((lite&8) ? __COLOR.border2 : __COLOR.gbg2),pInfoC_add)
 
 if(lite&8)
@@ -267,13 +291,17 @@ if(a.atItem)
 
 //if(small)
 //	a.pInfoC.parentNode.insertBefore($('/div')._.css('clear','both'),a.pInfoC.nextSibling)
+if(this.blockword.ru && this.blockword.checkUsername(uI.uid,uI.username))
+	a.userblocked = 1
+else if(this.blockword.rc && this.blockword.checkContent(a.subjectC.innerHTML + a.contentC.innerHTML))
+	a.userblocked = 2
 
 if (a.comment){//comment
 	var posterinfo =  $(a.uInfoC.cloneNode(),'innerHTML',this.posterInfo.main(lite, a.i, a.fid, a.tid, a.pid, a.cLength, a.pAid, a.type, a.stid, a.comment),'style','display:block')
 	a.pInfoC.style.display='none'
 	a.uInfoC.parentNode.replaceChild(posterinfo,a.uInfoC)
 	a.uInfoC = posterinfo
-	return w.ubbcode.bbsCode({
+	w.ubbcode.bbsCode({
 		i:a.i,
 		c:a.contentC,
 		noImg:2,
@@ -291,6 +319,38 @@ if (a.comment){//comment
 		fullLink:(a.opt&1) ? 1 : 0,
 		removeQuote:1
 		})
+	
+	if(a.userblocked ){
+		try{
+		var tmp = a.uInfoC.nextElementSibling
+		}catch(e){}
+	
+		if(tmp.nodeName=='TABLE'){
+			tmp.style.display=a.uInfoC.style.display ='none'
+			a.uInfoC.parentNode.insertBefore($('/div'
+				,$('/span','className','hint','innerHTML',a.userblocked ==1? '被你屏蔽的用户发布的内容' : '包含有被你屏蔽的内容')
+				,'style','text-align:center;border:1px solid;margin:1px'
+				,'className','userblockcontents'
+				,'onclick',function(){
+					var o = this
+					if(!o._click){
+						o._click = 1
+						o.style.backgroundColor = __COLOR.gbg7
+						if(o._tl)clearTimeout(o._tl)
+						return o._tl=setTimeout(function(){
+							o._click = 0
+							o.style.backgroundColor = ''
+							},2000)
+						}
+					o.style.display='none'
+					o.nextElementSibling.style.display=''
+					o.nextElementSibling.nextElementSibling.style.display=''
+					}
+				),a.uInfoC)
+			}
+			
+		}
+	return
 	}
 
 
@@ -305,16 +365,12 @@ if(a.atItem && a.atItem.sp && a.atItem){
 		}
 	}
 
-	
-if(uI.buffs[99] || uI.buffs[102] || uI.buffs[107] || uI.buffs[120] || uI.buffs[119] || uI.buffs[124]){
-	this.postDispAvatarBg(a.uInfoC.parentNode, __IMG_STYLE+'/avatarbg.png')
-	a.contentC.innerHTML+=' [color=silver]……'+(
-		uI.buffs[102] ? '咕' : (
-		uI.buffs[107] ? 'poi': (
-		uI.buffs[120] ? '待机中': (
-		uI.buffs[99] ? '咩': (
-		''))))
-		)+'~[/color]'
+var tmp = commonui.getAvatarMagicInfo(uI.buffs)
+
+if(tmp){
+	this.postDispAvatarBg(a.uInfoC.parentNode, tmp.avatarBg)
+	if(tmp.append)
+		a.contentC.innerHTML+=' [color=silver]……'+tmp.append+'~[/color]'
 	}
 
 
@@ -375,6 +431,10 @@ if(uI.active>=0){
 //commonui.dispUserInfo(lite,pos,avatar,honor,regdate,lastlogin,lesser,ip,level,mute,medal,postNum,rvrc,repu,aid,fid,money,site,ifRemark,$('postauthor'+pos).innerHTML)
 a.contentC.parentNode.className+=' pc'+uI.memberid
 
+var tmp = this.postArg.def.mods[a.pAid]|0
+if((tmp&1) || (tmp&10)==10)
+	a.contentC.parentNode.className+=' pc5'
+	
 if(a.atItem && a.atItem.sp && a.atItem.sp[0])
 	a.contentC.parentNode.style.color = a.atItem.sp[0]
 
@@ -412,6 +472,37 @@ if(a.signC && uI.signature)
 
 if(this.quoteTo && a.contentC.parentNode.id.substr(0,21)=='postcontentandsubject')
 	this.aE(a.contentC.parentNode,'mouseup',function(e){commonui.quoteTo.onmouseup(e, parseInt(this.id.substr(21),10) )})
+	
+
+if(a.userblocked ){
+	try{
+	var tmp = a.pInfoC.parentNode.parentNode.parentNode
+	}catch(e){}
+
+	if(tmp.parentNode.nodeName=='TABLE' && tmp.nodeName=='TBODY'){
+		tmp.style.display='none'
+		tmp.parentNode.insertBefore($('/caption'
+			,$('/span','className','hint','innerHTML',a.userblocked ==1? '被你屏蔽的用户发布的内容' : '包含有被你屏蔽的内容')
+			,'style','text-align:center;border:1px solid;margin:1px'
+			,'className','userblockcontents'
+			,'onclick',function(){
+				var o = this
+				if(!o._click){
+					o._click = 1
+					o.style.backgroundColor = __COLOR.gbg7
+					if(o._tl)clearTimeout(o._tl)
+					return o._tl=setTimeout(function(){
+						o._click = 0
+						o.style.backgroundColor = ''
+						},2000)
+					}
+				o.style.display='none'
+				o.nextSibling.style.display=''
+				}
+			),tmp)
+		}
+		
+	}
 
 }//fe commonui.postDisp
 
@@ -450,8 +541,8 @@ if(client){
 		x=-64
 
 	return $("/a",'title',(y==8||y==9||y==7) ? ('发送自'+(client[2]?' '+client[2]+' 上的':'')+' NGA官方客户端') : (client[2]?'发送自 '+client[2]:'发送自 未知设备'),
-				'className',' inlineBlock','style','width:16px;height:16px;margin-left:0.4em;vertical-align:middle;filter:'+((y==8||y==9||y==7) ? 'none' : 'opacity(0.6)'),'style',{'background':'url("'+this.postDispFromClient.src+'") no-repeat -2px '+x+"px"},
-				'href','http://app.'+location.hostname
+				'className',' inlineBlock','style','width:16px;height:16px;vertical-align:middle;filter:'+((y==8||y==9||y==7) ? 'none' : 'opacity(0.6)'),'style',{'background':'url("'+this.postDispFromClient.src+'") no-repeat -2px '+x+"px"},
+				'href','http://app.nga.cn'
 				)
 
 		
@@ -715,24 +806,27 @@ o.parentNode.insertBefore(
 }//fe
 //购买并使用================
 commonui.atItemBuyUse = function(e,tid,pid){
-var x, $ = _$
+if(!window._ITEM)
+	return __SCRIPTS.asyncLoad('userItem',function(){
+		commonui.atItemBuyUse(e,tid,pid)
+		} )
+var x,z, $ = _$
 this.createadminwindow()
 this.adminwindow._.addContent(null)
 this.adminwindow._.addTitle('对帖子使用道具')
-this.adminwindow._.addContent(x = $('/span'))
-var s = function(o){
-	if(!window._ITEM)
-		return loader.script(__SCRIPTS.userItem,function(){
-			s(o)
-			} )
+this.adminwindow._.addContent(x = $('/span'),z=$('/span'))
+var s = function(o,b,t){
 	var y = tid+'\t'+(pid?pid:0)+'\t0'
 	var io = new_ITEM_inset(o)
-	io.storeBuyAndUse(1,5,'21,23,24,25,26',y,null)//类别5 对贴道具
+	console.log(b)
+	io.storeBuyAndUse(1,5,b,y,t)//类别5 对贴道具
 	}//fe
-s(x)
+s(x,'9,10,11,12,13,14,15,16,17,18,19,20','选择一个礼物购买并使用')// 礼物类
+s(z,'21,23,24,25,26','或购买一个道具并使用')// 功能类
 this.adminwindow._.show(e)
 }//fe
 //推荐操作界面=================
+/*
 commonui.recommendPost = function(e,i,o){
 if(!window.__CURRENT_UID && !i.length)
 	return
@@ -780,7 +874,7 @@ if(i){
 this.adminwindow._.show(e)
 store(0)
 }//fe
-
+*/
 //修改记录格式化================
 commonui.loadAlertInfo=function(info,ci)
 {
@@ -877,7 +971,7 @@ main:function(lite,i,fid,tid,pid,cLen,uid,type,stid,comment){
 var x ,d={},  u=this.uI.users[uid], rvrc=Math.floor(u.rvrc/10), active = this.active(u.uid,u.yz, u.mute_time, u.buffs,fid,tid,this.__NOW,stid), a = this.pA[i]
 
 if(comment){
-	d.avatar = this.avatar(i, 1, u.avatar, u.buffs)
+	d.avatar = this.avatar(i, lite|1, u.avatar, u.buffs)
 	d.authorname = this.name(i,active, u.username, uid, u.buffs)
 	return this.comment(d)
 	}
@@ -888,7 +982,7 @@ d.honor=this.honor(u.honor,lite)
 d.l=this.floor(i, pid)
 d.uid = this.uid(uid)
 d.r_bar = this.r(lite, uid)
-d.level = this.level(lite, this.uI.groups[u.memberid][0], rvrc, fid, uid, active, u.groupid, (a && a.mods) ? a.mods[uid] : 0, a.customLevel)
+d.level = this.level(lite, this.uI.groups[u.memberid][0], rvrc, fid, uid, active, u.groupid, (a && a.mods) ? a.mods[uid] : 0, (a && a.customLevel)?a.customLevel :null)
 d.authorname = this.name(i,active, u.username, uid, u.buffs, u.uuname)
 d.postnum=this.basic(u.postnum, u.regdate, u.thisvisit)
 d.money = this.money(u.money)
@@ -917,11 +1011,11 @@ if(d.r_bar){
 	for (var k in d.r_bar)
 		x+="<div>"+d.r_bar[k]+"</div>"
 	}
-x+="<div style='float:left;margin-right:3px;min-width:49%;*width:49%'><nobr>"+d.level.level+"</nobr></div>"
-x+="<div style='float:left;margin-right:3px'><nobr>"+d.level.r_value+"</nobr></div>"
+x+="<div style='float:left;margin-right:3px;min-width:49%;*width:49%'><nobr>"+d.level.p1+"</nobr></div>"
+x+="<div style='float:left;margin-right:3px'><nobr>"+d.level.p2+"</nobr></div>"
 //x+="<span class='clickextend' style='"+(lite&2 ? '' : 'display:none')+"'>"
 x+="<div style='float:left;margin-right:3px;min-width:49%;*width:49%'><nobr>"+d.postnum+"</nobr></div>"
-x+="<div style='float:left'><nobr>"+d.money+"</nobr></div>"
+x+="<div style='float:left'><nobr>"+(d.level.p3? d.level.p3 : d.money)+"</nobr></div>"
 x+="<div class='clear'></div></div>"
 x+="<span class='clickextend' style='"+((lite&2)||(d.medal==''&&d.site==''&&d.remark=='') ? '' : 'display:none')+"'>"
 if(d.medal)x+=d.medal+'<br/>'
@@ -944,7 +1038,7 @@ if(d.authorname)
 	x+=d.authorname+d.uid+' '
 if(d.honor)x+=d.honor+' '
 
-x+="<span class='gray nobr'>"+d.level.level+"</span> <span class='gray nobr'>"+d.level.r_value+"</span><span class='gray nobr'> "+d.postnum+"</span> <span class='gray nobr'>"+d.money+"</span> "
+x+="<span class='gray nobr'>"+d.level.p1+"</span> <span class='gray nobr'>"+(d.level.p2?d.level.p2:d.postnum)+"</span> <span class='gray nobr'> "+(d.level.p2?d.postnum:d.money)+"</span> "
 
 if(d.medal)x+="<span class='gray nobr'>"+d.medal+'</span> '
 
@@ -969,6 +1063,7 @@ if(!remark)
 var x = ''
 for(var k in remark){
 	var z= ''
+	remark[k][4]+=''
 	if(remark[k][4].indexOf('=')!=-1)
 		remark[k][4] = remark[k][4].replace(/(?:http:\/|bbs\.ngacn\.cc|nga\.178\.com)\/[a-z0-9_%\/\-?.]+?(tid|pid|fid)=(\d+)[a-z0-9_%\/\-]*/i,function($0,$1,$2){
 			if($1=='tid')
@@ -987,9 +1082,7 @@ for(var k in remark){
 				z="<a href='/thread.php?fid="+$2+"'>[+]</a>"
 			return ''
 			})
-	var y = this.c.cutstrbylen(remark[k][4],9)
-	if(y!=remark[k][4])
-		y=y+'…'
+	var y = this.c.cutstrbylen(remark[k][4],9,9,'…')
 	if(remark[k][3]&1)
 		x+="<span class='block_txt block_txt_c3 nobr' style='margin-bottom:0.25em;color:"+__COLOR.quote1+"'title='"+'公开备注 '+remark[k][4]+"'>"+'<span class="block_txt block_txt_c0" style="margin-left:-0.4em">&#10003;</span> ' +z+y+"</span> "
 	else
@@ -1006,8 +1099,11 @@ if(this.sb & 64)//不显示头像
 
 avatar = this.c.selectUserPortrait(avatar,buff,uid)
 
-if(!avatar)
+if(!avatar){
+	if(lite&8)
+		return "<div class='avatar avatar_none "+((lite&1)?'avatar_small':'')+"'></div>"
 	return ''
+	}
 
 //if(at && at.sp && at.sp[4])
 
@@ -1174,19 +1270,14 @@ uid:function(uid){
 return " <a href='javascript:void(0)' name='uid'  class='small_colored_text_btn stxt block_txt_c0 vertmod' style='background:#aaa' onclick='commonui.ucplink(event,"+uid+")'>"+uid+"</a>"
 },//fe
 
-level:function(lite,level,rvrc,fid,uid,active,gid,mod,customLevel){
-var d = {}, le
+level:function(lite,level,rvrc,fid,uid,active,gid,mod//见setDefaults
+	,customLevel){
+var d = {}
 
 //if(le=this.mI(gid,mod))
 	//le = (le[1] ? '<a href="javascript:void(0)" onclick="alert(this.title)" class="block_txt block_txt_c0" title="'+le[1]+'" style="background-color:#'+le[3]+'">'+level+'</a>' : level)+(le[4] ? ' <a href="javascript:void(0)" onclick="alert(this.title)" class="block_txt block_txt_c0" title="'+le[5]+'" style="background-color:#'+le[6]+'">'+le[4]+'</a>' : '')
 
-if ( !customLevel ){
-	d.level = "级别: <span name='level' class='silver' title='"+active[3]+"'>"+(le? le:level)+"</span>"
-	d.r_value = "威望: <span class='numericl silver' name='pg'>"+rvrc+"</span>"
-	return d
-	}
-
-var cRv=0, z = customLevel[0].n, r =this.uI.reputations
+var cRv=0, y,z, l, r =this.uI.reputations
 for(var k in r){//使用版面的第一个声望的值
 	//if(k==fid){
 		cRv=r[k][uid];
@@ -1198,22 +1289,95 @@ for(var k in r){//使用版面的第一个声望的值
 		break
 	//	}
 	}
-for (var i=0;i<customLevel.length;i++){
-	if (cRv>=customLevel[i].r)
-		z=customLevel[i].n
-	else
-		break
+
+
+
+
+if(cRv){//如果有声望
+	y = cRv>9999 ? 'numeric' :'numericl'
+
+	if(level.length>3){
+		if(level.charAt(0)=='警')
+			level = level.replace('等级','')
+		}
+
+
+	if(customLevel){//如果有自定义声望等级 p1声望等级 p2声望值 p3威望值+等级
+		if(!customLevel.offset){
+			for (var i=0,j=customLevel.length;i<j;i++){
+				if (customLevel[i].r>=0){
+					if(customLevel[i].r==0)
+						j=i
+					else
+						j=i-1
+					break
+					}
+				}
+			customLevel.offset = j>=0?j:0
+			}
+
+		for (var i=0,j=0;i<customLevel.length;i++){
+			if (cRv>=customLevel[i].r)
+				j=i
+			else
+				break
+			}
+
+		z = customLevel[j].n
+		l = j-customLevel.offset
+		if(lite&1){
+			d.p1 ="声望: <span class='silver' title='"+cRv+' / lv'+l+"'>"+z+"</span>"
+			d.p2 = "威望: <span class='silver' title='"+rvrc+"'>"+level+"</span>"
+			}
+		else{
+			d.p1 ="级别: <span class='silver'>"+z+"</span>"
+			d.p2 ="声望: <span class='silver "+y+"'>"+cRv+(cRv ? '(lv'+l+')' : '')+"</span>"
+			if(level.length>3)
+				d.p3 = "级别: <span class='silver' title='威望 "+rvrc+"'>"+level+"</span>"
+			else
+				d.p3 = "威望: <span class='numericl silver'>"+rvrc+"</span><span class='silver'>("+level+")</span>"
+			}
+		}
+	else{//p1声望值+等级 p2威望值+等级
+
+		l = Math.floor((cRv|0)/1000)
+		if(lite&1){
+			d.p1 ="声望: <span class='silver "+y+"' title='"+cRv+"'>"+(cRv ? 'lv'+l : '0')+"</span>"
+			d.p2 = "威望: <span class='silver' title='"+rvrc+"'>"+level+"</span>"
+			}
+		else{
+			d.p1 ="声望: <span class='silver "+y+"'>"+cRv+(cRv ? "</span><span class='numericl silver'>(lv"+l+')' : '')+"</span>"
+			if(level.length>3)
+				d.p2 = "级别: <span class='silver' title='威望 "+rvrc+"'>"+level+"</span>"
+			else
+				d.p2 = "威望: <span class='numericl silver'>"+rvrc+"</span><span class='silver'>("+level+")</span>"
+			}
+		}
+	}
+else{
+	//p1威望等级 p2威望值
+	if(lite&1){
+		if(!rvrc)
+			d.p1 ="威望: <span class='silver'>"+rvrc+"</span>"
+		else{
+			d.p1 ="级别: <span class='silver'>"+level+"</span>"
+			d.p2 = "威望: <span class='numericl silver'>"+rvrc+"</span>"
+			}
+		}
+	else{
+		d.p1 ="级别: <span class='silver'>"+level+"</span>"
+		d.p2 = "威望: <span class='numericl silver'>"+rvrc+"</span>"
+		}
 	}
 
-var y = cRv>9999 ? 'numeric' :'numericl'
-
-d.level ="<span title='论坛级别:"+level+" &emsp;威望:"+rvrc+" "+active[3]+"'>级别: <span name='level' class='silver'>"+(le?le:z)+"</span></span>"
-
-if((lite&1)==0)
-	d.r_value = "声望: <span class='"+y+"'>"+cRv+"</span>"
-else
-	d.r_value=''
-
+if((mod&10)==10){
+	for(var k in d){
+		if(d[k].match(/^(级别|威望)/)){
+			d[k] = "级别: <span class='numericl silver' title='威望 "+rvrc+' '+level+" '>副版主</span>"
+			break
+			}
+		}
+	}
 return d
 },//fe
 
@@ -1281,17 +1445,31 @@ for (var k in medal){
 	if(k=='length' || !medal[k] || !this.uI.medals[medal[k]])
 		continue
 	var m = this.uI.medals[medal[k]]
-	x+=" <img class='medalimg' src='"+this.__IMGPATH+"/medal/"+m[0]+"' title='"+m[1]+":&#10;"+m[2]+"' "+(m[3]==351||m[3]==386?" onclick='commonui.posterInfo.medalClick(event,this,"+m[3]+")' ":'')+"style='margin-bottom:-4px'/>"
+	x+=" <img class='medalimg' src='"+this.__IMGPATH+"/medal/"+m[0]+"' title='"+m[1]+":&#10;"+m[2]+"' "
+	+(m[3]==396||m[3]==397 ? " onload='commonui.posterInfo.medalLoad(event,this,"+m[3]+")' " : '')
+	+(m[3]==351||m[3]==386?" onclick='commonui.posterInfo.medalClick(event,this,"+m[3]+")' ":'')+" style='margin-bottom:-4px'/>"
 	}
 if(!x)
 	return x
 return "徽章:<span name='medal'>"+x+"</span>"
 },//fe
 
+medalLoad:function(e,o,id){
+if(id==396||id==397){
+	if(window.__INSECTOB){
+		if(o.src.substr(o.src.length-8)!=".ani.gif")
+			__INSECTOB.add(o,function(){
+				setTimeout(function(){o.src=o.src+".ani.gif"},1000)				
+				})
+
+		}
+	}
+},//fe
+
 medalClick:function(e,o,mid){
 if(mid==351){
 	if(!window.ubbcode||!ubbcode.psBtn)
-		return loader.script(__COMMONRES_PATH+'/js_upup.js?0220',function(){commonui.posterInfo.medalClick(e,o,mid)})
+		return loader.script(__COMMONRES_PATH+'/js_upup.js?0221',function(){commonui.posterInfo.medalClick(e,o,mid)})
 	var p = __NUKE.position.get(e), c
 	if(c=this.medalClick[351])c.parentNode.removeChild(c)
 	if(c = (Math.random()>0.5 ? ubbcode.psBtn('WEAK UP','GET UP', 'GET OUT', 'THERE') : ubbcode.psBtn('TOOK THE','MASK', 'OFF TO', 'FEEL FREE'))){
@@ -1517,7 +1695,7 @@ if (atv && w.__CURRENT_UID)
 		btn += "<br/><button type='button' onclick='commonui.vote.submit(this.parentNode.parentNode,"+tid+","+x.type+","+x.max_select+","+x.min+","+x.max+","+x.end+")'>"+name+"</button> "
 
 if(!atv && w.__GP.admincheck && x.type==1 && !x.done)
-	btn += "<br/><button type='button' onclick='commonui.vote.submitSettle(this.parentNode.parentNode,"+tid+")'>结算</button> (勾选判定为\"赢\"的选项)"
+	btn += "<br/><button type='button' onclick='commonui.vote.submitSettle(this.parentNode.parentNode,"+tid+")'>结算</button> (勾选判定为\"赢 \"的选项)"
 
 o.innerHTML = "<div><h4 class='silver subtitle'>"+name+"</h4>"+(i>16 ? '<div>'+info+'</div>' : '')+txt+'<div>'+info+btn+'</div></div>'
 
@@ -1557,7 +1735,7 @@ for (var i = 0;i<x.length;i++){
 			c++
 			if(c>max_select)
 				return alert('不能投注超过'+max_select+'项')
-			var z =  __NUKE.toInt(x[i].value)
+			var z = x[i].value|0
 			if(z<min)
 				return alert('超过最小值')
 			if(z>max)
@@ -1570,7 +1748,7 @@ for (var i = 0;i<x.length;i++){
 		if (x[i].checked){
 			c++
 			if(c>max_select)
-				return alert('不能投注超过'+max_select+'项')
+				return alert('不能投票超过'+max_select+'项')
 			y.push(x[i].value)
 			}
 		}
@@ -1579,10 +1757,9 @@ for (var i = 0;i<x.length;i++){
 if (y.length)
 	__NUKE.doRequest({u:__API.vote(tid,y.join(',')),
 		f:function(x){
-			if (__NUKE.doRequestIfErr(x))
-				return false;
-			if(x.error)
-				alert(x.error[0])
+			var y = __NUKE.doRequestIfErr(x)
+			if(y)
+				alert(y)
 			else
 				alert(x.data[0])
 			return true
@@ -1617,7 +1794,8 @@ _SP:{//特定id道具的特效
 	19:"#bf4385\txishanbg.png\t0 0 no-repeat\txishanbr.png",
 	23:"#bf4385\ttidebg.png\t0 0 no-repeat\ttidebr.png\t1",
 	24:"#bf4385\talliancebg.png\t0 0 no-repeat\t\t1",
-	25:"#bf4385\thordebg.png\t0 0 no-repeat\t\t1"
+	25:"#bf4385\thordebg.png\t0 0 no-repeat\t\t1",
+	27:"#4d72ab\tblizzconbg.png?9\t0 0 no-repeat\t\t1"
 	},
 _INFO:{
 	1:'坚硬法杖\t5_1.gif\t虽然没用~但是花钱买它可以证明我的诚意~',
@@ -1685,15 +1863,21 @@ commonui.postBtnLite = function(e,opt,argid){
 var a = commonui.postArg.data[argid], $=_$
 if(opt&1){
 	var x = $('/span'
+		,__CURRENT_UID == a.pAid ? $('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
+			if(window.__APPEMBED)
+				window.__API['do']('7?contentEdit#',{tid:a.tid,pid:a.pid})
+			else
+				commonui.openPostWindow(e,postfunc.__MODIFY,'',a.tid,a.pid)
+			})._.add('编辑',$('/br'),'编辑') : null
 		,$('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
 			if(window.__APPEMBED)
-				window.__API.do('8?contentReport#',{tid:a.tid,pid:a.pid})
+				window.__API['do']('8?contentReport#',{tid:a.tid,pid:a.pid})
 			else
 				commonui.logPost(e,a.tid,a.pid)
 			})._.add('举报',$('/br'),'举报')
 		,$('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
 			if(window.__APPEMBED)
-				window.__API.do('parent6',{tid:a.tid,pid:a.pid})
+				window.__API['do']('6?tieTiao#',{tid:a.tid,pid:a.pid})
 			else
 				commonui.comment(e,a.tid,a.pid)
 			})._.add('贴条',$('/br'),'贴条')
@@ -1784,10 +1968,10 @@ d:{
 //12:{n1:'禁言',on:function(e,a){adminui.muteuser(e,a.pAid)},
 //	ck:function(a){if (a.__GP['super'])return 1} },
 
-13:{n1:'Nuke',on:function(e,a){adminui.nukeUi(e,a.pAid,a.tid,a.pid)},c:'gray',
+13:{n1:'Nuke',on:function(e,a){adminui.nukeUi(e,a.pAid,a.tid,a.pid)},c:'ngared',
 	ck:function(a){if (a.__GP.superlesser || (a.__GP.ubSecAct))return 1} },
 
-14:{n1:'Nuke',n2:'禁言并扣减声望',n3:'Lesser Nuke',on:function(e,a){commonui.lessernuke(e,a.tid,a.pid,a.fid)},
+14:{n1:'Nuke',n2:'禁言并扣减声望',n3:'Nuke',on:function(e,a){commonui.lessernuke(e,a.tid,a.pid,a.fid)},
 	ck:function(a){if (a.__GP.admincheck)return 1} },
 
 15:{n1:'签名',n2:'清除签名',n3:'清除签名',on:function(e,a){commonui.setSign(e,a.pAid,a.__GP.greater)},
@@ -1809,11 +1993,11 @@ d:{
 
 20:{u:"/nuke.php?func=ucp&uid={pAid}",n1:'作者',n2:'查看作者资料',n3:'作者信息'},
 
-21:{u:"/thread.php?authorid={pAid}",n1:'搜索&sup1;',n2:'搜索作者发布的主题',n3:'搜索作者的主题'},
+21:{u:"/thread.php?authorid={pAid}&fid={fid}",n1:'搜索&sup1;',n2:'搜索作者在本版面发布的主题',n3:'版内主题'},
 
-22:{u:"/thread.php?searchpost=1&authorid={pAid}",n1:'搜索&sup2;',n2:'搜索作者发布的回复',n3:'搜索作者的回复'},
+22:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索&sup2;',n2:'搜索作者在本版面发布的回复',n3:'版内回复'},
 
-23:{u:"/read.php?tid={tid}&authorid={pAid}",n1:'搜索&sup3;',n2:'搜索作者在本主题内的回复',n3:'搜索主题内回复(只看该作者)'},
+23:{u:"/read.php?tid={tid}&authorid={pAid}",n1:'搜索&sup3;',n2:'搜索作者在本主题内的回复',n3:'只看作者'},
 
 25:{u:"http://v.t.sina.com.cn/share/share.php?appkey=3938048249&title=_TOPIC&url=_URL",target:'_blank',n1:"分享到微博",on:function(e,a,o){o.href=commonui.postBtn.replaceUrl(o.href)} },
 
@@ -1826,8 +2010,41 @@ d:{
 		return 1}}
 	,on:function(e,a){this.value=a.pid},tag:'span'},
 */
-30:{u:'/nuke.php?func=edit_history&tid={tid}&pid={pid}',n2:'查看编辑记录',n3:'编辑记录',
-	ck:function(a){if (a.pAid==a.__CURRENT_UID || (a.__GP.admincheck&2))return 1} },
+30:{n2:'查看编辑记录',n3:'编辑记录',
+	ck:function(a){if (a.pAid==a.__CURRENT_UID || (a.__GP.admincheck&2))return 1} 
+	,'on':function(e,a){
+		var z, $ = _$,c=commonui
+		,u = function(tid,pid,pg,z){
+				z.innerHTML=''
+				__NUKE.doRequest({
+				u:{u:__API._base,a:{'__lib':'edit_history','__act':'edit_history','__output':3,'tid':tid,'pid':pid,'page':pg}},
+				f:function(x){
+					var y= __NUKE.doRequestIfErr(x)
+					if (y)
+						return alert(y);
+					y=x.data[0]
+					z._.add('├─── ',$('/br'))
+					for(var i in y){
+						z._.add('├─ '+commonui.time2date(y[i][1])+' 编辑内容'
+							,$('/br')
+							,$('/a','style','color:'+__COLOR.gbg4,'href',"./read.php?tid="+(a.tid|0)+"&pid="+(a.pid|0)+"&view_edit_bakup="+y[i][0],'target','_blank','innerHTML','├─── 查看历记录')
+							,$('/br')
+							)
+						}
+					z._.add($('/a','class','b','href',"javascript:void(0)",'innerHTML','下一页','onclick',function(){u(tid,pid,pg+1,z)}))
+					}
+				})
+			}
+		c.createadminwindow()
+		c.adminwindow._.addContent(null)
+		c.adminwindow._.addTitle('编辑历史')
+		c.adminwindow._.addContent(
+			z = $('/span')
+			)
+		c.adminwindow._.show(e)
+		u(a.tid|0, a.pid|0, 1, z)
+		}
+	},
 
 /*31:{u:'/nuke.php?func=locktopic&edit_lock&tid={tid}&pid={pid}&lock=1',n2:'发帖时间超过时限禁止编辑',n3:'禁止编辑',
 	ck:function(a){if (__GP['admincheck'])return 1} },*/
@@ -1835,7 +2052,7 @@ d:{
 32:{n2:'设置为发帖时间超过时限可以编辑',n3:'许可编辑',on:function(e,a){commonui.setPost(e,a.tid,a.pid,a.fid)},
 	ck:function(a){if (a.__GP.admincheck&2)return 1} },
 
-33:{u:window.location.href+'&noBBCode',n2:'查看帖子的BBCode源码',n3:'查看源码' },
+33:{u:window.location.href+'&noBBCode',n2:'查看帖子的BBCode源码',n3:'源码' },
 
 34:{n1:'转发',on:function(e,a,o){var x = commonui.postBtn.all;commonui.postBtn.all={'分享':[24,25,26,27]};commonui.postBtn.allBtn(e,a);commonui.postBtn.all=x} },
 
@@ -1843,8 +2060,7 @@ d:{
 
 36:{n1:'道具',n2:'对此贴使用道具',on:function(e,a){commonui.atItemBuyUse(e,a.tid,a.pid)} ,ck:function(a){if (a.__CURRENT_UID)return 1}},
 
-37:{n1:'道具2',n2:'对此贴使用道具',on:function(e,a){commonui.recommendPost(e,a.i,this)},
-	ck:function(a){if (a.__CURRENT_UID)return 1} },
+37:{n1:'道具2',n2:'对此贴使用道具',on:function(e,a){commonui.recommendPost(e,a.i,this)},ck:function(a){if (a.__CURRENT_UID)return 1} },
 
 38:{n1:'推荐',n2:'推荐此贴至工作人员',on:function(e,a){commonui.logPostRecommend(e,a.tid,a.pid)},
 	ck:function(a){if ( a.__GP.rvrc>=200 || a.__GP.admincheck)return 1} },
@@ -1852,17 +2068,17 @@ d:{
 39:{n1:'备注',n2:'为用户添加备注',on:function(e,a){adminui.remarkUi(e,a.tid,a.pid)},
 	ck:function(a){if ( a.__GP.lesser && a.__GP.admincheck)return 1} },
 
-40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索\u2074',n2:'搜索作者版面内的回复',n3:'搜索版内回复'},
+40:{u:"/thread.php?searchpost=1&authorid={pAid}&fid={fid}",n1:'搜索\u2074',n2:'搜索作者版面内的回复',n3:'版内回复'},
 
 41: {
-	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐回复', on: function (e, a) {
+	n1: '抽楼', n2: '锁定隐藏该回复', n3: '锁隐', on: function (e, a) {
 		__NUKE.doRequest({
 			u: __API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 1026, 0, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
 			b: this
 		})
 	},
 	ck: function (a) { if ((a.__GP.admincheck & 2) && a.pid && parseInt(a.pid, 10) && a.pid > 0) return 1 }
-},
+	},
 
 42: {
 	n1: '解抽', n2: '解除锁定隐藏', n3: '解除锁隐', on: function (e, a) {
@@ -1878,18 +2094,36 @@ ck:function(a){if ((a.__GP.admincheck&2) && (a.pid|0))return 1} },
 			u:{u:__API._base,	a:{__lib:"filter",__act:"get_testlog",fid:-7,tid:a.tid,pid:a.pid,raw:3}	},
 			f:function(d){
 				if(d.data && d.data[0]){
-					y=''
-					for(var k in d.data[0]){
-						var x=''
-						eval('x='+d.data[0][k].data)
-						y+=commonui._debug._d(x)
+					var x=''
+					eval('x='+d.data[0])
+					for(var i=0;i<x.length;i++){
+						if(typeof x[i]=='number')
+							x[i] = '\n'+commonui.time2date(x[i]|0,'Y-m-d H:i:s')
+						else if(x[i].extra)
+							x[i].extra = x[i].extra.replace(/ac |pass|block|wait|review|manual|auto|:\d+/g,function(j){
+								var x ='ac 4审核中心pass2通过block2阻止wait2等待review2查看post2帖子ignore2忽略del2删除manual2人工auto2自动'
+								,i = x.indexOf(j)
+								if(i>-1)
+									return x.substr(i+j.length+1,x.charAt(i+j.length)|0)
+								return 'by UID'+j
+								})
 						}
-					commonui.alert(_$('/pre')._.add(y))
+					commonui.alert(_$('/pre')._.add(commonui._debug._d(x)), null, 1)
 					}
-				},
+				}
 		})
 	},
-ck:function(a){if (a.__GP.super)return 1} }
+	ck:function(a){if (a.__GP._bit & (8|4194304|2097152))return 1}
+	},
+44: {
+	n1: '审核', n2: '审核通过', n3: '审核通过'
+	, on: function (e, a) {
+		__NUKE.doRequest({
+			u:__API.setPost(a.tid + ',' + (a.pid ? a.pid : 0), 0, 0, 0, 512|67108864, '', '', undefined, window.__CURRENT_FID ? __CURRENT_FID : ''),
+			b: this
+		})
+	},
+ck:function(a){if(a.__GP._bit & (4|4194304|2097152))return 1} }
 },
 
 replaceUrl:function (u){
@@ -1899,9 +2133,10 @@ return u.replace('_TOPIC',e(document.title)).replace('_URL',e(document.location.
 
 def:[28,6,7,8,34],
 all:{
-'帖子':[4,5,6,7,8,9,18,33,35,36,37,38],
-'用户':[19,20,21,22,23,40,39],
-'管理':[10,11,13,14,15,16,41,42,17,29,32,30,43],
+'帖子':[4,6,7,8,9,36,35,38,5,18,33],
+'作者':[23,20,19,21,22],
+'管理':[10,41,42,17,29,32,30,44,43],
+'作者管理':[11,13,39,14,15,16],
 '分享':[25]
 },
 
@@ -1915,11 +2150,17 @@ genC:commonui.buttonBase.genC,
 
 genA:commonui.buttonBase.genA,
 
+inhis:commonui.buttonBase.inhis,
+
 genB:commonui.buttonBase.genB,//fe
 
-load:function(argid){
+init:function(){
 if(!this.argCache)
 	this.argCache = commonui.postArg.data
+},
+
+load:function(argid){
+this.init()
 var arg = this.argCache[argid]
 
 if(arg.pC && arg.pC.getBoundingClientRect && !arg.comment && window.__CURRENT_UID){//不是评论 并且登录状态
@@ -1932,18 +2173,34 @@ pos:__NUKE.position.get,
 
 eventHandlerOver:function(e,o,arg){
 
+if(e.type=='touchstart')
+	o._touchstarttime = e.timeStamp
+else if(e.type=='mouseover'){
+	if(e.timeStamp && (e.timeStamp-o._touchstarttime)<500)//touch触发的mouse事件忽略
+		return
+	}
+
 var x = o.getBoundingClientRect(),y=this.pos(e)
 
 if(
-	(arg.vsmall && y.x>x.left+(x.right-x.left)/5 && y.x<x.right-(x.right-x.left)/5) ||
-	(!arg.vsmall && y.x<x.right-(x.right-x.left)/4)
+	(arg.vsmall && y.x>x.left+(x.right-x.left)/5 && y.x<x.right-(x.right-x.left)/5) || //小屏点中间区域
+	(!arg.vsmall && y.x<x.right-(x.right-x.left)/4) //大屏点左侧区域
 	){
 	if(this.currentBtn){
-		if(e.type=='touchstart' || o._postBtn!=this.currentBtn){
+		if(o._postBtn!=this.currentBtn){//如点的不是本贴消失
 			this.currentBtn.style.display='none'
+			return
+			}
+		else if(e.type=='touchstart'){//touch时 除了点按钮条都消失
+			var t = e.target
+			while(t && t.nodeName!='body' && t!=this.currentBtn)
+				t = t.parentNode
+			if(this.currentBtn!=t){
+				this.currentBtn.style.display='none'
+				return
+				}
 			}
 		}
-	return
 	}
 
 if(!o._postBtn){
@@ -1968,6 +2225,64 @@ var argid = this._.gV('argid')
 var b=commonui.postBtn.btnCache[argid]
 if(b)b.style.display='none'
 },//fe
+
+floatBtn : function(cp,mp){
+
+if(!this.floatBtn.o){
+	var $=_$,v = $('/div','className','single_ttip3','style','position:fixed;left:0.5em;bottom:0.5em'
+		,$('/span', 'className','content'
+			,$('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
+				if(window.__APPEMBED)
+					window.__API['do']('999?topage#',{tid:a.tid})
+				else
+					{}
+				},'innerHTML',0+' / '+0)
+			,$('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
+				var a = commonui.postArg.def
+				if(a){
+					if(window.__APPEMBED)
+						window.__API['do']('9?moderatorStr#',{tid:a.tid})
+					else
+						commonui.topicBtn.allBtn(e,commonui.topicBtn.argCache)
+					}
+				})._.add('管理',$('/br'),'管理')
+			,$('/a','href','javascript:void(0)','style','margin:0 0.5em','className','inlineBlock','onclick',function(e){
+				var a = commonui.postArg.def
+				if(a){
+					if(window.__APPEMBED)
+						window.__API['do']('4?replyStr#',{tid:a.tid,pid:a.pid})
+					else
+						commonui.openPostWindow(e,postfunc.__REPLY,'',a.tid)
+					}
+				})._.add('回复',$('/br'),'回复')
+			)
+		,$('/div','className','clear')
+		)
+	v.style.display=''
+	document.body.appendChild(v)
+	this.floatBtn.o = v
+	var lastscroll=0,ti
+		,show=function(){commonui.postBtn.floatBtn.o.style.display=''}
+		,hide=function(){commonui.postBtn.floatBtn.o.style.display='none'}
+	commonui.aE(window,'scroll',function(){
+		if(ti)
+			clearTimeout(ti)
+		var st = window.pageYOffset || document.documentElement.scrollTop
+		if (st > lastscroll){
+			ti = setTimeout(hide,200)
+			} 
+		else {
+			ti = setTimeout(show,200)
+			}
+		lastscroll = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+		})
+	}
+var x = this.floatBtn.o.firstChild.firstChild
+if(cp)x._cp=cp
+if(mp)x._mp=mp
+x.innerHTML = x._cp+' / '+x._mp
+x.nextSibling.style.display=commonui.postArg.def.__GP.admincheck ? '':'none'
+},
 	
 allBtn:commonui.buttonBase.allBtn,
 
@@ -1977,20 +2292,99 @@ clearHis:commonui.buttonBase.clearHis,//
 
 clearCache:commonui.buttonBase.clearCache,//
 clearArgCache:function(){
-this.argCache = null
+delete this.argCache
+this.argCache = {}
 }//
 }//ce
 
 
 
 
-commonui.postBtn.allBtn = function(e,arg,nohis){
-if(window.__CURRENT_FID!=-34587507)
-	return this.parent.buttonBase.allBtn.call(this,e,arg,nohis)
+commonui.postBtn.allBtn = function(e,argi,nohis){
 
-if(!this._stylelo){
-	this._stylelo = 1
-	__NUKE.addCss('@font-face {font-family: "SrcSunHeavy";\n\
+var $=_$
+,arg = typeof(argi)!='object' ? this.argCache[argi] : argi
+,x = this.parent.buttonBase.allBtn.call(this, e, arg, nohis, 1)
+,s = location.protocol+'//'+location.host
+,l= x.lastChild,v
+
+while(l && l.className.indexOf('group')==-1)
+	l=l.previousSibling
+
+if(l.lastChild.innerHTML=='分享到微博')
+	l.lastChild.innerHTML='微博'
+
+if(__GP.admincheck){
+	var y = x.getElementsByTagName('a')
+	for(var i=0;i<y.length;i++){
+		v=y[i].firstChild.nodeValue
+		if(v == '解除锁隐')
+			y[i].$0('innerHTML','')._.add('锁隐',$('/div','className','info')._.add('解除'))
+		else if(v.charAt(0) == '审')
+			y[i].$0('innerHTML','')._.add(v.substr(0,2),$('/div','className','info')._.add(v.substr(2)))
+		}
+	}	
+
+var y = $('/div','className','cell rep block_txt_big','style','background:none;padding-left:0;padding-right:0')
+
+
+if(arg.tid){
+
+	y._.add(
+		$('/span','className',"url",'style','line-height:1.5em'
+			,$('/span','className',"silver",'innerHTML','主题地址 ')
+			,$('/input','className',"xtxt",'style','margin:0 0.1em;background:transparent;box-shadow:none;width:'+((__SETTING.bit&16) ? '15':'22')+'em;border:1px solid '+__COLOR.bg0,'value',s+'/read.php?tid='+arg.tid,'onfocus',function(){this.select()},'dir','rtl')
+			)
+		)
+	}
+
+if (arg.pid!='tpc' && arg.pid>0){
+	y._.add(
+		$('/br'),
+		$('/span','className',"url",'style','line-height:1.5em'
+			,$('/span','className',"silver",'innerHTML','回复地址 ')
+			,$('/input','className',"xtxt",'style','margin:0 0.1em;background:transparent;box-shadow:none;width:'+((__SETTING.bit&16) ? '15':'22')+'em;border:1px solid '+__COLOR.bg0
+				,'value',s+'/read.php?pid='+arg.pid+'&opt=128'
+				,'onfocus',function(){this.select()},'dir','rtl')
+			)
+		)
+	}
+
+l._.add(y)
+
+if((arg.tid || arg.pid) && commonui.QRCode && window.__UA && (__UA[2]==1 || __UA[2]==3) && !(__UA[0]==1 && __UA[1]<8)){
+	l._.add(
+		$('/img','src','about:blank', 
+			'style','display:none;margin:0.5em 0 0 0;float:right', 
+			'alt',s+'/?j='+
+				(arg.tid ? 't'+arg.tid : '')+(arg.pid!='tpc' && arg.pid>0 ? 'p'+arg.pid : '')/*+(w.__CURRENT_UID ? 'h'+w.__CURRENT_UID : '')*/, 
+			'onerror', function(){
+				commonui.QRCode.loadDataUrl(this,this.alt,function(){this.style.display=''},{ecclevel:'L',bg:'',margin:0,color:__COLOR.border0})
+				}
+			)
+		,$('/div','className','clear')
+		)
+	}
+
+
+
+	
+if(false){
+	if(!this.adminWindowSpp){
+		this.adminWindowSpp = commonui.createCommmonWindow()
+		var b = this.adminWindowSpp
+		,a = b.getElementsByTagName('div')
+		b.$0('style','background:none;box-shadow:none;border:none;max-width:initial')
+		for(var i=0;i<a.length;i++)
+			a[i]._.attr('style','background:none;border:none')
+			
+		b._.__t._.attr('style','background:rgba(40,40,40,0.5);border:none')
+		b._.__t.firstChild._.attr('style','background:rgba(40,40,40,0.5);color:#eee')
+		b.firstChild._.attr('style','transform: scale(1.1) perspective(30em) rotatey(-7deg);transform-origin: 100% 50% 0;')
+
+		if(!this._styleFontHSun){
+			this._styleFontHSun = 1
+			__NUKE.addCss('@font-face {font-family: "SrcSunHeavy";\n\
 src: url("'+__IMG_STYLE+'/font/SourceHanSerifCN-Heavy.eot?1");\n\
 src: url("'+__IMG_STYLE+'/font/SourceHanSerifCN-Heavy.eot?#iefix") format("embedded-opentype"),\n\
 url("'+__IMG_STYLE+'/font/SourceHanSerifCN-Heavy.ttf?1") format("truetype"),\n\
@@ -1998,131 +2392,52 @@ url("'+__IMG_STYLE+'/font/SourceHanSerifCN-Heavy.woff?1") format("woff"),\n\
 url("'+__IMG_STYLE+'/font/SourceHanSerifCN-Heavy.svg#SrcSunHeavy") format("svg");\n\
 font-style: normal;\n\
 font-weight: normal;}')
-	}
-
-
-var w=window,$=w._$,c = w.commonui,z=null,
-x= $('/div','style','width:20em;color:'+__COLOR.gbg2+';font-family:SrcSunHeavy;font-size:26px;line-height:1.2em;'),y=this.all,self=this,s = ' '+w.location.protocol+'//'+w.location.host
-
-if(typeof(arg)!='object')
-	arg = this.argCache[arg]
-
-if(!this.his){
-	this.his = this.parent.userCache.get(this.saveKey);
-	if(!this.his)this.his=[]
-	}
-
-var his = this.his, iin = function(x){
-	for(var j=0;j<his.length;j++)
-		if(x==his[j])
-			return 1
-	}
-
-if(!this.adminWindowSp){
-	var b = c.createCommmonWindow()
-	var a = b.getElementsByTagName('div')
-	b._.attr('style','background:none;box-shadow:none;border:none')
-	for(var i=0;i<a.length;i++){
-		a[i]._.attr('style','background:none;border:none')
+			}
 		}
-	b._.__t._.attr('style','background:rgba(40,40,40,0.5);border:none')
-	b._.__t.firstChild._.attr('style','background:rgba(40,40,40,0.5);color:#eee')
-	b.firstChild._.attr('style','transform:perspective(30em) rotatey(-10deg) scale(0.9);transform-origin: 100% 50% 0;')
-	this.adminWindowSp = b
+
+	//x.$0('style','font-size:1.457em')
+	var y = x.getElementsByTagName('a'),z=1
+	for(var i=0;i<y.length;i++){
+		if(y[i].className.indexOf('cell')>-1)
+			y[i].$0('style','box-shadow:0px 0px 0.75em -0.3em #444')
+		if(y[i].className.indexOf('his')>-1){z=0
+			y[i]._.attr('style','background:#00b3fd;color:#fff;font-family:SrcSunHeavy')}
+		else
+			y[i]._.attr('style','background:#fff;color:#444;font-family:SrcSunHeavy')
+		if(y[i].className.indexOf('firstcell')>-1)
+			y[i]._.attr('style','margin-left:'+Math.random()+'em')
+		}
+
+	if(z)
+		for(var i=0;i<y.length;i++){
+			if(y[i] && (y[i].innerHTML=='回复' || y[i].innerHTML=='只看作者'))
+				y[i]._.attr('style','background:#00b3fd;color:#fff')
+			}
+
+	var y = x.getElementsByTagName('span')
+	for(var i=0;i<y.length;i++)
+		if(y[i].className.indexOf('url')>-1){
+			y[i]._.attr('style','background:#fff;color:#444')
+			y[i].lastChild._.attr('style','border:none;color:#444')
+			}
+		else if(y[i].className.indexOf('title')>-1)
+			y[i]._.attr('style','float:left;margin-top:-1em;margin-bottom:-1em;height:auto;padding:0.2em;position:relative;outline:double 3px orangered;background:orangered;width:auto;color:#fff')
+
+	this.adminWindowSpp._.addContent(null)
+	this.adminWindowSpp._.addContent(x)
+	this.adminWindowSpp._.show(e)
+	return 
 	}
+
+if(!this.adminWindowSp)
+	this.adminWindowSp = commonui.createCommmonWindow()
+
 this.adminWindowSp._.addContent(null)
-
-var pvm = 1,nvm,a=null,b=null,i=null
-for (var k in y){
-	a=k
-	for (var kk=0;kk<y[k].length;kk++){
-		if(z=this.genA(arg,y[k][kk],nohis)){
-			if(this.d[y[k][kk]].n1 && this.d[y[k][kk]].n1.charAt(0)=='搜'){
-				z.innerHTML=this.d[y[k][kk]].n3.replace('搜索','').replace(/\(.+/,'')
-				if(b){
-					if(b._sub)
-						b._sub._.add(' | ',z)
-					continue
-					}
-				else{
-					i=z
-					z = b = $('/div',$('/div','style','font-size:0.85em;padding:0 0.25em;background:'+__COLOR.gbg1+';color:'+__COLOR.bg0,'innerHTML','搜索'))
-					}
-				}
-			nvm =  Math.random()
-			z._.attr(
-				'style','display:block;box-shadow:0px 0px 0.75em -0.3em '+__COLOR.gbg1+';height:2.4em;float:left;padding:0.2em 1em 0.5em 0.2em;margin:0.2em -'+nvm+'em 0.2em '+(pvm+0.4)+'em;color:'+__COLOR.gbg0+';background:'+__COLOR.gbg5
-				)._.add(
-				$('/div','style','font-size:0.75em;color:'+__COLOR.gbg4,'innerHTML','&nbsp;')._.add(i,i=null)
-				)
-			z._sub = z.lastChild
-			if(iin(y[k][kk])){
-				z.insertBefore(z.lastChild,z.firstChild)
-				z._.attr('style','background:#00b3fd;color:#fff')
-				}
-			if(a)
-				z.insertBefore( $('/div','style','font-size:0.5em;line-height:1.5em;height:1.5em;background:orangered;margin:-1.2em auto auto -1em;outline:double 3px orangered;float:left;padding:0 0.25em;color:#eee','innerHTML',a,a=null), z.firstChild)
-
-			pvm = nvm
-			x._.add(z)
-			}	
-		}
-	}
-
-	
-if((arg.tid || arg.pid) && c.QRCode && w.__UA && (w.__UA[2]==1 || w.__UA[2]==3) && !(w.__UA[0]==1 && w.__UA[1]<8)){
-	x._.add(
-		$('/br'),
-		$('/img').$0('src','about:blank', 
-			'style','display:block;float:right;width:6.5em;height:6.5em;clear:both', 
-			'alt',w.location.protocol+'//'+w.location.hostname+'/?j='+
-				(arg.tid ? 't'+arg.tid : '')+(arg.pid!='tpc' && arg.pid>0 ? 'p'+arg.pid : '')/*+(w.__CURRENT_UID ? 'h'+w.__CURRENT_UID : '')*/, 
-			'onerror', function(){
-				c.QRCode.loadDataUrl(this,this.alt,function(){this.style.display=''})
-				}
-			)
-		)
-	}
-
-if(arg.tid){
-	nvm =  Math.random()*2
-	x._.add(
-		$('/div','style','display:block;box-shadow:0px 0px 0.75em -0.3em '+__COLOR.gbg1+';height:2.4em;float:left;padding:0.2em 1em 0.5em 0.2em;margin:0.2em -'+nvm+'em 0.2em '+(pvm+0.4)+'em;width:10em;color:'+__COLOR.gbg0+';background:'+__COLOR.gbg5
-				)._.add(
-				'主题地址',
-				$('/div','className',"xtxt",'style','font-size:0.5em;line-height:1.5em;color:'+__COLOR.gbg4,'innerHTML',' '+s+'/read.php?tid=<nobr class=red>'+arg.tid+'</nobr> ', 'onclick',function(){commonui.buttonBase.selTxt(this)})
-				)
-		)
-	pvm = nvm
-	}
-
-if (arg.pid!='tpc' && arg.pid>0){
-	nvm =  Math.random()*2
-	x._.add(
-		$('/div','style','display:block;box-shadow:0px 0px 0.75em -0.3em '+__COLOR.gbg1+';height:2.4em;float:left;padding:0.2em 1em 0.5em 0.2em;margin:0.2em -'+nvm+'em 0.2em '+(pvm+0.4)+'em;width:10em;color:'+__COLOR.gbg0+';background:'+__COLOR.gbg5
-				)._.add(
-				'此回复地址',
-				$('/div','className',"xtxt",'style','font-size:0.5em;line-height:1.5em;color:'+__COLOR.gbg4,'innerHTML',' '+s+'/read.php?pid=<nobr class=blue>'+arg.pid+'</nobr> ', 'onclick',function(){commonui.buttonBase.selTxt(this)})
-				)
-		)
-	pvm = nvm
-	
-	nvm =  Math.random()*2
-	x._.add(
-		$('/div','style','display:block;box-shadow:0px 0px 0.75em -0.3em '+__COLOR.gbg1+';height:2.4em;float:left;padding:0.2em 1em 0.5em 0.2em;margin:0.2em -'+nvm+'em 0.2em '+(pvm+0.4)+'em;width:15em;color:'+__COLOR.gbg0+';background:'+__COLOR.gbg5
-				)._.add(
-				'此位置地址',
-				$('/div','className',"xtxt",'style','font-size:0.5em;line-height:1.5em;color:'+__COLOR.gbg4,'innerHTML',' '+s+c.genPidLink(arg.pid,arg.i)+' ', 'onclick',function(){commonui.buttonBase.selTxt(this)})
-				)
-		)
-	pvm = nvm
-	}
-
-x._.add($('/div','className','clear'))
 
 this.adminWindowSp._.addContent(x)
 
 this.adminWindowSp._.show(e)
+
 
 }//fe
 
@@ -2175,7 +2490,7 @@ d:{
 	on:function(e,a){commonui.favor(e,this,a.tid)},
 	ck:function(a){if(__CURRENT_UID)return 1} },
 
-11:{n1:'<span style="font-size:1.23em">发表回复</span>',
+11:{n1:function(){return _$('/span','style','fontSize:1.23em')._.add((__SETTING.bit&16?'':'发表')+'回复')},
 	n2:'发表回复',
 	c:'disable_tap_menu uitxt1',
 	on:{
@@ -2206,12 +2521,10 @@ d:{
 	on:function(e,a){commonui.setTopicBlock(this,a.tid)},
 	ck:function(a){return 1} },
 15:{n1:'APP阅读',n2:'使用论坛APP阅读此主题',n3:'APP阅读此贴',
-	u:'nga://?tid={tid}'.replace(/.*/,function($1){
+	u:{replace:function(){
 		var p = location.search.match(/(?:uid|stid|fid|tid|page|pid)=(?:-?\d+)/g)
-		if(p)
-			return 'nga://?'+p.join('&')
-		return $1
-		}),
+		return 'nga://?'+( p? p.join('&') : '')
+		}},
 	c:'disable_tap_menu teal',
 	on:function(e,a,o){
 		if(__SETTING.uA[0]==7){
@@ -2253,15 +2566,25 @@ genC:commonui.buttonBase.genC,
 
 genA:commonui.buttonBase.genA,
 
-load:function(o,fid,tid,admin){
-	
-if((admin || window.__GP.userBit & 4 ||__CURRENT_UID != 17387322 ) && !window.adminui)loader.script(__COMMONRES_PATH+'/js_admin.js')
-var arg={fid:fid,
-	tid:tid,
-	admin:admin ? admin : window.__GP.admincheck,
-	anyAdmin:window.__GP.userBit & 4,
+argCache:null,
+
+init:function(){
+var a = commonui.postArg.def
+this.argCache = {
+	fid:a.fid,
+	tid:a.tid,
+	admin:a.__GP.admincheck,
+	anyAdmin:a.__GP.userBit & 4,
 	pid:0,
-	greater:window.__GP.greater}, i=0,l=this.def,xx=null, max= __SETTING.bit & 8 ? 5 : 8,oo = commonui.stdBtns()
+	greater:a.__GP.greater
+	}
+if((this.argCache.admin || this.argCache.anyAdmin ) && !window.adminui)
+	loader.script(__COMMONRES_PATH+'/js_admin.js')
+},
+
+load:function(o,fid,tid,admin){
+this.init()
+var i=0,l=this.def,xx=null, max= __SETTING.bit & 8 ? 5 : 8,oo = commonui.stdBtns()
 
 if(!this.his){
 	this.his = commonui.userCache.get(this.saveKey);
@@ -2270,7 +2593,7 @@ if(!this.his){
 while(1){
 	for (var k=0;k<l.length;k++){
 		if(i++>=max)break
-		if(xx=this.genA(arg,l[k],1))
+		if(xx=this.genA(this.argCache,l[k],1))
 			oo._.__ins(xx)
 		}
 	if(l==this.his)break
@@ -2291,7 +2614,10 @@ saveHis:function(id){if(id!=13 && id!=14)this.saveHis1(id)},//fe
 saveHis1:commonui.buttonBase.saveHis,//fe
 
 clearHis:commonui.buttonBase.clearHis,//fe
-clearCache:commonui.buttonBase.clearCache//fe
+clearCache:commonui.buttonBase.clearCache,//fe
+clearArgCache:function(){
+	this.argCache = null
+	}//
 }//ce
 
 /*

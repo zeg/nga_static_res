@@ -414,15 +414,25 @@ phpRawurlencode:function(text){//
 	return {u:this._base,
 		a:{__lib:"misc",__act:"php_rawurlencode",text:text,raw:3}
 		}
-	},
+	},/*
 _gen:function(){
 	var f = arguments[0]
 	f.action = this._base
 	for(var i=1;i<arguments.length;i+=2)
 		f.appendChild(_$('input/').$0('type','hidden','name',arguments[i],'value',arguments[i+1]))
-	},
+	},*/
+toUri : function(){
+	var x = {'a':{}}
+	x.u = arguments[0]
+	if(!x.u)
+		x.u = this._base
+	for(var i=1;i<arguments.length;i+=2)
+		x.a[arguments[i]] = arguments[i+1]
+	return x
+	},		
 _cache:'/data/bbscache/',
-_base:'/nuke.php?'
+_base:'/nuke.php?',
+_outputForPost:3
 }//ce
 
 
@@ -879,7 +889,7 @@ this.defS = defS;
 //else if(bit===null)
 //	bit=bits.auto
 
-bit = n.toInt(bit)
+bit = bit|0
 
 this.UAInit()
 
@@ -1016,7 +1026,6 @@ mm = function(o,z){
 	b |= s.size10 | o
 	w=z
 	}
-
 if(b & s.embed){//Èç¹ûÊÇÇ¶Èë¿Í»§¶Ë
 	b = 0
 	sss(s.lessPic)
@@ -1037,7 +1046,7 @@ else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//Èç¹ûÃ»Éè³
 			ss(s.autoPic|s.lessPic)
 		}
 	else if(this.uA[6]&2){//phone
-		if(ww.screen.width>ww.screen.height)//ºáÆÁ
+		if(ww.innerWidth>ww.innerHeight)//ºáÆÁ
 			ss(s.autoPic|s.lessPic)
 		else//ÊúÆÁ
 			sss(s.autoPic|s.lessPic)
@@ -1050,9 +1059,9 @@ else if( (b&(s.size10|s.size7|s.size4|s.size24))==0 || (b & s.auto)){//Èç¹ûÃ»Éè³
 		else if(w<=735)//700*1.05
 			ss(s.autoPic|s.lessPic)
 		else if(w<=987)//940*1.05
-			mm(0,(b & s.inIframe) ? w=w*-1 : 940)
+			mm(0,(b & s.inIframe) ? w=w*-1 : -940)
 		else if(w<=1000)
-			mm(0,(b & s.inIframe) ? w=w*-1 : 1000)
+			mm(0,(b & s.inIframe) ? w=w*-1 : -1000)
 		else
 			w=w*-1
 		}
@@ -1125,19 +1134,26 @@ if(bit & bs.fontHei){
 if(this.uA[4]==3 || this.uA[4]==1){//webkit/edge
 	if(this.uA[0]==5){//safari
 		if(bit & bs.size10)//small screen tablet or phone
-			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25em;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-bottom:0.15em;} \n .stdbtn a {padding-bottom:0.15em;}'
+			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.25em;padding-top:0;padding-bottom:0.15em} \n .vertmod{vertical-align:0.083em}'
 		else
 			this.css+='\nbutton, .small_colored_text_btn, .block_txt {line-height:1.35em;padding-top:0.05em;padding-bottom:0} \n .vertmod{}'
 		}
 	else{
 		if(bit & bs.size10)//small screen tablet or phone
-			this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em} \n .nav_root, .nav_link, .nav_spr {padding-top:0.15em;} \n .stdbtn a {padding-top:0.15em;}'
+			this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
 		else
 			this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
+		}
+	if((bit & bs.size10) && (this.uA[2]==2 || this.uA[2]==4)){//small screen android or ios ×ÖÌåÏÂ»®Ïß¸ß¶È²»Í¬µ¼ÖÂ´¹Ö±Æ«²î
+		if(this.uA[2]==4)//ios
+			this.css+='\n .nav_root, .nav_link, .nav_spr {padding-bottom:0.075em;line-height:2.782em} \n .stdbtn a {padding-bottom:0.075em;line-height:2.782em}'
+		else//android
+			this.css+='\n .nav_root, .nav_link, .nav_spr {padding-top:0.075em;line-height:2.782em} \n .stdbtn a {padding-top:0.075em;line-height:2.782em}'
 		}
 	}
 else	
 	this.css+='\nbutton, .block_txt {line-height:1.4em;padding-top:0.1em;padding-bottom:0} \n .small_colored_text_btn {line-height:1.5em;padding-top:0;padding-bottom:0} \n .vertmod{vertical-align:0.083em}'
+	
 },
 
 smwm:0,
@@ -1261,10 +1277,11 @@ for(var i=0;i<H.length;i++)
 
 //mouseleave==================
 commonui.ifMouseOut=function(e,o){
-var /*t = e.srcElement ? e.srcElement : e.target, */r = e.relatedTarget ? e.relatedTarget : e.toElement;
-while (r && r != o && r.nodeName != 'BODY')
+var r = e.relatedTarget ? e.relatedTarget : e.toElement;
+while (r && r.nodeName != 'BODY'){
+	if (r==o) return
 	r= r.parentNode
-if (r==o) return;
+	}
 return true
 }//fe
 
@@ -1579,7 +1596,7 @@ return s
 }
 
 /*
-function calcDis(x,y,z){
+sfunction calcDis(x,y,z){
 var c = commonui
 x = c.hexToRgb(x)
 x = c.rgbToHsv(x)
@@ -1805,10 +1822,11 @@ x._.__add = function(a,opt){
 		this.__tr.insertBefore($('/td')._.add(a),this.__tr.firstChild)
 	else
 		this.__tr.appendChild($('/td')._.add(a))
+	return this.self
 	}
 //×óÌí¼ÓÒ»¸öµ¥Ôª
 x._.__ins = function(a){
-	this.__add(a,1)
+	return this.__add(a,1)
 	}
 //ÒÆ³ıÒ»¸ö Ö¸¶¨index»òÕß×îºóÒ»¸ö
 x._.__remove = function(i){
@@ -1817,6 +1835,7 @@ x._.__remove = function(i){
 	else
 		this.__tr.removeChild(this.__tr.lastChild)
 	this.__length--
+	return this.self
 	}
 //Çå³ı×ó²àÔ²½Ç
 x._.__cL = function(x){
@@ -1826,10 +1845,11 @@ x._.__cL = function(x){
 		}
 	f( x?this.__tr.lastChild.firstChild:this.__tr.firstChild.firstChild ,x)
 	f(this.self,x)
+	return this.self
 	}
 //Çå³ıÓÒ²àÔ²½Ç
 x._.__cR = function(){
-	this.__cL(1)
+	return this.__cL(1)
 	}
 return x
 /*
@@ -2030,20 +2050,21 @@ return CALL(opt, callname+' '+(callback?k:'null')+' '+arg, host)
 commonui.crossDomainCall.setCallBack=function(k,v){CB[k] = v}
 
 window.addEventListener("message", function(e){
-if(!e.origin.match(/(?:nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs.com|bigccq\.cn)(?::\d+)?$/))
+if(!e.origin.match(/(?:127\.0\.0\.1|nga\.cn|ngacn\.cc|nga\.178\.com|nga\.donews\.com|ngabbs.com|bigccq\.cn)(?::\d+)?$/))
 	return
 var call,callback,a = (e.data+'').replace(/^([^\s]+)\s+([^\s]+)\s+/,function($0,$1,$2){call=$1;callback=$2;return ''})
 if(call){
 	if(CB[call])
-		return CB[call](a)
+		return CB[call](a,{origin:e.origin})
 	else if(window['crossDoaminCall_'+call])
-		return window['crossDoaminCall_'+call](a)
+		return window['crossDoaminCall_'+call](a,{origin:e.origin})
 	}
 })
 
 })();//fe
 
 //±¾µØ»º´æ=====================
+commonui.userCache=null
 ;(function(){
 var co = commonui, C = {}, CH = false, P = 'userCache_'+(window.__CURRENT_UID ? __CURRENT_UID+'_' : '0_') , PO = location.protocol ,S = domStorageFuncs, CK = __COOKIE, H=co.crossDomainCall,
 HS = ['http://bbs.ngacn.cc','http://nga.donews.com','http://bbs.nga.cn','http://nga.178.com','http://bbs.bigccq.cn','https://bbs.ngacn.cc','https://bbs.donews.com','https://bbs.nga.cn','https://nga.178.com','https://bbs.bigccq.cn','http://ngabbs.com','https://ngabbs.com'],
@@ -2101,13 +2122,32 @@ P = 'userCache_'+uid+'_'
 }//fe
 }//ce
 })();
+
+
+//µ¯´°½çÃæ=====================
+
+commonui.errorAlert = function(x){
+if(!document.body)
+	return setTimeout(function(){commonui.errorAlert(x)},1000)
+if(!this.errorAlert.o){
+	this.errorAlert.o = _$('/div','style','position:fixed;left:0;top:0;background:#f00;color:#fff;padding:0.2em 0.3em 0.3em 0.3em;white-space:pre;','onclick',function(){
+		var o = this
+		setTimeout(function(){o.style.display='none'},1000)
+		})
+	document.body.appendChild(this.errorAlert.o)
+	}
+this.errorAlert.o._.add(x+'\n')
+this.errorAlert.o.style.display=''
+}//
+
+
 //µ¯´°½çÃæ=====================
 
 
 commonui.liteWindow = function(e,til,content){
 var $ = _$
 if(!this.liteWindow.w){
-	var v = $('/div','className','single_ttip3','style','background:rgba(0,0,0,0.5);border-radius:0.3em;padding:0.3em;position:absolute;'
+	var v = $('/div','className','single_ttip3'
 		,$('/span', 'className','title')
 		,$('/span', 'className','content')
 		,$('/div','className','clear')
@@ -2138,10 +2178,11 @@ __NUKE.position.setPos(w,e,null,1)
 }//
 
 //µ¯´°½çÃæ=====================
+commonui.createCommmonWindow=null
 ;(function(){
 var EVENT_INIT = 0, HIS
 
-commonui.createCommmonWindow = function (opt){//&1ÎŞ¶¯»­ &2ÎŞ±êÌâÀ¸
+commonui.createCommmonWindow = function (opt,prop){//&1ÎŞ¶¯»­ &2ÎŞ±êÌâÀ¸ &4¹Ø±ÕºóÉ¾³ı
 var $ = _$,ss=__SETTING.bit&__SETTING.bits.size4,r = __NUKE.cpblName(document.body.style,'transition',1,'transform',1,'transformOrigin',1,'opacity',1)
 
 ,t = $('/div').$0(
@@ -2159,9 +2200,10 @@ var $ = _$,ss=__SETTING.bit&__SETTING.bits.size4,r = __NUKE.cpblName(document.bo
 			}
 		},
 	'ondragend' , function(e){
-		var x = this.parentNode.parentNode, p = __NUKE.position.get(e)
-		l = Math.round(this._p.x1 - this._p.x + this._p.l),
-		t = Math.round(this._p.y1 - this._p.y + this._p.t)
+		var x = this.parentNode.parentNode
+		, p = __NUKE.position.get(e)
+		, l = Math.round(this._p.x1 - this._p.x + this._p.l)
+		, t = Math.round(this._p.y1 - this._p.y + this._p.t)
 		x.style.left = (l>=p.pw ? p.pw-50 : (x.getBoundingClientRect().right<0 ? l+50 : l )) + 'px'
 		x.style.top = (t>=0?t:0) + 'px'
 		},
@@ -2169,7 +2211,16 @@ var $ = _$,ss=__SETTING.bit&__SETTING.bits.size4,r = __NUKE.cpblName(document.bo
 	$('/a','className','colored_text_btn','href','javascript:void(0)',__TXT('close')._.css('line-height:1.85em'),'onclick',function(){
 		//if(ss && window.history)
 		//	history.back()
-		this.parentNode.parentNode.parentNode._.hide()
+		var x=this.parentNode.parentNode.parentNode
+		if(x._.__onclose)
+			x._.__onclose()
+		x._.hide()
+		if(opt&4)
+			setTimeout(function(){
+				x._.addContent(null)
+				x.parentNode.removeChild(x)
+				x=null
+				})
 		}),
 	$('/span','className','title','innerHTML','&nbsp;')
 	),
@@ -2186,6 +2237,10 @@ w = $('/div','className','single_ttip2','style',/*ss?'position:fixed;left:0;top:
 				)
 			)
 		)
+
+if(prop && prop.onclose)
+	w._.__onclose = prop.onclose
+
 /*
 if(ss && window.addEventListener && !EVENT_INIT){
 	EVENT_INIT = 1
@@ -2331,7 +2386,7 @@ w._.zsort = function(e){
 			x[i].style.zIndex=(--j)
 			x[i]._._commonWindowfocused=0
 			}
-		x[i-1]._._commonWindowfocusTime = e ? e.timeStamp : (window.performance ? performance.now() : 0 )
+		x[i-1]._._commonWindowfocusTime = e ? e.timeStamp : (window.performance&&performance.now ? performance.now() : 0 )
 		}
 	x[x.length-1]._._commonWindowfocused =1
 	}//
@@ -2351,11 +2406,12 @@ commonui.allCommonWindow = []
 //Ìæ´úalert===================
 ;(function(){
 var x
-commonui.alert = function(txt,til){
+commonui.alert = function(txt,til,opt){
 if(!x)x=this.createCommmonWindow()
 x._.addContent(null)
+x._.addTitle(null)
 if(til)x._.addTitle(til)
-x._.addContent(txt)
+x._.addContent(_$('/span','style',(opt&1)?'':'font-size:1.23em;font-weight:bold')._.add(txt))
 x._.show()
 }//
 })();
@@ -2518,7 +2574,7 @@ o.style.boxShadow='';
 }
 }
 
-//¸Ä±äÌØÊâ×Ö·ûµÄ±³¾°É«==========
+//¸Ä±ä??????Êâ×Ö·ûµÄ±³¾°É«==========
 /*
  * @param y ×Ö·û´®
  */
@@ -2735,18 +2791,20 @@ commonui.touchMoveAE = function(e,f){
 commonui.QRCode = {
 QR:null,
 query:[],
-loadDataUrl:function(imgo,str,f){//img obj / qr string / callback
+loadDataUrl:function(imgo,str,f,opt){//img obj / qr string / callback
 if(!str)
 	return
+if(!opt)
+	opt ={ecclevel:'L',bg:'#ffffff',color:'#000000'}
 if(!this.QR){
 	this.query.push([imgo,str])
 	if(this.QR!==0){
 		this.QR=0
 		var self = this
-		loader.script(__COMMONRES_PATH+'/js_qrcode.min.js',
+		loader.script(__COMMONRES_PATH+'/js_qrcode.min.js?538563',
 			function(){
 				for(var i=0;i<self.query.length;i++){
-					self.query[i][0].src = self.QR.generatePNG(self.query[i][1],{ecclevel:'L'})
+					self.query[i][0].src = self.QR.generatePNG(self.query[i][1],opt)
 					if(f)f.call(self.query[i][0])
 					}
 				}
@@ -2754,7 +2812,7 @@ if(!this.QR){
 		}
 	return
 	}
-imgo.src = this.QR.generatePNG(imgo.alt,{ecclevel:'L'})
+imgo.src = this.QR.generatePNG(imgo.alt,opt)
 if(f)f.call(imgo)
 }//fe
 }//ce
@@ -2773,7 +2831,7 @@ if(f)f.call(imgo)
 {
 //»ñÈ¡Ìû×Ó»òÖ÷ÌâµÄÀàĞÍËµÃ÷
 (function(){
-var P, VP,EP, PBALL=0,TMBALL=0
+var P, VP,EP, PBALL=0,TMBALL=0,VMK=0,EMK=0,
 G=1,//guest
 U=2,//user
 MOD=4,//ÏÔÊ¾ĞèÒª°æÖ÷È¨ÏŞ
@@ -2782,6 +2840,7 @@ WD=16,//warden
 SL=32,//superlesser
 SU=64,//super
 AD=128,//admin
+AU=1048576,//auditor
 
 MMOD=256,//ĞŞ¸ÄĞèÒª°æÖ÷È¨ÏŞ
 MLE=512,//ĞèÒªlesser
@@ -2789,6 +2848,7 @@ MWD=1024,//warden
 MSL=2048,//superlesser
 MSU=4096,//super
 MAD=8192,//admin
+
 MNO=524288,//²»ÄÜĞŞ¸Ä
 
 TT=16384,//½öÖ÷Ìâ
@@ -2796,45 +2856,48 @@ PP=32768,//½ö»Ø¸´
 TS=65536,//½öºÏ¼¯
 QF=131072,//½ö°æÃæ¾µÏñ
 QQ=262144,//½ö¾µÏñ
-PB={
-1:		[G|TT,					8192,		'',		'+',		"#BD7E6D",	'Ö÷ÌâÖĞÓĞ¸½¼ş',										''],
-2:		[G|TT|PP,				262144,	'ÄäÃû',	'',		'#909090',	'²»ÏÔÊ¾·¢ÌûÈËĞÅÏ¢',									''],
-3:		[G|PP,					1,			'ÆÀÂÛ',	'',		'#909090',	'ÕâÊÇ¶ÔÄ³Ò»¸öÌû×ÓµÄÆÀÂÛ/»Ø¸´/ÌùÌõ',				''],
-4:		[G|MMOD|TT|PP,			1024,		'Ëø¶¨',	'Ëø¶¨',	'#C58080',	'ÎŞ·¨±à¼­/»Ø¸´',										'ÎŞ·¨±à¼­/»Ø¸´*'],
-5:		[MOD|LE|MMOD|TT|PP,	2,			'Òş²Ø',	'Òş²Ø',	'#C58080',	'Ö»ÓĞ×÷Õß/°æÖ÷¿É¼û',								'×÷Õß/°æÖ÷¿É¼ûÄÚÈİ**'],
-6:		[MOD|MMOD|TT,			131072,	'±¾Çø',	'±¾Çø',	'#909090',	'²»ÔÚÁªºÏ°æÃæÖĞÏÔÊ¾',								'²»ÔÚÁªºÏ°æÃæÖĞÏÔÊ¾'],
-7:		[MOD|MMOD|TT|PP,		128,		'±à¼­',	'',		'#909090',	'³¬¹ıÊ±ÏŞÈÔ¿É±à¼­',									'³¬¹ıÊ±ÏŞÈÔ¿É±à¼­'],
-8:		[G|MAD|TT|TS,			32768,	'ºÏ¼¯',	'ºÏ¼¯',	'#A0B4F0',	'ÊÇÒ»¸öºÏ¼¯Ö÷Ìâ ÓÃ»§¿ÉÒÔÔÚºÏ¼¯ÖĞ·¢²¼×ÓÖ÷Ìâ',	'×ª³ÉºÏ¼¯'],
-9:		[G|MAD|TT|QF,			2097152,	'°æÃæ',	'°æÃæ',	'#A0B4F0',	'ÕâÊÇÒ»¸öµ½°æÃæµÄ¾µÏñ',								'×ª³É°æÃæ¾µÏñ'],
-10:	[G|MMOD|TT,				256,		'Õ¼Â¥',	'',		'#909090',	'Ö»ÄÜÖ÷Ìâ·¢²¼Õß×Ô¼º»Ø¸´',							'Ö»ÄÜÖ÷Ìâ·¢²¼Õß×Ô¼º»Ø¸´'],
-11:	[MOD|MWD|TT|PP,		16384,	'ÆÁ±Î',	'ÆÁ±Î',	'#C58080',	'×÷Õß/°æÖ÷¿É¼û',					'×÷Õß/°æÖ÷¿É¼û'],
-12:	[MOD|MNO|TS|QF|QQ,	1026,		'ÏÂ³Á',	'ÏÂ³Á',	'#A0B4F0',	'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡',						'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡'],
-13:	[MOD|MMOD|TS|QF|QQ,	16777216,'ÏÂ³Á',	'ÏÂ³Á',	'#A0B4F0',	'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡',						'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡'],
-14:	[MOD|MSL|TT|PP,		2048,		'´¦·£',	'´¦·£',	'#909090',	'ÓĞÓÃ»§ÔÚ´ËÌùÄÚ±»´¦·£',								'´¦·£±ê¼Ç'],
-15:	[MOD|TT|PP,				8,			'ÑÓÊ±',	'ÑÓÊ±',	'#909090',	'²é¿´Ô¤¶©²Ù×÷¼ÇÂ¼',									''],
-16:	[MOD|TT|PP,				32,		'±ê¼Ç',	'±ê¼Ç',	'#909090',	'²é¿´±ê¼Ç/¾Ù±¨¼ÇÂ¼',								''],
-17:	[MOD|MSL|TT,			524288,	'¸½¼ş',	'+',		"#BD7E6D",	'ÔÚÖ÷ÌâÁĞ±íÖĞÏÔÊ¾¸½¼ş',								'ÔÚÖ÷ÌâÁĞ±íÖĞÏÔÊ¾¸½¼ş'],
-18:	[MOD|MMOD|MWD|TT|PP,	512,		'ÉóºË',	'A',		'#C58080',	'ÕıµÈ´ıÉóºË',								'ÕıµÈ´ıÉóºË'],
+PB={//ÔÄ¶ÁÖ÷ÌâÊ±ÏÔÊ¾µÄ±ê¼Ç Ö÷ÌâÁĞ±íÖĞÏÔÊ¾µÄ±ê¼Ç ÑÕÉ« ËµÃ÷ ²Ù×÷½çÃæµÄËµÃ÷ ²Ù×÷½çÃæ¸ü³¤µÄËµÃ÷
+1:		[G|TT,					8192,		'',		'+',	"#BD7E6D",	'Ö÷ÌâÖĞÓĞ¸½¼ş']//no set
+,2:		[G|TT|PP,				262144,		'ÄäÃû',	'',		'#909090',	'²»ÏÔÊ¾·¢ÌûÈËĞÅÏ¢']//no set
+,3:		[G|PP,					1,			'ÆÀÂÛ',	'',		'#909090',	'ÕâÊÇ¶ÔÄ³Ò»¸öÌû×ÓµÄÆÀÂÛ/»Ø¸´/ÌùÌõ']//no set
+,4:		[G|MMOD|TT|PP,			1024,		'Ëø¶¨',	'Ëø¶¨',	'#C58080',	'ÎŞ·¨±à¼­/»Ø¸´']
+,5:		[MOD|AU|MMOD|TT|PP,		2,			'Òş²Ø',	'Òş²Ø',	'#C58080',	'Ö»ÓĞ×÷Õß/°æÖ÷¿É¼û']
+,6:		[MOD|MMOD|TT,			131072,		'±¾Çø',	'±¾Çø',	'#909090',	'²»ÔÚÁªºÏ°æÃæÖĞÏÔÊ¾']
+,7:		[MOD|MMOD|TT|PP,		128,		'±à¼­',	'',		'#909090',	'³¬¹ıÊ±ÏŞÈÔ¿É±à¼­']
+,8:		[G|MAD|TT|TS,			32768,		'ºÏ¼¯',	'ºÏ¼¯',	'#A0B4F0',	'ÊÇÒ»¸öºÏ¼¯Ö÷Ìâ ÓÃ»§¿ÉÒÔÔÚºÏ¼¯ÖĞ·¢²¼×ÓÖ÷Ìâ']
+,9:		[G|MAD|TT|QF,			2097152,	'°æÃæ',	'°æÃæ',	'#A0B4F0',	'ÕâÊÇÒ»¸öµ½°æÃæµÄ¾µÏñ']
+,10:	[G|MMOD|TT,				256,		'Õ¼Â¥',	'',		'#909090',	'Ö»ÄÜÖ÷Ìâ·¢²¼Õß×Ô¼º»Ø¸´']
+,11:	[MOD|AU|MWD|TT|PP,		16384,		'ÉóºË',	'A',	'#80C580',	'ÕıµÈ´ıÉóºË']
+,12:	[MOD|MNO|TS|QF|QQ,		1026,		'ÏÂ³Á',	'ÏÂ³Á',	'#C58080',	'ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡(Ëø¶¨+Òş²Ø)']//old no use
+,13:	[MOD|MMOD|TS|TT|QF|QQ,	16777216,	'ÏÂ³Á',	'ÏÂ³Á',	'#A0B4F0',	'Ö÷Ìâ/ºÏ¼¯/¾µÏñ/°æÃæ¾µÏñ²»ÉÏ¸¡']
+,14:	[MOD|MSL|TT|PP,			2048,		'´¦·£',	'´¦·£',	'#909090',	'ÓĞÓÃ»§ÔÚ´ËÌûÄÚ±»´¦·£']
+,15:	[MOD|TT|PP,				8,			'ÑÓÊ±',	'ÑÓÊ±',	'#909090',	'²é¿´Ô¤¶©²Ù×÷¼ÇÂ¼']//no set
+,16:	[MOD|TT|PP,				32,			'±ê¼Ç',	'±ê¼Ç',	'#909090',	'²é¿´±ê¼Ç/¾Ù±¨¼ÇÂ¼']//no set
+,17:	[MOD|MSL|TT,			524288,		'¸½¼ş',	'+',	"#BD7E6D",	'ÔÚÖ÷ÌâÁĞ±íÖĞÏÔÊ¾¸½¼ş']
+,18:	[MOD|AU|MMOD|MWD|TT|PP,	512,		'ÉóºË',	'A',	'#C58080',	'ÕıµÈ´ıÉóºË']
+,19:	[MOD|AU|MMOD|MWD|TT|PP,	67108864,	'ÉóºË',	'A',	'#404040',	'ÉóºËÎ´Í¨¹ı']
 },
 TMB={
-1:		[G|MMOD|TS,		131072,		'È«Ëø',	'È«Ëø',	'#C58080',	'ºÏ¼¯ÄÚÎŞ·¨±à¼­/»Ø¸´/·¢²¼×ÓÖ÷Ìâ',					'Ëø¶¨ºÏ¼¯µÄÈ«²¿Ö÷Ìâ'],
-2:		[MOD|MMOD|TS,	524288,		'ÏÂ³Á1',	'ÏÂ³Á1',	'#A0B4F0',	'ºÏ¼¯×ÓÖ÷Ìâ²»ÉÏ¸¡',									'ºÏ¼¯×ÓÖ÷Ìâ²»ÉÏ¸¡'],
-3:		[MOD|MMOD|TS|QF,16777216,	'ÕÛµş',	'ÕÛµş',	'#A0B4F0',	'',													'ºÏ¼¯/°æÃæ¾µÏñ²»ÏÔÊ¾¸½¼Ó×ÓÖ÷Ìâ'],
-4:		[MOD|MSU|TT,	256,			'¿ª·Å',	'¿ª·Å',	'#909090',	'',													'»Ø¸´²»ÊÜ×¢²áÊ±¼äÏŞÖÆ'],
-5:		[G|MMOD|TT,		2097152,		'È«Ää',	'È«Ää',	'#C58080',	'»Ø¸´Õâ¸öÖ÷Ìâ»á×Ô¶¯ÄäÃû',							'»Ø¸´×Ô¶¯ÄäÃû'],
-6:		[G|MMOD|TT,		33554432,	'È«Òş',	'È«Òş',	'#C58080',	'»Ø¸´Õâ¸öÖ÷Ìâ»á×Ô¶¯Òş²Ø',							'»Ø¸´×Ô¶¯Òş²Ø'],
-7:		[MOD|MMOD|TT,	67108864,	'Í³¼Æ',	'Í³¼Æ',	'#909090',	'',													'¼ÇÂ¼Ã¿ÈÕ·ÃÎÊÁ¿(ĞèÒª×îºóĞŞ¸ÄÔÚÒ»¸öÔÂÄÚ)'],
-//512:			[MOD|MSU|TT,	512,	'¿ª·Å1',	'¿ª·Å1',	'#909090',	'',													'Î´¼¤»îÓÃ»§¿É»Ø¸´'],
-//1024:			[MOD|MSU|TT,	1024,	'¿ª·Å2',	'¿ª·Å2',	'#909090',	'',													'½ûÑÔÓÃ»§¿É»Ø¸´'],
-//2048:			[MOD|MSU|TT,	2048,	'¿ª·Å3',	'¿ª·Å3',	'#909090',	'',													'NUKEÓÃ»§¿É»Ø¸´'],
-8:		[MOD|MAD|TT,	134217728,	'ÄÚÈİ',	'',		'#909090',	'',													'Ö÷ÌâÁĞ±íÖĞÏÔÊ¾×î½ü»Ø¸´'],
-9:		[G|MMOD|TT,		1073741824,	'µ¥Ìû',	'µ¥Ìû',	'#909090',	'Ã¿¸öÓÃ»§Ö»ÄÜ»Ø¸´Ò»´Î(2000»Ø¸´ÒÔÄÚ)',			'Ã¿¸öÓÃ»§Ö»ÄÜ»Ø¸´Ò»´Î(2000»Ø¸´ÒÔÄÚ)'],
-10:	[G|TT,			65536,		'Ö±²¥',	'Ö±²¥',	'#909090',	'ÕâÊÇÒ»ÌõÖ±²¥',										''],
-11:	[G|TT|MMOD,		262144,		'ĞÂ»Ø¸´ÔÚÇ°',	'µ¹Ğò','#C58080','ĞÂ»Ø¸´ÔÚÇ°','ĞÂ»Ø¸´ÔÚÇ°']
+1:		[G|MMOD|TS,		131072,		'È«Ëø',		'È«Ëø',		'#C58080',	'ºÏ¼¯ÄÚÎŞ·¨±à¼­/»Ø¸´/·¢²¼×ÓÖ÷Ìâ',					'Ëø¶¨ºÏ¼¯µÄÈ«²¿Ö÷Ìâ']
+,2:		[MOD|MMOD|TS,	524288,		'ÏÂ³Á1',	'ÏÂ³Á1',	'#A0B4F0',	'ºÏ¼¯×ÓÖ÷Ìâ²»ÉÏ¸¡',									'ºÏ¼¯×ÓÖ÷Ìâ²»ÉÏ¸¡']
+,3:		[MOD|MMOD|TS|QF,16777216,	'ÕÛµş',		'ÕÛµş',		'#A0B4F0',	'',													'ºÏ¼¯/°æÃæ¾µÏñ²»ÏÔÊ¾¸½¼Ó×ÓÖ÷Ìâ']
+,4:		[MOD|MSU|TT,	256,		'¿ª·Å',		'¿ª·Å',		'#909090',	'',													'»Ø¸´²»ÊÜ×¢²áÊ±¼äÏŞÖÆ']
+,5:		[G|MMOD|TT,		2097152,	'È«Ää',		'È«Ää',		'#C58080',	'»Ø¸´Õâ¸öÖ÷Ìâ»á×Ô¶¯ÄäÃû',							'»Ø¸´×Ô¶¯ÄäÃû']
+,6:		[G|MMOD|TT,		33554432,	'È«Òş',		'È«Òş',		'#C58080',	'»Ø¸´Õâ¸öÖ÷Ìâ»á×Ô¶¯Òş²Ø',							'»Ø¸´×Ô¶¯Òş²Ø']
+,7:		[MOD|MMOD|TT,	67108864,	'Í³¼Æ',		'Í³¼Æ',		'#909090',	'',													'¼ÇÂ¼Ã¿ÈÕ·ÃÎÊÁ¿(ĞèÒª×îºóĞŞ¸ÄÔÚÒ»¸öÔÂÄÚ)']
+//,512:			[MOD|MSU|TT,	512,	'¿ª·Å1',	'¿ª·Å1',	'#909090',	'',													'Î´¼¤»îÓÃ»§¿É»Ø¸´']
+//,1024:			[MOD|MSU|TT,	1024,	'¿ª·Å2',	'¿ª·Å2',	'#909090',	'',													'½ûÑÔÓÃ»§¿É»Ø¸´']
+//,2048:			[MOD|MSU|TT,	2048,	'¿ª·Å3',	'¿ª·Å3',	'#909090',	'',													'NUKEÓÃ»§¿É»Ø¸´']
+,8:		[MOD|MAD|TT,	134217728,	'ÄÚÈİ',		'',			'#909090',	'',													'Ö÷ÌâÁĞ±íÖĞÏÔÊ¾×î½ü»Ø¸´']
+,9:		[G|MMOD|TT,		1073741824,	'µ¥Ìû',		'µ¥Ìû',		'#909090',	'Ã¿¸öÓÃ»§Ö»ÄÜ»Ø¸´Ò»´Î(2000»Ø¸´ÒÔÄÚ)',			'Ã¿¸öÓÃ»§Ö»ÄÜ»Ø¸´Ò»´Î(2000»Ø¸´ÒÔÄÚ)']
+,10:	[G|TT,			65536,		'Ö±²¥',		'Ö±²¥',		'#909090',	'ÕâÊÇÒ»ÌõÖ±²¥',										'']
+,11:	[G|TT|MMOD,		262144,	'ĞÂ»Ø¸´ÔÚÇ°',	'µ¹Ğò',		'#C58080',	'ĞÂ»Ø¸´ÔÚÇ°','ĞÂ»Ø¸´ÔÚÇ°']
 }
 
 var INIT=function(){
 P=G
+VMK = G|U|MOD|LE|WD|SL|SU|AD|AU
+EMK = MMOD|MLE|MWD|MSL|MSU|MAD
 if(window.__CURRENT_UID)
 	P|=U
 if(window.__GP){
@@ -2848,6 +2911,8 @@ if(window.__GP){
 		P|=SU|MSU
 	if(__GP.admin)
 		P|=AD|MAD
+	if(__GP._bit&4194304)
+		P|=AU
 	}
 },
 C=function(y,h,u){//&1ÎªÔÚÖ÷ÌâÁĞ±íÖĞÊ¹ÓÃ &2ÎªÔÄ¶ÁÌû×ÓÖĞÊ¹ÓÃ &4ÎªÌùÌõ 
@@ -2882,11 +2947,17 @@ commonui.txtTagTemplate=function(txt,til,url,bgc,sp){//ÎÄ×Ö ³¤ËµÃ÷ Á´½Ó ÑÕÉ« ¼ÓÌ
 		  " title='"+til+(sp ? ' '+sp : '')+"'>"+txt+"</"+(url?'a':'span')+">"
 }//
 
+
+commonui.postBitTable = {
+'PB':PB,
+'TMB':TMB,
+}//
+
 commonui.getPostBitEdit=function(isset,ispost,isqf,isq,mod){//ÊÇºÏ¼¯ ÊÇ»Ø¸´ ÊÇ°æÃæ¾µÏñ ÊÇ¾µÏñ ÊÇ°æÖ÷
 if(P===undefined)
 	INIT()
 if(EP===undefined)
-	EP=(P|((mod&2)?MMOD:0))&16128
+	EP=(P|((mod&2)?MMOD:0))&EMK
 var x = [[],[]],z,y=ispost?PP:TT
 if(isset)y|=TS
 if(isqf)y|=QF
@@ -2895,14 +2966,14 @@ for(var k in PB){
 	z=PB[k]
 	if(EP&z[0])
 		if(y&z[0])
-			x[0].push([z[1],z[2]+' '+z[6]])
+			x[0].push([z[1],z[2]+' '+z[6],z[7]])
 	}
 if(y&TT){
 	for(var k in TMB){
 		z=TMB[k]
 		if(z[0]&EP)
 			if(y&z[0])
-				x[1].push([z[1],z[2]+' '+z[6]])
+				x[1].push([z[1],z[2]+' '+z[6],z[7]])
 		}
 	}
 return x
@@ -2926,7 +2997,7 @@ if((PBALL&pb)==0 && (TMBALL&tmb1)==0)
 if(P===undefined)
 	INIT()
 if(VP===undefined)
-	VP=(P|((mod&2)?MOD:0))&255
+	VP=(P|((mod&2)?MOD:0))&VMK
 var x='',z,u,y=pid?PP:TT
 if(pb&32768)y|=TS
 if(pb&2097152)y|=QF
@@ -3005,6 +3076,7 @@ __NUKE.doRequest({
 }//fe
 
 //ÓÉµ±Ç°£¨Ö÷Ìâ£©µØÖ·Éú³Éµ½Ìû×ÓµÄÁ´½Ó=====================
+
 commonui.genPidLink = function(pid,lou){
 if(window.__PAGE)
 	return __PAGE[0]+'&page='+__PAGE[2]+'#pid'+pid+'Anchor'
@@ -3153,7 +3225,8 @@ if(buff){
 		buff[124] ? 'a_sheep_e.png' : (
 		buff[120] ? 'bronya1.png' : (
 		buff[107] ? 'a_sheep_c.png': (
-		null)))))))
+		buff[131] && buff[131][3]==17 ? 'a_doc.png': (
+		null))))))))
 	if(y){
 		y = new String(__IMGPATH+'/face/'+y)
 		y.noborder=1
@@ -3165,6 +3238,20 @@ if(buff){
 		return ''
 	}
 return this.selectAvatar(a,uid)
+}//fe
+
+commonui.getAvatarMagicInfo =function(buffs){
+if(buffs[99] || buffs[102] || buffs[107] || buffs[120] || buffs[119] || buffs[124] || buffs[131]){
+	return {
+		avatarBg : __IMG_STYLE+'/avatarbg.png'
+		,append : 
+			buffs[102] ? '¹¾' : (
+			buffs[107] ? 'poi': (
+			buffs[120] ? '´ı»úÖĞ': (
+			buffs[99] ? 'ßã': (
+			''))))
+		}
+	}
 }//fe
 
 ;(function(){
@@ -3269,6 +3356,37 @@ return this.avatarUrl(a,uid)
 }//fe
 })();
 
+//ÓÉÌØ¶¨½Ó¿Ú»ñÈ¡½Å±¾²¢eval
+commonui.evalFromServer = function(a,aa){
+a.__output =11
+__NUKE.doRequest({
+	u:{u:__API._base,
+		a:a},
+	xr:1,
+	f:function(d){
+			var x,y='';
+			if(d.error)
+				return alert( typeof(d.error)=='object' ? (function(){y='';for(var k in d.error)y+=x[k]+'\n';return y})() : d.error+'')
+			if(!d.data)
+				return alert('ERROR NO DATA');
+			allDataThisReq = d.data
+			for(var k in allDataThisReq){
+				if(typeof allDataThisReq[k]=='string' && allDataThisReq[k].match(/^[\s\n\r]*;?\(function\(\)\{/)){
+					try{
+						eval(allDataThisReq[k].replace(/\(\)$/,'(allDataThisReq,aa)'))
+						}
+					catch(e){
+						console.log(e)
+						alert(e)
+						}
+					}
+				}
+			return true
+			}
+	})
+}//fe
+
+
 //ÉèÖÃÍ·Ïñ=====================
 commonui.setAvatar = function (e,uid,ad){
 	__SCRIPTS.load('imgEdit',function(){commonui.setAvatar2(e,uid,ad)})
@@ -3296,37 +3414,67 @@ tTip.showdscp(e,this.ucplinko);
 
 //ÓÃ»§¼¤»î×´Ì¬½âÊÍ==============
 ;(function(){
-var x 
-commonui.activeInfo = function(a,uid){
+var x ,z ={
+un: ['orange','UNACTIVED','Î´¼¤»î','ÕËºÅÎ´¼¤»î','Äã¿ÉÒÔÔÚÓÃ»§ÖĞĞÄ°ó¶¨ÊÖ»ú¼¤»î']
+,phone: ['seagreen','ACTIVED','ÒÑ¼¤»î','','ÒÑ°ó¶¨ÊÖ»ú¼¤»î']
+,nuke: ['darkred','NUKED','NUKED','ÒòÎ¥·´°æ¹æ¶ø±»½ûÓÃ','±ØĞëÊ¹ÓÃ¼¤»îÂë½â³ı']
+,lock: ['gray','LOCKED','Ëø¶¨','ÒòÎ¥¹æ×¢²á»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö¶ø±»½ûÓÃ','²»ÄÜ½âËø']
+,pass: ['sienna','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','ĞŞ¸ÄÃÜÂë½âËø','/nuke.php?__lib=login&__act=account&changepass']
+,reset: ['deeppink','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','Ê¹ÓÃ[ÓÊÏäÖØÖÃÃÜÂë]½âËø, »òÊ¹ÓÃÂÛÌ³appÖĞµÄ[Íü¼ÇÃÜÂë]ÖØÖÃÃÜÂë½âËø(°ó¶¨ÊÖ»úÊ±¼äĞèÔÚËø¶¨Ê±¼äÖ®Ç°)','/nuke.php?__lib=login&__act=account&resetpass']
+,manual: ['darkred','LOCKED','Ëø¶¨','ÒòÕËºÅ±»µÁ»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö±»½ûÓÃ','Ö»ÄÜÈË¹¤½âËø ²ÎÔÄ°æÎñÇøÏà¹ØËµÃ÷']
+,link: ['seagreen','LINKED','¹ØÁª','´ËÕËºÅ¹ØÁªµ½ÁËÆäËûµÄÕËºÅ¼¤»î','']
+}
+commonui.activeInfo = function(a,uid,bit){
 if( x===undefined )
 	x =   (uid && uid == window.__CURRENT_UID ? 1 : 0) | 
 			  (window.__GP && __GP.lesser ? 2 : 0) | 
 			  (window.__GP && (__GP.userBit & 3096) ? 4 : 0)
-
 var y
-if(a==1)
-	y = ['green','ACTIVED','ÒÑ¼¤»î','','ÒÑÊ¹ÓÃ¼¤»îÂë¼¤»î']
-else if(a==0)
-	y = ['orange','UNACTIVED','Î´¼¤»î','ÕËºÅÎ´¼¤»î','Äã¿ÉÒÔÔÚÓÃ»§ÖĞĞÄ°ó¶¨ÊÖ»ú¼¤»î']
-else if(a==4)
-	y = ['seagreen','ACTIVED','ÒÑ¼¤»î','','ÒÑ°ó¶¨ÊÖ»ú¼¤»î']
-else if(a==5)
-	y = ['teal','ACTIVED','ÒÑ¼¤»î','','ÒÑ°ó¶¨Î¢ĞÅ¼¤»î']
-else if(a==-1)
-	y = ['darkred','NUKED','NUKED','ÒòÎ¥·´°æ¹æ¶ø±»½ûÓÃ','±ØĞëÊ¹ÓÃ¼¤»îÂë½â³ı']
-else if(a==-5)
-	y = ['gray','LOCKED','Ëø¶¨','ÒòÎ¥¹æ×¢²á»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö¶ø±»½ûÓÃ','²»ÄÜ½âËø']
-else if(a==-4)
-	y = ['sienna','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','ĞŞ¸ÄÃÜÂë½âËø','/nuke.php?__lib=login&__act=account&changepass']
-else if(a==-3)
-	y = ['deeppink','LOCKED','Ëø¶¨','ÒòÕËºÅ°²È«ÎÊÌâ±»½ûÓÃ','Ê¹ÓÃ[ÓÊÏäÖØÖÃÃÜÂë]½âËø, »òÊ¹ÓÃÂÛÌ³appÖĞµÄ[Íü¼ÇÃÜÂë]ÖØÖÃÃÜÂë½âËø(°ó¶¨ÊÖ»úÊ±¼äĞèÔÚËø¶¨Ê±¼äÖ®Ç°)','/nuke.php?__lib=login&__act=account&resetpass']
-else if(a==-2)
-	y = ['darkred','LOCKED','Ëø¶¨','ÒòÕËºÅ±»µÁ»ò·¢²¼Î¥¹æ¹ã¸æµÈÇé¿ö±»½ûÓÃ','Ö»ÄÜÈË¹¤½âËø ²ÎÔÄ°æÎñÇøÏà¹ØËµÃ÷']
-else if(a<0)
-	y = ['gray','LOCKED','Ëø¶¨','unknow','']
-else if(a>0)
-	y = ['gray','ACTIVED','ÒÑ¼¤»î','unknow','']
-
+if(bit!==undefined){
+	if(bit&14680064){
+		var b = bit&14680064
+		if(b==4194304)
+			y = z.nuke
+		else if(b==12582912)
+			y = z.lock
+		else if(b==10485760)
+			y = z.manual
+		else if(b==8388608)
+			y = z.reset
+		else if(b==6291456)
+			y = z.pass
+		}
+	else if(bit&1048576)
+		y = z.phone
+	else if(bit&4096)
+		y = z.link
+	else
+		y = z.un
+	}
+else{
+	if(a==1)
+		y = ['green','ACTIVED','ÒÑ¼¤»î','','ÒÑÊ¹ÓÃ¼¤»îÂë¼¤»î']
+	else if(a==0)
+		y=z.un
+	else if(a==4)
+		y=z.phone
+	else if(a==5)
+		y = ['teal','ACTIVED','ÒÑ¼¤»î','','ÒÑ°ó¶¨Î¢ĞÅ¼¤»î']
+	else if(a==-1)
+		y=z.nuke
+	else if(a==-5)
+		y=z.lock
+	else if(a==-4)
+		y=z.pass
+	else if(a==-3)
+		y=z.reset
+	else if(a==-2)
+		y = z.manual
+	else if(a<0)
+		y = ['gray','LOCKED','Ëø¶¨','unknow','']
+	else if(a>0)
+		y = ['gray','ACTIVED','ÒÑ¼¤»î','unknow','']
+	}
 if(x==0)
 	y[4]=''
 if((x&1)==0)
@@ -3478,12 +3626,139 @@ else
 	loader.script(__SCRIPTS.userScript,function(){ commonui.loadUserScript(e) })
 }//fe
 
+//µã»÷Éù==================
+commonui.clickSound = function(){
+if(!this.clickSound.s && window.Audio){
+	setTimeout(function(){
+		var a= function(){s.play()}
+		,s = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjE1LjEwMgAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAACWAB6enp6enp6enp6enp6enp6enp6enp6enqmpqampqampqampqampqampqampqampqam09PT09PT09PT09PT09PT09PT09PT09PT0/////////////////////////////////8AAAAATGF2YzU2LjE0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAlizUXvjAAAAAAD/+xDEAAAEpINPtBEAAKURLkMK0AEQAmxAggDgAYFMbm78jv0J6E1fP+pPIEJIQjTnOcAIJwfiQMcTsdDNcDidXRm6CFWx4vj2SS8vppoooo+mgZkYLvWYl4z+MsTNSa4RUyGqemRFh//7EsQCAEUMN2nckYAAqQ5qrJCKkYQLSAACELQhISI1s2EVolJNQeLMOIOUfoKE4DeSAyda5Bp64iXEjbAAiXKo31zLIahS66UyRlJTz6WpxzVaCjCSW0pTk5gdxQdsmh9KaE0qx2xABP/7EMQCgAUUKVN0kQAImxDowxZwAQEfUAFIyYS8lJWkepOlEGDgkgqij+XvLuv+BbnRPwG2eYA32Fh1JHvR3T5BI1HkxYrY2B8Nfy48OitZ3x4weMFVDv4kCSBUuqD2SkxBTUUzLjk5//sSxAQDwAABpBwAACAAADSAAAAELjWqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+		s.volume=0.05
+		;(commonui.clickSound=a)();
+		})
+	}
+}//fe
 
 //============================
 //µ¼º½Óë°æÃæ·ÃÎÊ¼ÇÂ¼============
 ;(function(){
 
 var H=false
+
+,nwidth = function(s){
+	j=0.0
+	for (var i=0;i<s.length;i++){
+		c = s.charCodeAt(i);
+		if (c > 127)
+			j = j+1;
+		else if ( (c<=122 && c>=97)||(c<=90 && c>=65) )
+			j = j+0.65;
+		else
+			j = j+0.35;
+		}
+	return j
+	}//
+
+,cutNavItem = function(a){
+var d=[]
+for(var i=0;i<a.length;i++){
+	var z = a[i]
+	d.push({pl:0.4,w:nwidth(z.textContent),pr:0.4,mr:0.6,pm:0.4+0.4+0.6})
+	}
+var j = 0, sum=0.0, l=23+0.6, k=0
+for(var i=0;i<d.length;i++){
+	sum+=d[i].pl + d[i].w + d[i].pr + d[i].mr
+
+	if(sum>l){
+		if(sum>l*1.75){
+			sum-=d[i].pl + d[i].w + d[i].pr + d[i].mr
+			i--
+			}
+		console.log(j,i,sum,l)
+		cut1line(a,d,j,i,sum,l)
+		j=i+1
+		sum=0.0
+		}
+	if(k++>100)
+		break
+	}
+
+}//
+
+,cut1line=function(a,d,fr,to,sum,l){
+if(sum>l){
+	for(var i=fr;i<=to;i++){
+		var y = (d[i].w) - (d[i].w + d[i].pm)/sum * (sum-l)
+		if(i==to)
+			a[i].style.marginRight=0
+		a[i].innerHTML = commonui.cutstrbylen(a[i].textContent,  y, y-1,'..')
+		}
+	}
+}//
+
+,mergeViewHis = function(f){
+__NUKE.doRequest({
+	u:__API.toUri('','__lib','forum_favor2','__act','forum_favor','__output',3,'action','sync')
+	,f:function(d){
+		if(d && d.data && d.data[0]){
+			var i=0,h={}
+			
+			
+			for (var k in H){
+				var y = H[k]
+				if(y[2]&2)
+					continue
+				h[i++]=y
+				}
+			
+			for(var k in d.data[0]){
+				var y = d.data[0][k], z={2:2}
+				if(y.fid){
+					z[0]=y.fid
+					z[1]=y.name
+					}
+				else if(y.id!=y.fid){
+					z[5]=y.id
+					z[6]=y.name
+					}
+				h[i++]=z
+				}
+			H=h
+			if(f)f()
+			commonui.userCache.hostSet('','ForumViewHis',h,3600*24*30)
+			}
+		}
+	})
+}//fe
+	
+
+commonui.waitForumViewHis = function(f){
+if(H===false){
+	if(f){
+		H={}
+		this.userCache.hostGet('','ForumViewHis',function(x){
+			H = x
+			if(f)f(H)
+			})
+		}
+	return 1
+	}
+}//
+
+commonui.eachForumViewHis = function(f){
+if(H){
+	var k = 0
+	for (var j in H)
+		if((j|0)>k)
+			k=(j|0)
+	for(var ix={};k>=0;k--){
+		var y = H[k],j = (y[0]|0)+'_'+(y[5]|0)
+		ix[j]|=0
+		ix[j]++
+		f(k,y,ix[j])
+		}
+	}
+}//
+
 
 //µ¼º½ÖĞÉú³ÉÀúÊ··ÃÎÊÁ´½Óµ¯´°=====
 commonui.advNav = function (o){
@@ -3508,6 +3783,7 @@ for(var i=0;i<a.length;i++){
 		}
 	else if(z.className!='nav_link')
 		continue
+
 	z._useloadread=1
 	m = (z.dataset ? z.dataset.fb : z.getAttribute("data-fb"))|0
 	if(m&262144){
@@ -3519,8 +3795,9 @@ for(var i=0;i<a.length;i++){
 	if(z.innerHTML.length<5)
 		z.innerHTML = z.innerHTML.replace(/(.)/g,"&nbsp;$1").substr(6)
 	}
-
-var x = $('/div').$0(
+if(__SETTING.bit&16)
+	cutNavItem(a)
+var x = $('/div',
 	'ontouchstart',function(e){
 		this._ttime= y.style.display!='block' ? e.timeStamp : 0
 		},
@@ -3531,14 +3808,22 @@ var x = $('/div').$0(
 	'onmouseover',function(e){
 		if(y.style.display=='block')
 			return
-		if(!y.__loaded){
+		if(!y.__loaded)
 			commonui.genHisLink(y)
-			y.__loaded = y.firstChild ? 1 : 2
-			}
+			x.offsetParent
 		var z = x.getBoundingClientRect()
-		y.style.left = z.left+'px'
-		y.style.top = (__NUKE.position.get().yf+z.bottom-(z.bottom-z.top)*0.25|0)+'px'
+
+		y.style.visibility='hidden'
 		y.style.display='block'
+		if(y.offsetParent && y.offsetParent!=document.body){
+			y.style.left = 0
+			y.style.top = ((z.bottom-z.top)*0.75|0)+'px'
+			}
+		else{
+			y.style.left = z.left+'px'
+			y.style.top = (__NUKE.position.get().yf+z.bottom-(z.bottom-z.top)*0.25|0)+'px'
+			}
+		y.style.visibility=''
 		},
 	'className','nav_root_c'
 	)
@@ -3566,26 +3851,42 @@ x.appendChild(u)
 
 //Ëø¶¨ÀúÊ·Á´½Ó=================
 commonui.lockViewHis = function (fid,lock,stid){
-if(H===false){
-	var arg = arguments
-	return this.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){H=x; commonui.lockViewHis.apply(commonui,arg)})
+if(this.waitForumViewHis()){
+	var arg =arguments
+	return this.waitForumViewHis(function(){commonui.lockViewHis.apply(commonui,arg)})
 	}
 var x=null
+fid |=0
+stid|=0
 for (var i in H){
 	x=H[i]
-	if (x && x[0]==fid && ( (stid || x[5]) ? x[5]==stid : true )){
-		if(typeof lock=='undefined')
+	if (x && (x[0]|0)==fid && (x[5]|0)==stid){
+		if(typeof lock!='boolean' && typeof lock!='number')
 			lock=x[2] ? 0 : 1
 
 		if (lock){
-			x[2]=1
+			x[2]=2
 			delete x[3]
 			delete x[4]
+			__NUKE.doRequest({
+				u:__API.toUri('','__lib','forum_favor2','__act','forum_favor','__output',3,'action','add',stid ? 'stid':'fid', stid?stid:fid)
+				,f:function(d){
+					console.log(d)
+					commonui.clickSound()
+					}
+				})
 			}
 		else{
 			delete x[2]
+			__NUKE.doRequest({
+				u:__API.toUri('','__lib','forum_favor2','__act','forum_favor','__output',3,'action','del',stid ? 'stid':'fid', stid?stid:fid)
+				,f:function(d){
+					console.log(d)
+					commonui.clickSound()
+					}
+				})
 			}
-		this.userCache.hostSet('https://bbs.ngacn.cc','ForumViewHis',H,3600*24*30)
+		this.userCache.hostSet('','ForumViewHis',H,3600*24*30)
 		return lock
 		}
 	}
@@ -3593,54 +3894,90 @@ for (var i in H){
 
 //Ëø¶¨µ½ÀúÊ·Á´½Ó================
 commonui.genHisLink = function(oo,f){
-if(H===false){
-	var arg = arguments
-	return this.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){H=x; commonui.genHisLink.apply(commonui,arg)})
+if(this.waitForumViewHis()){
+	var arg =arguments
+	return this.waitForumViewHis(function(){commonui.genHisLink.apply(commonui,arg)})
 	}
-if(!H)
+
+if(!H || oo.__loaded)
 	return null
-var $ = _$, x = $('/span'), self= this, t1='µã»÷½â³ıËø¶¨', t2='Ëø¶¨Õâ¸öÁ´½Ó (¿ÉÌí¼Óµ½Ê×Ò³¿ìËÙµ¼º½ÖĞ)', sw = function(o,y){
-	var x = (o.title == t1)
-	self.lockViewHis(y[0],(x ? 0 : 1),y[5])
-	o.title = x ? t2 : t1
-	o.style.color = x ? 'gray' : __COLOR.border0
+	
+var $ = _$, x = $('/span'), self= this, t1='µã»÷½â³ıËø¶¨', t2='Ëø¶¨Õâ¸öÁ´½Ó (¿ÉÌí¼Óµ½Ê×Ò³¿ìËÙµ¼º½ÖĞ)'
+, sw = function(){
+	var x = (this.title == t1)
+	self.lockViewHis(this._fid,x?0:1,this._stid)
+	this.title = x ? t2 : t1
+	this.style.color = x ? 'gray' : 'teal'
 	}
-for (var k in H){
-	var y = H[k]
-	x._.add(
+,ff=(f ? function(e){
+	if(this._fid)
+		f(e,{'fid':this._fid,'name':this.innerHTML})
+	else if(this._stid)
+		f(e,{'stid':this._stid,'name':this.innerHTML})
+	commonui.cancelEvent(e)
+	commonui.cancelBubble(e)
+	return false
+	} : function(){})
+,add1=function(o,y,f){
+	o._.add(
 		$('/span',
-			'_hisdata',y,
 			$('/a',
 				//'name',y[0]+','+(y[5]?y[5]:''),
 				'href','javascript:void(0)',
-				'onclick',function(){sw(this,this.parentNode._hisdata)},
+				'_lock',y[2]|0,
+				'_fid',y[0]|0,
+				'_stid',y[5]|0,
+				'onclick',sw,
 				'title',(y[2] ? t1:t2),
 				__TXT('label',1)._.add('\u00A0'),
-				'style',(y[2] ? 'color:'+__COLOR.border0 : 'color:gray')
+				'style','color:'+ (y[2] ? (y[2]&2 ? 'teal' : __COLOR.border0) : 'gray')
 				),
-			$('/a').$0(
+			y[5] ? null : $('/a',
 				'className','b',
-				'href',f?'javascript:void(0)' : this.domainSelect(y[0])+'/thread.php?fid='+y[0],
+				'href',f?'javascript:void(0)' : commonui.domainSelect(y[0])+'/thread.php?fid='+y[0],
 				'innerHTML',y[1],
 				'_useloadread',1,
-				f?'onclick':null,
-				f? function(e){var z = __NUKE.simpleClone(this.parentNode._hisdata);delete z[5];commonui.cancelEvent(e);commonui.cancelBubble(e);f(e,z);return false} : null
+				'_fid',y[0],
+				'onclick',ff
 				),
-			y[5] ? $('/br') : null,
-			y[5] ? $('/a').$0(
+			y[5] ? [$('/a',
 				'className','teal b',
-				'style','marginLeft:1.3em',
-				'href',f?'javascript:void(0)' : this.domainSelect(y[0])+'/thread.php?stid='+y[5],
+				'href',f?'javascript:void(0)' : commonui.domainSelect(y[0])+'/thread.php?stid='+y[5],
 				'innerHTML',y[6],
 				'_useloadread',1,
-				f?'onclick':null,
-				f? function(e){f(e,this.parentNode._hisdata)} : null
-				) : null
+				'_stid',y[5],
+				'onclick',ff
+				)
+				,y[0] ? $('/a',
+					'className','b',
+					'href',f?'javascript:void(0)' : commonui.domainSelect(y[0])+'/thread.php?fid='+y[0],
+					__TXT('link'),
+					'_useloadread',1,
+					'_fid',y[0],
+					'title',y[1],
+					'onclick',ff
+					) : null
+				] : null
 			),
 		$('/br')
 		)
 	}
+	
+if(__CURRENT_UID && !this.userCache.get('navLoadFavF')){
+	mergeViewHis(function(){
+		oo.__loaded=0
+		})
+	this.userCache.set('navLoadFavF',1,3600*12)
+	}
+
+this.eachForumViewHis(function(k,v,r){
+	if(r<2)
+		add1(x,v,f)
+	})
+
+oo.innerHTML=''
 oo._.add(x)
+oo.__loaded = x.firstChild ? 1 : 2
 }//fe
 
 //¼ÓÈëÀúÊ·Á´½Ó=================
@@ -3674,11 +4011,12 @@ if(!this.addForumViewHis.load){
 		})
 	return
 	}
-	
-if(H===false){
-	var arg = arguments
-	return this.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){H=x; commonui.addForumViewHis.apply(commonui,arg)})
+
+if(this.waitForumViewHis()){
+	var arg =arguments
+	return this.waitForumViewHis(function(){commonui.addForumViewHis.apply(commonui,arg)})
 	}
+
 var h = H,p = p|0
 if(!h || typeof(h[0])!='object'){
 	h={0:{0:id,1:n}}
@@ -3687,7 +4025,7 @@ if(!h || typeof(h[0])!='object'){
 		h[0][6] = this.cutstrbylen(stidN,11,10,'...')
 		}
 	if(p)h[0][7] = p
-	this.userCache.hostSet('https://bbs.ngacn.cc','ForumViewHis',h,3600*24*30)
+	this.userCache.hostSet('','ForumViewHis',h,3600*24*30)
 	return
 	}
 
@@ -3755,7 +4093,7 @@ if(l!==null){//l is the last nolock or last space
 		h[0][6] = this.cutstrbylen(stidN,11,10,'...')
 		}
 	if(p)h[0][7] = p
-	this.userCache.hostSet('https://bbs.ngacn.cc','ForumViewHis',h,3600*24*30)
+	this.userCache.hostSet('','ForumViewHis',h,3600*24*30)
 	if(lock)
 		this.lockViewHis(id,true)
 	return x ? true : false
@@ -4156,14 +4494,20 @@ return btn ? " class='cell rep txtbtnx "+(c?c:'silver')+"' " : " class='b "+(c?c
 genA:function(a,id,nohis){
 var d = this.d[id]
 if(!d || (d.ck && !d.ck(a)))return null
-var tag=d.tag ? d.tag : 'a', self=this, n=nohis ?  d.n1 : (d.n3 ? d.n3 : d.n1), btn=_$('/'+tag).$0('href',
+var tag=d.tag ? d.tag : 'a'
+,self=this 
+,n=nohis ?  d.n1 : (d.n3 ? d.n3 : d.n1)
+, btn=_$('/'+tag,'href',
 	d.u ? d.u.replace(/\{(.+?)\}/g,function($0,$1){return a[$1]}) : "javascript:void(0)",
 	'className',"cell rep txtbtnx nobr "+(d.c?d.c:'silver')
 	)
 if(n.constructor==String)
 	btn.innerHTML= n
-else
+else if(n.constructor==Object)
 	btn._.add(n)
+else if(n.constructor==Function)
+	btn._.add(n())
+
 if(d.on){
 	if(typeof d.on == 'function')
 		btn._.on('click',function(e){d.on(e,a,this)})
@@ -4185,9 +4529,9 @@ if(d.__islongclick)
 return btn
 },
 
-genB:function(argid){
+genB : function(argid){
 
-var i=0,l=this.def,xx=null,b=_$("/div").$0('style',{position:'absolute'},'className','c2 postbtnsc'),max= __SETTING.bit & 8 ? 5 : 8,o = this.parent.stdBtns(),self=this
+var i=0,l=this.def,xx=null,b=_$("/div",'style','position:absolute','className','c2 postbtnsc'),max= __SETTING.bit & 8 ? 5 : 8,o = this.parent.stdBtns(),self=this
 if(!this.his){
 	this.his = this.parent.userCache.get(this.saveKey);
 	if(!this.his)this.his=[]
@@ -4214,63 +4558,100 @@ b._.add(o)
 return b
 },//fe
 
-allBtn:function(e,arg,nohis){
-var w=window,$=w._$,c = w.commonui,z=null,x= $('/div').$0('className','ltxt'),y=this.all,self=this,s = ' '+w.location.protocol+'//'+w.location.host
+'altStyle' : function(x){
+var $=_$,u =x.childNodes //,v=[]
+for(var i=0;i<u.length;i++){
+	if(u[i].nodeName=='SPAN'){
+		if(!u[i].childNodes.length){
+			if(u[i-1].nodeName=='H4'){
+				u[i-1].style.display='none'
+				u[i-1].innerHTML=''
+				}
+			u[i].style.display='none'
+			
+			}
+		else{
+			u[i].$0('style','display:block;padding:0')
+			if(u[i-1] && u[i-1].nodeName=='H4'){
+				/*var tmp = u[i-1].innerHTML
+				u[i-1].$0('innerHTML',''
+					,'style','font-weight:normal;font-size:0.785em;line-height:1.181em;margin:-1.09em 0 0 0;text-align:right;border-bottom:1px solid '+__COLOR.border2
+					,$('/span','innerHTML',tmp,'style','padding:0.1em 0.5em;color:'+__COLOR.bg0+';background:'+__COLOR.border0)
+					)
+				v.push(u[i-1])*/
+				u[i-1].style.display='none'
+				u[i].style.borderTop='1px solid '+__COLOR.border2
+				u[i].insertBefore($('/span','className','block_txt_big title','style','padding-left:0.2em;width:1.04em;padding-right:0.2em;float:left;color:'+__COLOR.bg0+';background:'+__COLOR.border0
+					,$('/span','style',(('transform' in u[i].style)? 'transform:scale('+(u[i-1].innerHTML.length>3?'0.6':'0.8')+');transform-origin:50% 0%':'zoom:'+(u[i-1].innerHTML.length>3?'0.6':'0.8'))+';display:block;line-height:1.2em;padding-top:0.2em;','innerHTML',u[i-1].innerHTML)
+					), u[i].firstChild)
+				}
+			for(var j=0;j<u[i].childNodes.length;j++){
+				var z = u[i].childNodes[j]
+				if(z.nodeType==1 && z.className.indexOf('cell')!=-1)
+					z.$0('className','block_txt_big'+(j==1?' firstcell':''),'style','background:'+(z.className.indexOf('his')!=-1?commonui.relativeColor(__COLOR.bg6,0,0.03,-0.03):__COLOR.bg6)		)
+				}
+			}
+		}
+	}
+//for(var j=0;j<v.length;j++)
+//	x.insertBefore(v[j],v[j].nextSibling.nextSibling)
+},//
+
+inhis : function(x){
+if(this.his)
+	for(var j=0;j<this.his.length;j++)
+		if(x==this.his[j])
+			return 1
+},//
+	
+
+'allBtn' : function(e,argi,nohis,opt){
+var $=_$
+,arg = typeof(argi)!='object' ? this.argCache[argi] : argi
+,x= $('/div','className','ltxt','style',((__SETTING.bit&16) ? 'width:22.3em' : 'max-width:44em'))
+,y=this.all
+,s = location.protocol+'//'+location.host
+
+if(!this.inhis)
+	this.inhis = commonui.buttonBase.inhis
 
 if(typeof(arg)!='object')
 	arg = this.argCache[arg]
 
-c.createadminwindow()
-c.adminwindow._.addContent(null)
 
 for (var k in y){
-	var u=$('/span')
+	var u=$('/span','className','group')
 	for (var kk=0;kk<y[k].length;kk++){
 		var z=this.genA(arg,y[k][kk],nohis)
-		if(z)
-			u._.add(' ',z)
+		if(z){
+			if(this.inhis(y[k][kk]))
+				z.$0('className','his')
+			u._.add(z)
+			}
 		}
 	if(u.childNodes.length)
-		x.$0($('/h4').$0('className',"textTitle",'innerHTML',k),u)
+		x._.add($('/h4','className',"textTitle",'innerHTML',k),u)
 	}
+//x._.aC(  _$("<button/>")._.attr({type:'button',innerHTML:'Çå¿ÕÀúÊ·¼ÇÂ¼'})._.on('click',function(){self.clearHis()}) )
 
+if((opt&2)==0)
+	commonui.buttonBase.altStyle(x)
 
-if(arg.tid)
-	x._.add(
-		$('/h4').$0('className',"textTitle",'innerHTML','Ö÷ÌâµØÖ·'),
-		$('/span','className',"xtxt",'innerHTML',s+'/read.php?tid=<span class=red>'+arg.tid+'</span>','onclick',function(){commonui.buttonBase.selTxt(this)}),' '
-		)
+if(opt &1)
+	return x
 
-if (arg.pid!='tpc' && arg.pid>0){
-	x._.add(
-		$('/h4','className',"textTitle",'innerHTML','´Ë»Ø¸´µØÖ·'),
-		$('/span','className',"xtxt",'innerHTML',s+'/read.php?pid=<span class=blue>'+arg.pid+'</span>','onclick',function(){commonui.buttonBase.selTxt(this)}),' ',
-		$('/h4','className',"textTitle",'innerHTML','´ËÎ»ÖÃµØÖ·'),
-		$('/span','className',"xtxt",'innerHTML',s+c.genPidLink(arg.pid,arg.i),'onclick',function(){commonui.buttonBase.selTxt(this)}),' '
-		)
-	}
+if(!this.optionwindow)
+	this.optionwindow = commonui.createCommmonWindow()
+	
+this.optionwindow._.addContent(null)
 
-if((arg.tid || arg.pid) && c.QRCode && w.__UA && (w.__UA[2]==1 || w.__UA[2]==3) && !(w.__UA[0]==1 && w.__UA[1]<8)){
-	x._.add(
-		$('/br'),
-		$('/img').$0('src','about:blank', 
-			'style',{display:'none'}, 
-			'alt',w.location.protocol+'//'+w.location.hostname+'/?j='+
-				(arg.tid ? 't'+arg.tid : '')+(arg.pid!='tpc' && arg.pid>0 ? 'p'+arg.pid : '')/*+(w.__CURRENT_UID ? 'h'+w.__CURRENT_UID : '')*/, 
-			'onerror', function(){
-				c.QRCode.loadDataUrl(this,this.alt,function(){this.style.display=''})
-				}
-			)
-		)
-	}
+this.optionwindow._.addContent(x)
 
-x._.aC( $('/br') , $('/br') , _$("<button type='button' onclick='commonui.hideAdminWindow()'>¹Ø±Õ</button>") , _$("<button/>")._.attr({type:'button',innerHTML:'Çå¿ÕÀúÊ·¼ÇÂ¼'})._.on('click',function(){self.clearHis()}) )
-
-c.adminwindow._.addContent(x)
-
-c.adminwindow._.show(e)
+this.optionwindow._.show(e)
 
 },//fe
+
+
 
 
 selTxt:function(o){
@@ -4691,7 +5072,15 @@ if(sub){
 						$('/a', 'href', f.herf, 'innerHTML', f[1]),
 						(f[4]&48)&&(__GP.admincheck&14)? $('/a', 'href', '/read.php?tid='+f[3], 'class', 'small_colored_text_btn block_txt_c0 nobr', 'style', 'backgroundColor:silver;fontFamily:inherit', 'innerHTML', (f[4]&16) ? 'ºÏ¼¯' : '°æÃæ') : null,
 						$('/br'),
-						$('/p')._.add(f[2], f.ck ? $('/input','type','checkbox','checked',f[4]&4?'checked':'', 'value', ((f[4]&16)||f[3] ? 't': '')+(f[3]?f[3]:f[0]), 'title','ÏÔÊ¾/²»ÏÔÊ¾´Ë°æÃæÖ÷Ìâ','onclick',function(){commonui.selectForum.select(this,this.value,this.checked?1:0,ff)}) : null)
+						$('/p')._.add(f[2], f.ck ? $('/input','type','checkbox','checked',f[4]&4?'checked':'', 'value', ((f[4]&16)||f[3] ? 't': '')+(f[3]?f[3]:f[0]), '_bit',f[4], '_fid',f[0], '_tid',f[3], 'title','ÏÔÊ¾/²»ÏÔÊ¾´Ë°æÃæÖ÷Ìâ','onclick',function(){
+							if(this._bit & 1)//is union
+								commonui.selectForum.select(this,this._fid,this.checked?1:0,ff)
+							if(this._bit & (32|16)){//is quote or set
+								if(!this._tmb)
+									this._tmb={}
+								commonui.ignoreTopic(this._tmb,ff,this._tid,this.checked?0:1)
+								}
+							}) : null)
 						)
 					)
 				)
@@ -4730,17 +5119,14 @@ else
 return c
 },//fe
 
-select:function(o,id,show,cfid){
+select:function(o,id,show,cfid){//add union
 if(!cfid)cfid = window.__CURRENT_FID
-if(id|0)//forum
-	__NUKE.doRequest({
-		u:{u:__API._base+'__lib=user_option&__act=set&raw=3&'+(show ? 'add':'del')+'='+id,
-			a:{fid:cfid,type:0}
-			},
-		b:o
-		})
-else//set or quote topic, start with 't'
-	commonui.ignoreTopic(o,cfid,id.substr(1),!show)
+__NUKE.doRequest({
+	u:{u:__API._base+'__lib=user_option&__act=set&raw=3&'+(show ? 'add':'del')+'='+id,
+		a:{'fid':cfid,'type':0,'info':'add_to_allow_union_fids'}
+		},
+	b:o
+	})
 }//fe
 
 }//ce
@@ -4940,12 +5326,12 @@ this.adminwindow._.addContent(x = $('/span'),
 	(ad && uid!=__CURRENT_UID)?$('/span')._.add(
 		'½ûÓÃÇ©Ãû ',
 		y=$('/select')._.add(
-			$('/option').$0('innerHTML','--','value',0),
-			$('/option').$0('innerHTML','3Ìì','value',3),
-			$('/option').$0('innerHTML','7Ìì','value',7),
-			$('/option').$0('innerHTML','15Ìì','value',15),
-			$('/option').$0('innerHTML','30Ìì','value',30),
-			$('/option').$0('innerHTML','60Ìì','value',60)
+			$('/option','innerHTML','--','value',0),
+			$('/option','innerHTML','3Ìì','value',3),
+			$('/option','innerHTML','7Ìì','value',7),
+			$('/option','innerHTML','15Ìì','value',15),
+			$('/option','innerHTML','30Ìì','value',30),
+			$('/option','innerHTML','60Ìì','value',60)
 			),
 		'Ìì ',
 		$('/br')
@@ -5058,7 +5444,7 @@ else	this.adminwindow._.addContent(
 			self.adminwindow._.addContent(
 				'Èç¹ûÄãÏ£ÍûÎªÄãµÄÕÊºÅ°ó¶¨ÒÆ¶¯ÑéÖ¤Æ÷',$('/br'),
 				x=$('/input').$0('type','checkbox'),$('/b').$0('innerHTML','ÇëÊ×ÏÈÈ·±£ÄãµÄÕÊºÅ×¢²áÓÊÏäÕæÊµ¿ÉÓÃ'),$('/br'),
-				'¼ÙÈçÄãµÄÓÊÏäÎŞ·¨Ê¹ÓÃ',$('/a').$0('href','/read.php?tid=7504167','className','b','innerHTML','¿É²ÎÕÕ´ËÌù´¦Àí','target','_blank'),
+				'¼ÙÈçÄãµÄÓÊÏäÎŞ·¨Ê¹ÓÃ',$('/a').$0('href','/read.php?tid=7504167','className','b','innerHTML','¿É²ÎÕÕ´ËÌû´¦Àí','target','_blank'),
 				$('/br'),$('/br'),
 				y=$('/input').$0('type','checkbox'),$('/b').$0('innerHTML','È»ºóÔÚÄãµÄÒÆ¶¯Éè±¸ÖĞ°²×° "Google Authenticator" »ò "GoogleÉí·İÑéÖ¤Æ÷"'),$('/br'),
 				'GoogleÉí·İÑéÖ¤Æ÷ÎŞĞèÁªÍø ÎŞĞèGoogleÕËºÅÒà¿ÉÊ¹ÓÃ',$('/br'),
@@ -5124,7 +5510,7 @@ commonui.lessernuke = function (e,tid,pid,f)
 {
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-var self=this,$ = _$, rg, rf, rs, m2, m4, m6, n1, n2, n3, n4, il, is, il, rf, ff=location.search.match(/_ff=(\d+)/), y= $('/span')
+var self=this,$ = _$, rg, rf, rs, m2, m4, m6, m30, n1, n2, n3, n4, il, is, il, rf, ff=location.search.match(/_ff=(\d+)/), y= $('/span')
 this.adminwindow._.addTitle('´Î¼¶NUKE');
 
 this.adminwindow._.addContent(
@@ -5137,6 +5523,7 @@ this.adminwindow._.addContent(
 		m2 = $('/input').$0('type','radio','name','opt1','checked',1),'½ûÑÔ2Ìì ',
 		m4 = $('/input').$0('type','radio','name','opt1'),'½ûÑÔ4Ìì ',
 		m6 = $('/input').$0('type','radio','name','opt1'),'½ûÑÔ6Ìì ',
+		(__GP.superlesser&&__GP.ubStaff) ? [m30 = $('/input').$0('type','radio','name','opt1'),'½ûÑÔ30Ìì '] : null,
 		$('/br'),
 		$('/input').$0('type','radio','name','opt2','checked',1),'²»¿Û¼õÉùÍû ',
 		n1 = $('/input').$0('type','radio','name','opt2'),'¿Û¼õÉùÍû',$('/span','className','silver','innerHTML','(150) '),
@@ -5169,6 +5556,7 @@ this.adminwindow._.addContent(
 			if(m2.checked)opt|=16
 			if(m4.checked)opt|=32
 			if(m6.checked)opt|=64
+			if(m30 && m30.checked)opt|=16384
 			if(n1.checked)opt|=1
 			if(n2.checked)opt|=2
 			if(!n3.checked)opt|=2048
@@ -5278,9 +5666,9 @@ __NUKE.doRequest({
 	f:function(d){
 		var e = __NUKE.doRequestIfErr(d)
 		if(e)
-			return alert(e)
+			return commonui.alert(_$('/span','style','color:gray','innerHTML',e))
 		if(d.data.__MESSAGE)
-			return alert(d.data.__MESSAGE[1])
+			return commonui.alert(_$('/span','style','color:gray','innerHTML',d.data.__MESSAGE[1]))
 
 		var d= d.data
 
@@ -5295,7 +5683,7 @@ commonui.comment_sub = function (e,tid,pid,fid,fbit,c,warning)
 this.createadminwindow()
 this.adminwindow._.addContent(null)
 var $ = _$, x, y=null, a=null;
-this.adminwindow._.addTitle('ÆÀÂÛ/ÌùÌõ');
+this.adminwindow._.addTitle('ÆÀÂÛ/ÌûÌõ');
 if(warning){
 	y=$('/b')._.cls('red')
 	for(var k in warning){
@@ -5489,11 +5877,13 @@ var f = function(e){
 	return $('/a').$0('href','javascript:void(0)','title','±£³Öµ±Ç°ÉèÖÃ','className','small_colored_text_btn stxt block_txt_c0','name',k,'onclick',f,'innerHTML','--','style',{backgroundColor:'gray'})
 	},
 g=function(all){
+	console.log(all)
 	for(var i=0;i<all[0].length;i++)
-		p._.add( ck(all[0][i][0]), ' ', all[0][i][1], $('/br'))
+		p._.add( ck(all[0][i][0]), ' ', all[0][i][1], all[0][i][2]?h(all[0][i][2]):null, $('/br'))
 	for(var i=0;i<all[1].length;i++)
-		t._.add( ck(all[1][i][0]), ' ', all[1][i][1], $('/br'))
+		t._.add( ck(all[1][i][0]), ' ', all[1][i][1], all[1][i][2]?h(all[1][i][2]):null, $('/br'))
 	},
+h=function(x){return $('/a','onclick',function(){alert(this.title)},'title',x,'innerHTML','[?]','class','b','href','javascript:void(0)')}
 p = $('/div')
 t = $('/div')
 
@@ -5503,8 +5893,6 @@ this.adminwindow._.addContent(
 		p,
 		pid ? null : t,
 		$('/br'),$('/span').$0('className','small_colored_text_btn stxt block_txt_c0','innerHTML','--','style',{backgroundColor:'gray'}),' ÒâÎª"±£³Öµ±Ç°×´Ì¬"',
-		$('/br'),'*Òş²ØÇÒËø¶¨µÄ»Ø¸´ÔÚÁĞ±íÖĞ²»¿É¼û',
-		$('/br'),'**Òş²ØµÄ×´Ì¬±ê¼Ç×÷Õß½öÔÚ±à¼­Ê±¿É¼û',
 		$('/br'),$('/br'),
 		pm = $('/input').$0('type','checkbox','name','pm'),' ¸øÓÃ»§·¢ËÍ¶ÌÏûÏ¢',
 		$('/br'),
@@ -5564,14 +5952,18 @@ this.adminwindow._.addContent(
 		)
 	)
 this.adminwindow._.show(e)
-if(tid){
+
 __NUKE.doRequest({
 	u:{u:__API._base+'__lib=topic_lock&__act=get&raw=3',
-				a:{tid:tid,pid:pid?pid:0}
+				a:{'tid':tid|0,'pid':pid|0,'noid':(!(tid|0))|0}
 				},
 	f:function(d){
 		if(!d.data)return
-		var tt = d.data[0]|0,tm = d.data[1]|0,pt = d.data[2]|0,qq= d.data[2]|0
+		var tt = d.data[0]|0,tm = d.data[1]|0,pt = d.data[2]|0,qq= d.data[3]|0
+		if(d.data[4]){
+			try{eval(d.data[4])}
+			catch(e){console.log(e)}
+			}
 		if(pt){
 			var x = p.getElementsByTagName('a')
 			for(var i=0;i<x.length;i++){
@@ -5592,9 +5984,7 @@ __NUKE.doRequest({
 
 		}
 	})
-}
-else
-	g( this.getPostBitEdit(0, 0, 0, 0, (__GP.admincheck&2) ? 2:0) )
+
 	
 if(tf)
 	__NUKE.doRequest({
@@ -5628,7 +6018,7 @@ commonui.logPost = function (e,tid,pid)
 var $ = _$
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-this.adminwindow._.addTitle('Ïò°æÖ÷¾Ù±¨´ËÌù')
+this.adminwindow._.addTitle('Ïò°æÖ÷¾Ù±¨´ËÌû')
 this.adminwindow._.addContent(
 	$('/span')._.add(
 		$('/input','placeholder','¾Ù±¨ÀíÓÉ'),$('/br'),
@@ -5652,7 +6042,7 @@ commonui.logPostRecommend = function (e,tid,pid)
 var $ = _$
 this.createadminwindow()
 this.adminwindow._.addContent(null)
-this.adminwindow._.addTitle('Ïò¹¤×÷ÈËÔ±ÍÆ¼ö´ËÌù')
+this.adminwindow._.addTitle('Ïò¹¤×÷ÈËÔ±ÍÆ¼ö´ËÌû')
 this.adminwindow._.addContent( 
 	$('/span')._.add(
 		$('/button','innerHTML','Ìá½»','type','button','onclick',function(){
@@ -5734,6 +6124,165 @@ function(){
 'gbk'
 );
 }//fe
+
+//·şÎñÆ÷Í¬²½µÄÉèÖÃ============
+commonui.serverSyncTag = {
+_v:null
+,_s:null
+,_of:function(k){
+	if(k=='favforums')
+		return [15,0]//mask(4bit), offset
+	else if(k=='blockword')
+		return [15,4]
+	}
+,local:function(k){//0Îª´ËÏîÄ¿¹¦ÄÜ¹Ø±Õ 1~15Îª¿ª Óë·şÎñÆ÷²»Ò»ÖÂÊ±ĞèÒªÍ¬²½
+	if(this._v===null)
+		this._v=commonui.userCache.get('syncTag1')|0
+	var o=this._of(k)
+	return ((this._v>>o[1])&o[0])
+	}
+,server:function(k){
+	if(this._s===null)
+		this._s=window.__SYNCTAG|0
+	var o=this._of(k)
+	return ((this._v>>o[1])&o[0])
+	}
+,setLocal:function(k,v){
+	var o=this._of(k)
+	this._v = ((this._v&(~(o[0]<<o[1]))) | ((v & o[0])<<o[1]))
+	commonui.userCache.set('syncTag1',this._v,86400*365)
+	}
+}//ce
+
+//ÓÃ»§ÆÁ±Î´Ê=================
+commonui.blockword ={
+rc:null
+,ru:null
+,checkUsername:function(uid,name){
+if(this.ru===null)
+	this.init()
+if(this.ru){
+	if((uid+'').match(this.ru) || (name+'').match(this.ru))
+		return 1
+	}
+}//
+,checkContent:function(c){
+if(this.rc===null)
+	this.init()
+if(this.rc){
+	if((c+'').match(this.rc))
+		return 1
+	}
+}//
+,init:function(){
+	if(this.ru===null){
+		this.rc = this.ru= false
+		if(commonui.serverSyncTag.local('blockword')){
+			var z = commonui.userCache.get('blockword')
+			if(z){
+				var z =z.split(/\n/)
+				if(z[0].charAt(0)==='1'){//line 1 version
+					if(z[1])
+						this.rc = new RegExp(z[1])//line 2 content
+					if(z[2])
+						this.ru = new RegExp('^(?:'+z[2]+')$')//line 3 username
+					__NUKE.addCss(".userblockcontents {color:"+__COLOR.gbg4+";border-color:"+__COLOR.gbg4+";background:"+__COLOR.gbg4+"} \n .userblockcontents b,.userblockcontents span {visibility:hidden}  \n .userblockcontents:hover {color:"+__COLOR.gbg4+"} \n .userblockcontents .hint {visibility:initial;color:"+__COLOR.gbg3+"}")
+					}
+				}
+
+			}
+		
+		}
+	}
+,_rf:function(v){
+v=v?v+'':''
+return v.replace(/[\^\$*?()\[\]{}\/\\]/g,'\\$&').replace(/\s+/g,'|')
+}//
+,_sf:function(v){
+v=v?v+'':''
+return v.replace(/^\s+|\s+$/g,'').split(/\s+/).join(' ')
+}//
+,setLocal:function(tag,sc,su){
+if(su=='' && sc== ''){
+	commonui.serverSyncTag.setLocal('blockword',0)
+	commonui.userCache.del('blockword')
+	}
+else{
+	commonui.userCache.set('blockword','1\n'+this._rf(sc)+'\n'+this._rf(su), 86400*365)
+	commonui.serverSyncTag.setLocal('blockword',tag|0)
+	}
+}//
+,ui :  function (uid){
+if(!uid)uid=window.__CURRENT_UID
+if(!uid)return alert('ĞèÒªµÇÂ¼')
+
+var x = commonui.createCommmonWindow(4),$=_$
+,org = commonui.userCache.get('blockword')
+,etag = commonui.serverSyncTag.local('blockword'),self=this
+
+
+x._.addTitle('ÆÁ±ÎÌû×Ó')
+
+__NUKE.doRequest({
+	u:__API.toUri('','__lib','ucp','__act','get_block_word','__output',3,'uid', uid)
+	,f:function(d){
+		var bu,bc,y = $('/span')._.add(
+			'ÆÁ±Î·¢ÌûÈË (ÓÃ»§Ãû»òÓÃ»§Êı×Öid ¿Õ¸ñ·Ö¸ô)'
+			,$('/br')
+			,bu=$('/textarea','onchange',function(){this._change=1})
+			,$('/br'),$('/br')
+			,'ÆÁ±ÎÄÚÈİ (°üº¬¹Ø¼ü´Ê ¿Õ¸ñ·Ö¸ô)'
+			,$('/br')
+			,bc=$('/textarea','onchange',function(){this._change=1})
+			,$('/br'),$('/br')
+			,$('/button','innerHTML','È·¶¨','type','button','onclick',function(){
+					if(!bc._change && !bu._change)
+						return x._.hide()
+					var s='',rgu = self._sf(bu.value)
+					,rgc = self._sf(bc.value)
+					if(rgu||rgc)
+						s = '1\n'+rgc+'\n'+rgu
+					__NUKE.doRequest({
+						u:__API.toUri('','__lib','ucp','__act','set_block_word','__output',3,'data', s)
+						,f:function(d){
+							var e = __NUKE.doRequestIfErr(d)
+							if(e)
+								return alert(e)
+							e = d.data[1]//etag
+							self.setLocal(e,rgc,rgu)
+							alert(d.data[0])
+							}
+						})
+					}
+				)
+			)
+
+		var vv='\n\n',ve=0
+		if(d && d.data && d.data[0] && (d.data[1]|0)){
+			ve = d.data[1]|0
+			vv= d.data[0]
+			}
+		
+		var z =vv.split(/\n/)
+		if(z[0].charAt(0)==='1'){//line 1 version
+			bc.value=self._sf(z[1])//line 2 content
+			bu.value=self._sf(z[2])//line 3 username
+			}
+		
+		if(etag != ve){
+			self.setLocal(ve,bc.value,bu.value)
+			setTimeout(function(){alert('Êı¾İÒÑÍ¬²½')})
+			}
+
+		x._.addContent(y)
+		
+		x._.show()
+		
+		}//f:
+	})
+}//fe
+}//ce
+
 
 //ÕËºÅ²Ù×÷===
 commonui.accountAction = function(act){

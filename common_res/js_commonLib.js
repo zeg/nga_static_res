@@ -1185,11 +1185,24 @@ if(a.xr){
 		fd.append(k,a.u.a[k])
 	var xr = new XMLHttpRequest()
 	xr.onload = function(e) {
-		var xhr = e.target
+		var xhr = e.target,er,y
 		if (xhr.readyState !== 4 && xhr.status !== 200)
-			return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{}})
-		y = eval(xhr.responseText)
-		return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:{script_muti_get_var_store:y}})
+			er = 'SERVER_RETURN_'+xhr.status
+		else{
+			
+			try{
+				y = {}
+				eval('y["'+a.n+'"]='+xhr.responseText)
+				}
+			catch(err){
+				er=err
+				}
+			}
+		if(er){
+			console.log(er)
+			y={}
+			}
+		return _doRequestCallback.call({readyState:'complete',nodeName:'IFRAME',contentWindow:y})
 		}
 	//if(xr.upload)
 	//	xr.upload.onprogress = function(e){if (e.lengthComputable) console.log(Math.round(e.loaded * 100 / e.total).toString()+'%') }

@@ -59,7 +59,7 @@ return "<a href='javascript:void(0)' class='b' style='color:inherit' onclick='ub
 })
 }//if
 
-if(arg.txt.match(/\[(item|spell|quest|npc|achieve|hsdeck|wowdb|wow|lol|hscard|d3db|crdb)/i)){
+if(arg.txt.match(/\[(item|spell|quest|npc|achieve|hsdeck|lordeck|wowdb|wow|lol|hscard|d3db|crdb)/i)){
 
 arg.txt = arg.txt.replace(/\[(item|spell|quest|npc|achieve)(=[^\]]{1,20})?\](.{1,100}?)\[\/(item|spell|quest|npc|achieve)\]/gi,function($0,$1,$2,$3,$4){
 if ($1!=$4)return $0
@@ -67,7 +67,7 @@ if($2)$2 = $2.substr(1)
 return commonui.dbLinkGen.linkGen('[wow,'+$1+($2 ? ','+$2 : '')+'['+$3+']]')
 });//[db]
 
-if(!arg.isSig)
+if(!arg.isSig && arg.txt.indexOf('deck]')!=-1){
 arg.txt = arg.txt.replace(/\[hsdeck\](.+?)\[\/hsdeck\]/gi,function($0,$1){
 	var x = $1.split(/\s*<br\s*\/?\s*>\s*|\s*\n\s*/ig),y = [],z='',v={},w='',l=[],h=0
 	for(var i=0;i<x.length;i++){
@@ -98,6 +98,11 @@ arg.txt = arg.txt.replace(/\[hsdeck\](.+?)\[\/hsdeck\]/gi,function($0,$1){
 	return "<div class='hsdeck'><table><tbody><tr><td class='np'>"+z+"</td></tr><tr><td colspan=4><table><tbody><tr>"+w+"<td class='link'><a class='b gray' href='http://db.178.com/hs/deck/#1^"+l.join(',')+"'>[¿¨×éÄ£Äâ]</a></td></tr></tbody></table></td></tr></tbody></table></div>"
 	});//[hsdeck]
 
+arg.txt = arg.txt.replace(/\[lordeck\](.+?)\[\/lordeck\]/gi,function($0,$1){
+	return "<div class='lordeck' style='display:none'>"+$1+"</div><img src='about:blank' style='display:none' onerror='ubbcode.loadlordeck(this.previousSibling,this)'/>"
+	});//[hsdeck]
+
+}//
 
 arg.txt = arg.txt.replace(/\[wowdb\[([^\]]{2,100})\]\]/gi,function($0,$1){$1=$1.replace(/^ | $/,'');
 return commonui.dbLinkGen.linkGen('wow','cn',$1)});//[db]
@@ -225,6 +230,22 @@ arg.txt = arg.txt.replace(/(?:<br\s*\/?>)?\s*\[diablo3charsim\]([^\x00]+?)\[\/di
 }//if
 */
 }//fe
+
+ubbcode.loadlordeck = function(o,oo){
+if(!window.LoRDeck){
+	if(window.LoRDeck!==false){
+		window.LoRDeck = false
+		return __SCRIPTS.load(__IMG_STYLE+'/js_lor_deck.js?1',function(){LoRDeck.init();ubbcode.loadlordeck(o)})
+		}
+	else
+		setTimeout(function(){ubbcode.loadlordeck(o)},200)
+	}
+
+o.innerHTML = LoRDeck.encode(o.innerHTML)
+o.style.display=''
+//oo.parentNode.removeChild(oo)
+}//
+
 
 ubbcode.bbscode_aft=function(arg){
 /*

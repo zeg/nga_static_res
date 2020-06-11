@@ -177,6 +177,7 @@ this.data.push(arguments)
 },//fe
 init:function(){
 __NUKE.addCss('#toppedtopic, .topicrowsnone {display:none}')
+commonui.blockword.init()
 },//fe
 preLoad:function(){
 
@@ -372,7 +373,7 @@ if(type & 2097152){
 	}
 if((type & (2097152 | 32768)) && w.__CURRENT_FID)
 	tmp.appendChild(
-		$('/input').$0('type','checkbox','style',{marginLeft:'0.5em'},'title','是否显示此版面的主题','style','marginLeft:0.5em',
+		$('/input','type','checkbox','style',{marginLeft:'0.5em'},'title','是否显示此版面的主题','style','marginLeft:0.5em',
 		'checked',((type & 1)?'':'checked'),
 		'value',tid,'onclick',function(){
 			self.ignoreTopic(this,__CURRENT_FID,this.value,this.checked?0:1)
@@ -395,7 +396,7 @@ if ((topicMisc._BIT1 & this.topicMiscVar._ALL_FONT)==0) {
 //o_replies.style.display=o_ptime.style.display=o_rtime.style.display='none'
 
 if (admin&1)
-	selBox = $('/input').$0('type','checkbox','value',(pid? tid+'_'+pid: tid),'onclick',function(){self.massAdmin.check(this,this.value)})
+	selBox = $('/input','type','checkbox','value',(pid? tid+'_'+pid: tid),'onclick',function(){self.massAdmin.check(this,this.value)})
 
 
 
@@ -493,6 +494,15 @@ else
 if(!lite && (topicMisc._BIT1 & 8388608))
 	this.loadThreadInfoSetAvatarList.push( o_author )
 
+var tmp=0
+if(this.blockword.ru && o_author && o_author.href && this.blockword.checkUsername(o_author.href.match(/uid=(\d+)/)[1],o_author.textContent))
+	tmp = 1
+else if(this.blockword.rc && o_topic && this.blockword.checkContent(o_topic.textContent))
+	tmp = 2
+if(tmp){
+	o_topic.className+=' userblockcontents'
+	o_author.className+=' userblockcontents'
+	}
 //avatar ===================
 //if (avatar && !(w.__UA[0]==1 && w.__UA[1]<=6) && !(w.__SETTING.bit & 64) && o_ptime.parentNode)
 //	this.loadThreadInfoAvatar(avatar,o_ptime.parentNode,{0:o_author,1:o_ptime},this.hsvToRgb(bgC[0],bgC[1],bgC[2]))
@@ -672,7 +682,7 @@ __NUKE.doRequest({
 commonui.ignoreTopic = function(o,fid,tid,ignore){
 __NUKE.doRequest({
 	u:{u:__API._base+'__lib=user_option&__act=set&raw=3&'+(ignore ? 'add':'del')+'='+tid,
-		a:{fid:fid,type:1}
+		a:{'fid':fid,'type':1,'info':'add_to_block_tids'}
 		},
 	b:o
 	})
@@ -715,8 +725,19 @@ d:{
 	ck:function(a){if(a.fid)return 1} },
 
 2:{n1:'<span style="font-size:1.23em">收藏版面</span>',
-	on:function(e,a){commonui.unionforumSubscribe(a.fid,0,1)},
-	ck:function(a){if(a.fid && __GP.rvrc>=20)return 1} },
+	on:function(e,a){
+		__NUKE.doRequest({
+			u:__API.toUri('','__lib','forum_favor2','__act','forum_favor','__output',3,'action','add',a.stid ? 'stid':'fid', a.stid?a.stid:a.fid)
+			,f:function(d){
+				var e = __NUKE.doRequestIfErr(d)
+				alert(e ? e : d.data[0])
+				commonui.mergeViewHis()
+				}
+			})
+		
+		//commonui.unionforumSubscribe(a.fid,0,1)
+		},
+	ck:function(a){if(window.__CURRENT_UID)return 1} },
 
 3:{n1:'权限/版主',u:__API.viewFPg('{fid}')},
 
@@ -727,7 +748,7 @@ d:{
 5:{n1:'版面功能',on:function(e,a){commonui.forumBtn(e,a.fid)},
 	ck:function(a){if(!a.stid && a.fid<0 && a.admin)return 1} },
 
-6:{n1:'<span style="font-size:1.23em">发表新贴</span>',c:'disable_tap_menu uitxt1',
+6:{n1:'<span style="font-size:1.23em">发表新帖</span>',c:'disable_tap_menu uitxt1',
 	on:{
 		click:function(e,a,o){
 			var stat = o.__islongclick || o.__t3,sfid = commonui.selectForum.getCurrent(a.fid),stid = a.stid ? a.stid : (window.__CURRENT_STID ?  window.__CURRENT_STID  : null)
@@ -872,36 +893,58 @@ this.createadminwindow()
 this.adminwindow._.addTitle('版面功能')
 this.adminwindow._.addContent(null)
 
-var x = $('/div').$0('className','ltxt b','style','width:40em',
-	__GP.admincheck && fid<0 ? $('/a').$0('href','javascript:void(0)','onclick',function(e){commonui.setUserRepu(e,fid)},'innerHTML','用户版面声望') : null,
-	__GP.admincheck && fid<0 ? $('/a').$0('href','javascript:void(0)','onclick',function(e){adminui.modifyUserForum(null,fid)},'innerHTML','用户版面设置') : null,
-	__GP.admin ? $('/a').$0('className','red','href','javascript:void(0)','innerHTML','修改版面','onclick',function(e){adminui.modifyForum(null,fid)}) : null,
-	__GP.admin ? $('/a').$0('className','red','href',__API.user_forum_nuke(fid),'innerHTML','封禁版面') : null,
-	__GP.admincheck ? $('/a','href','javascript:void(0)','innerHTML','副版主','onclick',function(e){adminui.minorModerator(null,fid)}) : null,
-	__GP.greater ? $('/a').$0('href',__API.forum_stat(fid),'innerHTML','版主统计') : null,
-	__GP.greater ? $('/a').$0('href','javascript:void(0)','innerHTML','访问统计','onclick',function(e){adminui.forumStat(null,fid)}) : null,
-	$('/a').$0('href',__API.topic_key_set(fid),'innerHTML','主题分类'),
-	$('/a').$0('href','javascript:void(0)','innerHTML','声望级别','onclick',function(e){adminui.reputationLevel(e,fid)}),
-	$('/a').$0('href',__API.auto_trans_set(fid),'innerHTML','术语翻译'),
-	//$('/a').$0('href',__API.keyword_watch_set(fid),'innerHTML','关键词监视'),
-	//$('/a').$0('href',__API.keyword_watch(fid),'innerHTML','关键词监视记录'),
-	__GP.admincheck ? $('/a').$0('href','javascript:void(0)','innerHTML','关键词监视','onclick',function(e){adminui.setFilter(null,fid,2)}) : null,
-	__GP.superlesser ? $('/a').$0('href','javascript:void(0)','innerHTML','关键词删除','onclick',function(e){adminui.setFilterG()}) :null,
-	$('/a','href','javascript:void(0)','innerHTML','新用户限制','onclick',function(e){adminui.setNewUserPostLimit(e,fid)}),
-	$('/a','href','javascript:void(0)','innerHTML','镜像到主题','onclick',function(e){adminui.quoteForum(e,fid)}),
-	$('/a','href','javascript:void(0)','innerHTML','子版面设置','onclick',function(e){adminui.setSets(e,fid)}),
-	$('/a','href','javascript:void(0)','innerHTML','发帖提示','onclick',function(e){adminui.setHint(e,fid)}),
-	$('/a','href','javascript:void(0)','innerHTML','关键词统计','onclick',function(e){adminui.keywordStat(e,fid)}),
-	__GP.ubStaff ? $('/a','href','javascript:void(0)','innerHTML','相关信息','onclick',function(e){adminui.modifyForumRel(null,fid)})  : null
+var x= $('/div','className','ltxt','style',((__SETTING.bit&16) ? 'width:22.3em' : 'max-width:44em'))._.add(
+	$('/h4','className',"textTitle",'innerHTML','用户版'),
+	$('/span',
+		__GP.admincheck && fid<0 ? $('/a','href','javascript:void(0)','onclick',function(e){commonui.setUserRepu(e,fid)},'innerHTML','用户版面声望') : null,
+		__GP.admincheck && fid<0 ? $('/a','href','javascript:void(0)','onclick',function(e){adminui.modifyUserForum(null,fid)},'innerHTML','用户版面设置') : null
+		),
+
+	$('/h4','className',"textTitle",'innerHTML','版面设置'),
+	$('/span',
+		__GP.admin ? $('/a','className','red','href','javascript:void(0)','innerHTML','修改版面','onclick',function(e){adminui.modifyForum(null,fid)}) : null,
+		__GP.admin ? $('/a','className','red','href',__API.user_forum_nuke(fid),'innerHTML','封禁版面') : null,
+		__GP.admincheck ? $('/a','href','javascript:void(0)','innerHTML','副版主','onclick',function(e){adminui.minorModerator(null,fid)}) : null,
+		$('/a','href','javascript:void(0)','innerHTML','子版面设置','onclick',function(e){adminui.setSets(e,fid)}),
+		$('/a','href','javascript:void(0)','innerHTML','镜像到主题','onclick',function(e){adminui.quoteForum(e,fid)})
+		),
+
+	$('/h4','className',"textTitle",'innerHTML','杂项功能'),
+	$('/span',
+		$('/a','href',__API.topic_key_set(fid),'innerHTML','主题分类'),
+		$('/a','href','javascript:void(0)','innerHTML','声望级别','onclick',function(e){adminui.reputationLevel(e,fid)}),
+		$('/a','href',__API.auto_trans_set(fid),'innerHTML','术语翻译'),
+		$('/a','href','javascript:void(0)','innerHTML','新用户限制','onclick',function(e){adminui.setNewUserPostLimit(e,fid)}),
+		$('/a','href','javascript:void(0)','innerHTML','发帖提示','onclick',function(e){adminui.setHint(e,fid)}),
+		__GP.ubStaff ? $('/a','href','javascript:void(0)','innerHTML','相关信息','onclick',function(e){adminui.modifyForumRel(null,fid)})  : null
+		),
+
+	$('/h4','className',"textTitle",'innerHTML','统计'),
+	$('/span',
+		__GP.greater ? $('/a','href',__API.forum_stat(fid),'innerHTML','版主统计') : null,
+		__GP.greater ? $('/a','href','javascript:void(0)','innerHTML','访问统计','onclick',function(e){adminui.forumStat(null,fid)}) : null,
+		$('/a','href','javascript:void(0)','innerHTML','关键词统计','onclick',function(e){adminui.keywordStat(e,fid)})
+		),
+
+	$('/h4','className',"textTitle",'innerHTML','审核'),
+	$('/span',
+		__GP.admincheck ? $('/a','href','javascript:void(0)','innerHTML','审核关键词','onclick',function(e){adminui.setFilter(null,fid,2)}) : null,
+		__GP.superlesser ? $('/a','href','javascript:void(0)','innerHTML','自动删除','onclick',function(e){adminui.setFilterG()}) :null
+		)
+
+	
+
 	//__GP.admincheck ? $('/a').$0('href','javascript:void(0)','innerHTML','版面背景图','onclick',function(e){adminui.setForumPic(e)}) : null,
 
 	)
 
 var a = x.getElementsByTagName('a')
-for(var i=0;i<a.length;i++){
-	a[i].className+=' nobr'
-	x.insertBefore(document.createTextNode(' '),a[i])
-	}
+for(var i=0;i<a.length;i++)
+	a[i].className+=' nobr cell'
+
+commonui.buttonBase.altStyle(x)
+
+
 
 this.adminwindow._.addContent(x)
 this.adminwindow._.show(e)

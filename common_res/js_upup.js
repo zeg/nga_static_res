@@ -97,10 +97,10 @@ return $('/div','style','width:20em;height:2em;position:absolute;left:0;bottom:0
 				'_genbg',function(){
 					var y = this.offsetHeight*sc2, y1 = y * (1+sc1), x=this.offsetWidth
 					,sv = gensvg(x,y1,  0,y1*sc1*0.6,  x,0,  x,y1,  0,y1-y1*sc1*0.4)
-					this._.css('height',(y1+sd1)+'px','lineHeight',(y1+sd1)+'px','verticalAlign','middle','background', 'url("data:image/svg+xml;,'+encodeURI(sv)+'") no-repeat')
+					this._.css('height',(y1+sd1)+'px','lineHeight',(y1+sd1)+'px','verticalAlign','middle','background', 'url("data:image/svg+xml;,'+encodeURIComponent(sv)+'") no-repeat')
 					var z = Math.random()*(y1-y)+y, v = Math.random()*z/2+z/4, u=this.previousSibling.offsetWidth
 					,sv = gensvg(x,z,  0,v,  u,0,  u,z)
-					this.previousSibling._.css('height',z+'px','background', 'url("data:image/svg+xml;,'+encodeURI(sv)+'") no-repeat')
+					this.previousSibling._.css('height',z+'px','background', 'url("data:image/svg+xml;,'+encodeURIComponent(sv)+'") no-repeat')
 					}
 				),
 			'_go',function(){
@@ -146,10 +146,10 @@ if(!('transition' in document.body.style))
 	return
 var x,y,z,w
 ,c = $('/div','style','position:absolute;left:400px;top:400px;',
-	x = gen1('data:image/svg+xml;,'+encodeURI(svgbtn1), 1, -5, t1),//左
-	y = gen1('data:image/svg+xml;,'+encodeURI(svgbtn4), 7, 3, t2),//右
-	z = gen1('data:image/svg+xml;,'+encodeURI(svgbtn3), 5.3, 7, t3),//上
-	w = gen1('data:image/svg+xml;,'+encodeURI(svgbtn2), 4, -10, t4),//下
+	x = gen1('data:image/svg+xml;,'+encodeURIComponent (svgbtn1), 1, -5, t1),//左
+	y = gen1('data:image/svg+xml;,'+encodeURIComponent (svgbtn4), 7, 3, t2),//右
+	z = gen1('data:image/svg+xml;,'+encodeURIComponent (svgbtn3), 5.3, 7, t3),//上
+	w = gen1('data:image/svg+xml;,'+encodeURIComponent (svgbtn2), 4, -10, t4),//下
 	'_go',function(){
 		setTimeout(function(){x._go(-15)},75)
 		setTimeout(function(){y._go(-8)},100)

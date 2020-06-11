@@ -139,7 +139,7 @@ if( __SETTING.bit & 4){//<= 10 inch
 else{
 	y = Math.floor(__SETTING.currentClientWidth*0.6)
 	if(y<900)y=900
-	if(y>__SETTING.currentClientWidth)y = Math.floor(p.cw*0.9)
+	if(y>__SETTING.currentClientWidth)y = Math.floor(__SETTING.currentClientWidth*0.9)
 	}
 this.hSize = z, this.sSize = y
 },//fe

@@ -75,7 +75,7 @@ var __NEW_POST = function(ACTION,FID,STID,TID,PID,FBIT,isComment,_subject,_conte
 	o_voteEnd = R.o_voteEnd = $('/input','size','3','value','不限','title','小时后结束'),//小时后结束
 	o_voteBetMax = R.o_voteBetMax = $('/input','size','3','title','铜币'),//投注最大值
 	o_voteBetMin = R.o_voteBetMin = $('/input','size','3','title','铜币'),//投注最小值
-	o_voteLimit = R.o_voteLimit = $('/input','size','5','title','发贴版面的第一个声望 -21000~21000'),//投票的声望限制
+	o_voteLimit = R.o_voteLimit = $('/input','size','5','title','发帖版面的第一个声望 -21000~21000'),//投票的声望限制
 
 	o_modifyAppend = R.o_modifyAppend = $('/select','title','帖子超过修改时限，在此提交的内容将被增加至原帖',
 			$('/option','value','1','innerHTML', '末尾'),
@@ -379,7 +379,7 @@ var __NEW_POST = function(ACTION,FID,STID,TID,PID,FBIT,isComment,_subject,_conte
 				),
 			b:btn,
 			f:function(d){
-				if(d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]=="发贴完毕 ..."){
+				if(d.data && d.data.__MESSAGE && d.data.__MESSAGE[1]=="发帖完毕 ..."){
 					if(postfunc.pwindow)
 						postfunc.pwindow._.hide()
 					c.createadminwindow()
@@ -390,7 +390,7 @@ var __NEW_POST = function(ACTION,FID,STID,TID,PID,FBIT,isComment,_subject,_conte
 
 					c.adminwindow._.addContent(
 						c01 = _$('/div')._.cls('ltxt b')._.add(
-							"发贴完毕 ",
+							"发帖完毕 ",
 							c02 = _$('/span').$0('innerHTML',c04),
 							'秒后跳转 ',
 							_$('/a').$0('href',u+(c03?c03:tid)+'&page=e','className','gray','innerHTML','(点此跳转)'),

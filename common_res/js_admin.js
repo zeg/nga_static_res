@@ -972,14 +972,15 @@ this.w._.addContent(null)
 this.w._.addTitle('删除/移动/镜像 '+(tid?'':'选中的')+'主题');
 
 var self = this,$ = _$, fid='', stid='', info,infoss,tff, pm, de, sl, am, aq, an, af, ad, ao, ap, cl = function(e,h){
-	fid = h[0]
-	if(h[5]){
-		stid = h[5]
-		sl.innerHTML = '到 > '+h[6]
+	if(h.stid){
+		fid=''
+		stid = h.stid
+		sl.innerHTML = '到 > '+h.name+'('+h.stid+')'
 		}
-	else{
+	else if(h.fid){
 		stid = ''
-		sl.innerHTML = '到 > '+h[1]
+		fid = h.fid
+		sl.innerHTML = '到 > '+h.name+'('+h.fid+')'
 		}
 	commonui.adminwindow._.hide(e)
 	commonui.cancelEvent(e)
@@ -1404,7 +1405,7 @@ this.w._.addContent($('/span')._.add(
 	'备注身份或事迹的描述性信息供其他版主参考',$('/br'),
 	'禁止添加无用信息',$('/br'),
 	'添加备注在缓存过期后生效',$('/br'),
-	__GP.super ? [ma = $('/textarea','placeholder',uid,'onclick',function(){this.placeholder='可填入多个uid 换行 空格 逗号分隔'}),$('/br')]:null,
+	__GP['super'] ? [ma = $('/textarea','placeholder',uid,'onclick',function(){this.placeholder='可填入多个uid 换行 空格 逗号分隔'}),$('/br')]:null,
 	re = $('/input','placeholder','备注信息','size',20),$('/br'),
 	__GP.admin ? [op = $('/input','type','checkbox'),'所有用户可见',$('/br')]: null,
 	$('/button','innerHTML','提交','onclick',function(){
@@ -1601,12 +1602,13 @@ adminui.setSubSets = function(e,fid){
 	
 if(!fid)fid=0;
 
-var $=_$,w = $('/span'),tb,newnod = function(id,opt,name){
+var $=_$,w = $('/span'),tb,su=__GP['super']&&__GP.ubStaff,newnod = function(id,opt,name){
 return $('/tr',
 	$('/td', $('/input','value',id,'placeholder','版面id/合集或版面镜像id'), $('/input','type','hidden','value','\t')),//id
 	$('/td')._.add( $('/input','type','checkbox','value','t','checked',opt.indexOf('t')!=-1?'checked':''),'是合集/版面镜像 '),//if set/quoteforum
 	$('/td')._.add( $('/input','type','checkbox','value','s','checked',opt.indexOf('s')!=-1?'checked':''),'子版面 '),//display as sub
-	$('/td')._.add( $('/input','type','checkbox','value','q','checked',opt.indexOf('q')!=-1?'checked':''),'加载主题 '),//display as quote
+	$('/td')._.add( $('/input','type','checkbox','value','q','checked',opt.indexOf('q')!=-1?'checked':'','onchange',function(){if(this.checked)this.parentNode.nextSibling.firstChild.checked=''}),'附加显示主题 '),//display as quote
+	$('/td')._.add( $('/input','type','checkbox','value','u','checked',opt.indexOf('u')!=-1?'checked':'','disabled',su?'':'1','onchange',function(){if(this.checked)this.parentNode.previousSibling.firstChild.checked=''}),'合并显示主题 '),//display as union
 	$('/td')._.add( $('/input','type','hidden','value','\t'), $('/button','innerHTML','添加','onclick',function(){tb.insertBefore(newnod('','',''),this.parentNode.parentNode.nextSibling)}), $('/button','innerHTML','删除','onclick',function(){this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)}), $('/b')._.add(name))//id
 	)
 }//
@@ -1721,55 +1723,45 @@ __NUKE.doRequest({
 	})
 
 }//fe
-/**
- * 关键词过滤设置 老
- * @param {type} e
- * @param {type} fid
- * @returns {undefined}
 
-adminui.setLogword = function(e,fid){
-if(!fid && !__GP.ubStaff)
-	return
-var keys,$=_$
-this.createadminwindow()
-this.w._.addContent(null)
-this.w._.addContent(
-	$('/span')._.add(
-		'填入关键词(2~20字节) 空格或换行分隔',
-		$('/br'),
-		fid ? '最多50个 有关键词出现的帖子将有标记 并出现在监视记录中' : '最多10个 有全局关键词出现的帖子会发送提醒至全部staff权限组',
-		$('/br'),
-		keys = $('/textarea'),
-		$('/br'),
-		$('/button').$0('innerHTML','提交','onclick',function(){
-			var k = keys.value.replace(/^\s+|\s+$/g,'')
-			if(k==='')
-				return
-			__NUKE.doRequest({
-				u:{u:__API._base+'__lib=log_post&__act=set&fid='+fid,
-					a:{key:k,raw:3}
-					},
-				b:this
-				})
-			})
-		//__GP.staff ? $('/a').$0('innerHTML','[设置全局监视关键词]','href','javascript:void(0)','className','b','onclick',function(){adminui.setLogword(e,0)}) : null
-		)
-	)
-__NUKE.doRequest({
-	u:__API._base+'__lib=log_post&__act=get&raw=1&fid='+fid,
-	b:this,
-	f:function(d){
-		var e = __NUKE.doRequestIfErr(d)
-		if(e)
-			return alert(e)
-		d = (typeof d.data[0]=='object') ? d.data[0] : d.data
-		for(var k in d)
-			keys.value += d[k]+' '
+/**
+ * 关键词合并
+ */
+adminui.setFilterCombine = function(){
+var cb = function(x){
+	var y=x.split(/\s+/),z=''
+	for(var i=0;i<y.length;i++){
+		if(y[i].length){
+			for(var j=0;j<y.length;j++){
+				if(i!=j && y[j]!==false && y[j].length && y[j].indexOf(y[i])>-1)
+					y[j]=false
+				}
+			}
+		else
+			y[i]=false
 		}
-	})
-this.w._.show(e)
-}//fe
-*/
+		
+	for(var i=0;i<y.length;i++){
+		if(y[i]!==false)
+			z+= ' '+y[i]
+		}
+	return z
+	}
+,data
+
+var w = commonui.createadminwindow()
+w._.addTitle('关键词合并工具')
+w._.addContent(null)
+w._.addContent(_$('/span')._.add(
+	data = _$('/textarea','style','width:30em;height:20em;'),
+	_$('/button','innerHTML','合并','onclick',function(){
+		var wk = data.value
+		data.value = 'wait ...'
+		setTimeout(function(){data.value = cb(wk)})
+		})
+	))
+w._.show()
+}//
 
 /**
  * 
@@ -1977,69 +1969,90 @@ this.w._.addContent(
 	$('/br'),
 	$('/button','innerHTML','增加一个','type','button','onclick',function(){
 		z._.add(
-			$('/input','value',''),
-			$('/select',
-				$('/option','value',1,'innerHTML','从现在开始三个月内有副版主权限'),
-				$('/option','value',0,'innerHTML','取消副版主权限')
-				),
-			$('/br')
+			xy(0,0,0,0)
 			)
 		}),
 	$('/button','innerHTML','确定','type','button','onclick',function(){
-		var j = z.childNodes,y=''
+		var j = z.childNodes,x=0,y=''
 		for(var i=0;i<j.length;i++){
-			if(j[i].nodeName!='BR')
-				y+=(j[i].name ? j[i].name : j[i].value)+"\t"
+			if((j[i]._valueN.op&131072)==0){
+				y+=j[i]._valueN.uid+'\t'+j[i]._valueN.op+'\t'
+				}
 			}
-		if(y)y=y.substr(0,y.length-1)
+		if(y)
+			y=y.substr(0,y.length-1)
 		__NUKE.doRequest({
-			u:{u:__API._base,a:{__lib:'minor_moderator',__act:'set',raw:3,fid:fid,minor_moderator_input:y}}
+			u:{u:__API._base,a:{__lib:'minor_moderator',__act:'set_v2',raw:3,'fid':fid,'minor_moderator_input':y}}
 			})
 		})
 	)
 this.w._.show(e)
 __NUKE.doRequest({
-	u:{u:__API._base,a:{__lib:'minor_moderator',__act:'get',raw:3,act:4,fid:fid}},
+	u:{u:__API._base,a:{__lib:'minor_moderator',__act:'get_v2',raw:3,act:4,fid:fid}},
 	f:function(d){
 		var e = __NUKE.doRequestIfErr(d)
 		if(e)
 			return alert(e)
 		x=d.data[0].split("\t")
-		if(x.length>1)
-			for(var i=0;i<x.length;i+=3)
-				z._.add(
-					$('/input','value',x[i+1]+'('+x[i]+')','disabled','1','name',x[i]),
-					$('/select',
-						$('/option','value',0,'innerHTML','到 '+commonui.time2date(x[i+2],'Y-m-d H:i')+' 为止有副版主权限'),
-						$('/option','value',4,'innerHTML','从现在开始三个月内有副版主权限'),
-						$('/option','value',3,'innerHTML','取消副版主权限')
-						),
-					$('/br')
-					)
+		if(x.length>1){
+
+				for(var i=0;i<x.length;i+=4)
+					z._.add(
+						xy(x[i]|0, x[i+1], x[i+2]|0, x[i+3]|0)
+						)
+
+			}
 		}
 	})
+
+var xy = function(uid,name,time,type){
+	return $('/span'
+		,'_valueN',{'uid':uid,'op':0})//1modmark 65536renewtime
+		._.add(
+			$('/input','value',uid ? name+'('+uid+')' : '', 'disabled', uid ? '1' : ''
+				,'onchange',function(){this.parentNode._valueN.uid=this.value}
+				)
+			,$('/select',
+				uid ? $('/option','value',0,'innerHTML','到 '+commonui.time2date(time,'Y-m-d H:i')+' 为止有副版主权限') : null
+				,$('/option','value',65536,'innerHTML','从现在开始三个月内有副版主权限')
+				,$('/option','value',131072,'innerHTML','取消副版主权限')
+				,'onchange',function(){this.parentNode._valueN.op|=(this.value|0)}
+				),' '
+			,__GP.admin||(__GP.superlesser&&__GP.ubStaff) ? [$('/input', 'type','checkbox', 'checked',(type&1)?'checked':'', 'disabled', __GP.admin||(__GP.superlesser&&__GP.ubStaff) ? '':'disabled'
+				,'onchange',function(){
+					if(this.checked)
+						this.parentNode._valueN.op|=1
+					else
+						this.parentNode._valueN.op&=(~1)
+					}
+				) ,'用户信息中显示为版主'] : null
+			,$('/br')
+			)
+	}
 }//fe
 
-adminui.forumStat = function(e,fid,tid,fr,da){
+adminui.forumStat = function(e,fid,tid,fr,da,stid){
 this.createadminwindow()
 this.w._.addContent(null)
 this.w._.addTitle('访问统计')
-var $ = _$, f,x,y,z,a,t,c,b
+var $ = _$, f,x,y,z,a,t,c,b,s,p
 this.w._.addContent(
 	c=$('/input','type','radio','name','yjhbn6t3','checked',(fid?'1':'')),'版面 ',
 	b=$('/input','type','radio','name','yjhbn6t3','checked',(tid?'1':'')),'主题 ',
+	s=$('/input','type','radio','name','yjhbn6t3','checked',(stid?'1':'')),'合集 ',
 	f=$('/input','placeholder','版面或主题ID','value',tid?tid:fid),' (不超过10个 需要全部正式版主权限) . ',
 	t=$('/input','placeholder','起始日期','value',fr?fr:''),' (年-月-日) . ',
 	a=$('/input','placeholder','天数(向前数)','value',da?da:''),' (不超过三个月) . ',
+	p=$('/input','placeholder','custom','value',''),
 	$('/button')._.attr({innerHTML:'确定',type:'button'})._.on('click',function(){
 			__NUKE.doRequest({
-				u:{u:__API._base,a:{__lib:'admin_stat',__act:'forum_stat',raw:3,act:1,tid:(b.checked ? f.value :''),fid:(c.checked ? f.value :''),date:t.value,day:a.value}},
+				u:{u:__API._base+(p.value?p.value:''),a:{__lib:'admin_stat',__act:'forum_stat',raw:3,act:1,tid:(b.checked ? f.value :''),stid:(s.checked ? f.value :''),fid:(c.checked ? f.value :''),date:t.value,day:a.value}},
 				f:function(d){
 					var e = __NUKE.doRequestIfErr(d)
 					if(e)
 						return alert(e)
 					d = d.data[0]
-					x=$('/table').$0('className','forumbox')
+					x=$('/table').$0('className','forumbox ubbtable')
 					z = $('/tr',$('/td','innerHTML','/'))
 					for(var k in d.names)
 						z._.add($('/td','innerHTML',d.names[k]))
@@ -2371,7 +2384,7 @@ commonui.adminwindow._.addContent(
 		$('/button','innerHTML','提交','onclick',function(){
 			var x = this.parentNode.getElementsByTagName('input')
 			for(var i=0;i<x.length;i++)
-				x[i].value = x[i].value.replace(/^\s+|\s+$|《|》/g,'').replace(/[（）【】]/g,function($0,$1){var x='（(）)【[】]';return x.charAt(x.indexOf($1)+1)})
+				x[i].value = x[i].value.replace(/^\s+|\s+$|《|》/g,'').replace(/[（）【】`]/g,function($0,$1){var x='（(）)【[】]``';return x.charAt(x.indexOf($1)+1)})
 			y = "[style left 1 top 1 width 9 height 7 background #b22222 align center border-radius 0.3]\n\
 [style font 4 #fff line-height 1.7 innerHTML $votedata_voteavgvalue][/style]\n\
 [/style]\n\
@@ -2750,13 +2763,16 @@ __NUKE.doRequest({
 		tre._.add(adminui.forumTree(  x.allForumTree,  function(e,fid,stid){
 			if(!stid && fid)
 				adminui.modifyForum(null,fid);
-			commonui.cancelEvent(e)
+			commonui.cancelBubble(e)
+			return commonui.cancelEvent(e)
 			}  ))
 
 		var y=function(k){return (x.forumData[k]===undefined)?'':x.forumData[k].toString()}
 		fc._.add(
 			'版面FID',_$('/br'),
-			_fid = _$('/input').$0('value',fid),_$('/br'),
+			_fid = _$('/input').$0('value',fid,'disabled','true')
+			,_$('/button','innerHTML','新建版面','onclick',function(){this.previousSibling.value=''})
+			,_$('/br'),
 			_$('/br'),
 			
 			'版面名',_$('/br'),
@@ -2773,6 +2789,10 @@ __NUKE.doRequest({
 			
 			'版面关键字(SOE',_$('/br'),
 			t[_E_HTML_KEY] = _$('/textarea').$0('value',y(_E_HTML_KEY),'style',{width:'25em',height:'5em'}),_$('/br'),
+			_$('/br'),
+
+			'相关作品(影音/游戏等)名 包括原文名 译名 俗名等 每行一个',_$('/br'),
+			t[_E_REL_NAME] = _$('/textarea','style','width:25em;height:15em','value',y(_E_REL_NAME)),_$('/br'),
 			_$('/br'),
 
 			'版面跳转地址',_$('/br'),
@@ -3070,7 +3090,7 @@ __NUKE.doRequest({
 			_$('/br'),
 			
 			'版面说明(显示用',_$('/br'),
-			t[_DSCP] = _$('/input').$0('value',y(_DSCP)),_$('/br'),
+			t[_E_UF_DSCP] = _$('/input').$0('value',y(_E_UF_DSCP)),_$('/br'),
 			_$('/br'),
 			
 			'在版面所有者的发帖信息中显示链接',_$('/br'),
@@ -3110,7 +3130,7 @@ __NUKE.doRequest({
 			_$('/button').$0('innerHTML','提交','onclick',function(){
 				var a = {}
 					a[_NAME]= t[_NAME].value.replace(/^\s+|\s+$/g,''),
-					a[_DSCP]= t[_DSCP].value.replace(/^\s+|\s+$/g,''),
+					a[_E_UF_DSCP]= t[_E_UF_DSCP].value.replace(/^\s+|\s+$/g,''),
 					a[_ADMIN ]= t[_ADMIN].value,
 					a[_E_UF_ALLOW_VISIT ]= t[_E_UF_ALLOW_VISIT][0].checked ? 'a' : ( t[_E_UF_ALLOW_VISIT][1].checked ? 'c' : 'b'+t[_E_UF_ALLOW_VISIT][3].value),
 					a[_E_UF_ALLOW_POST ]=  t[_E_UF_ALLOW_POST][0].checked ? 'a' : 'b'+t[_E_UF_ALLOW_POST][3].value,
@@ -3119,7 +3139,7 @@ __NUKE.doRequest({
 					a.showlink = 1
 				if(!a[_NAME] || a[_NAME].length>20)
 					return alert('版面名过短或过长')
-				if(a[_DSCP].length>20)
+				if(a[_E_UF_DSCP].length>20)
 					return alert('版面说明过长')
 				__NUKE.doRequest({
 					u:{u:__API._base+'__lib=modify_forum&__act=uf_set&raw=3&fid='+fid,

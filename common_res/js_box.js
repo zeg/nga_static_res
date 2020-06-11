@@ -1,6 +1,11 @@
 
 ;(function(){
 
+if(!window.addEventListener){
+	window._LOADERREAD = {init:function(){}}
+	return
+	}
+
 var $ = _$, HTTP = new XMLHttpRequest()
 cs = document.characterSet || document.defaultCharset || document.charset;
 var error = function(e,a){
@@ -149,10 +154,7 @@ for(var i=0;i<x.length;i++){
 	if(x[i].className && x[i].className.match(/single_ttip2/))
 		document.body.removeChild(x[i--])
 	}
-if(commonui.loadReadHidden)
-	commonui.loadReadHidden.reset()
-if(commonui.selectForum)
-	commonui.selectForum.reset()
+
 //this.his.push(z)
 //if(this.his.length>5)
 //	this.his.shift()
@@ -275,12 +277,29 @@ P.runScript(script,0,function(){
 	})
 }//fe
 
+
+
 P.runScript = function(ss,i,f){
 if(!i)i=0
 for(;i<ss.length;i++){
 	if(__SCRIPTS.loading){
 		console.log('wait load '+__SCRIPTS.loading)
-		return __SCRIPTS.wload(function(){console.log('wait load ok');P.runScript(ss,i,f)})
+		var alto = setTimeout(function(){
+			var z=''
+			for(var k in __SCRIPTS.lg)
+				if(__SCRIPTS.lg[k] && k=='https://bdtj.tagtic.cn/bi-sdk.1.2.1.js')
+					z+=k+'\n'
+			if(z){
+				z+='加载缓慢 可尝试检查网络连接或关闭广告屏蔽'
+				console.log(z)
+				commonui.errorAlert(z)
+				}
+			},5000)
+		return __SCRIPTS.wload(function(){
+			console.log('wait load ok');
+			clearTimeout(alto)
+			P.runScript(ss,i,f)
+			})
 		//return setTimeout(function(){P.runScript(ss,i,f)},15)
 		}
 	commonui.eval.call(window,ss[i])
@@ -353,12 +372,47 @@ this.otherOnClear()
 }//fe
 
 
+/*
+在清空页面或加载完成时运行某些程序 for Greasemonkey etc.
+*/
+P.customLoadCall={
+i:0
+,queue:{}
+,addOnload:function(f,k){
+	k = 'l'+(++i)+'_'+k
+	this.queue[k] = f
+	return k
+	}//
+,addOnclear:function(f,k){
+	k = 'c'+(++i)+'_'+k
+	this.queue[k] = f
+	return k
+	}//
+,remove:function(k){
+	delete this.queue[k]
+	}
+,onload:function(){
+	for(var k in this.queue)
+		if(k.charAt(0)=='l')
+			try{this.queue[k]()}
+			catch(e){console.log('__LOADERREAD.customLoadCall '+e)}
+	}
+,onclear:function(){
+	for(var k in this.queue)
+		if(k.charAt(0)=='c')
+			try{this.queue[k]()}
+			catch(e){console.log('__LOADERREAD.customLoadCall '+e)}
+	}
+}//
+
 P.otherOnContentLoad = function(act , url, fromUrl){
 if((this.ifContinuePage&3)==0 && location.hash && commonui.hashAction)//hash action
 	commonui.hashAction()
+console.log(window.__CURRENT_FID,window.__CURRENT_STID)
+if(commonui.customBackgroundUpdate)
+	commonui.customBackgroundUpdate( commonui.getForumBg(window.__CURRENT_FID|0,window.__CURRENT_F_BIT|0,window.__CURRENT_STID|0) )
 
-if(commonui.customBackgroundUpdate && window.__CURRENT_FID)
-	commonui.customBackgroundUpdate( commonui.getForumBg(__CURRENT_FID,window.__CURRENT_F_BIT) )
+if(this.customLoadCall.i)this.customLoadCall.onload()
 }//
 
 P.otherOnClear = function(){
@@ -367,12 +421,14 @@ if(i = this.mcClear.currentGlobal.length){
 		window[this.mcClear.currentGlobal[i]] = undefined
 	//this.mcClear.currentGlobal=[]
 	}
-if(commonui.postBtn){
-	if(commonui.postBtn.clearCache)
-		commonui.postBtn.clearCache()
-	if(commonui.postBtn.clearArgCache)
-		commonui.postBtn.clearArgCache()
-	}
+if(commonui.postBtn && commonui.postBtn.clearCache)
+	commonui.postBtn.clearCache()
+
+if(commonui.topicBtn && commonui.topicBtn.clearCache)
+	commonui.topicBtn.clearCache()
+
+if(commonui.userInfo && commonui.userInfo.clearCache)
+	commonui.userInfo.clearCache()
 
 if(commonui.postArg && commonui.postArg.clearCache)
 	commonui.postArg.clearCache()
@@ -383,11 +439,21 @@ if(commonui.time2dis)
 if(postfunc && postfunc.reset)
 	postfunc.reset()
 
-//if(commonui.topicArg && commonui.topicArg.clearCache)
-//	commonui.topicArg.clearCache()
+if(commonui.loadReadHidden && commonui.loadReadHidden.reset)
+	commonui.loadReadHidden.reset()
+
+if(commonui.selectForum && commonui.selectForum)
+	commonui.selectForum.reset()
+
+if(this.customLoadCall.i)this.customLoadCall.onclear()
 }//
 
-P.mcClear.currentGlobal=["__CURRENT_FID", "__CURRENT_F_BIT", "__CURRENT_F_ALLOWPOST", "__ALL_FORUM_DATA", "__ALL_SET_DATA", "__SELECTED_FORUM", "__SELECTED_FORUM_ADD", "__SELECTED_SET", "__SUB_AND_UNION_FORUM_AND_SET", "__CURRENT_ORDER", "__CURRENT_PAGE", "__SUB_SET", "__SUB_AND_UNION_FORUM",  "__CURRENT_F_ALLOWREPLY", "__CURRENT_TID", "__CUSTOM_LEVEL",'__AUTO_TRANS_FID','__SEARCHING']
+
+
+
+
+
+P.mcClear.currentGlobal=["__CURRENT_FID", "__CURRENT_F_BIT", "__CURRENT_F_ALLOWPOST", "__ALL_FORUM_DATA", "__ALL_SET_DATA", "__SELECTED_FORUM", "__SELECTED_FORUM_ADD", "__SELECTED_SET", "__SUB_AND_UNION_FORUM_AND_SET", "__CURRENT_ORDER", "__CURRENT_PAGE", "__SUB_SET", "__SUB_AND_UNION_FORUM",  "__CURRENT_F_ALLOWREPLY", "__CURRENT_TID", "__CURRENT_STID", "__CUSTOM_LEVEL",'__AUTO_TRANS_FID','__SEARCHING']
 
 P.mcInsert = function(html){
 var x = $('/span'),mc=this.mc,at=this.mcAt
@@ -471,7 +537,7 @@ HTTP.onreadystatechange = function (){
 					: null
 				))
 			}
-		return error('HTTP ERROR '+HTTP.status);
+		return error('HTTP ERROR '+HTTP.status+' 网络错误 可尝试刷新页面');
 		}
 	commonui.progbar(40,5000)
 	var data = P.htmlProc(all,go)

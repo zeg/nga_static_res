@@ -407,6 +407,9 @@ httpDataGetter.script_muti_get(
 			var d = r.data[k]
 			if(d.data[1])
 				d.data[1] = self._long2ip(d.data[1])
+			var co = (d.content+'')
+			if(d.from==0)//system message bug bbscode fix
+				co=co.replace(/\[url\]\/read\.php\?tid=(\d+)\]\[b\]/g,function($0,$1){return '[url=/read.php?tid='+$1+'][b]'})
 			x.$0(
 				$('/tr').$0(
 					$('/td').$0(
@@ -421,7 +424,7 @@ httpDataGetter.script_muti_get(
 						$('/br'),
 						$('/span').$0(
 							'innerHTML',ubbcode.bbsCode({
-								txt:d.content.toString().replace(/\n|\r/g,''),
+								txt:co.replace(/\n|\r/g,''),
 								tId:mid,
 								pId:d.id,
 								authorId:d.from,

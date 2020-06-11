@@ -19,7 +19,7 @@ if(!window.__APPEMBED){
 if(location.pathname!='/read.php' && location.pathname!='/thread.php')return
 
 var t = __NUKE.cpblName(document.getElementsByTagName('head')[0].style,'transition',3), x, y = __NUKE.position.get, i=0, p=null, j=0, c = commonui, 
-prog = _$('/div','style','position:fixed;bottom:-2.5em;height:2em;lineHeight:2em;left:calc(50% - 1.25em);right:auto;width:auto;fontSize:1em;border-radius:1em;boxShadow: 0 0 0.5em '+__COLOR.gbg8+';background:'+__COLOR.bg0+';color:'+__COLOR.inverttxt2+';fontWeight:bold;padding:0 0.5em;'+(t?t[0]+':margin-bottom 0.3s linear 0s,0.3s':''),'innerHTML','>>>'),
+prog = null,
 d = (__SETTING.bit & __SETTING.bits.noTopBg) ? function(o,r){//屏幕上端向下
 	if(o){
 		i+=o
@@ -112,7 +112,11 @@ c.aE(window,'touchend',fcl)
 c.aE(window,'touchstart',u)
 c.aE(window,'touchmove',w)
 c.aE(window,'mousewheel',z)
-commonui.aE(window,'DOMContentLoaded',function(){document.body.appendChild(prog)})
+commonui.aE(window,'DOMContentLoaded',function(){
+	prog =_$('/div','style','position:fixed;bottom:-2.5em;height:2em;lineHeight:2em;left:50%;right:auto;width:auto;fontSize:1em;border-radius:1em;boxShadow: 0 0 0.5em '+__COLOR.gbg8+';background:'+__COLOR.bg0+';color:'+__COLOR.inverttxt2+';fontWeight:bold;padding:0 0.5em;'+(t[0]?t[0]+':margin-bottom 0.3s linear 0s,0.3s':''),'innerHTML','>>>')
+	try{prog.style.left='calc(50% - 1.25em)'}catch(e){}
+	document.body.appendChild(prog)
+	})
 })();
 
 
@@ -171,12 +175,11 @@ var l=location
 if(l.host=='bbs.ngacn.cc')
 	l.replace(l.protocol+'//'+'bbs.nga.cn'+l.pathname+l.search+l.hash)
 
-if(!window.__LOAD_BBS_ADS_12 || (window.__GP && window.__GP.greater && !window.__GP['super'] ) || __SETTING.uA[6]==2)
-	return
-
 if(l.pathname!='/' && l.pathname!='/thread.php' && l.pathname!='/read.php')
 	return
 
+if(!window.__LOAD_BBS_DS_12 || (window.__GP && window.__GP.greater && !window.__GP['super'] ) || __SETTING.uA[6]==2)
+	return
 
 
 var C = __COOKIE,v = C.getMiscCookie('insad_views')|0, c = C.getMiscCookie('pv_count_for_insad'),d = new Date
@@ -196,7 +199,7 @@ if(c>0){
 	C.setMiscCookieInSecond("pv_count_for_insad",0-v*v*48,d)
 	if(ngaAds.readCache('bbs_ads12')){
 		var u = url ? url : location.href
-		setTimeout(function(){l.replace( l.protocol+'//'+l.host+'/misc/adpage_insert_2.html?'+u )});
+		setTimeout(function(){l.replace( l.protocol+'//'+l.host+'/misc/adpage_insert_2.html?5'+u )});
 		return true
 		}
 	else
@@ -335,7 +338,7 @@ commonui.touchMoveInit()
 {
 //补api=======================
 __API.indexForumList=function(){
-return __IMG_BASE+'/proxy/cache_attach/bbs_index_data.js?'+Math.floor(__NOW/7200)
+return __IMG_BASE+'/proxy/cache_attach/bbs_index_data.js?2'+Math.floor(__NOW/7200)
 }//fe
 
 
@@ -391,7 +394,7 @@ var y = (window.__CURRENT_F_BIT & 8192) ? _$('/span')._.add(
 	_$('/br'),
 	'如果账号因安全问题而被锁定 请至银色黎明版查看',_$('/a').$0('href',"/read.php?tid=7504167",'innerHTML','[相关说明]','target','_blank','className','b ngared'),
 	_$('/br')
-	):null;
+	):_$('/span');
 
 if(fid==400 || fid==318 || fid==395 || fid==396 || fid==446 || fid==397 || fid==398 || fid==399){
 	return _$('/span')._.add(' ',
@@ -604,10 +607,19 @@ commonui.triggerEventDOMContentLoadedAct ()
 * @param fid 当前版面ID
 * @param int 当前页面宽度
  */
-commonui.getForumBg=function(fid){
-var w = window,noV = (w.__UA && w.__UA[0]==1 && w.__UA[1]<=6) || __SETTING.currentClientWidth<1400, h = w.__IMGPATH +'/head',r = 0
-//if(Math.random()>0.5)
-//	return [1,w.__IMGPATH +'/head/20171121.jpg',0,190]
+commonui.getForumBg=function(fid,fbit,stid){
+	console.log(fid,stid)
+if(window.__UA && __UA[0]==1 && __UA[1]<=6)return 
+var w = window,noV = __SETTING.currentClientWidth<1400, h = w.__IMGPATH +'/head'
+,sel=function(){
+	return arguments[Math.floor(Math.random()*arguments.length)]
+	}//fe
+if(stid){
+	switch(stid){
+		case 21051903:
+			return [1,h+'/20200330a.jpg',0,264,null,16]
+		}
+	}
 switch (fid){
 	
 	case 318:
@@ -645,7 +657,7 @@ switch (fid){
 	case 479:
 	case 594:
 	case 418:
-		return [1,h+'/20181109.jpg',0,190]
+		return [1,h+'/20191128.jpg',0,190]
 	case -985658:
 		return [1,h+'/-985658.jpg',0,190]
 	case 431:
@@ -655,15 +667,15 @@ switch (fid){
 	case 452:
 		return [1,h+'/20140617.jpg',0,190]
 	case 422:
-		return [1,h+'/20190705.jpg',0,190]
+		return [1,h+'/20200319.jpg',0,190]
 	case -51095:
 		return [1,h+'/20140915a.png',0,190]
 	case -7202235:
-		return [1,h+'/20190227.jpg',0,190]
+		return [1,h+'/'+sel('20200219','20200219a','20200219b','20200219c')+'.jpg',0,190]
 	case 426:
 		return [1,h+'/2015030604.jpg',0,190]
 	case -362960:
-		return [1,h+'/20180515.jpg',0,190]
+		return [1,h+'/'+sel('20180515','20191013','20191014','20191015')+'.jpg',0,190]
 	case -7861121:
 		return [1,h+'/20190114.jpg',0,190]
 	case -235147:
@@ -673,7 +685,11 @@ switch (fid){
 	case 482:
 		return [1,h+'/20170414.jpg',0,190]
 	case 414:
-		return Math.random()>0.5 ? [1,h+'/20161123.jpg',0,190]	: [1,h+'/20181025.jpg',0,280,null,4]
+	case 614:
+		return sel([1,h+'/20161123.jpg',0,190],[1,h+'/20181025.jpg',0,250,null,4],[1,h+'/20200330a.jpg',0,264,null,24])
+	case 615:
+	case 616:
+		return [1,h+'/20161123.jpg',0,190]
 	case 427:
 	case 489:
 		return [1,h+'/20151231.jpg',0,190]
@@ -684,7 +700,7 @@ switch (fid){
 	case 497:
 		return [1,h+'/20160314.jpg',0,190]
 	case 459:
-		return [1,h+'/20190725.jpg',0,190]
+		return [1,h+'/'+sel('20190725','20200321')+'.jpg',0,190]
 	case 492:
 		return [1,h+'/20160418.jpg',0,190]
 	case -149110:
@@ -704,11 +720,9 @@ switch (fid){
 	case 563:
 		return [1,h+'/20171205.jpg',0,190]
 	case 560:
-		var r = Math.random()
-		return [1,h+'/'+(r>0.5?'20180205':'20180206')+'.jpg',0,190,h+'/20180919.mp4',Math.random()>0.99?0:1,'474747']
+		return [1,h+'/'+sel('20180205','20180206')+'.jpg',0,190,h+'/20180919.mp4',Math.random()>0.99?0:1,'474747']
 	case 549:
-		var r = Math.random()
-		return [1,h+'/'+(r>0.5?'20180424':'20180425')+'.jpg',0,190]
+		return [1,h+'/'+sel('20180424','20180425')+'.jpg',0,190]
 	case 540:
 		return [1,h+'/20171013.jpg',0,190]
 	case 587:
@@ -724,16 +738,16 @@ switch (fid){
 		return [1,h+'/20180724.jpg',0,190]
 	case 631:
 	case 632:
-		var r = Math.random()
-		return [1,h+'/'+(r>0.25?(r>0.5?(r>0.75?'20181103':'20181103a'):'20181103b'):'20181103c')+'.jpg',0,190]
+		return [1,h+'/'+sel('20181103','20181103a','20181103b','20181103c')+'.jpg',0,190]
 	case 603:
-		return [1,h+'/20180906.jpg',0,190]
+		return [1,h+'/20200116.jpg',0,190]
+	case -34587507:
+		return [1,h+'/20200427.jpg',0,250,null,24]
 	case 538:
-		var r = Math.random()
-		return [1,h+'/'+(r>0.166?(r>0.333?(r>0.5?(r>0.666?(r>0.833?'20180910_1':'20180910_2'):'20180910_3'):'20180910_4'):'20180910_5'):'20180910_6')+'.jpg',0,190]
+	case 703:
+		return [1,h+'/'+sel('20180910_1','20180910_2','20180910_3','20180910_4','20180910_5','20180910_6','20200302a','20200302b','20200302c','20200302d','20200302e','20200302f')+'.jpg',0,190]
 	case -8180483:
-		var r = Math.random()
-		return [1,h+'/'+(r>0.5?'20180526':'201805261')+'.jpg',0,190,h+'/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
+		return [1,h+'/'+sel('20180526','201805261')+'.jpg',0,190,h+'/20180526.mp4',Math.random()>0.99?0:1,'0a1323']
 	//default:
 	//	return [1,h+'/20170725.jpg',0,190]
 	}
@@ -750,12 +764,13 @@ return [1,
 
 ngaAds.bbs_ads9_gen_old = ngaAds.bbs_ads9_gen ? ngaAds.bbs_ads9_gen : function(){}
 ngaAds.bbs_ads9_gen = function (){
+	console.log(window.__CURRENT_FID)
 if((__SETTING.bit & 4) || !window.__CURRENT_FID || window.__CURRENT_TID)
 	return this.bbs_ads9_gen_old();
 var x, p =location.protocol
 switch(__CURRENT_FID){
 	case 7:
-		x = p+'//ccq.178.com/iframe/index.html?fid=7'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=7'
 		break;
 	case -152678:
 		x = p+'//ccq.178.com/iframe/-152678/index.html'
@@ -767,7 +782,7 @@ switch(__CURRENT_FID){
 		x = p+'//ccq.178.com/201411/t_209179391466.html'
 		break;
 	case 422:
-		x = p+'//ccq.178.com/201411/t_209252535303.html'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=422'
 		break;
 	case 431:
 		x = p+'//ccq.178.com/201412/t_212811964561.html'
@@ -790,12 +805,14 @@ switch(__CURRENT_FID){
 	case 487:
 		x = {0:p+'//s1.djmy.178.com/nga_game.php?game=djmy',1:760}
 		break;
-
+	case 642:
+		x = p+'//tools.nga.cn/iframe/index.php?fid=642'
+		break;
 	case 452:
 		x = p+'//ccq.178.com/201507/t_230506050628.html'
 		break;
 	case 459:
-		x = p+'//ccq.178.com/iframe/459/index.html'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=459'
 		break;
 	case -7861121:
 		x = p+'//ccq.178.com/iframe/-7861121/index.html'
@@ -803,21 +820,22 @@ switch(__CURRENT_FID){
 	case 492:
 		x = p+'//ccq.178.com/iframe/index.html?fid=492'
 		break;
-	case 538:
-		x = p+'//ccq.178.com/iframe/index.html?fid=538'
+	case 710:
+		x = p+'//tools.nga.cn/iframe/index.php?fid=710'
 		break;
+	//case 538:
+	//	x = p+'//ccq.178.com/iframe/index.html?fid=538'
+	//	break;
 	case 414:
 		x = p+'//ccq.178.com/201711/t_304208553480.html'
 		break;
-	case -81981:
-		x = p+'//ccq.178.com/iframe/index.html?fid=-81981'
-		break;
+	//case -81981:
+	//	x = p+'//ccq.178.com/iframe/index.html?fid=-81981'
+	//	break;
 	case 503:
 		x = {0:p+'//s1.zqsd.178.com/nga_game.php?game=zqsd',1:750}
 		break;
-	case 537:
-		x = {0:p+'//game.stargame.com/play/startgame?id=80',1:750}
-		break;
+
 	case 543:
 		x = {0:p+'//wgapi.178.com/nga_game.php?game=dzz',1:750}
 		break;
@@ -837,13 +855,13 @@ switch(__CURRENT_FID){
 		x = p+'//ccq.178.com/iframe/index.html?fid=482'
 		break;
 	case 568:
-		x = p+'//tools.178.com/iframe/index.php?fid=568'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=568'
 		break;
 	case 540:
-		x = p+'//tools.178.com/iframe/index.php?fid=540'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=540'
 		break;
 	case -60204499:
-		x = p+'//tools.178.com/iframe/index.php?fid=-60204499'
+		x = p+'//tools.nga.cn/iframe/index.php?fid=-60204499'
 		break;
 	case -149110:
 		x = '<span style="text-align:center"><table class=" stdbtn" style="margin-left:auto;margin-right:auto"><tbody><tr><td><a href="javascript:void(0)" class="b teal" onclick="ngaAds.open_69124(event,\''+p+'//js.ntwikis.com/?nologin=1\',600)"><nobr><span style="font-size:1.5em">战舰少女资料库</span></nobr></a></td></tr></tbody></table></span>'
@@ -959,7 +977,7 @@ _ALL_IMG_HOST_REG = /^https?:\/\/img\d*\.(?:ngacn\.cc|nga\.cn|nga\.178\.com|nga\
 
 
 var d1 = function(){
-	return (window.__CURRENT_FID==570) ? 1 : -2
+	return (window.__CURRENT_FID==570 || window.__CURRENT_TID==18809689) ? 1 : -2
 	},
 d2 = function(){
 	return (window.__CURRENT_FID==-81981 || window.__CURRENT_FID==485) ? 1 : -2
@@ -1020,6 +1038,9 @@ _:1,
 'zhanqi.tv':2, // 
 'bogou.tv':2, // 播狗
 'steampowered.com':2,
+'127.net':{_:1,'nosdn.127.net':{_:1,'blz-videos.nosdn.127.net':2,'blz.nosdn.127.net':2}},
+'topgamers.cn':{_:1, 'video.topgamers.cn':2, 'r.topgamers.cn':2},//高能时刻
+'gaonengshike.com':{_:1, 'h5.gaonengshike.com':2},//同上
 
 'iyingdi.cn':-2,
 'skyline.top':-2,
@@ -1079,9 +1100,9 @@ return __SETTING.bit & (1024 | 64 | 2048)
 
 //地址是否是附件================
 commonui.ifUrlAttach = function(u){
-if(u.match(/^https?:\/\/(img\d?\.ngacn\.cc|img\d?\.nga\.cn|ngaimg\.178\.com|img\d?\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
+if( u.match(/^https?:\/\/(img\d?\.ngacn\.cc|img\d?\.nga\.cn|ngaimg\.178\.com|img\d?\.nga\.178\.com|img\.nga\.donews\.com|img\.nga\.bnbsky\.com)\//))
 	return true
-}
+}//
 
 //body起始处加载================
 /**
@@ -1112,7 +1133,8 @@ else{
 	//	w.put(_178NavAll_110906_765453(w.__CURRENT_UNAME,1))
 	//if(location.pathname == '/read.php')
 	//	w.put(w.ngaAds.bbs_ads1_gen())
-	this.customBackgroundInit( this.getForumBg(w.__CURRENT_FID,w.__CURRENT_F_BIT) )
+	
+	this.customBackgroundInit( this.getForumBg(w.__CURRENT_FID,w.__CURRENT_F_BIT,w.__CURRENT_STID) )
 	}
 	
 if((__SETTING.bit & (4|8|16))==0 && __SETTING.uA[0]==2 && w.getComputedStyle){//非小屏幕且是chrome 则用缩放取代小字号
@@ -1137,7 +1159,7 @@ if(window.getMatchedCSSRules){
 	}
 */
 
-if(w.__DEBUG)
+if(0)//w.__DEBUG)
 	if ('serviceWorker' in navigator){
 		navigator.serviceWorker.register(__SCRIPTS.service,{scope: '/'}).then(function(reg) {
 			if(reg.installing)
@@ -1655,7 +1677,7 @@ commonui.mainMenuItems={
 	142:{ innerHTML:'移动验证器(beta)',on:{event:'click', func:function(e){commonui.extraAuthInput(e)} }},
 
 	144:{u:1,innerHTML:'我的',subKeys:[25,158,146,1,2,3,104,93,107,101,102,154]},
-	18:{innerHTML:'设置',subKeys:[97,95,141,22,108,142,109,110,111,112,113,152,153,155,156,157,164]},
+	18:{innerHTML:'设置',subKeys:[97,95,141,22,108,142,109,110,111,112,113,152,153,155,156,157,164,167]},
 	146:{innerHTML:'消息',subKeys:[26,27,148,161,163]},
 	147:{ innerHTML:'道具',color:'gray',check:function(){
 			if(window.__CURRENT_UID)
@@ -1671,7 +1693,7 @@ commonui.mainMenuItems={
 	150:{arg:['innerHTML','重置密码','href','/nuke.php?__lib=login&__act=account&resetpass','onclick',function(e){commonui.accountAction('resetpass');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	151:{href:'https://shop482085632.taobao.com',innerHTML:'商城'},
 	152:{u:1,check:function(){if(__GP.ubMod)return true},innerHTML:'debug',on:{event:'click',func:function(e){commonui.userDebug()}}},
-	153:{u:1,check:function(){if(__GP.super && __GP.ubStaff)return true},innerHTML:'杂项功能',on:{event:'click',func:function(e){adminui.updateSrc()}}},
+	153:{u:1,check:function(){if(__GP['super'] && __GP.ubStaff)return true},innerHTML:'杂项功能',on:{event:'click',func:function(e){adminui.updateSrc()}}},
 	154:{u:1,check:function(){if(__GP.greater || __GP.rvrc>=200)return true},innerHTML:'随机头衔',on:{event:'click',func:function(e){commonui.randomTitle()}}},
 	155:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGA.CN',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.nga.cn')}}},
 	156:{check:function(){if(window.__DEBUG)return true},innerHTML:'NGACN.CC',on:{event:'click',func:function(){location.href=location.href.replace(/:\/\/[^\/]+/,'://bbs.ngacn.cc')}}},
@@ -1745,7 +1767,7 @@ commonui.mainMenuItems={
 	165:{u:1,check:function(){if(__GP.ubMod && window.__DEBUG)return true},innerHTML:'new post',on:{event:'click',func:function(e){adminui.new_post()}}},
 	166:{arg:['innerHTML','更换手机号','href','/nuke.php?__lib=login&__act=account&changephone','onclick',function(e){commonui.accountAction('changephone');commonui.cancelBubble(e);commonui.cancelEvent(e)}],disableDefault:1,u:1},
 	
-	
+	167:{check:function(){if(__GP.ubStaff)return true},arg:['href','javascript:void(0)','innerHTML','管理功能','onclick',function(e){if(adminui.admin_manage)return adminui.admin_manage();commonui.evalFromServer({__lib:'admin',__act:'admin_manage_ui'})}],disableDefault:1,u:1},
 	
 	999:null
 	}
@@ -1801,6 +1823,7 @@ his:null,
 data:null,
 
 load:function (l,r,c,rr){
+if(!window.__UICON_BASE)return
 
 var self = this
 if(this.data===null){
@@ -1823,9 +1846,9 @@ if(this.data===null){
 		})
 	}
 
-if(this.his===null){
-	this.his=false
-	return commonui.userCache.hostGet('https://bbs.ngacn.cc','ForumViewHis',function(x){self.his=x?x:false; commonui.indexBlock.load(l,r,c,rr)})
+if(commonui.waitForumViewHis()){
+	var arg =arguments
+	return commonui.waitForumViewHis(function(){commonui.indexBlock.load.apply(commonui.indexBlock,arg)})
 	}
 
 var x,h,w = window
@@ -1841,17 +1864,19 @@ else{
 
 this.blkwd = this.blkwd>800 ? 4 : 3
 
-if(h= this.his){
-	var hc =[]
-	for (var k in h){
-		if (h[k][2])
-			hc.push(
-				{fid:h[k][0],
-				name:h[k][1]}
-				)
-		}
-	if(hc.length)
-		this.add(hc,'fast',0)
+var hc=[]
+commonui.eachForumViewHis(function(k,v,r){
+	if(r<2 && v[2])
+		hc.push({
+			fid:v[0]|0,
+			stid:v[5]|0,
+			bit:65536,
+			name:v[5] ? v[6] : v[1]
+			})
+	})
+if(hc.length){
+	this.add(hc,'fast',0)
+	__NUKE.addCss(".indexblock .togcheckblock .togcheck {visibility:hidden;opacity:0;float:right;transition:display 0s linear 0s,opacity 0.3s ease-out;}  \n  .indexblock .togcheckblock:hover .togcheck {visibility:initial;opacity:0.5;}")
 	}
 
 
@@ -2213,6 +2238,7 @@ o.innerHTML = "<table style='width:100%;height:100%;' cellspacing='0' cellpaddin
 },//fe
 
 genforum :function(x,i,first,cpl,col,row, sw){
+
 if(typeof x=='number')
 	var x = this.index[x]
 if(typeof x[1] == 'object')
@@ -2226,13 +2252,20 @@ var target=''
 if(!link)link = commonui.domainSelect(k)+(stid ? "/thread.php?stid="+stid : "/thread.php?fid="+k)
 else target = "target='_blank'"
 if(!info)info=''
+if(x.bit&65536)
+	info = "<input class='togcheck' type=checkbox checked=checked onchange='commonui.lockViewHis("+(k|0)+", this.checked?1:0, "+(stid|0)+")'/>"
 if(this.single && col==3){
 	name = commonui.cutstrbylen(name,7,6,'…')
 	info = commonui.cutstrbylen(info,10,9,'…')
 	}
 if(x.clp)
 	return "<div class='"+this.bg[cpl+''+row+''+col]+' c b'+cpl+''+row+''+col+(invert?' invert':'')+(first?' first':'')+"' style='"+(sw?"width:"+sw+'%;':'')+"background-image:url("+this.getIcon(0)+")'><div class='a'><div class='b'><a href='javascript:void(0)' onclick='var tmp = this.parentNode.parentNode.parentNode;tmp.style.display=\"none\";tmp.nextSibling.style.display=\"\"' class='uitxt2'>显示更多&gt;&gt;</a><br/><p> </p></div class='b'></div class='a'></div class='c'>"
-return "<div class='"+this.bg[cpl+''+row+''+col]+' c b'+cpl+''+row+''+col+(invert?' invert':'')+(first?' first':'')+"' style='"+(sw?"width:"+sw+'%;':'')+"background-image:url("+this.getIcon(k,icon,invert,stid)+")'><div class='a'><div class='b'><a href='"+link+"' "+target+" class='"+(this.single?'uitxt3':'uitxt1')+"'>"+name+"</a><br/><p>"+info+" </p></div class='b'></div class='a'></div class='c'>"
+return "<div class='"
++this.bg[cpl+''+row+''+col]+' c b'+cpl+''+row+''+col+(invert?' invert':'')+(first?' first':'')+((x.bit&65536) ? ' togcheckblock':'')
++"' style='"
++(sw?"width:"+sw+'%;':'')
++(invert ? "background:url("+this.getIcon(k,icon,invert,stid)+") 2px 5px no-repeat, url(data:image/svg+xml;,"+encodeURIComponent('<svg width="42" height="42" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="19" fill="'+__COLOR.bg2+'"/></svg>')+") 2px 5px no-repeat,"+__COLOR.border0:"background-image:url("+this.getIcon(k,icon,invert,stid)+")")
++"'><div class='a'><div class='b'><a href='"+link+"' "+target+" class='"+(this.single?'uitxt3':'uitxt1')+"'>"+name+"</a><br/><p>"+info+" </p></div class='b'></div class='a'></div class='c'>"
 },//fe
 
 bg:{
